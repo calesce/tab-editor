@@ -13,6 +13,10 @@ export default class App extends Component {
   }
 
   componentDidMount() {
+    this.playSequence();
+  }
+
+  playSequence = () => {
     var a = setInterval(() => {
       var note = this.state.scale[this.state.currentNote];
 
@@ -57,26 +61,37 @@ export default class App extends Component {
     }
   }
 
-  play(delay, pitch, duration) {
+  play = (delay, pitch, duration) => {
+
+    console.log('pitch: ' + pitch);
     var startTime = this.state.audioContext.currentTime + delay
     var endTime = startTime + duration
 
     var oscillator = this.state.audioContext.createOscillator()
     oscillator.connect(this.state.audioContext.destination)
 
-    oscillator.type = 'sawtooth'
+    oscillator.type = 'square'
     oscillator.detune.value = pitch * 100
 
     oscillator.start(startTime)
     oscillator.stop(endTime)
   }
 
+  newSong= () => {
+    this.setState({
+      scale: randomScale(),
+      currentNote: 0
+    });
+
+    this.playSequence();
+  }
+
   render() {
-    console.log(this.state.scale);
     return (
       <div style={{ color: 'red' }}>
         <h1>{JSON.stringify(this.state.scale)}</h1>
         HAIL SATAN
+        <button onClick={this.newSong}>Play</button>
       </div>
     );
   }
