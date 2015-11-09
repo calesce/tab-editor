@@ -1,6 +1,27 @@
 import React, { Component } from 'react';
 import { randomScale } from './randomScale';
 import Stave from './Stave';
+import _ from 'lodash';
+
+function shuffle(array) {
+  var counter = array.length, temp, index;
+
+  // While there are elements in the array
+  while (counter > 0) {
+    // Pick a random index
+    index = Math.floor(Math.random() * counter);
+
+    // Decrease counter by 1
+    counter--;
+
+    // And swap the last element with it
+    temp = array[counter];
+    array[counter] = array[index];
+    array[index] = temp;
+  }
+
+  return array;
+}
 
 export default class App extends Component {
   constructor(props) {
@@ -95,11 +116,21 @@ export default class App extends Component {
     });
   }
 
+  shuffleScale = () => {
+    var currentScale = _.clone(this.state.scale);
+    var newScale = shuffle(currentScale);
+
+    this.setState({
+      scale: newScale
+    });
+  }
+
   render() {
     return (
       <div style={{ color: 'red' }}>
         <h1>{JSON.stringify(this.state.scale)}</h1>
         <button onClick={this.newScale}>New Scale</button>
+        <button onClick={this.shuffleScale}>Shuffle Baby</button>
         <button onClick={this.playSequence}>Play</button>
         <br />
         <Stave scale={this.state.scale} currentNoteIndex={this.state.currentNote} isPlaying={this.state.isPlaying} />
