@@ -7,10 +7,11 @@ var randomLength = function(min, max) {
 
 exports.randomScale = function() {
   var notesArray = ["c", "cis", "d", "dis", "e", "f", "fis", "g", "gis", "a", "ais", "b"];
-  return _.chain(notesArray)
-          .sample(randomLength(1, 12))
-          /*.sortBy(toneRow, function(note) {
-            return toneRow[note];
-          })*/
+  var scale = _.chain(notesArray)
+          .sample(randomLength(3, 6))
           .value();
+
+  return _.sortBy(scale, function(note) {
+    return toneRow[note];
+  });
 }
