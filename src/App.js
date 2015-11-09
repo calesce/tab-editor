@@ -125,12 +125,22 @@ export default class App extends Component {
     });
   }
 
+  reverseScale = () => {
+    var scale = _.clone(this.state.scale);
+    scale.reverse();
+
+    this.setState({
+      scale
+    });
+  }
+
   render() {
     return (
       <div style={{ color: 'red' }}>
         <h1>{JSON.stringify(this.state.scale)}</h1>
         <button onClick={this.newScale}>New Scale</button>
         <button onClick={this.shuffleScale}>Shuffle Baby</button>
+        <button onClick={this.reverseScale}>Reverse It</button>
         <button onClick={this.playSequence}>Play</button>
         <br />
         <Stave scale={this.state.scale} currentNoteIndex={this.state.currentNote} isPlaying={this.state.isPlaying} />
