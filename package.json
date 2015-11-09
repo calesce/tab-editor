@@ -39,6 +39,7 @@
   "dependencies": {
     "lodash": "^3.10.1",
     "react": "^0.14.0",
-    "react-dom": "^0.14.0"
+    "react-dom": "^0.14.0",
+    "vexflow": "^1.2.36"
   }
 }
