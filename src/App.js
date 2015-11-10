@@ -34,16 +34,16 @@ export default class App extends Component {
     };
   }
 
-  playSequence = () => {
+  playSequence = (scale) => {
     this.setState({
       isPlaying: true
     }, () => {
       var a = setInterval(() => {
-        var note = this.state.scale[this.state.currentNote];
+        var note = scale[this.state.currentNote];
 
         this.play(0, this.getNote(note), 0.5);
 
-        if(this.state.currentNote === this.state.scale.length-1) {
+        if(this.state.currentNote === scale.length-1) {
           clearInterval(a);
 
           setTimeout(() => {
@@ -111,39 +111,73 @@ export default class App extends Component {
   newScale = () => {
     this.setState({
       scale: randomScale(),
+      shuffledScale: [],
+      format: 'ascending',
       currentNote: 0,
       isPlaying: false
     });
   }
 
-  shuffleScale = () => {
-    var currentScale = _.clone(this.state.scale);
-    var newScale = shuffle(currentScale);
-
+  setShuffle = () => {
+    let currentScale = _.clone(this.state.scale);
     this.setState({
-      scale: newScale
+      shuffledScale: shuffle(currentScale),
+      format: 'shuffle'
     });
   }
 
-  reverseScale = () => {
-    var scale = _.clone(this.state.scale);
+  setDescending = () => {
+    let scale = _.clone(this.state.scale);
     scale.reverse();
+    return scale;
+  }
 
+  setFullScale = () => {
+    let scale = _.clone(this.state.scale);
+    let descending = _.clone(this.state.scale);
+    descending.reverse();
+    descending.shift();
+
+    return scale.concat(descending);
+  }
+
+  getScaleFromFormat = (format) => {
+    switch(format) {
+      case 'descending':
+        return this.setDescending();
+        break;
+      case 'shuffle':
+        return this.state.shuffledScale;
+        break;
+      case 'full':
+        return this.setFullScale();
+        break;
+      default:
+        return this.state.scale;
+        break;
+    }
+  };
+
+  setFormat = (event) => {
     this.setState({
-      scale
+      format: event.target.name
     });
   }
 
   render() {
+    let scale = this.getScaleFromFormat(this.state.format);
+
     return (
       <div style={{ color: 'red' }}>
-        <h1>{JSON.stringify(this.state.scale)}</h1>
+        <h1>{JSON.stringify(scale)}</h1>
         <button onClick={this.newScale}>New Scale</button>
-        <button onClick={this.shuffleScale}>Shuffle Baby</button>
-        <button onClick={this.reverseScale}>Reverse It</button>
-        <button onClick={this.playSequence}>Play</button>
+        <button name='shuffle' onClick={this.setShuffle}>Shuffle Baby</button>
+        <button name='ascending' onClick={this.setFormat}>Ascending</button>
+        <button name='descending' onClick={this.setFormat}>Descending</button>
+        <button name='full' onClick={this.setFormat}>Full Scale</button>
+        <button onClick={this.playSequence.bind(this, scale)}>Play</button>
         <br />
-        <Stave scale={this.state.scale} currentNoteIndex={this.state.currentNote} isPlaying={this.state.isPlaying} />
+        <Stave scale={scale} currentNoteIndex={this.state.currentNote} isPlaying={this.state.isPlaying} />
       </div>
     );
   }
