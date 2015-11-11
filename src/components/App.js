@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { randomScale, shuffle } from '../util';
+import { randomScale, shuffle, toneRow } from '../util';
 import Stave from './Stave';
 import _ from 'lodash';
 
@@ -21,7 +21,7 @@ export default class App extends Component {
       var a = setInterval(() => {
         var note = scale[this.state.currentNote];
 
-        this.play(0, this.getNote(note), 0.5);
+        this.play(0, toneRow[note], 0.5);
 
         if(this.state.currentNote === scale.length-1) {
           clearInterval(a);
@@ -41,35 +41,6 @@ export default class App extends Component {
     });
   }
 
-  getNote(note) {
-    switch(note) {
-      case 'c':
-        return 0;
-      case 'cis':
-        return 1;
-      case 'd':
-        return 2;
-      case 'dis':
-        return 3;
-      case 'e':
-        return 4;
-      case 'f':
-        return 5;
-      case 'fis':
-        return 6;
-      case 'g':
-        return 7;
-      case 'gis':
-        return 8;
-      case 'a':
-        return 9;
-      case 'ais':
-        return 10;
-      case 'b':
-        return 11;
-    }
-  }
-
   play = (delay, pitch, duration) => {
     var startTime = this.state.audioContext.currentTime + delay;
     var endTime = startTime + duration;
@@ -80,7 +51,7 @@ export default class App extends Component {
     gainNode.connect(this.state.audioContext.destination);
 
     oscillator.type = 'square';
-    oscillator.detune.value = pitch * 100;
+    oscillator.detune.value = (pitch + 3) * 100;
 
     gainNode.gain.value = 0.025;
 
