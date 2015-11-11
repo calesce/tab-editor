@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { randomScale, shuffle } from './util';
+import { randomScale, shuffle } from '../util';
 import Stave from './Stave';
 import _ from 'lodash';
 
