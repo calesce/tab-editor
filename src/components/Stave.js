@@ -56,7 +56,11 @@ export default class Stave extends Component {
         if(note.indexOf('is') > -1) {
           staveNote.addAccidental(0, new Vex.Flow.Accidental('#'));
         } else {
-          staveNote.addAccidental(0, new Vex.Flow.Accidental('n'));
+
+          let sharpIndex = _.indexOf(scale, note + 'is');
+          if(sharpIndex !== -1 && sharpIndex < i) {
+            staveNote.addAccidental(0, new Vex.Flow.Accidental('n'));
+          }
         }
 
         if(currentNoteIndex !== null && i === currentNoteIndex) {
