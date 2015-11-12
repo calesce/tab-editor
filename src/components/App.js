@@ -12,7 +12,8 @@ export default class App extends Component {
       scale: randomScale(),
       currentNote: 0,
       audioContext: new AudioContext(),
-      isPlaying: false
+      isPlaying: false,
+      speed: 500
     };
   }
 
@@ -20,26 +21,26 @@ export default class App extends Component {
     this.setState({
       isPlaying: true
     }, () => {
-      var a = setInterval(() => {
+      var interval = setInterval(() => {
         var note = scale[this.state.currentNote];
 
-        this.play(0, toneRow[note], 0.5);
+        this.play(0, toneRow[note], this.state.speed / 1000);
 
-        if(this.state.currentNote === scale.length-1) {
-          clearInterval(a);
+        if(this.state.currentNote === scale.length - 1) {
+          clearInterval(interval);
 
           setTimeout(() => {
             this.setState({
               isPlaying: false,
               currentNote: 0
             });
-          }, 500);
+          }, this.state.speed);
         }
 
         this.setState({
           currentNote: this.state.currentNote + 1
         });
-      }, 500);
+      }, this.state.speed);
     });
   }
 
@@ -117,6 +118,12 @@ export default class App extends Component {
     });
   }
 
+  bpmChanged = (event) => {
+    this.setState({
+      speed: 60000 / event.target.value
+    });
+  }
+
   render() {
     let scale = this.getScaleFromFormat(this.state.format);
 
@@ -129,6 +136,10 @@ export default class App extends Component {
         <button name='descending' onClick={this.setFormat}>Descending</button>
         <button name='full' onClick={this.setFormat}>Full Scale</button>
         <button onClick={this.playSequence.bind(this, scale)}>Play</button>
+        <br />
+        <br />
+        BPM:
+        <input onChange={this.bpmChanged} />
         <br />
         <Stave scale={scale} currentNoteIndex={this.state.currentNote} isPlaying={this.state.isPlaying} />
         <TabStaff notes={scale} currentNoteIndex={this.state.currentNote} isPlaying={this.state.isPlaying} />
