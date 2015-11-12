@@ -20,10 +20,6 @@ export default class Stave extends Component {
     this.createRenderer(() => {
       this.drawStave(() => {
         this.drawNotes(this.props.scale);
-
-        this.drawTabStave(() => {
-          this.drawTabNotes(this.props.scale);
-        });
       });
     });
   }
@@ -33,19 +29,11 @@ export default class Stave extends Component {
       this.state.ctx.clear();
       this.drawStave(() => {
         this.drawNotes(newProps.scale, newProps.currentNoteIndex - 1);
-
-        this.drawTabStave(() => {
-          this.drawTabNotes(this.props.scale, newProps.currentNoteIndex - 1);
-        });
       });
     } else if(!newProps.isPlaying) {
       this.state.ctx.clear();
       this.drawStave(() => {
         this.drawNotes(newProps.scale);
-
-        this.drawTabStave(() => {
-          this.drawTabNotes(this.props.scale);
-        });
       });
     }
   }
@@ -54,13 +42,6 @@ export default class Stave extends Component {
     var stave = new Vex.Flow.Stave(0, 0, 1000);
     stave.addClef('treble').setContext(this.state.ctx).draw();
     this.setState({ stave }, cb);
-  }
-
-  drawTabStave = (cb) => {
-    var tabStave = new Vex.Flow.TabStave(0, 90, 1000);
-    tabStave.addTabGlyph();
-    tabStave.setContext(this.state.ctx).draw();
-    this.setState({ tabStave }, cb);
   }
 
   drawNotes = (scale, currentNoteIndex) => {
@@ -100,27 +81,6 @@ export default class Stave extends Component {
     this.setState({
       notes: notes
     }, voice.draw(ctx, stave));
-  }
-
-  drawTabNotes = (scale, currentNoteIndex) => {
-    var { ctx, renderer, tabStave } = this.state;
-
-    var tabNotes = scale
-      .map(function(note, i) {
-        var tabNote = new Vex.Flow.TabNote({
-          positions: [{ str: 5, fret: toneRow[note] + 3 }],
-          duration: 'q'
-        });
-
-        if(currentNoteIndex !== null && i === currentNoteIndex) {
-          ctx.strokeStyle = '#f9423a'
-        }
-        return tabNote;
-      });
-
-    this.setState({ tabNotes }, () => {
-      Vex.Flow.Formatter.FormatAndDraw(ctx, tabStave, tabNotes)
-    });
   }
 
   render() {
