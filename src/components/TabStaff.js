@@ -25,7 +25,7 @@ export default class TabStaff extends Component {
     };
 
     let notes = this.props.notes.map((note, i) => {
-      let color = (i === this.props.currentNoteIndex) && this.props.isPlaying ? '#f9423a' : '#000000';
+      let color = (i === this.props.currentNoteIndex - 1) && this.props.isPlaying ? '#f9423a' : '#000000';
 
       return {
         note: toneRow[note],
