@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { randomScale, shuffle, toneRow } from '../util';
 import Stave from './Stave';
+import TabStaff from './TabStaff';
 import _ from 'lodash';
 
 export default class App extends Component {
@@ -10,7 +11,8 @@ export default class App extends Component {
     this.state = {
       scale: randomScale(),
       currentNote: 0,
-      audioContext: new AudioContext()
+      audioContext: new AudioContext(),
+      isPlaying: false
     };
   }
 
@@ -129,6 +131,7 @@ export default class App extends Component {
         <button onClick={this.playSequence.bind(this, scale)}>Play</button>
         <br />
         <Stave scale={scale} currentNoteIndex={this.state.currentNote} isPlaying={this.state.isPlaying} />
+        <TabStaff notes={scale} currentNoteIndex={this.state.currentNote} isPlaying={this.state.isPlaying} />
       </div>
     );
   }
