@@ -54,7 +54,7 @@ export default class App extends Component {
     gainNode.connect(this.state.audioContext.destination);
 
     oscillator.type = 'square';
-    oscillator.detune.value = (pitch + 3) * 100;
+    oscillator.detune.value = (pitch - 9) * 100;
 
     gainNode.gain.value = 0.025;
 
