@@ -1,32 +1,21 @@
 {
-  "name": "scales-n-chords",
-  "version": "1.0.0",
-  "description": "Sweet-ass music app",
+  "name": "tab-editor",
+  "version": "0.1.0",
+  "description": "Cool tab editor",
   "scripts": {
     "start": "node server.js",
     "lint": "eslint src"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/calesce/scales-n-chords.git"
+    "url": "https://github.com/calesce/tab-editor.git"
   },
-  "keywords": [
-    "react",
-    "reactjs",
-    "boilerplate",
-    "hot",
-    "reload",
-    "hmr",
-    "live",
-    "edit",
-    "webpack"
-  ],
   "author": "Cale Newman <newman.cale@gmail.com> (http://github.com/calesce)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/calesce/scales-n-chords/issues"
+    "url": "https://github.com/calesce/tab-editor/issues"
   },
-  "homepage": "https://github.com/calesce/scales-n-chords",
+  "homepage": "https://github.com/calesce/tab-editor",
   "devDependencies": {
     "babel-core": "^5.8.25",
     "babel-eslint": "^4.1.3",
