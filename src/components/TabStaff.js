@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { toneRow } from '../util';
+import TabNote from './TabNote';
 
 export default class TabStaff extends Component {
   renderBars = () => {
@@ -19,27 +19,11 @@ export default class TabStaff extends Component {
   }
 
   renderNotes = (note, i) => {
-    if(Array.isArray(note.string)) {
-      return note.string.map((bleh, j) => {
-        let y = 80 - (13 * note.string[j]);
+    return note.string.map((bleh, j) => {
+      let y = 80 - (13 * note.string[j]);
 
-        return (
-          <g key={j}>
-            <rect x={i * 100 + 100} y={y-7} height={5.5} width={14} fill='#ffffff' stroke='#ffffff'></rect>
-            <text x={i * 100 + 102} y={y} fill={note.color} >{note.fret[j]}</text>
-          </g>
-        );
-      });
-    } else {
-      let y = 80 - (13 * note.string);
-
-      return (
-        <g>
-          <rect x={i * 100 + 100} y={y-7} height={5.5} width={14} fill='#ffffff' stroke='#ffffff'></rect>
-          <text x={i * 100 + 102} y={y} fill={note.color} >{note.fret}</text>
-        </g>
-      );
-    }
+      return <TabNote key={j} x={i * 100 + 100} y={y} color={note.color} fret={note.fret[j]} />
+    });
   }
 
   render() {

@@ -24,19 +24,9 @@ export default class App extends Component {
       var interval = setInterval(() => {
         var note = song[this.state.currentNote];
 
-        if(Array.isArray(note.string)) {
-          for(let i = 0; i < note.string.length; i++) {
-            let pitch = note.fret[i] + (5 * note.string[i]);
-            if(note.string[i] >= 4) {
-              pitch = pitch - 1;
-            }
-
-            this.play(0, pitch, this.state.speed / 1000);
-          }
-        }
-        else {
-          let pitch = note.fret + (5 * note.string);
-          if(note.string >= 4) {
+        for(let i = 0; i < note.string.length; i++) {
+          let pitch = note.fret[i] + (5 * note.string[i]);
+          if(note.string[i] >= 4) {
             pitch = pitch - 1;
           }
 
