@@ -40,7 +40,7 @@ let song = [
       {
         string: [4],
         fret: [3],
-        duration: ['q'],
+        duration: ['h'],
       }
     ]
   }
