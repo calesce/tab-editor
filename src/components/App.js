@@ -96,11 +96,12 @@ export default class App extends Component {
 
   render() {
     return (
-      <div>
-        BPM:
-        <input onChange={this.bpmChanged} />
-        <button onClick={this.playSequence.bind(this, song)}>Play</button>
-        <br />
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', height: '50' }}>
+          BPM:
+          <input onChange={this.bpmChanged} />
+          <button onClick={this.playSequence.bind(this, song)}>Play</button>
+        </div>
         <TabStaff song={song} currentNoteIndex={this.state.currentNote} isPlaying={this.state.isPlaying} />
       </div>
     );

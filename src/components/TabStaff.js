@@ -50,22 +50,13 @@ export default class TabStaff extends Component {
   }
 
   render() {
-    let measureLength = 250;
-
-    let style = {
-      height: 250,
-      width: measureLength
-    };
-
-    let song = this.props.song;
-
-    return (<svg style={{ width: '100%' }}>
+    return (<svg style={{ width: '100%', height: '100%' }}>
       {
         this.props.song.map((measure, i) => {
           return (
-            <g key={i} style={style}>
+            <svg key={i} style={{ height: 250, width: 250 }}>
               { this.renderMeasure(i, measureLength, measure) }
-            </g>
+            </svg>
           );
         })
       }
