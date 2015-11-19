@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 export default class TabNote extends Component {
   render() {
-    let { x, y, fret, color} = this.props
+    let { x, y, fret, color} = this.props;
 
     return (
       <g>

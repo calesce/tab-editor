@@ -10,7 +10,10 @@ export default class App extends Component {
 
     this.state = {
       song: song,
-      currentNote: 0,
+      current: {
+        measure: 0,
+        noteIndex: 0
+      },
       audioContext: new AudioContext(),
       isPlaying: false,
       speed: 500
@@ -21,42 +24,58 @@ export default class App extends Component {
     this.setState({
       isPlaying: true
     }, () => {
-      var interval = setInterval(() => {
-        var note = song[this.state.currentNote];
+      let interval = setInterval(() => {
+        let { current, speed } = this.state;
+        let { measure, noteIndex } = current;
 
-        for(let i = 0; i < note.string.length; i++) {
-          let pitch = note.fret[i] + (5 * note.string[i]);
-          if(note.string[i] >= 4) {
+        let currentNote = song[measure].notes[noteIndex];
+
+        for(let i = 0; i < currentNote.string.length; i++) {
+          let pitch = currentNote.fret[i] + (5 * currentNote.string[i]);
+          if(currentNote.string[i] >= 4) {
             pitch = pitch - 1;
           }
 
-          this.play(0, pitch, this.state.speed / 1000);
+          this.play(0, pitch, speed / 1000);
         }
 
-        if(this.state.currentNote === song.length - 1) {
+        if(measure === song.length - 1 && noteIndex === song[measure].notes.length - 1) {
           clearInterval(interval);
 
           setTimeout(() => {
             this.setState({
               isPlaying: false,
-              currentNote: 0
+              current: {
+                measure: 0,
+                noteIndex: 0
+              }
             });
-          }, this.state.speed);
+          }, speed);
+        } else if(measure !== song.length - 1 && noteIndex === song[measure].notes.length - 1) {
+          this.setState({
+            current: {
+              measure: measure + 1,
+              noteIndex: 0
+            }
+          });
+        } else {
+          this.setState({
+            current: {
+              measure,
+              noteIndex: noteIndex + 1
+            }
+          });
         }
-
-        this.setState({
-          currentNote: this.state.currentNote + 1
-        });
       }, this.state.speed);
     });
   }
 
   play = (delay, pitch, duration) => {
-    var startTime = this.state.audioContext.currentTime + delay;
-    var endTime = startTime + duration;
+    let startTime = this.state.audioContext.currentTime + delay;
+    let endTime = startTime + duration;
 
-    var oscillator = this.state.audioContext.createOscillator();
-    var gainNode = this.state.audioContext.createGain();
+    let oscillator = this.state.audioContext.createOscillator();
+    let gainNode = this.state.audioContext.createGain();
     oscillator.connect(gainNode);
     gainNode.connect(this.state.audioContext.destination);
 
@@ -77,16 +96,12 @@ export default class App extends Component {
 
   render() {
     return (
-      <div style={{ color: 'red' }}>
-        <button onClick={this.playSequence.bind(this, song)}>Play</button>
-        <br />
-        <br />
+      <div>
         BPM:
         <input onChange={this.bpmChanged} />
+        <button onClick={this.playSequence.bind(this, song)}>Play</button>
         <br />
-        <br />
-        <br />
-        <TabStaff notes={song} currentNoteIndex={this.state.currentNote} isPlaying={this.state.isPlaying} />
+        <TabStaff song={song} currentNoteIndex={this.state.currentNote} isPlaying={this.state.isPlaying} />
       </div>
     );
   }
