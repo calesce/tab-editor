@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom';
 import _ from 'lodash';
-var Vex = require('vexflow');
+let Vex = require('vexflow');
 import { toneRow } from '../util';
 
 export default class Stave extends Component {
   createRenderer = (cb) => {
-    var renderer = new Vex.Flow.Renderer(findDOMNode(this.refs.stave),
+    let renderer = new Vex.Flow.Renderer(findDOMNode(this.refs.stave),
         Vex.Flow.Renderer.Backends.RAPHAEL);
-    var ctx = renderer.getContext();
+    let ctx = renderer.getContext();
 
     this.setState({
       renderer: renderer,
@@ -39,17 +39,17 @@ export default class Stave extends Component {
   }
 
   drawStave = (cb) => {
-    var stave = new Vex.Flow.Stave(0, 0, 1000);
+    let stave = new Vex.Flow.Stave(0, 0, 1000);
     stave.addClef('treble').setContext(this.state.ctx).draw();
     this.setState({ stave }, cb);
   }
 
   drawNotes = (scale, currentNoteIndex) => {
-    var { ctx, renderer, stave } = this.state;
+    let { ctx, renderer, stave } = this.state;
 
-    var notes = scale
+    let notes = scale
       .map(function(note, i) {
-        var staveNote = new Vex.Flow.StaveNote({ keys: [note.replace('is', '') + '/4'], duration: 'q'});
+        let staveNote = new Vex.Flow.StaveNote({ keys: [note.replace('is', '') + '/4'], duration: 'q'});
         if(note.indexOf('is') > -1) {
           staveNote.addAccidental(0, new Vex.Flow.Accidental('#'));
         } else {
@@ -69,14 +69,14 @@ export default class Stave extends Component {
         return staveNote;
       });
 
-    var voice = new Vex.Flow.Voice({
+    let voice = new Vex.Flow.Voice({
       num_beats: scale.length,
       beat_value: 4,
       resolution: Vex.Flow.RESOLUTION
     });
 
     voice.addTickables(notes);
-    var formatter = new Vex.Flow.Formatter().joinVoices([voice]).format([voice], 1000);
+    let formatter = new Vex.Flow.Formatter().joinVoices([voice]).format([voice], 1000);
 
     this.setState({
       notes: notes
