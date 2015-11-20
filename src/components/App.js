@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Stave from './Stave';
 import TabStaff from './TabStaff';
 import _ from 'lodash';
 import song from './song';
@@ -102,7 +101,7 @@ export default class App extends Component {
           <input onChange={this.bpmChanged} />
           <button onClick={this.playSequence.bind(this, song)}>Play</button>
         </div>
-        <TabStaff song={song} currentNoteIndex={this.state.currentNote} isPlaying={this.state.isPlaying} />
+        <TabStaff song={song} currentNote={this.state.current} isPlaying={this.state.isPlaying} />
       </div>
     );
   }

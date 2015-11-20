@@ -1,16 +1,6 @@
 import React, { Component } from 'react';
+import { findDOMNode } from 'react-dom';
 import TabNote from './TabNote';
-
-/*.map((note, i) => {
-  let color = (i === this.props.currentNoteIndex - 1) && this.props.isPlaying ? '#f9423a' : '#000000';
-
-  return {
-    string: note.string,
-    fret: note.fret,
-    duration: note.duration,
-    color: color
-  };
-});*/
 
 export default class TabStaff extends Component {
   renderBars = (i, measureLength) => {
@@ -32,7 +22,7 @@ export default class TabStaff extends Component {
   renderMeasure = (i, measureLength, measure) => {
     return (
       <g>
-        { this.renderBars(i, measureLength) }
+        { this.renderBars(i % 5, measureLength) }
         {
           measure.notes.map((note, j) => this.renderNotes(note, i, j))
         }
@@ -42,24 +32,43 @@ export default class TabStaff extends Component {
 
   renderNotes = (note, measureNumber, index) => {
     return note.string.map((bleh, j) => {
-      let x = (measureNumber * 255) + (index * 55 + 40);
+      let x = ((measureNumber % 5) * 255) + (index * 55 + 40);
       let y = 80 - (13 * note.string[j]);
 
-      return <TabNote key={j} x={x} y={y} color={note.color} fret={note.fret[j]} />;
+      let { currentNote, isPlaying } = this.props;
+
+      let color = 'black';
+      if(currentNote.measure === measureNumber && currentNote.noteIndex === index && isPlaying) {
+        color = '#f9423a';
+      }
+
+      return <TabNote key={j} x={x} y={y} color={color} fret={note.fret[j]} />;
     });
   }
 
+  calcRows = (song) => {
+    let measuresPerRow = Math.floor(window.innerWidth / 250);
+
+    return Math.ceil(song.length / measuresPerRow);
+  }
+
   render() {
-    return (<svg style={{ width: '100%', height: '100%' }}>
-      {
-        this.props.song.map((measure, i) => {
-          return (
-            <svg key={i} style={{ height: 250, width: 250 }}>
-              { this.renderMeasure(i, measureLength, measure) }
-            </svg>
-          );
-        })
-      }
-    </svg>);
+    let rows = this.calcRows(this.props.song);
+
+    return (
+      <svg style={{ width: '100%', height: '100%' }}>
+        {
+          this.props.song.map((measure, i) => {
+            let y = 200 * (Math.floor(i / 5));
+
+            return (
+              <svg key={i} x='0' y={y} style={{ height: 250, width: 250 }}>
+                { this.renderMeasure(i, 250, measure) }
+              </svg>
+            );
+          })
+        }
+      </svg>
+    );
   }
 }
