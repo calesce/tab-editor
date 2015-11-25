@@ -42,6 +42,8 @@ export default class App extends Component {
       replaySpeed = replaySpeed * 2;
     } else if(noteLength === 'e') {
       replaySpeed = replaySpeed / 2;
+    } else if(noteLength === 's') {
+      replaySpeed = replaySpeed / 4;
     }
 
     return replaySpeed;
@@ -136,6 +138,10 @@ export default class App extends Component {
   }
 
   handlePlay = (event) => {
+    if(this.state.isPlaying) {
+      return;
+    }
+
     this.setState({
       isPlaying: true,
       startTime: this.state.audioContext.currentTime + .005,
