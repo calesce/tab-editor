@@ -29,6 +29,7 @@ export default class App extends Component {
   changeNotes = () => {
     let startTimestamp = Date.now();
     let endTimestamp = startTimestamp + this.state.speed;
+    this.playCurrentNote();
 
     let noteInterval = () => {
       let { current, speed } = this.state;
@@ -37,11 +38,17 @@ export default class App extends Component {
       let currentTimestamp = Date.now();
       let replayDiff = currentTimestamp - startTimestamp;
 
-      if(replayDiff >= this.state.speed) {
+      let theSpeed = song[this.state.current.measure].notes[this.state.current.noteIndex].duration[0];
+
+      let replaySpeed = 500;
+      if(theSpeed === 'h') {
+        replaySpeed = 1000;
+      }
+
+      if(replayDiff >= replaySpeed) {
         startTimestamp = currentTimestamp;
 
         if(measure === song.length - 1 && noteIndex === song[measure].notes.length - 1) {
-
           this.setState({
             isPlaying: false,
             current: {
@@ -56,7 +63,7 @@ export default class App extends Component {
               noteIndex: 0
             },
             timer: requestAnimationFrame(noteInterval)
-          });
+          }, this.playCurrentNote);
         } else {
           this.setState({
             current: {
@@ -64,7 +71,7 @@ export default class App extends Component {
               noteIndex: noteIndex + 1
             },
             timer: requestAnimationFrame(noteInterval)
-          });
+          }, this.playCurrentNote);
         }
       } else {
         this.setState({
@@ -78,7 +85,19 @@ export default class App extends Component {
     });
   }
 
-  play = (startTime, delay, pitch, duration) => {
+  playCurrentNote = () => {
+    let noteToPlay = song[this.state.current.measure].notes[this.state.current.noteIndex];
+    let theSpeed = song[this.state.current.measure].notes[this.state.current.noteIndex].duration[0];
+
+    let replaySpeed = 500;
+    if(theSpeed === 'h') {
+      replaySpeed = 1000;
+    }
+
+    this.playNoteAtTime(noteToPlay, this.state.audioContext.currentTime, replaySpeed);
+  }
+
+  play = (startTime, pitch, duration) => {
     let endTime = startTime + duration;
 
     let oscillator = this.state.audioContext.createOscillator();
@@ -95,14 +114,14 @@ export default class App extends Component {
     oscillator.stop(endTime);
   }
 
-  playNoteAtTime = (currentNote, playTime) => {
+  playNoteAtTime = (currentNote, playTime, duration) => {
     for(let i = 0; i < currentNote.string.length; i++) {
       let pitch = currentNote.fret[i] + (5 * currentNote.string[i]);
       if(currentNote.string[i] >= 4) {
         pitch = pitch - 1;
       }
 
-      this.play(playTime, 0, pitch, .5);
+      this.play(playTime, pitch, duration / 1000);
     }
   }
 
@@ -114,7 +133,7 @@ export default class App extends Component {
       startTime: this.state.audioContext.currentTime + .005,
     }, () => {
       this.changeNotes(0, 0);
-      this.schedule();
+      //this.schedule();
     });
   }
 
