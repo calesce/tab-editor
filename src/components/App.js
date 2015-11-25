@@ -3,13 +3,6 @@ import TabStaff from './TabStaff';
 import _ from 'lodash';
 import song from './song';
 
-let requestId;
-let noteTime;
-let currentPlayingIndex = {
-  measure: 0,
-  noteIndex: 0
-};
-
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -22,77 +15,82 @@ export default class App extends Component {
       },
       audioContext: new AudioContext(),
       isPlaying: false,
-      speed: 485
+      bpm: 120
     };
   }
 
-  changeNotes = () => {
+  getSpeedFromBpm = (bpm) => {
+    return 60000 / bpm;
+  }
+
+  startPlayback = () => {
     let startTimestamp = Date.now();
-    let endTimestamp = startTimestamp + this.state.speed;
     this.playCurrentNote();
 
-    let noteInterval = () => {
-      let { current, speed } = this.state;
-      let { measure, noteIndex } = current;
+    this.setState({
+      timer: requestAnimationFrame(() => {
+        this.loopThroughSong(startTimestamp);
+      })
+    });
+  }
 
-      let currentTimestamp = Date.now();
-      let replayDiff = currentTimestamp - startTimestamp;
+  getReplaySpeedForNote = (note, bpm) => {
+    let noteLength = note.duration[0];
 
-      let theSpeed = song[this.state.current.measure].notes[this.state.current.noteIndex].duration[0];
+    let replaySpeed = this.getSpeedFromBpm(bpm);
+    if(noteLength === 'h') {
+      replaySpeed = replaySpeed * 2;
+    } else if(noteLength === 'e') {
+      replaySpeed = replaySpeed / 2;
+    }
 
-      let replaySpeed = 500;
-      if(theSpeed === 'h') {
-        replaySpeed = 1000;
-      }
+    return replaySpeed;
+  }
 
-      if(replayDiff >= replaySpeed) {
-        startTimestamp = currentTimestamp;
+  loopThroughSong = (startTimestamp) => {
+    let { current, bpm } = this.state;
+    let { measure, noteIndex } = current;
 
-        if(measure === song.length - 1 && noteIndex === song[measure].notes.length - 1) {
-          this.setState({
-            isPlaying: false,
-            current: {
-              measure: 0,
-              noteIndex: 0
-            }
-          });
-        } else if(measure !== song.length - 1 && noteIndex === song[measure].notes.length - 1) {
-          this.setState({
-            current: {
-              measure: measure + 1,
-              noteIndex: 0
-            },
-            timer: requestAnimationFrame(noteInterval)
-          }, this.playCurrentNote);
-        } else {
-          this.setState({
-            current: {
-              measure: measure,
-              noteIndex: noteIndex + 1
-            },
-            timer: requestAnimationFrame(noteInterval)
-          }, this.playCurrentNote);
-        }
+    let currentTimestamp = Date.now();
+    let replayDiff = currentTimestamp - startTimestamp;
+    let replaySpeed = this.getReplaySpeedForNote(song[current.measure].notes[noteIndex], bpm);
+
+    if(replayDiff >= replaySpeed) {
+      if(measure === song.length - 1 && noteIndex === song[measure].notes.length - 1) {
+        this.handleStop();
+      } else if(measure !== song.length - 1 && noteIndex === song[measure].notes.length - 1) {
+        this.setState({
+          current: {
+            measure: measure + 1,
+            noteIndex: 0
+          },
+          timer: requestAnimationFrame(() => {
+            this.loopThroughSong(currentTimestamp);
+          })
+        }, this.playCurrentNote);
       } else {
         this.setState({
-          timer: requestAnimationFrame(noteInterval)
-        });
+          current: {
+            measure: measure,
+            noteIndex: noteIndex + 1
+          },
+          timer: requestAnimationFrame(() => {
+            this.loopThroughSong(currentTimestamp);
+          })
+        }, this.playCurrentNote);
       }
-    };
-
-    this.setState({
-      timer: requestAnimationFrame(noteInterval)
-    });
+    } else {
+      this.setState({
+        timer: requestAnimationFrame(() => {
+          this.loopThroughSong(startTimestamp);
+        })
+      });
+    }
   }
 
   playCurrentNote = () => {
     let noteToPlay = song[this.state.current.measure].notes[this.state.current.noteIndex];
-    let theSpeed = song[this.state.current.measure].notes[this.state.current.noteIndex].duration[0];
-
-    let replaySpeed = 500;
-    if(theSpeed === 'h') {
-      replaySpeed = 1000;
-    }
+    let replaySpeed = this.getReplaySpeedForNote(noteToPlay, this.state.bpm);
 
     this.playNoteAtTime(noteToPlay, this.state.audioContext.currentTime, replaySpeed);
   }
@@ -125,67 +123,30 @@ export default class App extends Component {
     }
   }
 
-  handlePlay = (event) => {
-    noteTime = 0.0;
+  handleStop = () => {
+    cancelAnimationFrame(this.state.timer);
 
+    this.setState({
+      isPlaying: false,
+      current: {
+        measure: 0,
+        noteIndex: 0
+      }
+    });
+  }
+
+  handlePlay = (event) => {
     this.setState({
       isPlaying: true,
       startTime: this.state.audioContext.currentTime + .005,
     }, () => {
-      this.changeNotes(0, 0);
-      //this.schedule();
+      this.startPlayback();
     });
-  }
-
-  schedule = () => {
-    let currentTime = this.state.audioContext.currentTime - this.state.startTime;
-
-    while(noteTime < currentTime + 0.200) {
-      let contextPlayTime = noteTime + this.state.startTime;
-      let { measure, noteIndex } = currentPlayingIndex;
-
-      if(measure === 'NO') {
-        return;
-      }
-
-      let noteToPlay = song[measure].notes[noteIndex];
-
-      this.playNoteAtTime(noteToPlay, contextPlayTime);
-      currentPlayingIndex = this.advanceNote(measure, noteIndex);
-    }
-    requestId = requestAnimationFrame(this.schedule);
-  }
-
-  advanceNote = (measure, noteIndex) => {
-    let tempo = 60.0;
-    let secondsPerBeat = 60.0 / tempo;
-    noteTime = noteTime + (0.5 * secondsPerBeat);
-
-    if(measure === song.length - 1 && noteIndex === song[measure].notes.length - 1) {
-      return {
-        measure: 'NO',
-        noteIndex: 0
-      };
-    } else if(measure !== song.length - 1 && noteIndex === song[measure].notes.length - 1) {
-      return {
-        measure: measure + 1,
-        noteIndex: 0
-      };
-    } else {
-      return {
-        measure: measure,
-        noteIndex: noteIndex + 1
-      };
-    }
-  }
-
-  handleStop = () => {
-    cancelAnimationFrame(requestId);
   }
 
   bpmChanged = (event) => {
     this.setState({
-      speed: 60000 / event.target.value
+      bpm: event.target.value
     });
   }
 
@@ -194,8 +155,9 @@ export default class App extends Component {
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', height: '50' }}>
           BPM:
-          <input onChange={this.bpmChanged} />
+          <input onChange={this.bpmChanged} value={this.state.bpm} />
           <button onClick={this.handlePlay.bind(this, song)}>Play</button>
+          <button onClick={this.handleStop}>Stop</button>
         </div>
         <TabStaff song={song} currentNote={this.state.current} isPlaying={this.state.isPlaying} />
       </div>
