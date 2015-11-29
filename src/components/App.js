@@ -94,24 +94,11 @@ export default class App extends Component {
     let noteToPlay = song[this.state.current.measure].notes[this.state.current.noteIndex];
     let replaySpeed = this.getReplaySpeedForNote(noteToPlay, this.state.bpm);
 
-    this.playNoteAtTime(noteToPlay, this.state.audioContext.currentTime, replaySpeed);
-  }
-
-  play = (startTime, pitch, duration) => {
-    let endTime = startTime + duration;
-
-    let oscillator = this.state.audioContext.createOscillator();
-    let gainNode = this.state.audioContext.createGain();
-    oscillator.connect(gainNode);
-    gainNode.connect(this.state.audioContext.destination);
-
-    oscillator.type = 'square';
-    oscillator.detune.value = (pitch - 29) * 100;
-
-    gainNode.gain.value = 0.025;
-
-    oscillator.start(startTime);
-    oscillator.stop(endTime);
+    if(noteToPlay.fret[0] === 'rest') {
+      this.play(this.state.audioContext.currentTime, 'rest', replaySpeed);
+    } else {
+      this.playNoteAtTime(noteToPlay, this.state.audioContext.currentTime, replaySpeed);
+    }
   }
 
   playNoteAtTime = (currentNote, playTime, duration) => {
@@ -123,6 +110,27 @@ export default class App extends Component {
 
       this.play(playTime, pitch, duration / 1000);
     }
+  }
+
+  play = (startTime, pitch, duration) => {
+    let endTime = startTime + duration;
+
+    let oscillator = this.state.audioContext.createOscillator();
+    let gainNode = this.state.audioContext.createGain();
+    oscillator.connect(gainNode);
+    gainNode.connect(this.state.audioContext.destination);
+
+    if(pitch !== 'rest') {
+      oscillator.type = 'square';
+      oscillator.detune.value = (pitch - 29) * 100;
+
+      gainNode.gain.value = 0.025;
+    } else {
+      gainNode.gain.value = 0;
+    }
+
+    oscillator.start(startTime);
+    oscillator.stop(endTime);
   }
 
   handleStop = () => {
