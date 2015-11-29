@@ -32,16 +32,20 @@ export default class TabStaff extends Component {
   }
 
   renderNote = (note, measureNumber, index, measureLength, xOfMeasure) => {
+    let x = xOfMeasure + (index * 55 + 40);
+    let { currentNote, isPlaying } = this.props;
+
+    let color = 'black';
+    if(currentNote.measure === measureNumber && currentNote.noteIndex === index && isPlaying) {
+      color = '#f9423a';
+    }
+
+    if(note.string[0] === 'rest') {
+      return <Rest key={index} color={color} x={x} y={0} />;
+    }
+
     return note.string.map((bleh, j) => {
-      let x = xOfMeasure + (index * 55 + 40);
       let y = 80 - (13 * note.string[j]);
-
-      let { currentNote, isPlaying } = this.props;
-
-      let color = 'black';
-      if(currentNote.measure === measureNumber && currentNote.noteIndex === index && isPlaying) {
-        color = '#f9423a';
-      }
 
       return <TabNote key={j} x={x} y={y} color={color} fret={note.fret[j]} />;
     });
