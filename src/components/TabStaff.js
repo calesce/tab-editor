@@ -25,18 +25,18 @@ export default class TabStaff extends Component {
       <g>
         { this.renderBars(x, measureLength) }
         {
-          measure.notes.map((note, j) => this.renderNote(note, measureIndex, j, measureLength, x))
+          measure.notes.map((note, noteIndex) => this.renderNote(note, measureIndex, noteIndex, measureLength, x))
         }
       </g>
     );
   }
 
-  renderNote = (note, measureNumber, index, measureLength, xOfMeasure) => {
+  renderNote = (note, measureIndex, index, measureLength, xOfMeasure) => {
     let x = xOfMeasure + (index * 55 + 40);
     let { currentNote, isPlaying } = this.props;
 
     let color = 'black';
-    if(currentNote.measure === measureNumber && currentNote.noteIndex === index && isPlaying) {
+    if(currentNote.measure === measureIndex && currentNote.noteIndex === index && isPlaying) {
       color = '#f9423a';
     }
 
@@ -49,12 +49,6 @@ export default class TabStaff extends Component {
 
       return <TabNote key={j} x={x} y={y} color={color} fret={note.fret[j]} />;
     });
-  }
-
-  calcRows = (song) => {
-    let measuresPerRow = Math.floor(window.innerWidth / 250);
-
-    return Math.ceil(song.length / measuresPerRow);
   }
 
   convertSongIntoRows = (song) => {
@@ -97,23 +91,36 @@ export default class TabStaff extends Component {
     return 170 * rowIndex;
   }
 
-  renderMeasureForRow = (row, measureIndex, rowIndex, y) => {
+  getMeasureCountUpToRow = (rowIndex) => {
+    let rows = this.convertSongIntoRows(this.props.song);
+
+    return rows.reduce((next, curr, i) => {
+      if(i < rowIndex) {
+        return next + curr.length;
+      } else {
+        return next;
+      }
+    }, 0);
+  }
+
+  renderMeasureForRow = (row, measureIndex, rowIndex, y, totalMeasureIndex) => {
     let measure = row[measureIndex];
     let measureLength = 60 * measure.notes.length;
     let x = this.getXCoordOfMeasure(row, measureIndex);
 
     return (
       <svg key={measureIndex} x={0} y={y} style={{ height: 250, width: measureLength }}>
-        { this.renderMeasure(rowIndex + measureIndex, measureLength, measure, x) }
+        { this.renderMeasure(totalMeasureIndex, measureLength, measure, x) }
       </svg>
     );
   }
 
   renderRow = (row, rowIndex) => {
     let y = this.getYCoordOfRow(rowIndex);
+    let totalMeasureIndex = this.getMeasureCountUpToRow(rowIndex);
 
     return row.map((measure, measureIndex) => {
-        return this.renderMeasureForRow(row, measureIndex, rowIndex, y);
+        return this.renderMeasureForRow(row, measureIndex, rowIndex, y, totalMeasureIndex + measureIndex);
     });
   }
 
