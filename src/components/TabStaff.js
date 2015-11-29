@@ -25,15 +25,13 @@ export default class TabStaff extends Component {
       <g>
         { this.renderBars(x, measureLength) }
         {
-          measure.notes.map((note, j) => this.renderNote(note, i, j, measureLength))
+          measure.notes.map((note, j) => this.renderNote(note, i, j, measureLength, x))
         }
       </g>
     );
   }
 
-  renderNote = (note, measureNumber, index, measureLength) => {
-    let xOfMeasure = this.getXCoordOfMeasure(measureNumber);
-
+  renderNote = (note, measureNumber, index, measureLength, xOfMeasure) => {
     return note.string.map((bleh, j) => {
       let x = xOfMeasure + (index * 55 + 40);
       let y = 80 - (13 * note.string[j]);
@@ -55,36 +53,72 @@ export default class TabStaff extends Component {
     return Math.ceil(song.length / measuresPerRow);
   }
 
-  getXCoordOfMeasure = (index) => {
-    if(index % 5 === 0) {
+  convertSongIntoRows = (song) => {
+    const screenWidth = window.innerWidth;
+
+    return song.reduce((rows, measure, index) => {
+      let notes = measure.notes.length;
+
+      let currentRow = rows[rows.length - 1];
+      let currentRowWidth = currentRow.reduce((next, curr) => {
+        return next + (60 * curr.notes.length);
+      }, 0);
+
+      let returnedRows = rows;
+      if(currentRowWidth + (60 * measure.notes.length) > screenWidth - 20) {
+        if(index !== song.length - 1) {
+          returnedRows.push([measure]);
+        }
+      } else {
+        let nextRow = currentRow.concat(measure);
+
+        returnedRows[rows.length - 1] = nextRow;
+      }
+
+      return returnedRows;
+    }, [[]]);
+  }
+
+  getXCoordOfMeasure = (row, index) => {
+    if(index === 0) {
       return 0;
     }
-
-    let precedingMeasures = this.props.song.slice(index - index % 5, index);
-    return precedingMeasures.reduce((prev, curr) => {
-      return prev + (60 * curr.notes.length);
+    let precedingMeasures = row.slice(0, index);
+    return precedingMeasures.reduce((next, curr) => {
+      return next + (60 * curr.notes.length);
     }, 0);
   }
 
-  renderAllMeasures = (measure, i) => {
-    let y = 170 * (Math.floor(i / 5));
-    let measureLength = 60 * measure.notes.length;
+  getYCoordOfRow = (rowIndex) => {
+    return 170 * rowIndex;
+  }
 
-    let x = this.getXCoordOfMeasure(i);
+  renderMeasureForRow = (row, measureIndex, y) => {
+    let measure = row[measureIndex];
+    let measureLength = 60 * measure.notes.length;
+    let x = this.getXCoordOfMeasure(row, measureIndex);
 
     return (
-      <svg key={i} x='0' y={y} style={{ height: 250, width: measureLength }}>
-        { this.renderMeasure(i, measureLength, measure, x) }
+      <svg key={measureIndex} x={0} y={y} style={{ height: 250, width: measureLength }}>
+        { this.renderMeasure(measureIndex, measureLength, measure, x) }
       </svg>
     );
   }
 
+  renderRow = (row, rowIndex) => {
+    let y = this.getYCoordOfRow(rowIndex);
+
+    return row.map((measure, measureIndex) => {
+        return this.renderMeasureForRow(row, measureIndex, y);
+    });
+  }
+
   render() {
-    let rows = this.calcRows(this.props.song);
+    let rows = this.convertSongIntoRows(this.props.song);
 
     return (
       <svg style={{ width: '100%', height: '100%' }}>
-        { this.props.song.map(this.renderAllMeasures) }
+        { rows.map(this.renderRow) }
       </svg>
     );
   }
