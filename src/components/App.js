@@ -40,6 +40,8 @@ export default class App extends Component {
     let replaySpeed = this.getSpeedFromBpm(bpm);
     if(noteLength === 'h') {
       replaySpeed = replaySpeed * 2;
+    } else if(noteLength === 'w') {
+      replaySpeed = replaySpeed * 4;
     } else if(noteLength === 'e') {
       replaySpeed = replaySpeed / 2;
     } else if(noteLength === 's') {

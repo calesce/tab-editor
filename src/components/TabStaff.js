@@ -41,7 +41,7 @@ export default class TabStaff extends Component {
     }
 
     if(note.string[0] === 'rest') {
-      return <Rest key={index} color={color} x={x} y={0} />;
+      return <Rest key={index} color={color} x={x} y={0} duration={note.duration[0]} />;
     }
 
     return note.string.map((bleh, j) => {
