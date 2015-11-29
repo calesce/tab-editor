@@ -7,15 +7,15 @@ export default class TabStaff extends Component {
   renderBars = (x, measureLength) => {
     return (
       <g>
-        <rect x={x} y='10' width={measureLength} height='0.5' rx='0' ry='0' fill='#000000' stroke='#000000' strokeWidth='0.1' font='10pt Arial'></rect>
-        <rect x={x} y='23' width={measureLength} height='0.5' rx='0' ry='0' fill='#000000' stroke='#000000' strokeWidth='0.1' font='10pt Arial'></rect>
-        <rect x={x} y='36' width={measureLength} height='0.5' rx='0' ry='0' fill='#000000' stroke='#000000' strokeWidth='0.1' font='10pt Arial'></rect>
-        <rect x={x} y='49' width={measureLength} height='0.5' rx='0' ry='0' fill='#000000' stroke='#000000' strokeWidth='0.1' font='10pt Arial'></rect>
-        <rect x={x} y='62' width={measureLength} height='0.5' rx='0' ry='0' fill='#000000' stroke='#000000' strokeWidth='0.1' font='10pt Arial'></rect>
-        <rect x={x} y='75' width={measureLength} height='0.5' rx='0' ry='0' fill='#000000' stroke='#000000' strokeWidth='0.1' font='10pt Arial'></rect>
+        <rect x={x} y='10' width={measureLength} height='0.5' rx='0' ry='0' fill='#999999' stroke='#999999' strokeWidth='0.1' font='10pt Arial'></rect>
+        <rect x={x} y='23' width={measureLength} height='0.5' rx='0' ry='0' fill='#999999' stroke='#999999' strokeWidth='0.1' font='10pt Arial'></rect>
+        <rect x={x} y='36' width={measureLength} height='0.5' rx='0' ry='0' fill='#999999' stroke='#999999' strokeWidth='0.1' font='10pt Arial'></rect>
+        <rect x={x} y='49' width={measureLength} height='0.5' rx='0' ry='0' fill='#999999' stroke='#999999' strokeWidth='0.1' font='10pt Arial'></rect>
+        <rect x={x} y='62' width={measureLength} height='0.5' rx='0' ry='0' fill='#999999' stroke='#999999' strokeWidth='0.1' font='10pt Arial'></rect>
+        <rect x={x} y='75' width={measureLength} height='0.5' rx='0' ry='0' fill='#999999' stroke='#999999' strokeWidth='0.1' font='10pt Arial'></rect>
 
-        <rect x={x} y='10' width='0.5' height='65' rx='0' ry='0' fill='#000000' stroke='#000000' strokeWidth='0.1' font='10pt Arial'></rect>
-        <rect x={x + measureLength} y='10' width='0.5' height='65' rx='0' ry='0' fill='#000000' stroke='#000000' strokeWidth='0.1' font='10pt Arial'></rect>
+        <rect x={x} y='10' width='0.5' height='65' rx='0' ry='0' fill='#999999' stroke='#999999' strokeWidth='0.1' font='10pt Arial'></rect>
+        <rect x={x + measureLength} y='10' width='0.5' height='65' rx='0' ry='0' fill='#999999' stroke='#999999' strokeWidth='0.1' font='10pt Arial'></rect>
       </g>
     );
   }
