@@ -20,12 +20,12 @@ export default class TabStaff extends Component {
     );
   }
 
-  renderMeasure = (i, measureLength, measure, x) => {
+  renderMeasure = (measureIndex, measureLength, measure, x) => {
     return (
       <g>
         { this.renderBars(x, measureLength) }
         {
-          measure.notes.map((note, j) => this.renderNote(note, i, j, measureLength, x))
+          measure.notes.map((note, j) => this.renderNote(note, measureIndex, j, measureLength, x))
         }
       </g>
     );
@@ -93,14 +93,14 @@ export default class TabStaff extends Component {
     return 170 * rowIndex;
   }
 
-  renderMeasureForRow = (row, measureIndex, y) => {
+  renderMeasureForRow = (row, measureIndex, rowIndex, y) => {
     let measure = row[measureIndex];
     let measureLength = 60 * measure.notes.length;
     let x = this.getXCoordOfMeasure(row, measureIndex);
 
     return (
       <svg key={measureIndex} x={0} y={y} style={{ height: 250, width: measureLength }}>
-        { this.renderMeasure(measureIndex, measureLength, measure, x) }
+        { this.renderMeasure(rowIndex + measureIndex, measureLength, measure, x) }
       </svg>
     );
   }
@@ -109,7 +109,7 @@ export default class TabStaff extends Component {
     let y = this.getYCoordOfRow(rowIndex);
 
     return row.map((measure, measureIndex) => {
-        return this.renderMeasureForRow(row, measureIndex, y);
+        return this.renderMeasureForRow(row, measureIndex, rowIndex, y);
     });
   }
 
