@@ -4,18 +4,21 @@ import TabNote from './TabNote';
 import Rest from '../svg/rest';
 
 export default class TabStaff extends Component {
-  renderBars = (x, measureLength) => {
+  renderBars = (x, measureLength, measureIndex) => {
+    let color = measureIndex === this.props.currentNote.measure && this.props.isPlaying ? '#267754' : '#999999';
+    let strokeWidth = measureIndex === this.props.currentNote.measure && this.props.isPlaying ? '1' : '0.1';
+
     return (
       <g>
-        <rect x={x} y='10' width={measureLength} height='0.5' rx='0' ry='0' fill='#999999' stroke='#999999' strokeWidth='0.1' font='10pt Arial'></rect>
+        <rect x={x} y='10' width={measureLength} height='0.5' rx='0' ry='0' fill={color} stroke={color} strokeWidth={strokeWidth} font='10pt Arial'></rect>
         <rect x={x} y='23' width={measureLength} height='0.5' rx='0' ry='0' fill='#999999' stroke='#999999' strokeWidth='0.1' font='10pt Arial'></rect>
         <rect x={x} y='36' width={measureLength} height='0.5' rx='0' ry='0' fill='#999999' stroke='#999999' strokeWidth='0.1' font='10pt Arial'></rect>
         <rect x={x} y='49' width={measureLength} height='0.5' rx='0' ry='0' fill='#999999' stroke='#999999' strokeWidth='0.1' font='10pt Arial'></rect>
         <rect x={x} y='62' width={measureLength} height='0.5' rx='0' ry='0' fill='#999999' stroke='#999999' strokeWidth='0.1' font='10pt Arial'></rect>
-        <rect x={x} y='75' width={measureLength} height='0.5' rx='0' ry='0' fill='#999999' stroke='#999999' strokeWidth='0.1' font='10pt Arial'></rect>
+        <rect x={x} y='75' width={measureLength} height='0.5' rx='0' ry='0' fill={color} stroke={color} strokeWidth={strokeWidth} font='10pt Arial'></rect>
 
-        <rect x={x} y='10' width='0.5' height='65' rx='0' ry='0' fill='#999999' stroke='#999999' strokeWidth='0.1' font='10pt Arial'></rect>
-        <rect x={x + measureLength} y='10' width='0.5' height='65' rx='0' ry='0' fill='#999999' stroke='#999999' strokeWidth='0.1' font='10pt Arial'></rect>
+        <rect x={x} y='10' width='0.5' height='65' rx='0' ry='0' fill={color} stroke={color} strokeWidth={strokeWidth} font='10pt Arial'></rect>
+        <rect x={x + measureLength} y='10' width='0.5' height='65' rx='0' ry='0' fill={color} stroke={color} strokeWidth={strokeWidth} font='10pt Arial'></rect>
       </g>
     );
   }
@@ -23,7 +26,7 @@ export default class TabStaff extends Component {
   renderMeasure = (measureIndex, measureLength, measure, x) => {
     return (
       <g>
-        { this.renderBars(x, measureLength) }
+        { this.renderBars(x, measureLength, measureIndex) }
         {
           measure.notes.map((note, noteIndex) => this.renderNote(note, measureIndex, noteIndex, measureLength, x))
         }
