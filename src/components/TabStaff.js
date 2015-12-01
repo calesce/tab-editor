@@ -1,41 +1,46 @@
 import React, { Component } from 'react';
-import { findDOMNode } from 'react-dom';
+
 import TabNote from './TabNote';
 import Rest from './Rest';
+import Clef from './Clef';
 
 export default class TabStaff extends Component {
-  renderBars = (x, measureLength, measureIndex) => {
+  renderBars = (x, measureWidth, measureIndex) => {
     let color = measureIndex === this.props.currentNote.measure && this.props.isPlaying ? '#267754' : '#999999';
     let strokeWidth = measureIndex === this.props.currentNote.measure && this.props.isPlaying ? '1' : '0.1';
 
     return (
       <g>
-        <rect x={x} y='10' width={measureLength} height='0.5' rx='0' ry='0' fill={color} stroke={color} strokeWidth={strokeWidth} font='10pt Arial'></rect>
-        <rect x={x} y='23' width={measureLength} height='0.5' rx='0' ry='0' fill='#999999' stroke='#999999' strokeWidth='0.1' font='10pt Arial'></rect>
-        <rect x={x} y='36' width={measureLength} height='0.5' rx='0' ry='0' fill='#999999' stroke='#999999' strokeWidth='0.1' font='10pt Arial'></rect>
-        <rect x={x} y='49' width={measureLength} height='0.5' rx='0' ry='0' fill='#999999' stroke='#999999' strokeWidth='0.1' font='10pt Arial'></rect>
-        <rect x={x} y='62' width={measureLength} height='0.5' rx='0' ry='0' fill='#999999' stroke='#999999' strokeWidth='0.1' font='10pt Arial'></rect>
-        <rect x={x} y='75' width={measureLength} height='0.5' rx='0' ry='0' fill={color} stroke={color} strokeWidth={strokeWidth} font='10pt Arial'></rect>
+        <rect x={x} y='10' width={measureWidth} height='0.5' fill={color} stroke={color} strokeWidth={strokeWidth} font='10pt Arial'></rect>
+        <rect x={x} y='23' width={measureWidth} height='0.5' fill='#999999' stroke='#999999' strokeWidth='0.1' font='10pt Arial'></rect>
+        <rect x={x} y='36' width={measureWidth} height='0.5' fill='#999999' stroke='#999999' strokeWidth='0.1' font='10pt Arial'></rect>
+        <rect x={x} y='49' width={measureWidth} height='0.5' fill='#999999' stroke='#999999' strokeWidth='0.1' font='10pt Arial'></rect>
+        <rect x={x} y='62' width={measureWidth} height='0.5' fill='#999999' stroke='#999999' strokeWidth='0.1' font='10pt Arial'></rect>
+        <rect x={x} y='75' width={measureWidth} height='0.5' fill={color} stroke={color} strokeWidth={strokeWidth} font='10pt Arial'></rect>
 
-        <rect x={x} y='10' width='0.5' height='65' rx='0' ry='0' fill={color} stroke={color} strokeWidth={strokeWidth} font='10pt Arial'></rect>
-        <rect x={x + measureLength} y='10' width='0.5' height='65' rx='0' ry='0' fill={color} stroke={color} strokeWidth={strokeWidth} font='10pt Arial'></rect>
+        <rect x={x} y='10' width='0.5' height='65' fill={color} stroke={color} strokeWidth={strokeWidth} font='10pt Arial'></rect>
+        <rect x={x + measureWidth} y='10' width='0.5' height='65' fill={color} stroke={color} strokeWidth={strokeWidth} font='10pt Arial'></rect>
       </g>
     );
   }
 
-  renderMeasure = (measureIndex, measureLength, measure, x) => {
+  renderMeasure = (measureIndex, measureWidth, measure, x) => {
     return (
       <g>
-        { this.renderBars(x, measureLength, measureIndex) }
+        { this.renderBars(x, measureWidth, measureIndex) }
         {
-          measure.notes.map((note, noteIndex) => this.renderNote(note, measureIndex, noteIndex, measureLength, x))
+          measure.notes.map((note, noteIndex) => this.renderNote(note, measureIndex, noteIndex, measureWidth, x))
         }
       </g>
     );
   }
 
-  renderNote = (note, measureIndex, index, measureLength, xOfMeasure) => {
+  renderNote = (note, measureIndex, index, measureWidth, xOfMeasure) => {
     let x = xOfMeasure + (index * 55 + 40);
+    if(measureIndex === 0) {
+      x += 15;
+    }
+
     let { currentNote, isPlaying } = this.props;
 
     let color = 'black';
@@ -62,7 +67,7 @@ export default class TabStaff extends Component {
 
       let currentRow = rows[rows.length - 1];
       let currentRowWidth = currentRow.reduce((next, curr) => {
-        return next + (60 * curr.notes.length);
+        return next + curr.width;
       }, 0);
 
       let returnedRows = rows;
@@ -86,12 +91,26 @@ export default class TabStaff extends Component {
     }
     let precedingMeasures = row.slice(0, index);
     return precedingMeasures.reduce((next, curr) => {
-      return next + (60 * curr.notes.length);
+      return next + curr.width;
     }, 0);
   }
 
   getYCoordOfRow = (rowIndex) => {
     return 170 * rowIndex;
+  }
+
+  computeMeasureWidths = (song) => {
+    return song.map((measure, index) => {
+      let width = 60 * measure.notes.length;
+      if(index === 0) {
+        width += 15;
+      }
+
+      return {
+        ...measure,
+        width
+      };
+    });
   }
 
   getMeasureCountUpToRow = (rowIndex) => {
@@ -108,12 +127,12 @@ export default class TabStaff extends Component {
 
   renderMeasureForRow = (row, measureIndex, rowIndex, y, totalMeasureIndex) => {
     let measure = row[measureIndex];
-    let measureLength = 60 * measure.notes.length;
     let x = this.getXCoordOfMeasure(row, measureIndex);
 
     return (
-      <svg key={measureIndex} x={0} y={y} style={{ height: 250, width: measureLength }}>
-        { this.renderMeasure(totalMeasureIndex, measureLength, measure, x) }
+      <svg key={measureIndex} x={0} y={y} style={{ height: 250, width: measure.width }}>
+        { this.renderMeasure(totalMeasureIndex, measure.width, measure, x) }
+        { (rowIndex === 0 && measureIndex === 0) ? <Clef /> : null }
       </svg>
     );
   }
@@ -128,7 +147,8 @@ export default class TabStaff extends Component {
   }
 
   render() {
-    let rows = this.convertSongIntoRows(this.props.song);
+    let measuresWithWidths = this.computeMeasureWidths(this.props.song);
+    let rows = this.convertSongIntoRows(measuresWithWidths);
 
     return (
       <svg style={{ width: '100%', height: '100%' }}>
