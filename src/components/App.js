@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import TabStaff from './TabStaff';
 import _ from 'lodash';
-import song from './song';
+import song from '../song';
 
 export default class App extends Component {
   constructor(props) {
