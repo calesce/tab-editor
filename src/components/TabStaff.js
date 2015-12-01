@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom';
 import TabNote from './TabNote';
-import Rest from '../svg/rest';
+import Rest from './Rest';
 
 export default class TabStaff extends Component {
   renderBars = (x, measureLength, measureIndex) => {
