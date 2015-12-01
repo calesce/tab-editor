@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import TabNote from './TabNote';
+import Bars from './Bars';
 import Rest from './Rest';
 import Clef from './Clef';
 
@@ -9,19 +10,7 @@ export default class TabStaff extends Component {
     let color = measureIndex === this.props.currentNote.measure && this.props.isPlaying ? '#267754' : '#999999';
     let strokeWidth = measureIndex === this.props.currentNote.measure && this.props.isPlaying ? '1' : '0.1';
 
-    return (
-      <g>
-        <rect x={x} y='10' width={measureWidth} height='0.5' fill={color} stroke={color} strokeWidth={strokeWidth} font='10pt Arial'></rect>
-        <rect x={x} y='23' width={measureWidth} height='0.5' fill='#999999' stroke='#999999' strokeWidth='0.1' font='10pt Arial'></rect>
-        <rect x={x} y='36' width={measureWidth} height='0.5' fill='#999999' stroke='#999999' strokeWidth='0.1' font='10pt Arial'></rect>
-        <rect x={x} y='49' width={measureWidth} height='0.5' fill='#999999' stroke='#999999' strokeWidth='0.1' font='10pt Arial'></rect>
-        <rect x={x} y='62' width={measureWidth} height='0.5' fill='#999999' stroke='#999999' strokeWidth='0.1' font='10pt Arial'></rect>
-        <rect x={x} y='75' width={measureWidth} height='0.5' fill={color} stroke={color} strokeWidth={strokeWidth} font='10pt Arial'></rect>
-
-        <rect x={x} y='10' width='0.5' height='65' fill={color} stroke={color} strokeWidth={strokeWidth} font='10pt Arial'></rect>
-        <rect x={x + measureWidth} y='10' width='0.5' height='65' fill={color} stroke={color} strokeWidth={strokeWidth} font='10pt Arial'></rect>
-      </g>
-    );
+    return <Bars x={x} measureWidth={measureWidth} color={color} strokeWidth={strokeWidth} />;
   }
 
   renderMeasure = (measureIndex, measureWidth, measure, x) => {
@@ -114,7 +103,8 @@ export default class TabStaff extends Component {
   }
 
   getMeasureCountUpToRow = (rowIndex) => {
-    let rows = this.convertSongIntoRows(this.props.song);
+    let measuresWithWidths = this.computeMeasureWidths(this.props.song);
+    let rows = this.convertSongIntoRows(measuresWithWidths);
 
     return rows.reduce((next, curr, i) => {
       if(i < rowIndex) {
