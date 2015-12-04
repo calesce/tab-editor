@@ -1,57 +1,8 @@
 import React, { Component } from 'react';
 
-import TabNote from './TabNote';
-import Bars from './Bars';
-import Rest from './Rest';
-import Clef from './Clef';
-import TimeSignature from './TimeSignature';
+import Measure from './Measure';
 
 export default class TabStaff extends Component {
-  renderBars = (x, measureWidth, measureIndex) => {
-    let color = measureIndex === this.props.currentNote.measure && this.props.isPlaying ? '#267754' : '#999999';
-    let strokeWidth = measureIndex === this.props.currentNote.measure && this.props.isPlaying ? '1' : '0.1';
-
-    return <Bars x={x} measureWidth={measureWidth} color={color} strokeWidth={strokeWidth} />;
-  }
-
-  renderMeasure = (measureIndex, measureWidth, measure, x) => {
-    return (
-      <g>
-        { this.renderBars(x, measureWidth, measureIndex) }
-        {
-          measure.notes.map((note, noteIndex) => this.renderNote(note, measureIndex, noteIndex, measureWidth, x, measure.timeSignature))
-        }
-      </g>
-    );
-  }
-
-  renderNote = (note, measureIndex, index, measureWidth, xOfMeasure, timeSignature) => {
-    let x = xOfMeasure + (index * 55 + 40);
-    if(measureIndex === 0) {
-      x += 15;
-    }
-    if(timeSignature) {
-      x += 20;
-    }
-
-    let { currentNote, isPlaying } = this.props;
-
-    let color = 'black';
-    if(currentNote.measure === measureIndex && currentNote.noteIndex === index && isPlaying) {
-      color = '#f9423a';
-    }
-
-    if(note.string[0] === 'rest') {
-      return <Rest key={index} color={color} x={x} y={0} duration={note.duration[0]} />;
-    }
-
-    return note.string.map((bleh, j) => {
-      let y = 80 - (13 * note.string[j]);
-
-      return <TabNote key={j} x={x} y={y} color={color} fret={note.fret[j]} />;
-    });
-  }
-
   convertSongIntoRows = (song) => {
     const screenWidth = window.innerWidth;
 
@@ -133,19 +84,13 @@ export default class TabStaff extends Component {
     let x = this.getXCoordOfMeasure(row, measureIndex);
 
     return (
-      <svg key={measureIndex} x={0} y={y} style={{ height: 250, width: measure.width }}>
-        { this.renderMeasure(totalMeasureIndex, measure.width, measure, x) }
-        { totalMeasureIndex === 0 ? <Clef /> : null }
-        { this.renderTimeSignature(totalMeasureIndex, x, measure) }
-      </svg>
+      <Measure key={totalMeasureIndex} x={x} y={y}
+        measure={measure}
+        isPlaying={this.props.isPlaying}
+        currentNote={this.props.currentNote}
+        totalMeasureIndex={totalMeasureIndex}
+      />
     );
-  }
-
-  renderTimeSignature = (totalMeasureIndex, x, measure) => {
-    x = totalMeasureIndex === 0 ? x + 36 : x + 20;
-    let { timeSignature } = measure;
-
-    return timeSignature ? <TimeSignature x={x} numerator={timeSignature[0]} denominator={timeSignature[2]} /> : null;
   }
 
   renderRow = (row, rowIndex) => {
