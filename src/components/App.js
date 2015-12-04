@@ -1,17 +1,27 @@
 import React, { Component } from 'react';
 import TabStaff from './TabStaff';
 import _ from 'lodash';
-import song from '../song';
 
 export default class App extends Component {
   constructor(props) {
     super(props);
 
+    if (typeof window !== 'undefined') {
+      window.addEventListener('keydown', this.handleKeyPress);
+    }
+
+    let newSong = _.cloneDeep(this.props.song);
+
     this.state = {
-      song: song,
+      song: newSong,
       currentPlayingNote: {
         measure: 0,
         noteIndex: 0
+      },
+      currentEditingIndex: {
+        measureIndex: 0,
+        noteIndex: 0,
+        stringIndex: 0
       },
       audioContext: new AudioContext(),
       isPlaying: false,
@@ -52,7 +62,7 @@ export default class App extends Component {
   }
 
   loopThroughSong = (startTimestamp) => {
-    let { currentPlayingNote, bpm } = this.state;
+    let { currentPlayingNote, bpm, song } = this.state;
     let { measure, noteIndex } = currentPlayingNote;
 
     let currentTimestamp = Date.now();
@@ -93,7 +103,7 @@ export default class App extends Component {
   }
 
   playCurrentNote = () => {
-    let noteToPlay = song[this.state.currentPlayingNote.measure].notes[this.state.currentPlayingNote.noteIndex];
+    let noteToPlay = this.state.song[this.state.currentPlayingNote.measure].notes[this.state.currentPlayingNote.noteIndex];
     let replaySpeed = this.getReplaySpeedForNote(noteToPlay, this.state.bpm);
 
     if(noteToPlay.fret[0] === 'rest') {
@@ -160,6 +170,112 @@ export default class App extends Component {
     });
   }
 
+  getNextNote = (measureIndex, noteIndex) => {
+    const { song } = this.state;
+
+    if(measureIndex === song.length - 1 && noteIndex === song[measureIndex].notes.length - 1) {
+      return { measureIndex, noteIndex };
+    } else if(noteIndex === song[measureIndex].notes.length - 1) {
+      return {
+        measureIndex: measureIndex + 1,
+        noteIndex: 0
+      };
+    } else {
+      return {
+        measureIndex,
+        noteIndex: noteIndex + 1
+      };
+    }
+  }
+
+  getPrevNote = (measureIndex, noteIndex) => {
+    const { song } = this.state;
+
+    if(measureIndex === 0 && noteIndex === 0) {
+      return { measureIndex, noteIndex };
+    } else if(noteIndex === 0) {
+      return {
+        measureIndex: measureIndex - 1,
+        noteIndex: song[measureIndex - 1].notes.length - 1
+      };
+    } else {
+      return {
+        measureIndex,
+        noteIndex: noteIndex - 1
+      };
+    }
+  }
+
+  getUpperString = (stringIndex) => {
+    return stringIndex === 5 ? 0 : stringIndex + 1;
+  }
+
+  getLowerString = (stringIndex) => {
+    return stringIndex === 0 ? 5 : stringIndex - 1;
+  }
+
+  handleKeyPress = (event) => {
+    let { currentEditingIndex } = this.state;
+    let { measureIndex, noteIndex, stringIndex } = currentEditingIndex;
+
+    if(event.keyCode > 57 || event.keyCode < 48) {
+      if(event.keyCode === 39) { // right arrow
+        let newEditingIndex = this.getNextNote(measureIndex, noteIndex);
+        newEditingIndex.stringIndex = stringIndex;
+        this.setState({
+          currentEditingIndex: newEditingIndex
+        });
+      } else if(event.keyCode === 37) { // left arrow
+        let newEditingIndex = this.getPrevNote(measureIndex, noteIndex);
+        newEditingIndex.stringIndex = stringIndex;
+        this.setState({
+          currentEditingIndex: newEditingIndex
+        });
+      } else if(event.keyCode === 38) { // up arrow
+        let newEditingIndex = {
+          stringIndex: this.getUpperString(stringIndex),
+          noteIndex,
+          measureIndex
+        };
+        this.setState({
+          currentEditingIndex: newEditingIndex
+        });
+      } else if(event.keyCode === 40) { // down arrow
+        let newEditingIndex = {
+          stringIndex: this.getLowerString(stringIndex),
+          noteIndex,
+          measureIndex
+        };
+        this.setState({
+          currentEditingIndex: newEditingIndex
+        });
+      }
+
+      return;
+    }
+
+    let number = event.keyCode - 48;
+    let measure = _.cloneDeep(this.state.song[measureIndex]);
+    let note = measure.notes[noteIndex];
+
+    if(_.findIndex(note.string, (theNote) => theNote === stringIndex) === -1) {
+      if(note.fret.length > 0) {
+        note.duration.push('q');
+      }
+
+      note.fret.push(number);
+      note.string.push(stringIndex);
+    } else {
+      note.fret[note.fret.length - 1] = number;
+      note.string[note.string.length - 1] = stringIndex;
+    }
+
+    measure.notes[noteIndex] = note;
+    let song = _.cloneDeep(this.state.song);
+    song[measureIndex] = measure;
+    this.setState({ song });
+  }
+
   bpmChanged = (event) => {
     this.setState({
       bpm: event.target.value
@@ -172,10 +288,14 @@ export default class App extends Component {
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', height: '50' }}>
           BPM:
           <input onChange={this.bpmChanged} value={this.state.bpm} />
-          <button onClick={this.handlePlay.bind(this, song)}>Play</button>
+          <button onClick={this.handlePlay}>Play</button>
           <button onClick={this.handleStop}>Stop</button>
         </div>
-        <TabStaff song={song} currentPlayingNote={this.state.currentPlayingNote} isPlaying={this.state.isPlaying} />
+        <TabStaff song={this.state.song}
+          currentEditingIndex={this.state.currentEditingIndex}
+          currentPlayingNote={this.state.currentPlayingNote}
+          isPlaying={this.state.isPlaying}
+        />
       </div>
     );
   }
