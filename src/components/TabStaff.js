@@ -4,6 +4,7 @@ import TabNote from './TabNote';
 import Bars from './Bars';
 import Rest from './Rest';
 import Clef from './Clef';
+import TimeSignature from './TimeSignature';
 
 export default class TabStaff extends Component {
   renderBars = (x, measureWidth, measureIndex) => {
@@ -18,16 +19,19 @@ export default class TabStaff extends Component {
       <g>
         { this.renderBars(x, measureWidth, measureIndex) }
         {
-          measure.notes.map((note, noteIndex) => this.renderNote(note, measureIndex, noteIndex, measureWidth, x))
+          measure.notes.map((note, noteIndex) => this.renderNote(note, measureIndex, noteIndex, measureWidth, x, measure.timeSignature))
         }
       </g>
     );
   }
 
-  renderNote = (note, measureIndex, index, measureWidth, xOfMeasure) => {
+  renderNote = (note, measureIndex, index, measureWidth, xOfMeasure, timeSignature) => {
     let x = xOfMeasure + (index * 55 + 40);
     if(measureIndex === 0) {
       x += 15;
+    }
+    if(timeSignature) {
+      x += 20;
     }
 
     let { currentNote, isPlaying } = this.props;
@@ -95,6 +99,15 @@ export default class TabStaff extends Component {
         width += 15;
       }
 
+      let prevMeasure = song[index-1];
+      if(prevMeasure && prevMeasure.timeSignature === measure.timeSignature) {
+        return {
+          notes: measure.notes,
+          width
+        };
+      }
+      width += 20;
+
       return {
         ...measure,
         width
@@ -122,9 +135,17 @@ export default class TabStaff extends Component {
     return (
       <svg key={measureIndex} x={0} y={y} style={{ height: 250, width: measure.width }}>
         { this.renderMeasure(totalMeasureIndex, measure.width, measure, x) }
-        { (rowIndex === 0 && measureIndex === 0) ? <Clef /> : null }
+        { totalMeasureIndex === 0 ? <Clef /> : null }
+        { this.renderTimeSignature(totalMeasureIndex, x, measure) }
       </svg>
     );
+  }
+
+  renderTimeSignature = (totalMeasureIndex, x, measure) => {
+    x = totalMeasureIndex === 0 ? x + 36 : x + 20;
+    let { timeSignature } = measure;
+
+    return timeSignature ? <TimeSignature x={x} numerator={timeSignature[0]} denominator={timeSignature[2]} /> : null;
   }
 
   renderRow = (row, rowIndex) => {
