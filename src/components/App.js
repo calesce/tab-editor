@@ -9,7 +9,7 @@ export default class App extends Component {
 
     this.state = {
       song: song,
-      current: {
+      currentPlayingNote: {
         measure: 0,
         noteIndex: 0
       },
@@ -52,19 +52,19 @@ export default class App extends Component {
   }
 
   loopThroughSong = (startTimestamp) => {
-    let { current, bpm } = this.state;
-    let { measure, noteIndex } = current;
+    let { currentPlayingNote, bpm } = this.state;
+    let { measure, noteIndex } = currentPlayingNote;
 
     let currentTimestamp = Date.now();
     let replayDiff = currentTimestamp - startTimestamp;
-    let replaySpeed = this.getReplaySpeedForNote(song[current.measure].notes[noteIndex], bpm);
+    let replaySpeed = this.getReplaySpeedForNote(song[currentPlayingNote.measure].notes[noteIndex], bpm);
 
     if(replayDiff >= replaySpeed) {
       if(measure === song.length - 1 && noteIndex === song[measure].notes.length - 1) {
         this.handleStop();
       } else if(measure !== song.length - 1 && noteIndex === song[measure].notes.length - 1) {
         this.setState({
-          current: {
+          currentPlayingNote: {
             measure: measure + 1,
             noteIndex: 0
           },
@@ -74,7 +74,7 @@ export default class App extends Component {
         }, this.playCurrentNote);
       } else {
         this.setState({
-          current: {
+          currentPlayingNote: {
             measure: measure,
             noteIndex: noteIndex + 1
           },
@@ -93,7 +93,7 @@ export default class App extends Component {
   }
 
   playCurrentNote = () => {
-    let noteToPlay = song[this.state.current.measure].notes[this.state.current.noteIndex];
+    let noteToPlay = song[this.state.currentPlayingNote.measure].notes[this.state.currentPlayingNote.noteIndex];
     let replaySpeed = this.getReplaySpeedForNote(noteToPlay, this.state.bpm);
 
     if(noteToPlay.fret[0] === 'rest') {
@@ -140,7 +140,7 @@ export default class App extends Component {
 
     this.setState({
       isPlaying: false,
-      current: {
+      currentPlayingNote: {
         measure: 0,
         noteIndex: 0
       }
@@ -175,7 +175,7 @@ export default class App extends Component {
           <button onClick={this.handlePlay.bind(this, song)}>Play</button>
           <button onClick={this.handleStop}>Stop</button>
         </div>
-        <TabStaff song={song} currentNote={this.state.current} isPlaying={this.state.isPlaying} />
+        <TabStaff song={song} currentPlayingNote={this.state.currentPlayingNote} isPlaying={this.state.isPlaying} />
       </div>
     );
   }
