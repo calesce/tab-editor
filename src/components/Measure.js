@@ -19,18 +19,20 @@ export default class Measure extends Component {
   }
 
   renderBars = (x, measureWidth, measureIndex) => {
-    let color = measureIndex === this.props.currentNote.measure && this.props.isPlaying ? '#267754' : '#999999';
-    let strokeWidth = measureIndex === this.props.currentNote.measure && this.props.isPlaying ? '1' : '0.1';
+    let { currentPlayingNote, isPlaying } = this.props;
+
+    let color = measureIndex === currentPlayingNote.measure && isPlaying ? '#267754' : '#999999';
+    let strokeWidth = measureIndex === currentPlayingNote.measure && isPlaying ? '1' : '0.1';
 
     return <Bars x={x} measureWidth={measureWidth} color={color} strokeWidth={strokeWidth} />;
   }
 
   renderNote = (note, measureIndex, index, measureWidth, xOfMeasure, timeSignature) => {
     let x = this.calcXForNote(xOfMeasure, index, measureIndex, timeSignature);
-    let { currentNote, isPlaying } = this.props;
+    let { currentPlayingNote, isPlaying } = this.props;
 
     let color = 'black';
-    if(currentNote.measure === measureIndex && currentNote.noteIndex === index && isPlaying) {
+    if(currentPlayingNote.measure === measureIndex && currentPlayingNote.noteIndex === index && isPlaying) {
       color = '#f9423a';
     }
 
@@ -64,7 +66,7 @@ export default class Measure extends Component {
   }
 
   render() {
-    let { measure, x, y, totalMeasureIndex, currentNote } = this.props;
+    let { measure, x, y, totalMeasureIndex } = this.props;
 
     return (
       <svg x={0} y={y} style={{ height: 250, width: measure.width }}>

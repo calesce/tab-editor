@@ -4,25 +4,19 @@ import Measure from './Measure';
 
 export default class TabStaff extends Component {
   convertSongIntoRows = (song) => {
-    const screenWidth = window.innerWidth;
-
     return song.reduce((rows, measure, index) => {
-      let notes = measure.notes.length;
-
       let currentRow = rows[rows.length - 1];
       let currentRowWidth = currentRow.reduce((next, curr) => {
         return next + curr.width;
       }, 0);
 
       let returnedRows = rows;
-      if(currentRowWidth + (60 * measure.notes.length) > screenWidth - 20) {
+      if(currentRowWidth + (60 * measure.notes.length) > window.innerWidth - 20) {
         if(index !== song.length - 1) {
           returnedRows.push([measure]);
         }
       } else {
-        let nextRow = currentRow.concat(measure);
-
-        returnedRows[rows.length - 1] = nextRow;
+        returnedRows[rows.length - 1] = currentRow.concat(measure);
       }
 
       return returnedRows;
@@ -30,12 +24,8 @@ export default class TabStaff extends Component {
   }
 
   getXCoordOfMeasure = (row, index) => {
-    if(index === 0) {
-      return 0;
-    }
-    let precedingMeasures = row.slice(0, index);
-    return precedingMeasures.reduce((next, curr) => {
-      return next + curr.width;
+    return row.slice(0, index).reduce((prev, curr) => {
+      return prev + curr.width;
     }, 0);
   }
 
@@ -87,7 +77,7 @@ export default class TabStaff extends Component {
       <Measure key={totalMeasureIndex} x={x} y={y}
         measure={measure}
         isPlaying={this.props.isPlaying}
-        currentNote={this.props.currentNote}
+        currentPlayingNote={this.props.currentPlayingNote}
         totalMeasureIndex={totalMeasureIndex}
       />
     );
