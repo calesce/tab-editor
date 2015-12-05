@@ -115,7 +115,7 @@ class App extends Component {
     let replaySpeed = this.getReplaySpeedForNote(noteToPlay, this.state.bpm);
 
     if(noteToPlay.fret[0] === 'rest') {
-      this.play(this.state.audioContext.currentTime, 'rest', replaySpeed);
+      this.play(this.state.audioContext, this.state.audioContext.currentTime, 'rest', replaySpeed);
     } else {
       this.playNoteAtTime(noteToPlay, this.state.audioContext.currentTime, replaySpeed);
     }
@@ -128,17 +128,17 @@ class App extends Component {
         pitch = pitch - 1;
       }
 
-      this.play(playTime, pitch, duration / 1000);
+      this.play(this.state.audioContext, playTime, pitch, duration / 1000);
     }
   }
 
-  play = (startTime, pitch, duration) => {
+  play = (audioContext, startTime, pitch, duration) => {
     let endTime = startTime + duration;
 
     let oscillator = this.state.audioContext.createOscillator();
-    let gainNode = this.state.audioContext.createGain();
+    let gainNode = audioContext.createGain();
     oscillator.connect(gainNode);
-    gainNode.connect(this.state.audioContext.destination);
+    gainNode.connect(audioContext.destination);
 
     if(pitch !== 'rest') {
       oscillator.type = 'square';
