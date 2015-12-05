@@ -9,8 +9,15 @@ function changeNote(song, fret, index) {
 
   let measure = _.cloneDeep(song[measureIndex]);
   let note = measure.notes[noteIndex];
+
   let currentStringIndex = _.findIndex(note.string, (note) => note === stringIndex);
-  if(currentStringIndex === -1) {
+  if(note.fret[0] === 'rest') {
+    note = {
+      fret: [fret],
+      string: [stringIndex],
+      duration: 'q'
+    };
+  } else if(currentStringIndex === -1) {
     if(note.fret.length > 0) {
       note.duration = 'q';
     }
