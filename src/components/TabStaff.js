@@ -79,6 +79,7 @@ export default class TabStaff extends Component {
         isPlaying={this.props.isPlaying}
         currentPlayingNote={this.props.currentPlayingNote}
         totalMeasureIndex={totalMeasureIndex}
+        currentEditingIndex={this.props.currentEditingIndex}
       />
     );
   }
