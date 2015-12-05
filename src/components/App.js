@@ -52,7 +52,7 @@ class App extends Component {
   }
 
   getReplaySpeedForNote = (note, bpm) => {
-    let noteLength = note.duration[0];
+    let noteLength = note.duration;
 
     let replaySpeed = this.getSpeedFromBpm(bpm);
     if(noteLength === 'h') {

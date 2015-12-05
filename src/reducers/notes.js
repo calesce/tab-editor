@@ -12,7 +12,7 @@ function changeNote(song, fret, index) {
   let currentStringIndex = _.findIndex(note.string, (note) => note === stringIndex);
   if(currentStringIndex === -1) {
     if(note.fret.length > 0) {
-      note.duration.push('q');
+      note.duration = 'q';
     }
 
     note.fret.push(fret);
