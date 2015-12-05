@@ -11,6 +11,12 @@ export default class App extends Component {
     }
 
     let newSong = _.cloneDeep(this.props.song);
+    let audioContext;
+    try {
+      audioContext = new AudioContext();
+    } catch(e) {
+      audioContext = new webkitAudioContext();
+    }
 
     this.state = {
       song: newSong,
@@ -23,7 +29,7 @@ export default class App extends Component {
         noteIndex: 0,
         stringIndex: 0
       },
-      audioContext: new AudioContext(),
+      audioContext: audioContext,
       isPlaying: false,
       bpm: 120
     };
