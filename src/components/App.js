@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import TabStaff from './TabStaff';
-import _ from 'lodash';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as Actions from '../actions/song';
+
+import TabStaff from './TabStaff';
 
 class App extends Component {
   constructor(props) {
@@ -11,7 +13,6 @@ class App extends Component {
       window.addEventListener('keydown', this.handleKeyPress);
     }
 
-    let newSong = _.cloneDeep(this.props.song);
     let audioContext;
     try {
       audioContext = new AudioContext();
@@ -20,7 +21,6 @@ class App extends Component {
     }
 
     this.state = {
-      song: newSong,
       currentPlayingNote: {
         measure: 0,
         noteIndex: 0
@@ -110,7 +110,7 @@ class App extends Component {
   }
 
   playCurrentNote = () => {
-    let noteToPlay = this.state.song[this.state.currentPlayingNote.measure].notes[this.state.currentPlayingNote.noteIndex];
+    let noteToPlay = this.props.song[this.state.currentPlayingNote.measure].notes[this.state.currentPlayingNote.noteIndex];
     let replaySpeed = this.getReplaySpeedForNote(noteToPlay, this.state.bpm);
 
     if(noteToPlay.fret[0] === 'rest') {
@@ -259,41 +259,17 @@ class App extends Component {
     }
   }
 
-  editNote = (event) => {
-    let { measureIndex, noteIndex, stringIndex } = this.state.currentEditingIndex;
-
-    let number = event.keyCode - 48;
-    let measure = _.cloneDeep(this.state.song[measureIndex]);
-    let note = measure.notes[noteIndex];
-
-    let currentStringIndex = _.findIndex(note.string, (note) => note === stringIndex);
-    if(currentStringIndex === -1) {
-      if(note.fret.length > 0) {
-        note.duration.push('q');
-      }
-
-      note.fret.push(number);
-      note.string.push(stringIndex);
-    } else {
-      let fret = note.fret[currentStringIndex];
-      if(fret === 1) {
-        note.fret[currentStringIndex] = number + 10;
-      } else if(fret === 2 && number <= 5) {
-        note.fret[currentStringIndex] = number + 20;
-      } else {
-        note.fret[currentStringIndex] = number;
-      }
-    }
-
-    measure.notes[noteIndex] = note;
-    let song = _.cloneDeep(this.state.song);
-    song[measureIndex] = measure;
-    this.setState({ song });
+  editNote = (fret) => {
+    this.props.dispatch({
+      type: 'CHANGE_NOTE',
+      fret,
+      index: this.state.currentEditingIndex
+    });
   }
 
   handleKeyPress = (event) => {
     if(event.keyCode <= 57 && event.keyCode >= 48) {
-      return this.editNote(event);
+      return this.editNote(event.keyCode - 48);
     }
     return this.navigateCursor(event);
   }
@@ -313,7 +289,7 @@ class App extends Component {
           <button onClick={this.handlePlay}>Play</button>
           <button onClick={this.handleStop}>Stop</button>
         </div>
-        <TabStaff song={this.state.song}
+        <TabStaff song={this.props.song}
           currentEditingIndex={this.state.currentEditingIndex}
           currentPlayingNote={this.state.currentPlayingNote}
           isPlaying={this.state.isPlaying}
@@ -326,6 +302,12 @@ class App extends Component {
 function mapStateToProps(state) {
   return {
     song: state.song
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(Actions, dispatch)
   };
 }
 
