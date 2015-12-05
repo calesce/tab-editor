@@ -9,7 +9,7 @@ import Cursor from './Cursor';
 
 export default class Measure extends Component {
   calcXForNote = (xOfMeasure, noteIndex, measureIndex, timeSignature) => {
-    let x = xOfMeasure + (noteIndex * 55 + 40);
+    let x = xOfMeasure + (noteIndex * 55 + 39);
     if(measureIndex === 0) {
       x += 15;
     }
@@ -32,9 +32,11 @@ export default class Measure extends Component {
     const { noteIndex, stringIndex, measureIndex } = this.props.currentEditingIndex;
     if(this.props.totalMeasureIndex === measureIndex && !this.props.isPlaying) {
       let x = this.calcXForNote(xOfMeasure, noteIndex, measureIndex);
-      let y = 79 - (13 * this.props.currentEditingIndex.stringIndex);
+      let y = 79 - (13 * stringIndex);
+      let index = _.findIndex(this.props.measure.notes[noteIndex].string, (s) => s === stringIndex);
+      let fret = this.props.measure.notes[noteIndex].fret[index];
 
-      return <Cursor x={x} y={y} />;
+      return <Cursor x={x} y={y} fret={fret} />;
     }
 
     return null;
@@ -90,7 +92,7 @@ export default class Measure extends Component {
         { this.renderMeasure(totalMeasureIndex, measure, x) }
         { totalMeasureIndex === 0 ? <Clef /> : null }
         { this.renderTimeSignature(totalMeasureIndex, x, measure) }
-        { this.renderCursor(x-1) }
+        { this.renderCursor(x) }
       </svg>
     );
   }
