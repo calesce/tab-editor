@@ -220,51 +220,53 @@ export default class App extends Component {
     return stringIndex === 0 ? 5 : stringIndex - 1;
   }
 
-  handleKeyPress = (event) => {
-    let { currentEditingIndex } = this.state;
-    let { measureIndex, noteIndex, stringIndex } = currentEditingIndex;
+  navigateCursor = (event) => {
+    let { measureIndex, noteIndex, stringIndex } = this.state.currentEditingIndex;
 
-    if(event.keyCode > 57 || event.keyCode < 48) {
-      if(event.keyCode === 39) { // right arrow
-        let newEditingIndex = this.getNextNote(measureIndex, noteIndex);
-        newEditingIndex.stringIndex = stringIndex;
-        this.setState({
-          currentEditingIndex: newEditingIndex
-        });
-      } else if(event.keyCode === 37) { // left arrow
-        let newEditingIndex = this.getPrevNote(measureIndex, noteIndex);
-        newEditingIndex.stringIndex = stringIndex;
-        this.setState({
-          currentEditingIndex: newEditingIndex
-        });
-      } else if(event.keyCode === 38) { // up arrow
-        let newEditingIndex = {
-          stringIndex: this.getUpperString(stringIndex),
-          noteIndex,
-          measureIndex
-        };
-        this.setState({
-          currentEditingIndex: newEditingIndex
-        });
-      } else if(event.keyCode === 40) { // down arrow
-        let newEditingIndex = {
-          stringIndex: this.getLowerString(stringIndex),
-          noteIndex,
-          measureIndex
-        };
-        this.setState({
-          currentEditingIndex: newEditingIndex
-        });
-      }
-
-      return;
+    if(event.keyCode === 39) { // right arrow
+      let newEditingIndex = this.getNextNote(measureIndex, noteIndex);
+      newEditingIndex.stringIndex = stringIndex;
+      this.setState({
+        currentEditingIndex: newEditingIndex
+      });
+    } else if(event.keyCode === 37) { // left arrow
+      let newEditingIndex = this.getPrevNote(measureIndex, noteIndex);
+      newEditingIndex.stringIndex = stringIndex;
+      this.setState({
+        currentEditingIndex: newEditingIndex
+      });
+    } else if(event.keyCode === 38) { // up arrow
+      event.preventDefault();
+      let newEditingIndex = {
+        stringIndex: this.getUpperString(stringIndex),
+        noteIndex,
+        measureIndex
+      };
+      this.setState({
+        currentEditingIndex: newEditingIndex
+      });
+    } else if(event.keyCode === 40) { // down arrow
+      event.preventDefault();
+      let newEditingIndex = {
+        stringIndex: this.getLowerString(stringIndex),
+        noteIndex,
+        measureIndex
+      };
+      this.setState({
+        currentEditingIndex: newEditingIndex
+      });
     }
+  }
+
+  editNote = (event) => {
+    let { measureIndex, noteIndex, stringIndex } = this.state.currentEditingIndex;
 
     let number = event.keyCode - 48;
     let measure = _.cloneDeep(this.state.song[measureIndex]);
     let note = measure.notes[noteIndex];
 
-    if(_.findIndex(note.string, (theNote) => theNote === stringIndex) === -1) {
+    let currentStringIndex = _.findIndex(note.string, (note) => note === stringIndex);
+    if(currentStringIndex === -1) {
       if(note.fret.length > 0) {
         note.duration.push('q');
       }
@@ -272,14 +274,27 @@ export default class App extends Component {
       note.fret.push(number);
       note.string.push(stringIndex);
     } else {
-      note.fret[note.fret.length - 1] = number;
-      note.string[note.string.length - 1] = stringIndex;
+      let fret = note.fret[currentStringIndex];
+      if(fret === 1) {
+        note.fret[currentStringIndex] = number + 10;
+      } else if(fret === 2 && number <= 5) {
+        note.fret[currentStringIndex] = number + 20;
+      } else {
+        note.fret[currentStringIndex] = number;
+      }
     }
 
     measure.notes[noteIndex] = note;
     let song = _.cloneDeep(this.state.song);
     song[measureIndex] = measure;
     this.setState({ song });
+  }
+
+  handleKeyPress = (event) => {
+    if(event.keyCode <= 57 && event.keyCode >= 48) {
+      return this.editNote(event);
+    }
+    return this.navigateCursor(event);
   }
 
   bpmChanged = (event) => {
