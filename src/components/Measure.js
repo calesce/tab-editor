@@ -52,7 +52,7 @@ export default class Measure extends Component {
     }
 
     if(note.string[0] === 'rest') {
-      return <Rest key={noteIndex} color={color} x={x} y={0} duration={note.duration[0]} />;
+      return <Rest key={noteIndex} color={color} x={x} y={0} duration={note.duration} />;
     }
 
     return note.string.map((string, i) => {
