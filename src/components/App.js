@@ -69,8 +69,9 @@ class App extends Component {
   }
 
   loopThroughSong = (startTimestamp) => {
-    let { currentPlayingNote, bpm, song } = this.state;
+    let { currentPlayingNote, bpm } = this.state;
     let { measure, noteIndex } = currentPlayingNote;
+    let { song } = this.props;
 
     let currentTimestamp = Date.now();
     let replayDiff = currentTimestamp - startTimestamp;
@@ -178,7 +179,7 @@ class App extends Component {
   }
 
   getNextNote = (measureIndex, noteIndex) => {
-    const { song } = this.state;
+    const { song } = this.props;
 
     if(measureIndex === song.length - 1 && noteIndex === song[measureIndex].notes.length - 1) {
       return { measureIndex, noteIndex };
@@ -196,7 +197,7 @@ class App extends Component {
   }
 
   getPrevNote = (measureIndex, noteIndex) => {
-    const { song } = this.state;
+    const { song } = this.props;
 
     if(measureIndex === 0 && noteIndex === 0) {
       return { measureIndex, noteIndex };
