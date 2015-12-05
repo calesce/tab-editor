@@ -5,6 +5,7 @@ import Bars from './Bars';
 import Rest from './Rest';
 import Clef from './Clef';
 import TimeSignature from './TimeSignature';
+import Cursor from './Cursor';
 
 export default class Measure extends Component {
   calcXForNote = (xOfMeasure, noteIndex, measureIndex, timeSignature) => {
@@ -12,7 +13,7 @@ export default class Measure extends Component {
     if(measureIndex === 0) {
       x += 15;
     }
-    if(timeSignature) {
+    if(this.props.measure.timeSignature) {
       x += 20;
     }
     return x;
@@ -27,23 +28,39 @@ export default class Measure extends Component {
     return <Bars x={x} measureWidth={measureWidth} color={color} strokeWidth={strokeWidth} />;
   }
 
-  renderNote = (note, measureIndex, index, measureWidth, xOfMeasure, timeSignature) => {
-    let x = this.calcXForNote(xOfMeasure, index, measureIndex, timeSignature);
+  renderCursor = (xOfMeasure) => {
+    const { noteIndex, stringIndex, measureIndex } = this.props.currentEditingIndex;
+    if(this.props.totalMeasureIndex === measureIndex && !this.props.isPlaying) {
+      let x = this.calcXForNote(xOfMeasure, noteIndex, measureIndex);
+      let y = 79 - (13 * this.props.currentEditingIndex.stringIndex);
+
+      return <Cursor x={x} y={y} />;
+    }
+
+    return null;
+  }
+
+  renderNote = (note, measureIndex, noteIndex, xOfMeasure) => {
+    let x = this.calcXForNote(xOfMeasure, noteIndex, measureIndex);
     let { currentPlayingNote, isPlaying } = this.props;
 
     let color = 'black';
-    if(currentPlayingNote.measure === measureIndex && currentPlayingNote.noteIndex === index && isPlaying) {
+    if(currentPlayingNote.measure === measureIndex && currentPlayingNote.noteIndex === noteIndex && isPlaying) {
       color = '#f9423a';
     }
 
     if(note.string[0] === 'rest') {
-      return <Rest key={index} color={color} x={x} y={0} duration={note.duration[0]} />;
+      return <Rest key={noteIndex} color={color} x={x} y={0} duration={note.duration[0]} />;
     }
 
-    return note.string.map((_, j) => {
-      let y = 80 - (13 * note.string[j]);
+    return note.string.map((string, i) => {
+      let y = 80 - (13 * string);
 
-      return <TabNote key={j} x={x} y={y} color={color} fret={note.fret[j]} />;
+      return (
+        <g>
+          <TabNote key={i} x={x} y={y} color={color} fret={note.fret[i]} />
+        </g>
+      );
     });
   }
 
@@ -59,7 +76,7 @@ export default class Measure extends Component {
       <g>
         { this.renderBars(x, measure.width, measureIndex) }
         {
-          measure.notes.map((note, noteIndex) => this.renderNote(note, measureIndex, noteIndex, measure.width, x, measure.timeSignature))
+          measure.notes.map((note, noteIndex) => this.renderNote(note, measureIndex, noteIndex, x))
         }
       </g>
     );
@@ -73,6 +90,7 @@ export default class Measure extends Component {
         { this.renderMeasure(totalMeasureIndex, measure, x) }
         { totalMeasureIndex === 0 ? <Clef /> : null }
         { this.renderTimeSignature(totalMeasureIndex, x, measure) }
+        { this.renderCursor(x-1) }
       </svg>
     );
   }
