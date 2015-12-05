@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import TabStaff from './TabStaff';
 import _ from 'lodash';
+import { connect } from 'react-redux';
 
-export default class App extends Component {
+class App extends Component {
   constructor(props) {
     super(props);
 
@@ -321,3 +322,11 @@ export default class App extends Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    song: state.song
+  };
+}
+
+export default connect(mapStateToProps)(App);
