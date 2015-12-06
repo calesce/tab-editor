@@ -172,7 +172,6 @@ class App extends Component {
 
     this.setState({
       isPlaying: true,
-      startTime: this.state.audioContext.currentTime + .005,
     }, () => {
       this.startPlayback();
     });
