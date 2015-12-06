@@ -47,7 +47,7 @@ export default class Rest extends Component {
 
   renderHalfRest = () => {
     return (
-      <svg width='30' height='62' x={this.props.x} y={25}>
+      <svg width='30' height='62' x={this.props.x - 9} y={25}>
         <g>
           <rect fill={this.props.color} width='9.2204475' height='5.1031408' x='10.902164' y='18.913252' />
           <rect fill={this.props.color} width='15.077462' height='1.1018145' x='7.9446626' y='22.972569' />
@@ -58,7 +58,7 @@ export default class Rest extends Component {
 
   renderWholeRest = () => {
     return (
-      <svg width='30' height='62' x={this.props.x} y={17.5}>
+      <svg width='30' height='62' x={this.props.x - 9} y={17.5}>
         <g transform='matrix(1,0,0,-1,0,42.987635)'>
           <rect fill={this.props.color} width='9.2204475' height='5.1031408' x='10.902164' y='18.913252' />
           <rect fill={this.props.color} width='15.077462' height='1.1018145' x='7.9446626' y='22.972569' />
