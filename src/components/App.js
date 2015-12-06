@@ -271,7 +271,7 @@ class App extends Component {
   handleKeyPress = (event) => {
     if(event.keyCode <= 57 && event.keyCode >= 48) {
       return this.editNote(event.keyCode - 48);
-    } else if(event.keyCode === 82) {
+    } else if(event.keyCode === 82 && !event.metaKey) {
       this.props.dispatch({
         type: 'CHANGE_NOTE',
         fret: 'rest',
