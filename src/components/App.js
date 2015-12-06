@@ -276,6 +276,12 @@ class App extends Component {
         fret: 'rest',
         index: this.state.currentEditingIndex
       });
+    } else if(event.keyCode === 8) {
+      event.preventDefault();
+      this.props.dispatch({
+        type: 'DELETE_NOTE',
+        index: this.state.currentEditingIndex
+      });
     }
     return this.navigateCursor(event);
   }

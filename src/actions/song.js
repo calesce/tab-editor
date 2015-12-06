@@ -7,3 +7,10 @@ export function changeNote(index, fret) {
     fret
   };
 }
+
+export function deleteNote(index) {
+  return {
+    type: types.DELETE_NOTE,
+    index
+  };
+}
