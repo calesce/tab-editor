@@ -16,6 +16,9 @@ export default class Measure extends Component {
     if(this.props.measure.timeSignature) {
       x += 20;
     }
+    if(this.props.measure.notes.length === 0) {
+      x -= 25;
+    }
     return x;
   }
 
@@ -33,8 +36,14 @@ export default class Measure extends Component {
     if(this.props.totalMeasureIndex === measureIndex && !this.props.isPlaying) {
       let x = this.calcXForNote(xOfMeasure, noteIndex, measureIndex);
       let y = 79 - (13 * stringIndex);
-      let index = _.findIndex(this.props.measure.notes[noteIndex].string, (s) => s === stringIndex);
-      let fret = this.props.measure.notes[noteIndex].fret[index];
+
+      let index = 0;
+      let fret = 0;
+
+      if(this.props.measure.notes.length > 0) {
+        index = _.findIndex(this.props.measure.notes[noteIndex].string, (s) => s === stringIndex);
+        fret = this.props.measure.notes[noteIndex].fret[index];
+      }
 
       return <Cursor x={x} y={y} fret={fret} />;
     }

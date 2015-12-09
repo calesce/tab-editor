@@ -36,11 +36,11 @@ export default class TabStaff extends Component {
   computeMeasureWidths = (song) => {
     return song.map((measure, index) => {
       let width = 60 * measure.notes.length;
-      if(index === 0) {
-        width += 15;
-      }
       if(measure.notes.length === 0) {
         width = 40;
+      }
+      if(index === 0) {
+        width += 15;
       }
 
       let prevMeasure = song[index-1];
@@ -51,6 +51,9 @@ export default class TabStaff extends Component {
         };
       }
       width += 20;
+      if(measure.notes.length === 0) {
+        width += 20;
+      }
 
       return {
         ...measure,
