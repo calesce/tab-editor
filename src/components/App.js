@@ -196,7 +196,7 @@ class App extends Component {
     const { song } = this.props;
 
     if(measureIndex === song.length - 1 && noteIndex >= song[measureIndex].notes.length - 1) {
-      return { measureIndex, noteIndex };
+      return 'NEW';
     } else if(noteIndex >= song[measureIndex].notes.length - 1) {
       return {
         measureIndex: measureIndex + 1,
@@ -249,10 +249,17 @@ class App extends Component {
 
     if(event.keyCode === 39) { // right arrow
       let newEditingIndex = this.getNextNote(measureIndex, noteIndex);
-      newEditingIndex.stringIndex = stringIndex;
-      this.setState({
-        currentEditingIndex: newEditingIndex
-      });
+      if(newEditingIndex === 'NEW') {
+        this.props.dispatch({
+          type: 'INSERT_MEASURE',
+          index: 0
+        });
+      } else {
+        newEditingIndex.stringIndex = stringIndex;
+        this.setState({
+          currentEditingIndex: newEditingIndex
+        });
+      }
     } else if(event.keyCode === 37) { // left arrow
       let newEditingIndex = this.getPrevNote(measureIndex, noteIndex);
       newEditingIndex.stringIndex = stringIndex;
