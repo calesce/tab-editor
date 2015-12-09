@@ -9,10 +9,17 @@ export default class TabNote extends Component {
       width += 6;
     }
 
+    let style = {
+      MozUserSelect: 'none',
+      WebkitUserSelect: 'none',
+      msUserSelect: 'none',
+      cursor: 'crosshair'
+    };
+
     return (
       <g>
         <rect x={x} y={y-7} height={5.5} width={width} fill='#ffffff' stroke='#ffffff'></rect>
-        <text x={x+2} y={y} fill={color} >{fret}</text>
+        <text x={x+2} y={y} fill={color} style={style}>{fret}</text>
       </g>
     );
   }
