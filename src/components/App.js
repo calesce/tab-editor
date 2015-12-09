@@ -195,9 +195,9 @@ class App extends Component {
   getNextNote = (measureIndex, noteIndex) => {
     const { song } = this.props;
 
-    if(measureIndex === song.length - 1 && noteIndex === song[measureIndex].notes.length - 1) {
+    if(measureIndex === song.length - 1 && noteIndex >= song[measureIndex].notes.length - 1) {
       return { measureIndex, noteIndex };
-    } else if(noteIndex === song[measureIndex].notes.length - 1) {
+    } else if(noteIndex >= song[measureIndex].notes.length - 1) {
       return {
         measureIndex: measureIndex + 1,
         noteIndex: 0
@@ -216,10 +216,18 @@ class App extends Component {
     if(measureIndex === 0 && noteIndex === 0) {
       return { measureIndex, noteIndex };
     } else if(noteIndex === 0) {
-      return {
-        measureIndex: measureIndex - 1,
-        noteIndex: song[measureIndex - 1].notes.length - 1
-      };
+      let prevMeasure = song[measureIndex - 1];
+      if(prevMeasure.notes.length > 0) {
+        return {
+          measureIndex: measureIndex - 1,
+          noteIndex: song[measureIndex - 1].notes.length - 1
+        };
+      } else {
+        return {
+          measureIndex: measureIndex - 1,
+          noteIndex: 0
+        };
+      }
     } else {
       return {
         measureIndex,
