@@ -14,3 +14,10 @@ export function deleteNote(index) {
     index
   };
 }
+
+export function insertMeasure(index) {
+  return {
+    type: types.INSERT_MEASURE,
+    index
+  };
+}
