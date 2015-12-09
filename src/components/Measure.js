@@ -60,7 +60,7 @@ export default class Measure extends Component {
 
       return (
         <g>
-          <TabNote key={i} x={x} y={y} color={color} fret={note.fret[i]} />
+          <TabNote key={i} duration={note.duration} x={x} y={y} color={color} fret={note.fret[i]} />
         </g>
       );
     });
