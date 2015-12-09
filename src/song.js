@@ -363,6 +363,14 @@ let song = [
         duration: 'h'
       }
     ]
+  },
+  {
+    timeSignature: '4/4',
+    notes: []
+  },
+  {
+    timeSignature: '4/4',
+    notes: []
   }
 ];
 

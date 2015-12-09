@@ -39,6 +39,9 @@ export default class TabStaff extends Component {
       if(index === 0) {
         width += 15;
       }
+      if(measure.notes.length === 0) {
+        width = 40;
+      }
 
       let prevMeasure = song[index-1];
       if(prevMeasure && prevMeasure.timeSignature === measure.timeSignature) {

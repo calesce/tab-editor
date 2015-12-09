@@ -75,12 +75,20 @@ class App extends Component {
 
     let currentTimestamp = Date.now();
     let replayDiff = currentTimestamp - startTimestamp;
-    let replaySpeed = this.getReplaySpeedForNote(song[currentPlayingNote.measure].notes[noteIndex], bpm);
+
+    let measureToPlay = song[currentPlayingNote.measure];
+
+    let replaySpeed;
+    if(measureToPlay.notes.length > 0) {
+      replaySpeed = this.getReplaySpeedForNote(measureToPlay.notes[noteIndex], bpm);
+    } else {
+      replaySpeed = bpm * 4;
+    }
 
     if(replayDiff >= replaySpeed) {
-      if(measure === song.length - 1 && noteIndex === song[measure].notes.length - 1) {
+      if(measure === song.length - 1 && noteIndex >= song[measure].notes.length - 1) {
         this.handleStop();
-      } else if(measure !== song.length - 1 && noteIndex === song[measure].notes.length - 1) {
+      } else if(measure !== song.length - 1 && noteIndex >= song[measure].notes.length - 1) {
         this.setState({
           currentPlayingNote: {
             measure: measure + 1,
@@ -111,7 +119,14 @@ class App extends Component {
   }
 
   playCurrentNote = () => {
-    let noteToPlay = this.props.song[this.state.currentPlayingNote.measure].notes[this.state.currentPlayingNote.noteIndex];
+    let measure = this.props.song[this.state.currentPlayingNote.measure];
+    let noteToPlay;
+    if(measure.notes.length > 0) {
+      noteToPlay = measure.notes[this.state.currentPlayingNote.noteIndex];
+    } else {
+      noteToPlay = { duration: 'w', fret: ['rest'] };
+    }
+
     let replaySpeed = this.getReplaySpeedForNote(noteToPlay, this.state.bpm);
 
     if(noteToPlay.fret[0] === 'rest') {
