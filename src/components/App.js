@@ -74,6 +74,11 @@ class App extends Component {
             measure: measure + 1,
             noteIndex: 0
           },
+          currentEditingIndex: {
+            stringIndex: this.state.currentEditingIndex.stringIndex,
+            measureIndex: measure + 1,
+            noteIndex: 0
+          },
           timer: requestAnimationFrame(() => {
             this.loopThroughSong(currentTimestamp);
           })
@@ -84,6 +89,11 @@ class App extends Component {
         this.setState({
           currentPlayingNote: {
             measure: measure,
+            noteIndex: noteIndex + 1
+          },
+          currentEditingIndex: {
+            stringIndex: this.state.currentEditingIndex.stringIndex,
+            measureIndex: measure,
             noteIndex: noteIndex + 1
           },
           timer: requestAnimationFrame(() => {
@@ -106,11 +116,7 @@ class App extends Component {
     cancelAnimationFrame(this.state.timer);
 
     this.setState({
-      isPlaying: false,
-      currentPlayingNote: {
-        measure: 0,
-        noteIndex: 0
-      }
+      isPlaying: false
     });
   }
 
@@ -128,7 +134,11 @@ class App extends Component {
 
   onNoteClick = (index) => {
     this.setState({
-      currentEditingIndex: index
+      currentEditingIndex: index,
+      currentPlayingNote: {
+        measure: index.measureIndex,
+        noteIndex: index.noteIndex
+      }
     });
   }
 
@@ -197,14 +207,22 @@ class App extends Component {
       } else {
         newEditingIndex.stringIndex = stringIndex;
         this.setState({
-          currentEditingIndex: newEditingIndex
+          currentEditingIndex: newEditingIndex,
+          currentPlayingNote: {
+            measure: newEditingIndex.measureIndex,
+            noteIndex: newEditingIndex.noteIndex
+          }
         });
       }
     } else if(event.keyCode === 37) { // left arrow
       let newEditingIndex = this.getPrevNote(measureIndex, noteIndex);
       newEditingIndex.stringIndex = stringIndex;
       this.setState({
-        currentEditingIndex: newEditingIndex
+        currentEditingIndex: newEditingIndex,
+        currentPlayingNote: {
+          measure: newEditingIndex.measureIndex,
+          noteIndex: newEditingIndex.noteIndex
+        }
       });
     } else if(event.keyCode === 38) { // up arrow
       event.preventDefault();
