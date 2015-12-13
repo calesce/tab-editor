@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as Actions from '../actions/song';
+import { playCurrentNote, getReplaySpeedForNote } from '../util/audio';
 
 import TabStaff from './TabStaff';
 
@@ -36,13 +37,9 @@ class App extends Component {
     };
   }
 
-  getSpeedFromBpm = (bpm) => {
-    return 60000 / bpm;
-  }
-
   startPlayback = () => {
     let startTimestamp = Date.now();
-    this.playCurrentNote();
+    playCurrentNote(this.state.audioContext, this.props.song, this.state.bpm, this.state.currentPlayingNote);
 
     this.setState({
       timer: requestAnimationFrame(() => {
@@ -51,25 +48,8 @@ class App extends Component {
     });
   }
 
-  getReplaySpeedForNote = (note, bpm) => {
-    let noteLength = note.duration;
-
-    let replaySpeed = this.getSpeedFromBpm(bpm);
-    if(noteLength === 'h') {
-      replaySpeed = replaySpeed * 2;
-    } else if(noteLength === 'w') {
-      replaySpeed = replaySpeed * 4;
-    } else if(noteLength === 'e') {
-      replaySpeed = replaySpeed / 2;
-    } else if(noteLength === 's') {
-      replaySpeed = replaySpeed / 4;
-    }
-
-    return replaySpeed;
-  }
-
   loopThroughSong = (startTimestamp) => {
-    let { currentPlayingNote, bpm } = this.state;
+    let { currentPlayingNote, bpm, audioContext } = this.state;
     let { measure, noteIndex } = currentPlayingNote;
     let { song } = this.props;
 
@@ -80,7 +60,7 @@ class App extends Component {
 
     let replaySpeed;
     if(measureToPlay.notes.length > 0) {
-      replaySpeed = this.getReplaySpeedForNote(measureToPlay.notes[noteIndex], bpm);
+      replaySpeed = getReplaySpeedForNote(measureToPlay.notes[noteIndex], bpm);
     } else {
       replaySpeed = bpm * 4;
     }
@@ -97,7 +77,9 @@ class App extends Component {
           timer: requestAnimationFrame(() => {
             this.loopThroughSong(currentTimestamp);
           })
-        }, this.playCurrentNote);
+        }, () => {
+          playCurrentNote(audioContext, song, this.state.bpm, this.state.currentPlayingNote);
+        });
       } else {
         this.setState({
           currentPlayingNote: {
@@ -107,7 +89,9 @@ class App extends Component {
           timer: requestAnimationFrame(() => {
             this.loopThroughSong(currentTimestamp);
           })
-        }, this.playCurrentNote);
+        }, () => {
+          playCurrentNote(audioContext, song, this.state.bpm, this.state.currentPlayingNote);
+        });
       }
     } else {
       this.setState({
@@ -116,56 +100,6 @@ class App extends Component {
         })
       });
     }
-  }
-
-  playCurrentNote = () => {
-    let measure = this.props.song[this.state.currentPlayingNote.measure];
-    let noteToPlay;
-    if(measure.notes.length > 0) {
-      noteToPlay = measure.notes[this.state.currentPlayingNote.noteIndex];
-    } else {
-      noteToPlay = { duration: 'w', fret: ['rest'] };
-    }
-
-    let replaySpeed = this.getReplaySpeedForNote(noteToPlay, this.state.bpm);
-
-    if(noteToPlay.fret[0] === 'rest') {
-      this.play(this.state.audioContext, this.state.audioContext.currentTime, 'rest', replaySpeed);
-    } else {
-      this.playNoteAtTime(noteToPlay, this.state.audioContext.currentTime, replaySpeed);
-    }
-  }
-
-  playNoteAtTime = (currentNote, playTime, duration) => {
-    for(let i = 0; i < currentNote.string.length; i++) {
-      let pitch = currentNote.fret[i] + (5 * currentNote.string[i]);
-      if(currentNote.string[i] >= 4) {
-        pitch = pitch - 1;
-      }
-
-      this.play(this.state.audioContext, playTime, pitch, duration / 1000);
-    }
-  }
-
-  play = (audioContext, startTime, pitch, duration) => {
-    let endTime = startTime + duration;
-
-    let oscillator = this.state.audioContext.createOscillator();
-    let gainNode = audioContext.createGain();
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-
-    if(pitch !== 'rest') {
-      oscillator.type = 'square';
-      oscillator.detune.value = (pitch - 29) * 100;
-
-      gainNode.gain.value = 0.025;
-    } else {
-      gainNode.gain.value = 0;
-    }
-
-    oscillator.start(startTime);
-    oscillator.stop(endTime);
   }
 
   handleStop = () => {
