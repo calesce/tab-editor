@@ -334,6 +334,23 @@ class App extends Component {
     }
   }
 
+  insertNote = () => {
+    const { noteIndex, measureIndex, stringIndex } = this.state.currentEditingIndex;
+
+    this.props.dispatch({
+      type: 'INSERT_NOTE',
+      index: this.state.currentEditingIndex
+    });
+
+    this.setState({
+      currentEditingIndex: {
+        measureIndex,
+        stringIndex,
+        noteIndex: noteIndex + 1
+      }
+    });
+  }
+
   handleKeyPress = (event) => {
     if(event.keyCode <= 57 && event.keyCode >= 48) {
       return this.editNote(event.keyCode - 48);
@@ -356,6 +373,8 @@ class App extends Component {
       return this.changeNoteLength('w');
     } else if(event.keyCode === 72) { // h
       return this.changeNoteLength('h');
+    } else if(event.keyCode === 73) { // i
+      return this.insertNote();
     }
     return this.navigateCursor(event);
   }

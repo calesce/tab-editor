@@ -29,3 +29,10 @@ export function changeNoteLength(index, duration) {
     duration
   };
 }
+
+export function insertNote(index) {
+  return {
+    type: types.INSERT_NOTE,
+    index
+  };
+}
