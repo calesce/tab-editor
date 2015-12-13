@@ -297,6 +297,14 @@ class App extends Component {
     });
   }
 
+  changeNoteLength = (duration) => {
+    this.props.dispatch({
+      type: 'CHANGE_NOTE_LENGTH',
+      duration,
+      index: this.state.currentEditingIndex
+    });
+  }
+
   deleteNote = () => {
     const { noteIndex, measureIndex, stringIndex } = this.state.currentEditingIndex;
     let notes = this.props.song[measureIndex].notes;
@@ -335,9 +343,19 @@ class App extends Component {
         fret: 'rest',
         index: this.state.currentEditingIndex
       });
-    } else if(event.keyCode === 8) {
+    } else if(event.keyCode === 8) { // delete
       event.preventDefault();
       this.deleteNote();
+    } else if(event.keyCode === 69) { // e
+      return this.changeNoteLength('e');
+    } else if(event.keyCode === 83) { // s
+      return this.changeNoteLength('s');
+    } else if(event.keyCode === 81) { // q
+      return this.changeNoteLength('q');
+    } else if(event.keyCode === 87) { // w
+      return this.changeNoteLength('w');
+    } else if(event.keyCode === 72) { // h
+      return this.changeNoteLength('h');
     }
     return this.navigateCursor(event);
   }
