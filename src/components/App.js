@@ -309,7 +309,7 @@ class App extends Component {
     const { noteIndex, measureIndex, stringIndex } = this.state.currentEditingIndex;
     let notes = this.props.song[measureIndex].notes;
 
-    if(noteIndex === notes.length - 1 && notes[notes.length - 1].fret[0] === 'rest') {
+    if(notes.length > 1 && noteIndex === notes.length - 1 && notes[notes.length - 1].fret[0] === 'rest') {
       this.setState({
         currentEditingIndex: {
           stringIndex,
@@ -325,6 +325,11 @@ class App extends Component {
             noteIndex
           }
         });
+      });
+    } else if(notes.length === 0) {
+      this.props.dispatch({
+        type: 'DELETE_MEASURE',
+        measureIndex
       });
     } else {
       this.props.dispatch({

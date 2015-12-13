@@ -15,6 +15,13 @@ export function deleteNote(index) {
   };
 }
 
+export function deleteMeasure(measureIndex) {
+  return {
+    type: types.DELETE_MEASURE,
+    measureIndex
+  };
+}
+
 export function insertMeasure(index) {
   return {
     type: types.INSERT_MEASURE,
