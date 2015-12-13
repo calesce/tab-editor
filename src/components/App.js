@@ -12,6 +12,7 @@ class App extends Component {
 
     if (typeof window !== 'undefined') {
       window.addEventListener('keydown', this.handleKeyPress);
+      window.addEventListener('resize', this.handleResize);
     }
 
     let audioContext;
@@ -35,6 +36,10 @@ class App extends Component {
       isPlaying: false,
       bpm: 120
     };
+  }
+
+  handleResize = () => {
+    this.forceUpdate();
   }
 
   startPlayback = () => {
