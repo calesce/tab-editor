@@ -56,6 +56,17 @@ function changeNote(song, fret, index) {
   return newSong;
 }
 
+function deleteRest(song, index) {
+  const { measureIndex, noteIndex } = index;
+
+  let measure = _.cloneDeep(song[measureIndex]);
+  measure.notes = measure.notes.filter((_, i) => i !== noteIndex);
+  let newSong = _.cloneDeep(song);
+  newSong[measureIndex] = measure;
+
+  return newSong;
+}
+
 function deleteNote(song, index) {
   const { measureIndex, noteIndex, stringIndex } = index;
 
@@ -63,7 +74,7 @@ function deleteNote(song, index) {
   let note = measure.notes[noteIndex];
   let currentStringIndex = _.findIndex(note.string, (note) => note === stringIndex);
   if(note.fret[0] === 'rest') {
-    note = note;
+    return deleteRest(song, index);
   } else if(currentStringIndex === -1) {
     return song;
   } else {
