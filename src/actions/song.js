@@ -21,3 +21,11 @@ export function insertMeasure(index) {
     index
   };
 }
+
+export function changeNoteLength(index, duration) {
+  return {
+    type: types.CHANGE_NOTE_LENGTH,
+    index,
+    duration
+  };
+}

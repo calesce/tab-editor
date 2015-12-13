@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import theSong from '../song';
-import { CHANGE_NOTE, DELETE_NOTE, INSERT_MEASURE } from '../actions/types';
+import { CHANGE_NOTE, DELETE_NOTE, INSERT_MEASURE, CHANGE_NOTE_LENGTH } from '../actions/types';
 
 const initialState = theSong;
 
@@ -100,6 +100,19 @@ function deleteNote(song, index) {
   return newSong;
 }
 
+function changeNoteLength(song, index, duration) {
+  const { measureIndex, noteIndex, stringIndex } = index;
+
+  let measure = _.cloneDeep(song[measureIndex]);
+  let note = Object.assign({}, song[measureIndex].notes[noteIndex], { duration });
+
+  measure.notes[noteIndex] = note;
+  let newSong = _.cloneDeep(song);
+  newSong[measureIndex] = measure;
+
+  return newSong;
+}
+
 export default function song(state = initialState, action) {
   switch(action.type) {
     case CHANGE_NOTE:
@@ -113,6 +126,9 @@ export default function song(state = initialState, action) {
         timeSignature: '4/4',
         notes: []
       });
+
+    case CHANGE_NOTE_LENGTH:
+      return changeNoteLength(state, action.index, action.duration);
 
     default:
       return state;
