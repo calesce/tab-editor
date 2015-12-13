@@ -86,6 +86,7 @@ export default class TabStaff extends Component {
         currentPlayingNote={this.props.currentPlayingNote}
         totalMeasureIndex={totalMeasureIndex}
         currentEditingIndex={this.props.currentEditingIndex}
+        onClick={this.props.onClick}
       />
     );
   }

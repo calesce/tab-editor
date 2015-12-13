@@ -51,6 +51,14 @@ export default class Measure extends Component {
     return null;
   }
 
+  onClick = (noteIndex, stringIndex) => {
+    this.props.onClick({
+      noteIndex,
+      stringIndex,
+      measureIndex: this.props.totalMeasureIndex
+    });
+  }
+
   renderNote = (note, measureIndex, noteIndex, xOfMeasure) => {
     let x = this.calcXForNote(xOfMeasure, noteIndex, measureIndex);
     let { currentPlayingNote, isPlaying } = this.props;
@@ -61,7 +69,7 @@ export default class Measure extends Component {
     }
 
     if(note.string[0] === 'rest') {
-      return <Rest key={noteIndex} color={color} x={x} y={0} duration={note.duration} />;
+      return <Rest onClick={this.onClick.bind(this, noteIndex, 0)} key={noteIndex} color={color} x={x} y={0} duration={note.duration} />;
     }
 
     return note.string.map((string, i) => {
@@ -69,7 +77,7 @@ export default class Measure extends Component {
 
       return (
         <g>
-          <TabNote key={i} duration={note.duration} x={x} y={y} color={color} fret={note.fret[i]} />
+          <TabNote onClick={this.onClick.bind(this, noteIndex, string)} key={i} duration={note.duration} x={x} y={y} color={color} fret={note.fret[i]} />
         </g>
       );
     });
