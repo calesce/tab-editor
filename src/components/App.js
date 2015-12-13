@@ -297,6 +297,35 @@ class App extends Component {
     });
   }
 
+  deleteNote = () => {
+    const { noteIndex, measureIndex, stringIndex } = this.state.currentEditingIndex;
+    let notes = this.props.song[measureIndex].notes;
+
+    if(noteIndex === notes.length - 1 && notes[notes.length - 1].fret[0] === 'rest') {
+      this.setState({
+        currentEditingIndex: {
+          stringIndex,
+          measureIndex,
+          noteIndex: noteIndex - 1
+        }
+      }, () => {
+        this.props.dispatch({
+          type: 'DELETE_NOTE',
+          index: {
+            stringIndex,
+            measureIndex,
+            noteIndex
+          }
+        });
+      });
+    } else {
+      this.props.dispatch({
+        type: 'DELETE_NOTE',
+        index: this.state.currentEditingIndex
+      });
+    }
+  }
+
   handleKeyPress = (event) => {
     if(event.keyCode <= 57 && event.keyCode >= 48) {
       return this.editNote(event.keyCode - 48);
@@ -308,10 +337,7 @@ class App extends Component {
       });
     } else if(event.keyCode === 8) {
       event.preventDefault();
-      this.props.dispatch({
-        type: 'DELETE_NOTE',
-        index: this.state.currentEditingIndex
-      });
+      this.deleteNote();
     }
     return this.navigateCursor(event);
   }
