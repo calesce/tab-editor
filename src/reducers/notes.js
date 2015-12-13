@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import theSong from '../song';
-import { CHANGE_NOTE, DELETE_NOTE, INSERT_MEASURE, CHANGE_NOTE_LENGTH, INSERT_NOTE } from '../actions/types';
+import { CHANGE_NOTE, DELETE_NOTE, DELETE_MEASURE, INSERT_MEASURE, CHANGE_NOTE_LENGTH, INSERT_NOTE } from '../actions/types';
 
 const initialState = theSong;
 
@@ -137,6 +137,9 @@ export default function song(state = initialState, action) {
 
     case DELETE_NOTE:
       return deleteNote(state, action.index);
+
+    case DELETE_MEASURE:
+      return state.filter((_, index) => index !== action.measureIndex);
 
     case INSERT_MEASURE:
       return state.concat({
