@@ -19,7 +19,7 @@ function changeNote(song, fret, index) {
     measure.notes[noteIndex] = {
       fret: [fret],
       string: [stringIndex],
-      duration: song[measureIndex - 1].timeSignature[0]
+      duration: 'q'
     };
   } else {
     let currentStringIndex = _.findIndex(note.string, (note) => note === stringIndex);

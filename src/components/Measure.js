@@ -16,10 +16,18 @@ export default class Measure extends Component {
     if(this.props.measure.timeSignature) {
       x += 20;
     }
-    if(this.props.measure.notes.length === 0) {
+    if(this.props.measure.notes.length === 0 && measureIndex !== 0 && !this.props.measure.timeSignature) {
       x -= 25;
     }
     return x;
+  }
+
+  onClick = (noteIndex, stringIndex) => {
+    this.props.onClick({
+      noteIndex,
+      stringIndex,
+      measureIndex: this.props.totalMeasureIndex
+    });
   }
 
   renderBars = (x, measureWidth, measureIndex) => {
@@ -49,14 +57,6 @@ export default class Measure extends Component {
     }
 
     return null;
-  }
-
-  onClick = (noteIndex, stringIndex) => {
-    this.props.onClick({
-      noteIndex,
-      stringIndex,
-      measureIndex: this.props.totalMeasureIndex
-    });
   }
 
   renderNote = (note, measureIndex, noteIndex, xOfMeasure) => {
