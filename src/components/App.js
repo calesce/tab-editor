@@ -331,6 +331,16 @@ class App extends Component {
         type: 'DELETE_MEASURE',
         measureIndex
       });
+
+      if(measureIndex === this.props.song.length) {
+        this.setState({
+          currentEditingIndex: {
+            stringIndex,
+            measureIndex: measureIndex - 1,
+            noteIndex: 0
+          }
+        });
+      }
     } else {
       this.props.dispatch({
         type: 'DELETE_NOTE',
