@@ -192,6 +192,12 @@ class App extends Component {
     });
   }
 
+  onNoteClick = (index) => {
+    this.setState({
+      currentEditingIndex: index
+    });
+  }
+
   getNextNote = (measureIndex, noteIndex) => {
     const { song } = this.props;
 
@@ -413,6 +419,7 @@ class App extends Component {
           currentEditingIndex={this.state.currentEditingIndex}
           currentPlayingNote={this.state.currentPlayingNote}
           isPlaying={this.state.isPlaying}
+          onClick={this.onNoteClick}
         />
       </div>
     );

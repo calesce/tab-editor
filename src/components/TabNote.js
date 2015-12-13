@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 
 export default class TabNote extends Component {
+  onClick = () => {
+    this.props.onClick();
+  }
+
   renderQuarterStem = (x, color) => {
     return <rect x={x + 5} y={82} height={25} width={1} fill={color}></rect>;
   }
@@ -62,7 +66,7 @@ export default class TabNote extends Component {
     return (
       <g>
         <rect x={x} y={y-7} height={5.5} width={width} fill='#ffffff' stroke='#ffffff'></rect>
-        <text x={x+2} y={y} fill={color} style={style}>{fret}</text>
+        <text onClick={this.onClick} x={x+2} y={y} fill={color} style={style}>{fret}</text>
         {this.renderStem()}
       </g>
     );
