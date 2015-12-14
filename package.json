@@ -28,9 +28,11 @@
   },
   "dependencies": {
     "lodash": "^3.10.1",
+    "note.midi": "0.0.4",
     "react": "^0.14.0",
     "react-dom": "^0.14.0",
     "react-redux": "^4.0.0",
-    "redux": "^3.0.4"
+    "redux": "^3.0.4",
+    "soundfont-player": "^0.6.0"
   }
 }
