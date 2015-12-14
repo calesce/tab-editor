@@ -341,7 +341,9 @@ class App extends Component {
   }
 
   handleKeyPress = (event) => {
-    if(this.state.isPlaying) {
+    if(event.metaKey) {
+      return;
+    } else if(this.state.isPlaying && event.keyCode !== 32) {
       return;
     }
 
@@ -368,8 +370,12 @@ class App extends Component {
       return this.changeNoteLength('h');
     } else if(event.keyCode === 73) { // i
       return this.insertNote();
+    } else if(event.keyCode === 32) { // spacebar
+      event.preventDefault();
+      return this.state.isPlaying ? this.handleStop() : this.handlePlay();
+    } else {
+      return this.navigateCursor(event);
     }
-    return this.navigateCursor(event);
   }
 
   bpmChanged = (event) => {
