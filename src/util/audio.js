@@ -1,5 +1,12 @@
+import noteToMidi from 'note.midi';
+import { pitchToNote } from './pitchToNote';
+
 const getSpeedFromBpm = (bpm) => {
   return 60000 / bpm;
+};
+
+const pitchToMidi = (pitch) => {
+  return noteToMidi(pitchToNote[pitch]);
 };
 
 exports.getReplaySpeedForNote = (note, bpm) => {
@@ -17,6 +24,25 @@ exports.getReplaySpeedForNote = (note, bpm) => {
   }
 
   return replaySpeed;
+};
+
+const playWithBuffer = (audioContext, startTime, buffer, duration) => {
+  let endTime = startTime + duration;
+
+  let source = audioContext.createBufferSource();
+  source.buffer = buffer;
+  let gainNode = audioContext.createGain();
+  source.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+
+  if(buffer !== 'rest') {
+    gainNode.gain.value = 0.25;
+  } else {
+    gainNode.gain.value = 0;
+  }
+
+  source.start(startTime);
+  source.stop(endTime);
 };
 
 const play = (audioContext, startTime, pitch, duration) => {
@@ -40,7 +66,7 @@ const play = (audioContext, startTime, pitch, duration) => {
   oscillator.stop(endTime);
 };
 
-const playNoteAtTime = (audioContext, currentNote, playTime, duration) => {
+const playNoteAtTime = (audioContext, currentNote, playTime, duration, buffers) => {
   if(currentNote === 'rest') {
     return play(audioContext, playTime, 'rest', duration / 1000);
   }
@@ -51,11 +77,13 @@ const playNoteAtTime = (audioContext, currentNote, playTime, duration) => {
       pitch = pitch - 1;
     }
 
-    play(audioContext, playTime, pitch, duration / 1000);
+    let buffer = buffers[pitchToMidi(pitch)];
+
+    playWithBuffer(audioContext, playTime, buffer, duration / 1000);
   }
 };
 
-exports.playCurrentNote = (audioContext, song, bpm, playingIndex) => {
+exports.playCurrentNote = (audioContext, song, bpm, playingIndex, buffers) => {
   let measure = song[playingIndex.measure];
   let noteToPlay;
   if(measure.notes.length > 0) {
@@ -67,8 +95,8 @@ exports.playCurrentNote = (audioContext, song, bpm, playingIndex) => {
   let replaySpeed = exports.getReplaySpeedForNote(noteToPlay, bpm);
 
   if(noteToPlay.fret[0] === 'rest') {
-    playNoteAtTime(audioContext, 'rest', audioContext.currentTime, replaySpeed);
+    playNoteAtTime(audioContext, 'rest', audioContext.currentTime, replaySpeed, buffers);
   } else {
-    playNoteAtTime(audioContext, noteToPlay, audioContext.currentTime, replaySpeed);
+    playNoteAtTime(audioContext, noteToPlay, audioContext.currentTime, replaySpeed, buffers);
   }
 };

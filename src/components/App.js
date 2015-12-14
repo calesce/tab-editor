@@ -4,6 +4,9 @@ import { bindActionCreators } from 'redux';
 import * as Actions from '../actions/song';
 import { playCurrentNote, getReplaySpeedForNote } from '../util/audio';
 
+import Soundfont from 'soundfont-player';
+import noteToMidi from 'note.midi';
+
 import TabStaff from './TabStaff';
 
 class App extends Component {
@@ -32,10 +35,18 @@ class App extends Component {
         noteIndex: 0,
         stringIndex: 0
       },
-      audioContext: audioContext,
+      audioContext,
       isPlaying: false,
       bpm: 120
     };
+  }
+
+  componentWillMount = () => {
+    const ctx = this.state.audioContext;
+
+    Soundfont.loadBuffers(ctx, 'acoustic_guitar_steel').then((buffers) => {
+      this.setState({ buffers });
+    });
   }
 
   handleResize = () => {
@@ -44,7 +55,7 @@ class App extends Component {
 
   startPlayback = () => {
     let startTimestamp = Date.now();
-    playCurrentNote(this.state.audioContext, this.props.song, this.state.bpm, this.state.currentPlayingNote);
+    playCurrentNote(this.state.audioContext, this.props.song, this.state.bpm, this.state.currentPlayingNote, this.state.buffers);
 
     this.setState({
       timer: requestAnimationFrame(() => {
@@ -88,7 +99,7 @@ class App extends Component {
             this.loopThroughSong(currentTimestamp);
           })
         }, () => {
-          playCurrentNote(audioContext, song, this.state.bpm, this.state.currentPlayingNote);
+          playCurrentNote(audioContext, song, this.state.bpm, this.state.currentPlayingNote, this.state.buffers);
         });
       } else {
         this.setState({
@@ -105,7 +116,7 @@ class App extends Component {
             this.loopThroughSong(currentTimestamp);
           })
         }, () => {
-          playCurrentNote(audioContext, song, this.state.bpm, this.state.currentPlayingNote);
+          playCurrentNote(audioContext, song, this.state.bpm, this.state.currentPlayingNote, this.state.buffers);
         });
       }
     } else {
