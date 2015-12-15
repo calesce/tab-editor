@@ -36,7 +36,7 @@ const playWithBuffer = (audioContext, startTime, buffer, duration) => {
   gainNode.connect(audioContext.destination);
 
   if(buffer !== 'rest') {
-    gainNode.gain.value = 0.25;
+    gainNode.gain.value = 1.0;
   } else {
     gainNode.gain.value = 0;
   }
