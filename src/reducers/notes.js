@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import theSong from '../song';
-import { CHANGE_NOTE, DELETE_NOTE, DELETE_MEASURE, INSERT_MEASURE, CHANGE_NOTE_LENGTH, INSERT_NOTE } from '../actions/types';
+import { CHANGE_NOTE, DELETE_NOTE, DELETE_MEASURE, INSERT_MEASURE, CHANGE_NOTE_LENGTH, INSERT_NOTE,
+  CHANGE_TIME_SIGNATURE
+} from '../actions/types';
 
 const initialState = theSong;
 
@@ -152,6 +154,18 @@ export default function song(state = initialState, action) {
 
     case INSERT_NOTE:
       return insertNote(state, action.index);
+
+    case CHANGE_TIME_SIGNATURE:
+      return state.map((measure, i) => {
+        if(i === action.measureIndex) {
+          return {
+            timeSignature: action.timeSignature,
+            notes: measure.notes
+          };
+        }
+
+        return measure;
+      });
 
     default:
       return state;
