@@ -8,6 +8,8 @@ import Soundfont from 'soundfont-player';
 import noteToMidi from 'note.midi';
 
 import TabStaff from './TabStaff';
+import EditorArea from './editor/EditorArea';
+import TimeSignatureModal from './editor/TimeSignatureModal';
 
 class App extends Component {
   constructor(props) {
@@ -384,20 +386,41 @@ class App extends Component {
     });
   }
 
+  openTimeSignatureModal = () => {
+    this.setState({
+      modalIsOpen: true
+    });
+  }
+
+  closeModal = () => {
+    this.setState({
+      modalIsOpen: false
+    });
+  }
+
   render() {
+    const { measureIndex } = this.state.currentEditingIndex;
+
     return (
       <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', height: '50' }}>
-          BPM:
-          <input onChange={this.bpmChanged} value={this.state.bpm} />
-          <button onClick={this.handlePlay}>Play</button>
-          <button onClick={this.handleStop}>Stop</button>
-        </div>
+        <EditorArea bpmChanged={this.bpmChanged}
+          handlePlay={this.handlePlay}
+          handleStop={this.handleStop}
+          openModal={this.openTimeSignatureModal}
+          bpm={this.state.bpm}
+          timeSignature={this.props.song[measureIndex].timeSignature}
+        />
         <TabStaff song={this.props.song}
           currentEditingIndex={this.state.currentEditingIndex}
           currentPlayingNote={this.state.currentPlayingNote}
           isPlaying={this.state.isPlaying}
           onClick={this.onNoteClick}
+        />
+        <TimeSignatureModal isOpen={this.state.modalIsOpen}
+          closeModal={this.closeModal}
+          dispatch={this.props.dispatch}
+          measureIndex={measureIndex}
+          timeSignature={this.props.song[measureIndex].timeSignature}
         />
       </div>
     );
