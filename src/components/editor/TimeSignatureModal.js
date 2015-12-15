@@ -43,11 +43,11 @@ export default class TimeSignatureModal extends Component {
     const style = {
       content: {
         left: '40%',
-        height: '8%',
+        height: '12%',
         width: '15%',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'flex-start',
+        justifyContent: 'space-between',
         padding: 10
       }
     };
@@ -57,6 +57,7 @@ export default class TimeSignatureModal extends Component {
         <small style={{ bottom: '5%' }}>Time Signature:</small>
         {this.renderNumerator(this.props.timeSignature[0])}
         {this.renderDenominator(this.props.timeSignature[2])}
+        <button onClick={this.props.closeModal}>Cancel</button>
       </Modal>
     );
   }
