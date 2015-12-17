@@ -3,26 +3,6 @@ import React, { Component } from 'react';
 import Measure from './Measure';
 
 export default class TabStaff extends Component {
-  convertSongIntoRows = (song) => {
-    return song.reduce((rows, measure, index) => {
-      let currentRow = rows[rows.length - 1];
-      let currentRowWidth = currentRow.reduce((next, curr) => {
-        return next + curr.width;
-      }, 0);
-
-      let returnedRows = rows;
-      if(currentRowWidth + (60 * measure.notes.length) > window.innerWidth - 20) {
-        if(index !== song.length - 1) {
-          returnedRows.push([measure]);
-        }
-      } else {
-        returnedRows[rows.length - 1] = currentRow.concat(measure);
-      }
-
-      return returnedRows;
-    }, [[]]);
-  }
-
   getXCoordOfMeasure = (row, index) => {
     return row.slice(0, index).reduce((prev, curr) => {
       return prev + curr.width;
@@ -33,40 +13,8 @@ export default class TabStaff extends Component {
     return 170 * rowIndex;
   }
 
-  computeMeasureWidths = (song) => {
-    return song.map((measure, index) => {
-      let width = 60 * measure.notes.length;
-      if(measure.notes.length === 0) {
-        width = 40;
-      }
-      if(index === 0) {
-        width += 15;
-      }
-
-      let prevMeasure = song[index-1];
-      if(prevMeasure && prevMeasure.timeSignature === measure.timeSignature) {
-        return {
-          notes: measure.notes,
-          width
-        };
-      }
-      width += 20;
-      if(measure.notes.length === 0) {
-        width += 20;
-      }
-
-      return {
-        ...measure,
-        width
-      };
-    });
-  }
-
   getMeasureCountUpToRow = (rowIndex) => {
-    let measuresWithWidths = this.computeMeasureWidths(this.props.song);
-    let rows = this.convertSongIntoRows(measuresWithWidths);
-
-    return rows.reduce((next, curr, i) => {
+    return this.props.song.reduce((next, curr, i) => {
       if(i < rowIndex) {
         return next + curr.length;
       } else {
@@ -101,12 +49,10 @@ export default class TabStaff extends Component {
   }
 
   render() {
-    let measuresWithWidths = this.computeMeasureWidths(this.props.song);
-    let rows = this.convertSongIntoRows(measuresWithWidths);
-
+    let height = this.props.song.length * 160 + 50;
     return (
-      <svg style={{ width: '100%', height: '100%' }}>
-        { rows.map(this.renderRow) }
+      <svg style={{ width: '100%', height: height }}>
+        { this.props.song.map(this.renderRow) }
       </svg>
     );
   }
