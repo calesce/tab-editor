@@ -31,18 +31,13 @@ export default class TabNote extends Component {
   renderStem = () => {
     const { x, color, fret } = this.props;
 
-    let xToRender = x + 1;
-    if(fret > 9) {
-      xToRender += 4;
-    }
-
     switch(this.props.duration) {
       case 'q':
-        return this.renderQuarterStem(xToRender, color);
+        return this.renderQuarterStem(x + 1, color);
       case 'e':
-        return this.renderEighthStem(xToRender, color);
+        return this.renderEighthStem(x + 1, color);
       case 's':
-        return this.renderSixteenthStem(xToRender, color);
+        return this.renderSixteenthStem(x + 1, color);
       default:
         return null;
     }
