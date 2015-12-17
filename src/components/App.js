@@ -7,7 +7,7 @@ import { playCurrentNote, getReplaySpeedForNote } from '../util/audio';
 import Soundfont from 'soundfont-player';
 import noteToMidi from 'note.midi';
 
-import TabStaff from './TabStaff';
+import TabRows from './TabRows';
 import EditorArea from './editor/EditorArea';
 import TimeSignatureModal from './editor/TimeSignatureModal';
 
@@ -410,7 +410,7 @@ class App extends Component {
           bpm={this.state.bpm}
           timeSignature={this.props.song[measureIndex].timeSignature}
         />
-        <TabStaff song={this.props.song}
+        <TabRows song={this.props.song}
           currentEditingIndex={this.state.currentEditingIndex}
           currentPlayingNote={this.state.currentPlayingNote}
           isPlaying={this.state.isPlaying}
