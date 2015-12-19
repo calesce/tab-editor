@@ -38,7 +38,8 @@ class App extends Component {
       },
       audioContext,
       isPlaying: false,
-      bpm: 120
+      bpm: 120,
+      layout: 'page'
     };
   }
 
@@ -424,6 +425,11 @@ class App extends Component {
     });
   }
 
+  toggleLayout = () => {
+    let layout = this.state.layout === 'page' ? 'linear' : 'page';
+    this.setState({ layout });
+  }
+
   render() {
     const { song, dispatch } = this.props;
     const { measureIndex } = this.state.currentEditingIndex;
@@ -435,14 +441,17 @@ class App extends Component {
           handlePlay={this.handlePlay}
           handleStop={this.handleStop}
           openModal={this.openTimeSignatureModal}
+          toggleLayout={this.toggleLayout}
           bpm={this.state.bpm}
           timeSignature={timeSignature}
+          layout={this.state.layout}
         />
         <TabRows song={this.props.song}
           currentEditingIndex={this.state.currentEditingIndex}
           currentPlayingNote={this.state.currentPlayingNote}
           isPlaying={this.state.isPlaying}
           onClick={this.onNoteClick}
+          layout={this.state.layout}
         />
         <TimeSignatureModal isOpen={this.state.modalIsOpen}
           closeModal={this.closeModal}
