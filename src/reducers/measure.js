@@ -3,24 +3,23 @@ import {
   CHANGE_NOTE, DELETE_NOTE, CHANGE_NOTE_LENGTH, INSERT_NOTE, TOGGLE_NOTE_DOTTED, CHANGE_TIME_SIGNATURE
 } from '../actions/types';
 
-const fakeReplaceNote = (state, action) => {
-  return state.map((n, index) => {
-    if(index === action.index.noteIndex) {
-      return measure(m, action);
-    }
-    return m;
-  });
-};
-
 const replaceNote = (state, note, noteIndex) => {
-  return _.flatten([state.notes.slice(0, noteIndex + 1), note, state.notes.slice(noteIndex + 1, state.notes.length)]);
+  const notes = _.flatten([state.notes.slice(0, noteIndex), note, state.notes.slice(noteIndex + 1, state.notes.length)]);
+  return Object.assign({}, state, { notes });
 };
 
 export default function measure(state, action) {
   switch(action.type) {
+    case CHANGE_TIME_SIGNATURE: {
+      return {
+        timeSignature: action.timeSignature,
+        notes: state.notes
+      };
+    }
+
     case INSERT_NOTE: {
       if(state.notes.length === 0) {
-        let notes = [{
+        const notes = [{
           duration: 'q',
           fret: ['rest'],
           string: ['rest']
@@ -34,7 +33,7 @@ export default function measure(state, action) {
         fret: ['rest'],
         string: ['rest']
       };
-      const notes = replaceNote(state, note, noteIndex);
+      const notes = _.flatten([state.notes.slice(0, noteIndex + 1), note, state.notes.slice(noteIndex + 1, state.notes.length)]);
       return Object.assign({}, state, { notes });
     }
 
@@ -65,24 +64,20 @@ export default function measure(state, action) {
             dotted: note.dotted
           };
         }
-        const notes = _.flatten([state.notes.slice(0, noteIndex), newNote, state.notes.slice(noteIndex + 1, state.notes.length)]);
-        return Object.assign({}, state, { notes });
+        return replaceNote(state, newNote, noteIndex);
       }
-      return state;
     }
 
     case TOGGLE_NOTE_DOTTED: {
       const { noteIndex } = action.index;
       const note = Object.assign({}, state.notes[noteIndex], { dotted: state.notes[noteIndex].dotted ? false : true });
-      const notes = _.flatten([state.notes.slice(0, noteIndex), note, state.notes.slice(noteIndex + 1, state.notes.length)]);
-      return Object.assign({}, state, { notes });
+      return replaceNote(state, note, noteIndex);
     }
 
     case CHANGE_NOTE_LENGTH: {
       const { noteIndex } = action.index;
       const note = Object.assign({}, state.notes[noteIndex], { duration: action.duration });
-      const notes = _.flatten([state.notes.slice(0, noteIndex), note, state.notes.slice(noteIndex + 1, state.notes.length)]);
-      return Object.assign({}, state, { notes });
+      return replaceNote(state, note, noteIndex);
     }
 
     case CHANGE_NOTE: {
@@ -132,15 +127,7 @@ export default function measure(state, action) {
         }
       }
 
-      const notes = _.flatten([state.notes.slice(0, noteIndex), note, state.notes.slice(noteIndex + 1, state.notes.length)]);
-      return Object.assign({}, state, { notes });
-    }
-
-    case CHANGE_TIME_SIGNATURE: {
-      return {
-        timeSignature: action.timeSignature,
-        notes: state.notes
-      };
+      return replaceNote(state, note, noteIndex);
     }
 
     default:
