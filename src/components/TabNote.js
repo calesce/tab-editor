@@ -43,8 +43,20 @@ export default class TabNote extends Component {
     }
   }
 
+  renderDot = (dotted, x, color) => {
+    if(!dotted) {
+      return null;
+    }
+
+    return (
+      <svg x={x} y={105} width={20} height={20}>
+        <circle cx={6.5} cy={10} r={1.5} fill={color} stroke={color} />
+      </svg>
+    );
+  }
+
   render() {
-    const { x, y, fret, color} = this.props;
+    const { x, y, fret, color, dotted } = this.props;
 
     let width = 14;
     if(fret > 9) {
@@ -63,6 +75,7 @@ export default class TabNote extends Component {
         <rect x={x} y={y-7} height={5.5} width={width} fill='#ffffff' stroke='#ffffff'></rect>
         <text onClick={this.onClick} x={x+2} y={y} fill={color} style={style}>{fret}</text>
         {this.renderStem()}
+        {this.renderDot(dotted, x, color)}
       </g>
     );
   }
