@@ -15,13 +15,15 @@ function changeNote(song, fret, index) {
     measure.notes[noteIndex] = {
       fret: ['rest'],
       string: ['rest'],
-      duration: note.duration
+      duration: note.duration,
+      dotted: note.dotted
     };
   } else if(!note) {
     measure.notes[noteIndex] = {
       fret: [fret],
       string: [stringIndex],
-      duration: 'q'
+      duration: 'q',
+      dotted: note.dotted
     };
   } else {
     let currentStringIndex = _.findIndex(note.string, (note) => note === stringIndex);
@@ -29,7 +31,8 @@ function changeNote(song, fret, index) {
       note = {
         fret: [fret],
         string: [stringIndex],
-        duration: note.duration
+        duration: note.duration,
+        dotted: note.dotted
       };
     } else if(currentStringIndex === -1) {
       if(note.fret.length > 0) {
@@ -84,13 +87,15 @@ function deleteNote(song, index) {
       note = {
         fret: ['rest'],
         string: ['rest'],
-        duration: note.duration
+        duration: note.duration,
+        dotted: note.dotted
       };
     } else {
       note = {
         fret: note.fret.filter((fret, i) => i !== currentStringIndex),
         string:  note.string.filter((string, i) => string !== stringIndex),
-        duration: note.duration
+        duration: note.duration,
+        dotted: note.dotted
       };
     }
   }

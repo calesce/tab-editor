@@ -69,7 +69,7 @@ export default class Measure extends Component {
     }
 
     if(note.string[0] === 'rest') {
-      return <Rest onClick={this.onClick.bind(this, noteIndex, 0)} key={noteIndex} color={color} x={x} y={0} duration={note.duration} />;
+      return <Rest onClick={this.onClick.bind(this, noteIndex, 0)} key={noteIndex} color={color} x={x} y={0} note={note} />;
     }
 
     return note.string.map((string, i) => {
