@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
+import shouldPureComponentUpdate from 'react-pure-render/function';
 
 export default class Bars extends Component {
-  shouldComponentUpdate(nextProps, nextState) {
-    if(this.props.color === nextProps.color && this.props.x === nextProps.x && this.props.measureWidth === nextProps.measureWidth) {
-      return false;
-    }
-    return true;
-  }
+  shouldComponentUpdate = shouldPureComponentUpdate;
 
   render() {
     let { x, measureWidth, color, strokeWidth } = this.props;

@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
+import shouldPureComponentUpdate from 'react-pure-render/function';
 
 export default class Clef extends Component {
+  shouldComponentUpdate = shouldPureComponentUpdate;
+
   renderTabClef = () => {
     let style = {
       MozUserSelect: 'none',
