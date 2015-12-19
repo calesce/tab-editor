@@ -58,3 +58,10 @@ export function toggleNoteDotted(index) {
     index
   };
 }
+
+export function replaceSong(song) {
+  return {
+    type: types.REPLACE_SONG,
+    song
+  };
+}

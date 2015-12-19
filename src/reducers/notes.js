@@ -1,10 +1,7 @@
 import _ from 'lodash';
-import theSong from '../song';
 import { CHANGE_NOTE, DELETE_NOTE, DELETE_MEASURE, INSERT_MEASURE, CHANGE_NOTE_LENGTH, INSERT_NOTE,
-  CHANGE_TIME_SIGNATURE, TOGGLE_NOTE_DOTTED
+  CHANGE_TIME_SIGNATURE, TOGGLE_NOTE_DOTTED, REPLACE_SONG
 } from '../actions/types';
-
-const initialState = theSong;
 
 function changeNote(song, fret, index) {
   const { measureIndex, noteIndex, stringIndex } = index;
@@ -151,7 +148,7 @@ function insertNote(song, index) {
   return newSong;
 }
 
-export default function song(state = initialState, action) {
+export default function song(state = [], action) {
   switch(action.type) {
     case CHANGE_NOTE:
       return changeNote(state, action.fret, action.index);
@@ -188,6 +185,9 @@ export default function song(state = initialState, action) {
 
     case TOGGLE_NOTE_DOTTED:
       return toggleNoteDotted(state, action.index);
+
+    case REPLACE_SONG:
+      return action.song;
 
     default:
       return state;
