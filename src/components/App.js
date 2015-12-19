@@ -221,6 +221,18 @@ class App extends Component {
           type: 'INSERT_MEASURE',
           index: 0
         });
+        newEditingIndex = {
+          stringIndex,
+          measureIndex: measureIndex + 1,
+          noteIndex: 0
+        };
+        this.setState({
+          currentEditingIndex: newEditingIndex,
+          currentPlayingNote: {
+            measure: newEditingIndex.measureIndex,
+            noteIndex: newEditingIndex.noteIndex
+          }
+        });
       } else {
         newEditingIndex.stringIndex = stringIndex;
         this.setState({
@@ -332,13 +344,23 @@ class App extends Component {
       index: this.state.currentEditingIndex
     });
 
-    this.setState({
-      currentEditingIndex: {
-        measureIndex,
-        stringIndex,
-        noteIndex: noteIndex + 1
-      }
-    });
+    if(this.props.song[measureIndex].notes.length === 1) {
+      this.setState({
+        currentEditingIndex: {
+          measureIndex,
+          stringIndex,
+          noteIndex: 0
+        }
+      });
+    } else {
+      this.setState({
+        currentEditingIndex: {
+          measureIndex,
+          stringIndex,
+          noteIndex: noteIndex + 1
+        }
+      });
+    }
   }
 
   handleKeyPress = (event) => {

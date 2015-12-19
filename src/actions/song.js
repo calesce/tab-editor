@@ -44,10 +44,10 @@ export function insertNote(index) {
   };
 }
 
-export function changeTimeSignature(measureIndex, timeSignature) {
+export function changeTimeSignature(index, timeSignature) {
   return {
     type: types.CHANGE_TIME_SIGNATURE,
-    measureIndex,
+    index,
     timeSignature
   };
 }
