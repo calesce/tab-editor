@@ -3,11 +3,13 @@ import Modal from 'react-modal';
 
 export default class TimeSignatureModal extends Component {
   onRequestClose = () => {
-    let timeSignature = `${this.refs.numerator.value}/${this.refs.denominator.value}`
+    let timeSignature = `${this.refs.numerator.value}/${this.refs.denominator.value}`;
     if(timeSignature !== this.props.timeSignature) {
       this.props.dispatch({
         type: 'CHANGE_TIME_SIGNATURE',
-        measureIndex: this.props.measureIndex,
+        index: {
+          measureIndex: this.props.measureIndex
+        },
         timeSignature
       });
     }
@@ -17,7 +19,7 @@ export default class TimeSignatureModal extends Component {
 
   renderNumerator = (numerator) => {
     let options = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((number) => {
-      return <option key={number} value={number}>{number}</option>
+      return <option key={number} value={number}>{number}</option>;
     });
 
     return (
@@ -29,7 +31,7 @@ export default class TimeSignatureModal extends Component {
 
   renderDenominator = (denominator) => {
     let options = [1, 2, 4, 8, 16, 32].map((number) => {
-      return <option key={number} value={number}>{number}</option>
+      return <option key={number} value={number}>{number}</option>;
     });
 
     return (
