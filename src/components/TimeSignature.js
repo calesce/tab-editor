@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
+import shouldPureComponentUpdate from 'react-pure-render/function';
 
 export default class TimeSignature extends Component {
+  shouldComponentUpdate = shouldPureComponentUpdate;
+
   renderCommonTimeSignature = () => {
     return (
       <svg x={this.props.x} y={15}>

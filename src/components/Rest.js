@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
+import shouldPureComponentUpdate from 'react-pure-render/function';
+import shallowEqual from 'react-pure-render/shallowEqual';
 
 export default class Rest extends Component {
+  shouldComponentUpdate = shouldPureComponentUpdate;
+
   restClicked = () => {
     this.props.onClick();
   }
