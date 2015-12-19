@@ -403,7 +403,9 @@ class App extends Component {
   }
 
   render() {
+    const { song, dispatch } = this.props;
     const { measureIndex } = this.state.currentEditingIndex;
+    const timeSignature = song[measureIndex] ? song[measureIndex].timeSignature : '4/4';
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -412,7 +414,7 @@ class App extends Component {
           handleStop={this.handleStop}
           openModal={this.openTimeSignatureModal}
           bpm={this.state.bpm}
-          timeSignature={this.props.song[measureIndex].timeSignature}
+          timeSignature={timeSignature}
         />
         <TabRows song={this.props.song}
           currentEditingIndex={this.state.currentEditingIndex}
@@ -422,9 +424,9 @@ class App extends Component {
         />
         <TimeSignatureModal isOpen={this.state.modalIsOpen}
           closeModal={this.closeModal}
-          dispatch={this.props.dispatch}
+          dispatch={dispatch}
           measureIndex={measureIndex}
-          timeSignature={this.props.song[measureIndex].timeSignature}
+          timeSignature={timeSignature}
         />
       </div>
     );
