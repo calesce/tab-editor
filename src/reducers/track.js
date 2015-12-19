@@ -1,10 +1,12 @@
 import _ from 'lodash';
-import { CHANGE_NOTE, DELETE_NOTE, DELETE_MEASURE, INSERT_MEASURE, CHANGE_NOTE_LENGTH, INSERT_NOTE,
-  CHANGE_TIME_SIGNATURE, TOGGLE_NOTE_DOTTED, REPLACE_SONG
-} from '../actions/types';
+import { DELETE_MEASURE, INSERT_MEASURE, REPLACE_SONG } from '../actions/types';
 import measure from './measure';
 
 const replaceMeasure = (state, action) => {
+  if(!action.index) {
+    return state;
+  }
+
   return state.map((m, index) => {
     if(index === action.index.measureIndex) {
       return measure(m, action);
@@ -24,25 +26,7 @@ export default function track(state = [], action) {
     case REPLACE_SONG:
       return action.song;
 
-    case CHANGE_TIME_SIGNATURE:
-      return replaceMeasure(state, action);
-
-    case CHANGE_NOTE:
-      return replaceMeasure(state, action);
-
-    case DELETE_NOTE:
-      return replaceMeasure(state, action);
-
-    case CHANGE_NOTE_LENGTH:
-      return replaceMeasure(state, action);
-
-    case INSERT_NOTE:
-      return replaceMeasure(state, action);
-
-    case TOGGLE_NOTE_DOTTED:
-      return replaceMeasure(state, action);
-
     default:
-      return state;
+      return replaceMeasure(state, action);
   }
 }
