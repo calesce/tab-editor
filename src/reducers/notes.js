@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import theSong from '../song';
 import { CHANGE_NOTE, DELETE_NOTE, DELETE_MEASURE, INSERT_MEASURE, CHANGE_NOTE_LENGTH, INSERT_NOTE,
-  CHANGE_TIME_SIGNATURE
+  CHANGE_TIME_SIGNATURE, TOGGLE_NOTE_DOTTED
 } from '../actions/types';
 
 const initialState = theSong;
@@ -115,6 +115,20 @@ function changeNoteLength(song, index, duration) {
   return newSong;
 }
 
+function toggleNoteDotted(song, index) {
+  const { measureIndex, noteIndex, stringIndex } = index;
+
+  let measure = _.cloneDeep(song[measureIndex]);
+  let oldNote = song[measureIndex].notes[noteIndex];
+  let note = Object.assign({}, oldNote, { dotted: oldNote.dotted ? false : true });
+
+  measure.notes[noteIndex] = note;
+  let newSong = _.cloneDeep(song);
+  newSong[measureIndex] = measure;
+
+  return newSong;
+}
+
 function insertNote(song, index) {
   const { measureIndex, noteIndex, stringIndex } = index;
 
@@ -166,6 +180,9 @@ export default function song(state = initialState, action) {
 
         return measure;
       });
+
+    case TOGGLE_NOTE_DOTTED:
+      return toggleNoteDotted(state, action.index);
 
     default:
       return state;

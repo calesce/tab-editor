@@ -23,6 +23,10 @@ exports.getReplaySpeedForNote = (note, bpm) => {
     replaySpeed = replaySpeed / 4;
   }
 
+  if(note.dotted) {
+    replaySpeed = replaySpeed * 1.5;
+  }
+
   return replaySpeed;
 };
 

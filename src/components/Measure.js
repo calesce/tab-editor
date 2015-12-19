@@ -77,7 +77,9 @@ export default class Measure extends Component {
 
       return (
         <g>
-          <TabNote onClick={this.onClick.bind(this, noteIndex, string)} key={i} duration={note.duration} x={x} y={y} color={color} fret={note.fret[i]} />
+          <TabNote onClick={this.onClick.bind(this, noteIndex, string)} key={i} duration={note.duration} x={x} y={y} color={color}
+            fret={note.fret[i]} dotted={note.dotted}
+          />
         </g>
       );
     });

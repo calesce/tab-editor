@@ -5,7 +5,6 @@ import * as Actions from '../actions/song';
 import { playCurrentNote, getReplaySpeedForNote } from '../util/audio';
 
 import Soundfont from 'soundfont-player';
-import noteToMidi from 'note.midi';
 
 import TabRows from './TabRows';
 import EditorArea from './editor/EditorArea';
@@ -375,6 +374,11 @@ class App extends Component {
     } else if(event.keyCode === 32) { // spacebar
       event.preventDefault();
       return this.state.isPlaying ? this.handleStop() : this.handlePlay();
+    } else if(event.keyCode === 190) { // period
+      this.props.dispatch({
+        type: 'TOGGLE_NOTE_DOTTED',
+        index: this.state.currentEditingIndex
+      });
     } else {
       return this.navigateCursor(event);
     }

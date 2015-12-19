@@ -51,3 +51,10 @@ export function changeTimeSignature(measureIndex, timeSignature) {
     timeSignature
   };
 }
+
+export function toggleNoteDotted(index) {
+  return {
+    type: types.TOGGLE_NOTE_DOTTED,
+    index
+  };
+}
