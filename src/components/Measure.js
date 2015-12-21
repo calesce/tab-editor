@@ -8,12 +8,45 @@ import TimeSignature from './TimeSignature';
 import Cursor from './Cursor';
 
 export default class Measure extends Component {
+  calcMeasureValidity = () => {
+    const { measure } = this.props;
+
+    let timeSig = parseInt(measure.timeSignature[0]) / parseInt(measure.timeSignature.slice(2, 4));
+    let notesTotal = measure.notes.reduce((total, note) => {
+      let duration;
+      switch(note.duration) {
+        case 'q':
+          duration = 0.25;
+          break;
+        case 'e':
+          duration = 0.125;
+          break;
+        case 's':
+          duration = 0.0625;
+          break;
+        case 'h':
+         duration = 0.5;
+         break;
+        default:
+         duration = 1.0;
+      }
+
+      if(note.dotted) {
+        duration *= 1.5;
+      }
+
+      return total + duration;
+    }, 0);
+
+    return timeSig === notesTotal;
+  }
+
   calcXForNote = (xOfMeasure, noteIndex, measureIndex, timeSignature) => {
     let x = xOfMeasure + (noteIndex * 55 + 39);
     if(measureIndex === 0) {
       x += 15;
     }
-    if(this.props.measure.timeSignature) {
+    if(this.props.measure.renderTimeSignature) {
       x += 20;
     }
     if(this.props.measure.notes.length === 0 && measureIndex !== 0 && !this.props.measure.timeSignature) {
@@ -33,8 +66,20 @@ export default class Measure extends Component {
   renderBars = (x, measureWidth, measureIndex) => {
     let { currentPlayingNote, isPlaying } = this.props;
 
-    let color = measureIndex === currentPlayingNote.measure && isPlaying ? '#267754' : '#999999';
-    let strokeWidth = measureIndex === currentPlayingNote.measure && isPlaying ? '1' : '0.1';
+    let isValid = this.calcMeasureValidity();
+
+    let color, strokeWidth;
+
+    if(measureIndex === currentPlayingNote.measure && isPlaying) {
+      color = '#267754';
+      strokeWidth = 1;
+    } else if(!isValid) {
+      color = 'red';
+      strokeWidth = 1;
+    } else {
+      color = '#999999';
+      strokeWidth = 0.1;
+    }
 
     return <Bars x={x} measureWidth={measureWidth} color={color} strokeWidth={strokeWidth} />;
   }
@@ -87,9 +132,9 @@ export default class Measure extends Component {
 
   renderTimeSignature = (totalMeasureIndex, x, measure) => {
     x = totalMeasureIndex === 0 ? x + 36 : x + 20;
-    let { timeSignature } = measure;
+    let { renderTimeSignature, timeSignature } = measure;
 
-    return timeSignature ? <TimeSignature x={x} numerator={timeSignature[0]} denominator={timeSignature[2]} /> : null;
+    return renderTimeSignature ? <TimeSignature x={x} numerator={timeSignature[0]} denominator={timeSignature.slice(2, 4)} /> : null;
   }
 
   renderMeasure = (measureIndex, measure, x) => {
