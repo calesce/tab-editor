@@ -1,4 +1,4 @@
-let song = [
+let track = [
   {
     timeSignature: '4/4',
     notes: [
@@ -361,4 +361,4 @@ let song = [
   }
 ];
 
-module.exports = song;
+module.exports = track;

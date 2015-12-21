@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
-import song from './track';
+import track from './track';
 
 const rootReducer = combineReducers({
-  song
+  track
 });
 
 export default rootReducer;

@@ -5,9 +5,9 @@ import { Provider } from 'react-redux';
 
 import App from './components/App';
 import configureStore from './util/configureStore';
-import song from './song';
+import track from './song';
 
-const store = configureStore({ song });
+const store = configureStore({ track });
 
 render(
   <Provider store={store}>

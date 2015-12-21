@@ -67,8 +67,8 @@ export default class TabRows extends Component {
   }
 
   render() {
-    let track = this.props.layout === 'page' ? this.pageTrack(this.props.song) : this.linearTrack(this.props.song);
+    let track = this.props.layout === 'page' ? this.pageTrack(this.props.track) : this.linearTrack(this.props.track);
 
-    return <TabStaff {...this.props} song={track} />;
+    return <TabStaff {...this.props} track={track} />;
   }
 }

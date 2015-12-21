@@ -24,7 +24,7 @@ export default function track(state = [], action) {
       return state.concat({ timeSignature: '4/4', notes: [] });
 
     case REPLACE_SONG:
-      return action.song;
+      return action.track;
 
     default:
       return replaceMeasure(state, action);
