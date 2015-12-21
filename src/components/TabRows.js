@@ -41,7 +41,7 @@ export default class TabRows extends Component {
       let prevMeasure = track[index-1];
       if(prevMeasure && prevMeasure.timeSignature === measure.timeSignature) {
         return {
-          notes: measure.notes,
+          ...measure,
           width
         };
       }
@@ -52,7 +52,8 @@ export default class TabRows extends Component {
 
       return {
         ...measure,
-        width
+        width,
+        renderTimeSignature: true
       };
     });
   }
