@@ -14,7 +14,7 @@ export default class TabStaff extends Component {
   }
 
   getMeasureCountUpToRow = (rowIndex) => {
-    return this.props.song.reduce((next, curr, i) => {
+    return this.props.track.reduce((next, curr, i) => {
       if(i < rowIndex) {
         return next + curr.length;
       } else {
@@ -48,18 +48,18 @@ export default class TabStaff extends Component {
     });
   }
 
-  calcWidth = (song) => {
-    return song[0].reduce((width, measure) => {
+  calcWidth = (track) => {
+    return track[0].reduce((width, measure) => {
       return measure.width + width;
     }, 20);
   }
 
   render() {
-    let height = this.props.song.length * 160 + 50;
-    let width = this.props.song.length === 1 ? this.calcWidth(this.props.song) : '100%';
+    let height = this.props.track.length * 160 + 50;
+    let width = this.props.track.length === 1 ? this.calcWidth(this.props.track) : '100%';
     return (
       <svg style={{ width: width, height: height }}>
-        { this.props.song.map(this.renderRow) }
+        { this.props.track.map(this.renderRow) }
       </svg>
     );
   }
