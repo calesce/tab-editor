@@ -6,9 +6,9 @@ import { playCurrentNote, getReplaySpeedForNote } from '../util/audio';
 
 import Soundfont from 'soundfont-player';
 
-import TabRows from './TabRows';
-import EditorArea from './editor/EditorArea';
-import TimeSignatureModal from './editor/TimeSignatureModal';
+import TabRows from '../components/TabRows';
+import EditorArea from '../components/editor/EditorArea';
+import TimeSignatureModal from '../components/editor/TimeSignatureModal';
 
 class App extends Component {
   constructor(props) {
@@ -390,7 +390,7 @@ class App extends Component {
       return this.changeNoteLength('q');
     } else if(event.keyCode === 87) { // w
       return this.changeNoteLength('w');
-    } else if(event.keyCode === 72) { // h
+    } else if(event.keyCode === 72 && !event.ctrlKey) { // h
       return this.changeNoteLength('h');
     } else if(event.keyCode === 73) { // i
       return this.insertNote();
