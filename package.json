@@ -30,6 +30,7 @@
     "eslint": "^1.10.3",
     "eslint-plugin-babel": "^3.0.0",
     "eslint-plugin-react": "^3.11.3",
+    "eslint-plugin-require-path-exists": "^1.0.25",
     "express": "^4.13.3",
     "react-pure-render": "^1.0.2",
     "react-transform-catch-errors": "^1.0.0",
