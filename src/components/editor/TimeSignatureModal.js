@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Modal from 'react-modal';
-import changeTimeSignature from '../actions/track';
+import { changeTimeSignature } from '../../actions/track';
 
 export default class TimeSignatureModal extends Component {
   onRequestClose = () => {
