@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as Actions from '../actions/song';
+import * as Actions from '../actions/track';
 import { playCurrentNote, getReplaySpeedForNote } from '../util/audio';
 
 import Soundfont from 'soundfont-player';
