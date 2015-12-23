@@ -1,4 +1,6 @@
-let track = [
+let track = {
+  tuning: [ 'd2', 'g2', 'c3', 'f3', 'a3', 'd4' ],
+  measures: [
   {
     timeSignature: '4/4',
     notes: [
@@ -359,6 +361,6 @@ let track = [
       }
     ]
   }
-];
+]};
 
 module.exports = track;
