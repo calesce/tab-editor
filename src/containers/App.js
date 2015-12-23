@@ -69,12 +69,12 @@ class App extends Component {
   loopThroughSong = (startTimestamp) => {
     let { currentPlayingNote, bpm, audioContext } = this.state;
     let { measure, noteIndex } = currentPlayingNote;
-    let { track } = this.props;
+    let { measures } = this.props.track;
 
     let currentTimestamp = Date.now();
     let replayDiff = currentTimestamp - startTimestamp;
 
-    let measureToPlay = track[currentPlayingNote.measure];
+    let measureToPlay = measures[currentPlayingNote.measure];
 
     let replaySpeed;
     if(measureToPlay.notes.length > 0) {
@@ -84,9 +84,9 @@ class App extends Component {
     }
 
     if(replayDiff >= replaySpeed) {
-      if(measure === track.length - 1 && noteIndex >= track[measure].notes.length - 1) {
+      if(measure === measures.length - 1 && noteIndex >= measures[measure].notes.length - 1) {
         this.handleStop();
-      } else if(measure !== track.length - 1 && noteIndex >= track[measure].notes.length - 1) {
+      } else if(measure !== measures.length - 1 && noteIndex >= measures[measure].notes.length - 1) {
         this.setState({
           currentPlayingNote: {
             measure: measure + 1,
@@ -101,7 +101,7 @@ class App extends Component {
             this.loopThroughSong(currentTimestamp);
           })
         }, () => {
-          playCurrentNote(audioContext, track, this.state.bpm, this.state.currentPlayingNote, this.state.buffers);
+          playCurrentNote(audioContext, this.props.track, this.state.bpm, this.state.currentPlayingNote, this.state.buffers);
         });
       } else {
         this.setState({
@@ -118,7 +118,7 @@ class App extends Component {
             this.loopThroughSong(currentTimestamp);
           })
         }, () => {
-          playCurrentNote(audioContext, track, this.state.bpm, this.state.currentPlayingNote, this.state.buffers);
+          playCurrentNote(audioContext, this.props.track, this.state.bpm, this.state.currentPlayingNote, this.state.buffers);
         });
       }
     } else {
@@ -161,11 +161,11 @@ class App extends Component {
   }
 
   getNextNote = (measureIndex, noteIndex) => {
-    const { track } = this.props;
+    const { measures } = this.props.track;
 
-    if(measureIndex === track.length - 1 && noteIndex >= track[measureIndex].notes.length - 1) {
+    if(measureIndex === measures.length - 1 && noteIndex >= measures[measureIndex].notes.length - 1) {
       return 'NEW';
-    } else if(noteIndex >= track[measureIndex].notes.length - 1) {
+    } else if(noteIndex >= measures[measureIndex].notes.length - 1) {
       return {
         measureIndex: measureIndex + 1,
         noteIndex: 0
@@ -179,16 +179,16 @@ class App extends Component {
   }
 
   getPrevNote = (measureIndex, noteIndex) => {
-    const { track } = this.props;
+    const { measures } = this.props.track;
 
     if(measureIndex === 0 && noteIndex === 0) {
       return { measureIndex, noteIndex };
     } else if(noteIndex === 0) {
-      let prevMeasure = track[measureIndex - 1];
+      let prevMeasure = measures[measureIndex - 1];
       if(prevMeasure.notes.length > 0) {
         return {
           measureIndex: measureIndex - 1,
-          noteIndex: track[measureIndex - 1].notes.length - 1
+          noteIndex: measures[measureIndex - 1].notes.length - 1
         };
       } else {
         return {
@@ -284,7 +284,7 @@ class App extends Component {
 
   deleteNote = () => {
     const { noteIndex, measureIndex, stringIndex } = this.state.currentEditingIndex;
-    let notes = this.props.track[measureIndex].notes;
+    let notes = this.props.track.measures[measureIndex].notes;
 
     if(notes.length > 1 && noteIndex === notes.length - 1 && notes[notes.length - 1].fret[0] === 'rest') {
       this.setState({
@@ -299,7 +299,7 @@ class App extends Component {
     } else if(notes.length === 0) {
       this.props.actions.deleteMeasure(measureIndex);
 
-      if(measureIndex === this.props.track.length) {
+      if(measureIndex === this.props.track.measures.length) {
         this.setState({
           currentEditingIndex: {
             stringIndex,
@@ -318,7 +318,7 @@ class App extends Component {
 
     this.props.actions.insertNote(this.state.currentEditingIndex);
 
-    if(this.props.track[measureIndex].notes.length === 1) {
+    if(this.props.track.measures[measureIndex].notes.length === 1) {
       this.setState({
         currentEditingIndex: {
           measureIndex,
@@ -397,9 +397,9 @@ class App extends Component {
   }
 
   render() {
-    const { track } = this.props;
+    const { measures } = this.props.track;
     const { measureIndex } = this.state.currentEditingIndex;
-    const timeSignature = track[measureIndex] ? track[measureIndex].timeSignature : '4/4';
+    const timeSignature = measures[measureIndex] ? measures[measureIndex].timeSignature : '4/4';
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -412,7 +412,7 @@ class App extends Component {
           timeSignature={timeSignature}
           layout={this.state.layout}
         />
-        <TabRows track={this.props.track}
+        <TabRows track={measures}
           currentEditingIndex={this.state.currentEditingIndex}
           currentPlayingNote={this.state.currentPlayingNote}
           isPlaying={this.state.isPlaying}

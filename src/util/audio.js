@@ -1,12 +1,8 @@
 import noteToMidi from 'note.midi';
-import { pitchToNote } from './pitchToNote';
+import { getIndexOfNote } from './midiNotes';
 
 const getSpeedFromBpm = (bpm) => {
   return 60000 / bpm;
-};
-
-const pitchToMidi = (pitch) => {
-  return noteToMidi(pitchToNote[pitch]);
 };
 
 exports.getReplaySpeedForNote = (note, bpm) => {
@@ -70,25 +66,23 @@ const play = (audioContext, startTime, pitch, duration) => {
   oscillator.stop(endTime);
 };
 
-const playNoteAtTime = (audioContext, currentNote, playTime, duration, buffers) => {
+const playNoteAtTime = (audioContext, currentNote, playTime, duration, buffers, tuning) => {
   if(currentNote === 'rest') {
     return play(audioContext, playTime, 'rest', duration / 1000);
   }
 
   for(let i = 0; i < currentNote.string.length; i++) {
-    let pitch = currentNote.fret[i] + (5 * currentNote.string[i]);
-    if(currentNote.string[i] >= 4) {
-      pitch = pitch - 1;
-    }
+    const openString = tuning[currentNote.string[i]];
+    const noteToPlay = getIndexOfNote(openString) + currentNote.fret[i];
 
-    let buffer = buffers[pitchToMidi(pitch)];
-
-    playWithBuffer(audioContext, playTime, buffer, duration / 1000);
+    playWithBuffer(audioContext, playTime, buffers[noteToPlay], duration / 1000);
   }
 };
 
-exports.playCurrentNote = (audioContext, song, bpm, playingIndex, buffers) => {
-  let measure = song[playingIndex.measure];
+exports.playCurrentNote = (audioContext, track, bpm, playingIndex, buffers) => {
+  const { measures, tuning } = track;
+
+  let measure = measures[playingIndex.measure];
   let noteToPlay;
   if(measure.notes.length > 0) {
     noteToPlay = measure.notes[playingIndex.noteIndex];
@@ -99,8 +93,8 @@ exports.playCurrentNote = (audioContext, song, bpm, playingIndex, buffers) => {
   let replaySpeed = exports.getReplaySpeedForNote(noteToPlay, bpm);
 
   if(noteToPlay.fret[0] === 'rest') {
-    playNoteAtTime(audioContext, 'rest', audioContext.currentTime, replaySpeed, buffers);
+    playNoteAtTime(audioContext, 'rest', audioContext.currentTime, replaySpeed, buffers, tuning);
   } else {
-    playNoteAtTime(audioContext, noteToPlay, audioContext.currentTime, replaySpeed, buffers);
+    playNoteAtTime(audioContext, noteToPlay, audioContext.currentTime, replaySpeed, buffers, tuning);
   }
 };

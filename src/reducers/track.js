@@ -15,18 +15,18 @@ const replaceMeasure = (state, action) => {
   });
 };
 
-export default function track(state = [], action) {
+export default function track(state = {}, action) {
   switch(action.type) {
     case DELETE_MEASURE:
-      return state.filter((_, index) => index !== action.measureIndex);
+      return state.measures.filter((_, index) => index !== action.measureIndex);
 
     case INSERT_MEASURE:
-      return state.concat({ timeSignature: '4/4', notes: [] });
+      return state.measures.concat({ timeSignature: '4/4', notes: [] });
 
     case REPLACE_SONG:
       return action.track;
 
     default:
-      return replaceMeasure(state, action);
+      return replaceMeasure(state.measures, action);
   }
 }
