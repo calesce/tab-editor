@@ -15,11 +15,7 @@ export default class TabStaff extends Component {
 
   getMeasureCountUpToRow = (rowIndex) => {
     return this.props.track.reduce((next, curr, i) => {
-      if(i < rowIndex) {
-        return next + curr.length;
-      } else {
-        return next;
-      }
+      return i < rowIndex ? next + curr.length : next;
     }, 0);
   }
 
@@ -35,6 +31,7 @@ export default class TabStaff extends Component {
         totalMeasureIndex={totalMeasureIndex}
         currentEditingIndex={this.props.currentEditingIndex}
         onClick={this.props.onClick}
+        indexOfRow={measureIndex}
       />
     );
   }
