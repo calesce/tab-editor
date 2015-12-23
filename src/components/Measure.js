@@ -40,12 +40,12 @@ export default class Measure extends Component {
   }
 
   calcXForNote = (noteIndex, measureIndex) => {
-    let x = 0 + (noteIndex * 55 + 39);
-    if(measureIndex === 0) {
-      x += 15;
+    let x = 0 + (noteIndex * 53 + 33);
+    if(this.props.indexOfRow === 0) {
+      x += 8;
     }
     if(this.props.measure.renderTimeSignature) {
-      x += 20;
+      x += 30;
     }
     if(this.props.measure.notes.length === 0 && this.props.indexOfRow !== 0) {
       x -= this.props.measure.renderTimeSignature ? 0 : 25;

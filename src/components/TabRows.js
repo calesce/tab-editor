@@ -12,7 +12,7 @@ export default class TabRows extends Component {
       }, 0);
 
       let returnedRows = rows;
-      if(currentRowWidth + (60 * measure.notes.length) > window.innerWidth - 20) {
+      if(currentRowWidth + (55 * measure.notes.length) > window.innerWidth - 20) {
         if(index !== track.length - 1) {
           returnedRows.push([measure]);
         }
@@ -30,7 +30,7 @@ export default class TabRows extends Component {
 
   computeMeasureWidths = (track) => {
     return track.map((measure, index) => {
-      let width = 60 * measure.notes.length;
+      let width = 55 * measure.notes.length;
       if(measure.notes.length === 0) {
         width = 40;
       }
@@ -45,7 +45,7 @@ export default class TabRows extends Component {
           width
         };
       }
-      width += 20;
+      width += 30;
       if(measure.notes.length === 0) {
         width += 20;
       }
