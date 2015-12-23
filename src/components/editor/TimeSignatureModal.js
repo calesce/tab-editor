@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import Modal from 'react-modal';
-import { changeTimeSignature } from '../../actions/track';
 
 export default class TimeSignatureModal extends Component {
   onRequestClose = () => {
     let timeSignature = `${this.refs.numerator.value}/${this.refs.denominator.value}`;
     if(timeSignature !== this.props.timeSignature) {
-      this.props.dispatch(changeTimeSignature({ measureIndex: this.props.measureIndex }, timeSignature));
+      this.props.changeTimeSignature({ measureIndex: this.props.measureIndex }, timeSignature);
     }
 
     this.props.closeModal();

@@ -218,10 +218,7 @@ class App extends Component {
     if(event.keyCode === 39) { // right arrow
       let newEditingIndex = this.getNextNote(measureIndex, noteIndex);
       if(newEditingIndex === 'NEW') {
-        this.props.dispatch({
-          type: 'INSERT_MEASURE',
-          index: 0
-        });
+        this.props.actions.insertMeasure(0);
         newEditingIndex = {
           stringIndex,
           measureIndex: measureIndex + 1,
@@ -278,19 +275,11 @@ class App extends Component {
   }
 
   editNote = (fret) => {
-    this.props.dispatch({
-      type: 'CHANGE_NOTE',
-      fret,
-      index: this.state.currentEditingIndex
-    });
+    this.props.actions.changeNote(this.state.currentEditingIndex, fret);
   }
 
   changeNoteLength = (duration) => {
-    this.props.dispatch({
-      type: 'CHANGE_NOTE_LENGTH',
-      duration,
-      index: this.state.currentEditingIndex
-    });
+    this.props.actions.changeNoteLength(this.state.currentEditingIndex, duration);
   }
 
   deleteNote = () => {
@@ -305,20 +294,10 @@ class App extends Component {
           noteIndex: noteIndex - 1
         }
       }, () => {
-        this.props.dispatch({
-          type: 'DELETE_NOTE',
-          index: {
-            stringIndex,
-            measureIndex,
-            noteIndex
-          }
-        });
+        this.props.actions.deleteNote({ stringIndex, measureIndex, noteIndex });
       });
     } else if(notes.length === 0) {
-      this.props.dispatch({
-        type: 'DELETE_MEASURE',
-        measureIndex
-      });
+      this.props.actions.deleteMeasure(measureIndex);
 
       if(measureIndex === this.props.track.length) {
         this.setState({
@@ -330,20 +309,14 @@ class App extends Component {
         });
       }
     } else {
-      this.props.dispatch({
-        type: 'DELETE_NOTE',
-        index: this.state.currentEditingIndex
-      });
+      this.props.actions.deleteNote(this.state.currentEditingIndex);
     }
   }
 
   insertNote = () => {
     const { noteIndex, measureIndex, stringIndex } = this.state.currentEditingIndex;
 
-    this.props.dispatch({
-      type: 'INSERT_NOTE',
-      index: this.state.currentEditingIndex
-    });
+    this.props.actions.insertNote(this.state.currentEditingIndex);
 
     if(this.props.track[measureIndex].notes.length === 1) {
       this.setState({
@@ -374,11 +347,7 @@ class App extends Component {
     if(event.keyCode <= 57 && event.keyCode >= 48) {
       return this.editNote(event.keyCode - 48);
     } else if(event.keyCode === 82 && !event.metaKey && !event.ctrlKey) {
-      this.props.dispatch({
-        type: 'CHANGE_NOTE',
-        fret: 'rest',
-        index: this.state.currentEditingIndex
-      });
+      this.props.actions.changeNote(this.state.currentEditingIndex, 'rest');
     } else if(event.keyCode === 8) { // delete
       event.preventDefault();
       this.deleteNote();
@@ -398,10 +367,7 @@ class App extends Component {
       event.preventDefault();
       return this.state.isPlaying ? this.handleStop() : this.handlePlay();
     } else if(event.keyCode === 190) { // period
-      this.props.dispatch({
-        type: 'TOGGLE_NOTE_DOTTED',
-        index: this.state.currentEditingIndex
-      });
+      this.props.actions.toggleNoteDotted(this.state.currentEditingIndex);
     } else {
       return this.navigateCursor(event);
     }
@@ -431,7 +397,7 @@ class App extends Component {
   }
 
   render() {
-    const { track, dispatch } = this.props;
+    const { track } = this.props;
     const { measureIndex } = this.state.currentEditingIndex;
     const timeSignature = track[measureIndex] ? track[measureIndex].timeSignature : '4/4';
 
@@ -455,7 +421,7 @@ class App extends Component {
         />
         <TimeSignatureModal isOpen={this.state.modalIsOpen}
           closeModal={this.closeModal}
-          dispatch={dispatch}
+          changeTimeSignature={this.props.actions.changeTimeSignature}
           measureIndex={measureIndex}
           timeSignature={timeSignature}
         />
@@ -476,4 +442,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);
