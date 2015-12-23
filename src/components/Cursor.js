@@ -7,7 +7,7 @@ export default class TabNote extends Component {
   render() {
     let { x, y, fret } = this.props;
 
-    let width = fret > 9 ? 20 : 15;
+    let width = fret > 9 ? 18 : 12;
     return (
       <g>
         <rect x={x} y={y-12} height={0.1} width={width} strokeWidth={0.1} stroke='black'></rect>

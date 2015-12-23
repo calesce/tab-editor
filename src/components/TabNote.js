@@ -61,7 +61,7 @@ export default class TabNote extends Component {
   render() {
     const { x, y, fret, color, dotted } = this.props;
 
-    let width = 14;
+    let width = 12;
     if(fret > 9) {
       width += 6;
     }
@@ -70,7 +70,8 @@ export default class TabNote extends Component {
       MozUserSelect: 'none',
       WebkitUserSelect: 'none',
       msUserSelect: 'none',
-      cursor: 'crosshair'
+      cursor: 'crosshair',
+      fontSize: 14
     };
 
     return (
