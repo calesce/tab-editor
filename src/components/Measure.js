@@ -47,8 +47,8 @@ export default class Measure extends Component {
     if(this.props.measure.renderTimeSignature) {
       x += 20;
     }
-    if(this.props.measure.notes.length === 0 && measureIndex !== 0 && !this.props.measure.timeSignature) {
-      x -= 25;
+    if(this.props.measure.notes.length === 0 && this.props.indexOfRow !== 0) {
+      x -= this.props.measure.renderTimeSignature ? 0 : 25;
     }
     return x;
   }
