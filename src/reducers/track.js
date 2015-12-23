@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { DELETE_MEASURE, INSERT_MEASURE, REPLACE_SONG } from '../actions/types';
+import { DELETE_MEASURE, INSERT_MEASURE, REPLACE_SONG, CHANGE_TUNING } from '../actions/types';
 import measure from './measure';
 
 const replaceMeasure = (state, action) => {
@@ -18,15 +18,27 @@ const replaceMeasure = (state, action) => {
 export default function track(state = {}, action) {
   switch(action.type) {
     case DELETE_MEASURE:
-      return state.measures.filter((_, index) => index !== action.measureIndex);
+      return {
+        measures: state.measures.filter((_, index) => index !== action.measureIndex),
+        tuning: state.tuning
+      };
 
     case INSERT_MEASURE:
-      return state.measures.concat({ timeSignature: '4/4', notes: [] });
+      return {
+        measures: state.measures.concat({ timeSignature: '4/4', notes: [] }),
+        tuning: state.tuning
+      };
 
     case REPLACE_SONG:
       return action.track;
 
+    case CHANGE_TUNING:
+      return Object.assign({}, state, { tuning: action.tuning });
+
     default:
-      return replaceMeasure(state.measures, action);
+      return {
+        measures: replaceMeasure(state.measures, action),
+        tuning: state.tuning
+      };
   }
 }

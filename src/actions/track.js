@@ -65,3 +65,10 @@ export function replaceSong(song) {
     song
   };
 }
+
+export function changeTuning(tuning) {
+  return {
+    type: types.CHANGE_TUNING,
+    tuning
+  };
+}

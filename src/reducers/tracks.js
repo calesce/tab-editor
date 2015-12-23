@@ -1,14 +1,17 @@
 import track from './track';
 
+const replaceTrack = (tracks, action, currentTrackIndex) => {
+  return tracks.map((t, index) => {
+    if(index === currentTrackIndex) {
+      return track(t, action);
+    }
+    return t;
+  });
+};
+
 export default function tracks(state = {}, action) {
-  if(state === {}) {
-    return {};
-  }
-
-  const newState = [ {
-    measures: track(state.tracks[state.currentTrackIndex], action),
-    tuning: state.tracks[state.currentTrackIndex].tuning
-  }];
-
-  return newState;
+  return {
+    tracks: replaceTrack(state.tracks, action, state.currentTrackIndex),
+    currentTrackIndex: state.currentTrackIndex
+  };
 }

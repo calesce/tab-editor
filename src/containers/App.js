@@ -396,6 +396,10 @@ class App extends Component {
     this.setState({ layout });
   }
 
+  openTuningModal = () => {
+    this.props.actions.changeTuning([ 'd2', 'g2', 'c3', 'f3', 'a3', 'd4' ]);
+  }
+
   render() {
     const { measures } = this.props.track;
     const { measureIndex } = this.state.currentEditingIndex;
@@ -411,6 +415,7 @@ class App extends Component {
           bpm={this.state.bpm}
           timeSignature={timeSignature}
           layout={this.state.layout}
+          openTuning={this.openTuningModal}
         />
         <TabRows track={measures}
           currentEditingIndex={this.state.currentEditingIndex}
