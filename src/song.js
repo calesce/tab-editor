@@ -1,5 +1,5 @@
 let track = {
-  tuning: [ 'd2', 'g2', 'c3', 'f3', 'a3', 'd4' ],
+  tuning: [ 'e2', 'a2', 'd3', 'g3', 'b3', 'e4' ],
   measures: [
   {
     timeSignature: '4/4',
