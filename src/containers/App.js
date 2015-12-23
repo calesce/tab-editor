@@ -417,26 +417,22 @@ class App extends Component {
           handlePlay={this.handlePlay}
           handleStop={this.handleStop}
           openModal={this.openTimeSignatureModal}
+          openTuning={this.openTuningModal}
           toggleLayout={this.toggleLayout}
           bpm={this.state.bpm}
           timeSignature={timeSignature}
           layout={this.state.layout}
-          openTuning={this.openTuningModal}
         />
-        <TabRows track={measures}
+        <TabRows track={measures} layout={this.state.layout}
           currentEditingIndex={this.state.currentEditingIndex}
           currentPlayingNote={this.state.currentPlayingNote}
           isPlaying={this.state.isPlaying}
           onClick={this.onNoteClick}
-          layout={this.state.layout}
         />
-      <TimeSignatureModal isOpen={this.state.timeSignatureModal}
-          closeModal={this.closeModal}
-          changeTimeSignature={this.props.actions.changeTimeSignature}
-          measureIndex={measureIndex}
-          timeSignature={timeSignature}
+        <TimeSignatureModal isOpen={this.state.timeSignatureModal} closeModal={this.closeModal}
+          measureIndex={measureIndex} timeSignature={timeSignature}
         />
-      <TuningModal isOpen={this.state.tuningModal} closeModal={this.closeModal} />
+        <TuningModal isOpen={this.state.tuningModal} closeModal={this.closeModal} />
       </div>
     );
   }
