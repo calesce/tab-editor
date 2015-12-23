@@ -39,8 +39,8 @@ export default class Measure extends Component {
     return timeSig === notesTotal;
   }
 
-  calcXForNote = (xOfMeasure, noteIndex, measureIndex, timeSignature) => {
-    let x = xOfMeasure + (noteIndex * 55 + 39);
+  calcXForNote = (noteIndex, measureIndex) => {
+    let x = 0 + (noteIndex * 55 + 39);
     if(measureIndex === 0) {
       x += 15;
     }
@@ -78,13 +78,13 @@ export default class Measure extends Component {
       strokeWidth = 0.1;
     }
 
-    return <Bars x={x} measureWidth={measureWidth} color={color} strokeWidth={strokeWidth} />;
+    return <Bars x={0} measureWidth={measureWidth} color={color} strokeWidth={strokeWidth} />;
   }
 
-  renderCursor = (xOfMeasure) => {
+  renderCursor = () => {
     const { noteIndex, stringIndex, measureIndex } = this.props.currentEditingIndex;
     if(this.props.totalMeasureIndex === measureIndex && !this.props.isPlaying) {
-      const x = this.calcXForNote(xOfMeasure, noteIndex, measureIndex);
+      const x = this.calcXForNote(noteIndex, measureIndex);
       const y = 79 - (13 * stringIndex);
 
       let index = 0;
@@ -101,8 +101,8 @@ export default class Measure extends Component {
     return null;
   }
 
-  renderNote = (note, measureIndex, noteIndex, xOfMeasure) => {
-    const x = this.calcXForNote(xOfMeasure, noteIndex, measureIndex);
+  renderNote = (note, measureIndex, noteIndex) => {
+    const x = this.calcXForNote(noteIndex, measureIndex);
     const { currentPlayingNote, isPlaying } = this.props;
 
     let color = 'black';
@@ -126,8 +126,8 @@ export default class Measure extends Component {
     });
   }
 
-  renderTimeSignature = (totalMeasureIndex, x, measure) => {
-    x = totalMeasureIndex === 0 ? x + 36 : x + 20;
+  renderTimeSignature = (totalMeasureIndex, measure) => {
+    const x = this.props.indexOfRow === 0 ? 36 : 20;
     const { renderTimeSignature, timeSignature } = measure;
 
     return renderTimeSignature ? <TimeSignature x={x} numerator={timeSignature[0]} denominator={timeSignature.slice(2, 4)} /> : null;
@@ -145,14 +145,14 @@ export default class Measure extends Component {
   }
 
   render() {
-    const { measure, x, y, totalMeasureIndex } = this.props;
+    const { measure, x, y, totalMeasureIndex, indexOfRow } = this.props;
 
     return (
-      <svg x={0} y={y} style={{ height: 250, width: measure.width }}>
+      <svg x={x} y={y} style={{ height: 250, width: measure.width }}>
         { this.renderMeasure(totalMeasureIndex, measure, x) }
-        { totalMeasureIndex === 0 ? <Clef /> : null }
-        { this.renderTimeSignature(totalMeasureIndex, x, measure) }
-        { this.renderCursor(x) }
+        { indexOfRow === 0 ? <Clef /> : null }
+        { this.renderTimeSignature(totalMeasureIndex, measure) }
+        { this.renderCursor() }
       </svg>
     );
   }
