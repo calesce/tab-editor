@@ -8,11 +8,9 @@ import TimeSignature from './TimeSignature';
 import Cursor from './Cursor';
 
 export default class Measure extends Component {
-  calcMeasureValidity = () => {
-    const { measure } = this.props;
-
-    let timeSig = parseInt(measure.timeSignature[0]) / parseInt(measure.timeSignature.slice(2, 4));
-    let notesTotal = measure.notes.reduce((total, note) => {
+  calcMeasureValidity = (measure) => {
+    const timeSig = parseInt(measure.timeSignature[0]) / parseInt(measure.timeSignature.slice(2, 4));
+    const notesTotal = measure.notes.reduce((total, note) => {
       let duration;
       switch(note.duration) {
         case 'q':
@@ -64,9 +62,8 @@ export default class Measure extends Component {
   }
 
   renderBars = (x, measureWidth, measureIndex) => {
-    let { currentPlayingNote, isPlaying } = this.props;
-
-    let isValid = this.calcMeasureValidity();
+    const { currentPlayingNote, isPlaying, measure } = this.props;
+    const isValid = this.calcMeasureValidity(measure);
 
     let color, strokeWidth;
 
@@ -87,8 +84,8 @@ export default class Measure extends Component {
   renderCursor = (xOfMeasure) => {
     const { noteIndex, stringIndex, measureIndex } = this.props.currentEditingIndex;
     if(this.props.totalMeasureIndex === measureIndex && !this.props.isPlaying) {
-      let x = this.calcXForNote(xOfMeasure, noteIndex, measureIndex);
-      let y = 79 - (13 * stringIndex);
+      const x = this.calcXForNote(xOfMeasure, noteIndex, measureIndex);
+      const y = 79 - (13 * stringIndex);
 
       let index = 0;
       let fret = 0;
@@ -105,8 +102,8 @@ export default class Measure extends Component {
   }
 
   renderNote = (note, measureIndex, noteIndex, xOfMeasure) => {
-    let x = this.calcXForNote(xOfMeasure, noteIndex, measureIndex);
-    let { currentPlayingNote, isPlaying } = this.props;
+    const x = this.calcXForNote(xOfMeasure, noteIndex, measureIndex);
+    const { currentPlayingNote, isPlaying } = this.props;
 
     let color = 'black';
     if(currentPlayingNote.measure === measureIndex && currentPlayingNote.noteIndex === noteIndex && isPlaying) {
@@ -118,8 +115,7 @@ export default class Measure extends Component {
     }
 
     return note.string.map((string, i) => {
-      let y = 80 - (13 * string);
-
+      const y = 80 - (13 * string);
       return (
         <g>
           <TabNote onClick={this.onClick.bind(this, noteIndex, string)} key={i} duration={note.duration} x={x} y={y} color={color}
@@ -132,7 +128,7 @@ export default class Measure extends Component {
 
   renderTimeSignature = (totalMeasureIndex, x, measure) => {
     x = totalMeasureIndex === 0 ? x + 36 : x + 20;
-    let { renderTimeSignature, timeSignature } = measure;
+    const { renderTimeSignature, timeSignature } = measure;
 
     return renderTimeSignature ? <TimeSignature x={x} numerator={timeSignature[0]} denominator={timeSignature.slice(2, 4)} /> : null;
   }
@@ -149,7 +145,7 @@ export default class Measure extends Component {
   }
 
   render() {
-    let { measure, x, y, totalMeasureIndex } = this.props;
+    const { measure, x, y, totalMeasureIndex } = this.props;
 
     return (
       <svg x={0} y={y} style={{ height: 250, width: measure.width }}>
