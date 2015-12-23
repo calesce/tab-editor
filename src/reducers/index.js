@@ -1,8 +1,8 @@
-import { combineReducers } from 'redux';
-import track from './track';
+import tracks from './tracks';
 
-const rootReducer = combineReducers({
-  track
-});
-
-export default rootReducer;
+export default function rootReducer(state = {}, action) {
+  return {
+    tracks: tracks(state, action),
+    currentTrackIndex: state.currentTrackIndex
+  };
+}

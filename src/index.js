@@ -5,7 +5,10 @@ import Root from './containers/Root';
 import configureStore from './util/configureStore';
 import track from './song';
 
-const store = configureStore({ track });
+const store = configureStore({
+  tracks: [track],
+  currentTrackIndex: 0
+});
 
 render(
   <Root store={store} />,
