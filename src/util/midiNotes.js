@@ -16,3 +16,15 @@ const midis = [
 export function getIndexOfNote(midi) {
   return _.indexOf(midis, midi);
 }
+
+export function previousNote(midi) {
+  let index = getIndexOfNote(midi);
+
+  return index === 0 ? midi : midis[index - 1];
+}
+
+export function nextNote(midi) {
+  let index = getIndexOfNote(midi);
+
+  return index >= midis.length - 1 ? midi : midis[index + 1];
+}

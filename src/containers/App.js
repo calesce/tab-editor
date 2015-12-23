@@ -9,6 +9,7 @@ import Soundfont from 'soundfont-player';
 import TabRows from '../components/TabRows';
 import EditorArea from '../components/editor/EditorArea';
 import TimeSignatureModal from '../components/editor/TimeSignatureModal';
+import TuningModal from '../components/editor/TuningModal';
 
 class App extends Component {
   constructor(props) {
@@ -342,6 +343,8 @@ class App extends Component {
       return;
     } else if(this.state.isPlaying && event.keyCode !== 32) {
       return;
+    } else if(this.state.tuningModal || this.state.timeSignatureModal) {
+      return;
     }
 
     if(event.keyCode <= 57 && event.keyCode >= 48) {
@@ -381,13 +384,14 @@ class App extends Component {
 
   openTimeSignatureModal = () => {
     this.setState({
-      modalIsOpen: true
+      timeSignatureModal: true
     });
   }
 
   closeModal = () => {
     this.setState({
-      modalIsOpen: false
+      timeSignatureModal: false,
+      tuningModal: false
     });
   }
 
@@ -397,11 +401,13 @@ class App extends Component {
   }
 
   openTuningModal = () => {
-    this.props.actions.changeTuning([ 'd2', 'g2', 'c3', 'f3', 'a3', 'd4' ]);
+    this.setState({
+      tuningModal: true
+    });
   }
 
   render() {
-    const { measures } = this.props.track;
+    const { measures, tuning } = this.props.track;
     const { measureIndex } = this.state.currentEditingIndex;
     const timeSignature = measures[measureIndex] ? measures[measureIndex].timeSignature : '4/4';
 
@@ -424,12 +430,13 @@ class App extends Component {
           onClick={this.onNoteClick}
           layout={this.state.layout}
         />
-        <TimeSignatureModal isOpen={this.state.modalIsOpen}
+      <TimeSignatureModal isOpen={this.state.timeSignatureModal}
           closeModal={this.closeModal}
           changeTimeSignature={this.props.actions.changeTimeSignature}
           measureIndex={measureIndex}
           timeSignature={timeSignature}
         />
+      <TuningModal isOpen={this.state.tuningModal} closeModal={this.closeModal} />
       </div>
     );
   }
