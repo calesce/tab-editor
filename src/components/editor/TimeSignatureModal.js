@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import Modal from 'react-modal';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+
+import { changeTimeSignature } from '../../actions/track';
 
 export default class TimeSignatureModal extends Component {
   onRequestClose = () => {
@@ -58,3 +62,11 @@ export default class TimeSignatureModal extends Component {
     );
   }
 }
+
+function mapDispatchToProps(dispatch) {
+  return {
+    changeTimeSignature: bindActionCreators(changeTimeSignature, dispatch)
+  };
+}
+
+export default connect(null, mapDispatchToProps)(TimeSignatureModal);
