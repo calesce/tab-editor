@@ -139,7 +139,7 @@ class App extends Component {
   }
 
   handlePlay = (event) => {
-    if(this.state.isPlaying) {
+    if(this.state.isPlaying || !this.state.buffers) {
       return;
     }
 
