@@ -1,6 +1,9 @@
 Tab Editor
 =====================
 
+### Demo
+[calesce.github.io/tab-editor](https://calesce.github.io/tab-editor)
+
 ### Development
 
 ```
