@@ -466,7 +466,7 @@ class App extends Component {
 
 function mapStateToProps(state) {
   return {
-    track: state.track
+    track: state.tracks[state.currentTrackIndex]
   };
 }
 
