@@ -72,3 +72,26 @@ export function changeTuning(tuning) {
     tuning
   };
 }
+
+export function copyNote(note) {
+  return {
+    type: types.COPY_NOTE,
+    note
+  };
+}
+
+export function cutNote(index, note) {
+  return {
+    type: types.CUT_NOTE,
+    index,
+    note
+  };
+}
+
+export function pasteNote(index, note) {
+  return {
+    type: types.PASTE_NOTE,
+    index,
+    note
+  };
+}

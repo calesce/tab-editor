@@ -8,3 +8,6 @@ export const CHANGE_TIME_SIGNATURE = 'CHANGE_TIME_SIGNATURE';
 export const TOGGLE_NOTE_DOTTED = 'TOGGLE_NOTE_DOTTED';
 export const REPLACE_SONG = 'REPLACE_SONG';
 export const CHANGE_TUNING = 'CHANGE_TUNING';
+export const COPY_NOTE = 'COPY_NOTE';
+export const CUT_NOTE = 'CUT_NOTE';
+export const PASTE_NOTE = 'PASTE_NOTE';

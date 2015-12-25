@@ -161,6 +161,13 @@ class App extends Component {
     });
   }
 
+  getCurrentNote = () => {
+    const { measures } = this.props.track;
+    const { measureIndex, noteIndex, stringIndex } = this.state.currentEditingIndex;
+
+    return measures[measureIndex].notes[noteIndex];
+  }
+
   getNextNote = (measureIndex, noteIndex) => {
     const { measures } = this.props.track;
 
@@ -338,7 +345,49 @@ class App extends Component {
     }
   }
 
+  pasteNote = () => {
+    const { measureIndex, noteIndex, stringIndex } = this.state.currentEditingIndex;
+
+    this.props.actions.pasteNote(this.state.currentEditingIndex, this.props.clipboard);
+    this.setState({
+      currentEditingIndex: {
+        measureIndex,
+        noteIndex: this.props.track.measures[measureIndex].notes.length === 1 && noteIndex === 0 ? 0 : noteIndex + 1,
+        stringIndex
+      }
+    });
+  }
+
   handleKeyPress = (event) => {
+    if((event.metaKey || event.ctrlKey) && event.keyCode === 67) { // cmd/ctrl+c
+      event.preventDefault();
+      return this.props.actions.copyNote(this.getCurrentNote());
+    }
+    if((event.metaKey || event.ctrlKey) && event.keyCode === 86) { // cmd/ctrl+v
+      event.preventDefault();
+      return this.pasteNote();
+    }
+    if((event.metaKey || event.ctrlKey) && event.keyCode === 88) { // cmd/ctrl+c
+      event.preventDefault();
+      const { noteIndex, measureIndex, stringIndex } = this.state.currentEditingIndex;
+      let notes = this.props.track.measures[measureIndex].notes;
+      if(notes.length > 1 && noteIndex === notes.length - 1) {
+        const currentNote = this.getCurrentNote();
+
+        this.setState({
+          currentEditingIndex: {
+            stringIndex,
+            measureIndex,
+            noteIndex: noteIndex - 1
+          }
+        }, () => {
+          this.props.actions.cutNote({ noteIndex: noteIndex, measureIndex, stringIndex }, currentNote);
+        });
+      } else {
+        return this.props.actions.cutNote({ noteIndex, measureIndex, stringIndex }, this.getCurrentNote());
+      }
+    }
+
     if(event.metaKey) {
       return;
     } else if(this.state.isPlaying && event.keyCode !== 32) {
@@ -440,7 +489,8 @@ class App extends Component {
 
 function mapStateToProps(state) {
   return {
-    track: state.tracks[state.currentTrackIndex]
+    track: state.tracks[state.currentTrackIndex],
+    clipboard: state.clipboard
   };
 }
 
