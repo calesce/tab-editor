@@ -56,8 +56,30 @@ class App extends Component {
     this.forceUpdate();
   }
 
+  getXOfCurrentNote = () => {
+    const { measure, noteIndex } = this.state.currentPlayingNote;
+    const xOfMeasures = this.props.track.measures.reduce((acc, curr, i) => {
+      if(i >= measure) {
+        return acc;
+      }
+      return acc + curr.width;
+    }, 0);
+
+    return xOfMeasures + 55 * noteIndex;
+  }
+
+  updateScrollPosition = () => {
+    const x = this.getXOfCurrentNote();
+    const scrollX = window.scrollX;
+
+    if(x > window.innerWidth + scrollX - 50 && this.state.layout === 'linear') {
+      window.scroll(x, 0);
+    }
+  }
+
   startPlayback = () => {
     let startTimestamp = Date.now();
+    this.updateScrollPosition();
     playCurrentNote(this.state.audioContext, this.props.track, this.state.bpm, this.state.currentPlayingNote, this.state.buffers);
 
     this.setState({
@@ -102,6 +124,7 @@ class App extends Component {
             this.loopThroughSong(currentTimestamp);
           })
         }, () => {
+          this.updateScrollPosition();
           playCurrentNote(audioContext, this.props.track, this.state.bpm, this.state.currentPlayingNote, this.state.buffers);
         });
       } else {
@@ -119,6 +142,7 @@ class App extends Component {
             this.loopThroughSong(currentTimestamp);
           })
         }, () => {
+          this.updateScrollPosition();
           playCurrentNote(audioContext, this.props.track, this.state.bpm, this.state.currentPlayingNote, this.state.buffers);
         });
       }
