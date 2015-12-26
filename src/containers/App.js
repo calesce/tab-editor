@@ -72,8 +72,8 @@ class App extends Component {
     const x = this.getXOfCurrentNote();
     const scrollX = window.scrollX;
 
-    if(x > window.innerWidth + scrollX - 50 && this.state.layout === 'linear') {
-      window.scroll(x, 0);
+    if(x > window.innerWidth + scrollX - 200 && this.state.layout === 'linear') {
+      window.scroll(x - 200, 0);
     }
   }
 
