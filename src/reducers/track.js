@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { computeMeasureWidths } from '../util';
 import { DELETE_MEASURE, INSERT_MEASURE, REPLACE_SONG, CHANGE_TUNING } from '../actions/types';
 import measure from './measure';
 
@@ -25,7 +25,7 @@ export default function track(state = {}, action) {
 
     case INSERT_MEASURE:
       return {
-        measures: state.measures.concat({ timeSignature: '4/4', notes: [] }),
+        measures: computeMeasureWidths(state.measures.concat({ timeSignature: '4/4', notes: [] })),
         tuning: state.tuning
       };
 
@@ -37,7 +37,7 @@ export default function track(state = {}, action) {
 
     default:
       return {
-        measures: replaceMeasure(state.measures, action),
+        measures: computeMeasureWidths(replaceMeasure(state.measures, action)),
         tuning: state.tuning
       };
   }

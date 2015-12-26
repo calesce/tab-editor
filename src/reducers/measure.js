@@ -9,7 +9,7 @@ const replaceNote = (state, note, noteIndex) => {
   return Object.assign({}, state, { notes });
 };
 
-export function insertNote(state, action) {
+const insertNote = (state, action) => {
   if(state.notes.length === 0) {
     const notes = [{
       duration: 'q',
@@ -27,7 +27,7 @@ export function insertNote(state, action) {
   };
   const notes = _.flatten([state.notes.slice(0, noteIndex + 1), note, state.notes.slice(noteIndex + 1, state.notes.length)]);
   return Object.assign({}, state, { notes });
-}
+};
 
 const deleteNote = (state, action) => {
   const { noteIndex, stringIndex } = action.index;
@@ -51,7 +51,7 @@ const deleteNote = (state, action) => {
     } else {
       newNote = {
         fret: note.fret.filter((fret, i) => i !== currentStringIndex),
-        string:  note.string.filter((string, i) => string !== stringIndex),
+        string:  note.string.filter((string) => string !== stringIndex),
         duration: note.duration,
         dotted: note.dotted
       };

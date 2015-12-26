@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import _ from 'lodash';
-
 import TabStaff from './TabStaff';
 
 export default class TabRows extends Component {
@@ -24,46 +22,12 @@ export default class TabRows extends Component {
     }, [[]]);
   }
 
-  singleRowTrack = (track) => {
-    return [track];
-  }
-
-  computeMeasureWidths = (track) => {
-    return track.map((measure, index) => {
-      let width = 55 * measure.notes.length;
-      if(measure.notes.length === 0) {
-        width = 40;
-      }
-      if(index === 0) {
-        width += 15;
-      }
-
-      let prevMeasure = track[index-1];
-      if(prevMeasure && prevMeasure.timeSignature === measure.timeSignature) {
-        return {
-          ...measure,
-          width
-        };
-      }
-      width += 30;
-      if(measure.notes.length === 0) {
-        width += 20;
-      }
-
-      return {
-        ...measure,
-        width,
-        renderTimeSignature: true
-      };
-    });
-  }
-
   pageTrack = (track) => {
-    return _.compose(this.convertTrackIntoRows, this.computeMeasureWidths)(track);
+    return this.convertTrackIntoRows(track);
   }
 
   linearTrack = (track) => {
-    return _.compose(this.singleRowTrack, this.computeMeasureWidths)(track);
+    return [track];
   }
 
   render() {
