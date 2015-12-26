@@ -5,7 +5,7 @@ let currentPlayingIndex = {
   noteIndex: 0
 };
 
-let handlePlay = (event) => {
+exports.handlePlay = () => {
   noteTime = 0.0;
 
   this.setState({
@@ -17,7 +17,7 @@ let handlePlay = (event) => {
   });
 };
 
-let schedule = () => {
+exports.schedule = () => {
   let currentTime = this.state.audioContext.currentTime - this.state.startTime;
 
   while(noteTime < currentTime + 0.200) {
@@ -36,7 +36,7 @@ let schedule = () => {
   requestId = requestAnimationFrame(this.schedule);
 };
 
-let advanceNote = (measure, noteIndex) => {
+exports.advanceNote = (measure, noteIndex) => {
   let tempo = 60.0;
   let secondsPerBeat = 60.0 / tempo;
   noteTime = noteTime + (0.5 * secondsPerBeat);
@@ -59,6 +59,6 @@ let advanceNote = (measure, noteIndex) => {
   }
 };
 
-let handleStop = () => {
+exports.handleStop = () => {
   cancelAnimationFrame(requestId);
 };

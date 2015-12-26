@@ -139,7 +139,7 @@ class App extends Component {
     });
   }
 
-  handlePlay = (event) => {
+  handlePlay = () => {
     if(this.state.isPlaying || !this.state.buffers) {
       return;
     }
@@ -163,7 +163,7 @@ class App extends Component {
 
   getCurrentNote = () => {
     const { measures } = this.props.track;
-    const { measureIndex, noteIndex, stringIndex } = this.state.currentEditingIndex;
+    const { measureIndex, noteIndex } = this.state.currentEditingIndex;
 
     return measures[measureIndex].notes[noteIndex];
   }
@@ -456,7 +456,7 @@ class App extends Component {
   }
 
   render() {
-    const { measures, tuning } = this.props.track;
+    const { measures } = this.props.track;
     const { measureIndex } = this.state.currentEditingIndex;
     const timeSignature = measures[measureIndex] ? measures[measureIndex].timeSignature : '4/4';
 

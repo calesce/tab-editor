@@ -32,7 +32,7 @@ export default class TabNote extends Component {
   }
 
   renderStem = () => {
-    const { x, color, fret } = this.props;
+    const { x, color } = this.props;
 
     switch(this.props.duration) {
       case 'q':
