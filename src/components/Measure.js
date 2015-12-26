@@ -39,7 +39,7 @@ export default class Measure extends Component {
     return timeSig === notesTotal;
   }
 
-  calcXForNote = (noteIndex, measureIndex) => {
+  calcXForNote = (noteIndex) => {
     let x = 0 + (noteIndex * 53 + 33);
     if(this.props.indexOfRow === 0) {
       x += 8;
@@ -84,7 +84,7 @@ export default class Measure extends Component {
   renderCursor = () => {
     const { noteIndex, stringIndex, measureIndex } = this.props.currentEditingIndex;
     if(this.props.totalMeasureIndex === measureIndex && !this.props.isPlaying) {
-      const x = this.calcXForNote(noteIndex, measureIndex);
+      const x = this.calcXForNote(noteIndex);
       const y = 79 - (13 * stringIndex);
 
       let index = 0;
@@ -102,7 +102,7 @@ export default class Measure extends Component {
   }
 
   renderNote = (note, measureIndex, noteIndex) => {
-    const x = this.calcXForNote(noteIndex, measureIndex);
+    const x = this.calcXForNote(noteIndex);
     const { currentPlayingNote, isPlaying } = this.props;
 
     let color = 'black';

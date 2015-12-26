@@ -1,4 +1,3 @@
-import noteToMidi from 'note.midi';
 import { getIndexOfNote } from './midiNotes';
 
 const getSpeedFromBpm = (bpm) => {

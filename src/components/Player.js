@@ -9,7 +9,7 @@ export default class Player extends Component {
     };
   }
 
-  componentWillUpdate = (nextProps, nextState) => {
+  componentWillUpdate = (nextProps) => {
     if(nextProps.isPlaying && !this.state.timer) {
       this.startPlayback();
     } else if(nextProps.isPlaying) {
