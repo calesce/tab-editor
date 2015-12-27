@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
+import shouldPureComponentUpdate from 'react-pure-render/function';
 
 export default class EditorArea extends Component {
+  shouldComponentUpdate = shouldPureComponentUpdate;
+
   render() {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', height: '50' }}>
