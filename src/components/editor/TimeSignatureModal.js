@@ -3,7 +3,7 @@ import Modal from 'react-modal';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { changeTimeSignature } from '../../actions/track';
+import { changeTimeSignature } from '../../actions/measure';
 
 export default class TimeSignatureModal extends Component {
   onRequestClose = () => {
