@@ -3,12 +3,12 @@ import { render } from 'react-dom';
 
 import Root from './containers/Root';
 import configureStore from './util/configureStore';
-import { computeMeasureWidths } from './util';
+import { prepareRows } from './util';
 import track from './song';
 
 const trackWithWidths = {
   ...track,
-  measures: computeMeasureWidths(track.measures)
+  measures: prepareRows(track.measures)
 };
 
 const store = configureStore({
