@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as Actions from '../actions/track';
+import _ from 'lodash';
+import * as TrackActions from '../actions/track';
+import * as MeasureActions from '../actions/measure';
 import { playCurrentNote, getReplaySpeedForNote } from '../util/audio';
 
 import Soundfont from 'soundfont-player';
@@ -10,6 +12,8 @@ import TabRows from '../components/TabRows';
 import EditorArea from '../components/editor/EditorArea';
 import TimeSignatureModal from '../components/editor/TimeSignatureModal';
 import TuningModal from '../components/editor/TuningModal';
+
+const Actions = _.merge(TrackActions, MeasureActions);
 
 class App extends Component {
   constructor(props) {
@@ -347,18 +351,9 @@ class App extends Component {
 
   insertNote = () => {
     const { noteIndex, measureIndex, stringIndex } = this.state.currentEditingIndex;
-
     this.props.actions.insertNote(this.state.currentEditingIndex);
 
-    if(this.props.track.measures[measureIndex].notes.length === 1) {
-      this.setState({
-        currentEditingIndex: {
-          measureIndex,
-          stringIndex,
-          noteIndex: 0
-        }
-      });
-    } else {
+    if(this.props.track.measures[measureIndex].notes.length !== 1) {
       this.setState({
         currentEditingIndex: {
           measureIndex,
