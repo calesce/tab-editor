@@ -1,4 +1,4 @@
-import { computeMeasureWidths } from '../util';
+import { prepareRows } from '../util';
 import { DELETE_MEASURE, INSERT_MEASURE, REPLACE_SONG, CHANGE_TUNING } from '../actions/types';
 import measure from './measure';
 
@@ -25,7 +25,7 @@ export default function track(state = {}, action) {
 
     case INSERT_MEASURE:
       return {
-        measures: computeMeasureWidths(state.measures.concat({ timeSignature: '4/4', notes: [] })),
+        measures: prepareRows(state.measures.concat({ timeSignature: '4/4', notes: [] })),
         tuning: state.tuning
       };
 
@@ -37,7 +37,7 @@ export default function track(state = {}, action) {
 
     default:
       return {
-        measures: computeMeasureWidths(replaceMeasure(state.measures, action)),
+        measures: prepareRows(replaceMeasure(state.measures, action)),
         tuning: state.tuning
       };
   }
