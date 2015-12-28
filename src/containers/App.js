@@ -12,6 +12,7 @@ import TabRows from '../components/TabRows';
 import EditorArea from '../components/editor/EditorArea';
 import TimeSignatureModal from '../components/editor/TimeSignatureModal';
 import TuningModal from '../components/editor/TuningModal';
+import BpmModal from '../components/editor/BpmModal';
 
 const Actions = _.merge(TrackActions, MeasureActions);
 
@@ -43,7 +44,6 @@ class App extends Component {
       },
       audioContext,
       isPlaying: false,
-      bpm: 120,
       layout: 'page'
     };
   }
@@ -84,7 +84,7 @@ class App extends Component {
   startPlayback = () => {
     let startTimestamp = Date.now();
     this.updateScrollPosition();
-    playCurrentNote(this.state.audioContext, this.props.track, this.state.bpm, this.state.currentPlayingNote, this.state.buffers);
+    playCurrentNote(this.state.audioContext, this.props.track, this.state.currentPlayingNote, this.state.buffers);
 
     this.setState({
       timer: requestAnimationFrame(() => {
@@ -94,14 +94,15 @@ class App extends Component {
   }
 
   loopThroughSong = (startTimestamp) => {
-    let { currentPlayingNote, bpm, audioContext } = this.state;
+    let { currentPlayingNote, audioContext } = this.state;
     let { measure, noteIndex } = currentPlayingNote;
     let { measures } = this.props.track;
 
     let currentTimestamp = Date.now();
     let replayDiff = currentTimestamp - startTimestamp;
 
-    let measureToPlay = measures[currentPlayingNote.measure];
+    const measureToPlay = measures[currentPlayingNote.measure];
+    const bpm = measureToPlay.bpm;
 
     let replaySpeed;
     if(measureToPlay.notes.length > 0) {
@@ -129,7 +130,7 @@ class App extends Component {
           })
         }, () => {
           this.updateScrollPosition();
-          playCurrentNote(audioContext, this.props.track, this.state.bpm, this.state.currentPlayingNote, this.state.buffers);
+          playCurrentNote(audioContext, this.props.track, this.state.currentPlayingNote, this.state.buffers);
         });
       } else {
         this.setState({
@@ -147,7 +148,7 @@ class App extends Component {
           })
         }, () => {
           this.updateScrollPosition();
-          playCurrentNote(audioContext, this.props.track, this.state.bpm, this.state.currentPlayingNote, this.state.buffers);
+          playCurrentNote(audioContext, this.props.track, this.state.currentPlayingNote, this.state.buffers);
         });
       }
     } else {
@@ -378,6 +379,10 @@ class App extends Component {
   }
 
   handleKeyPress = (event) => {
+    if(this.state.timeSignatureModal || this.state.tuningModal || this.state.bpmModal) {
+      return;
+    }
+
     if((event.metaKey || event.ctrlKey) && event.keyCode === 67) { // cmd/ctrl+c
       event.preventDefault();
       return this.props.actions.copyNote(this.getCurrentNote());
@@ -444,22 +449,23 @@ class App extends Component {
     }
   }
 
-  bpmChanged = (event) => {
-    this.setState({
-      bpm: event.target.value
-    });
-  }
-
   openTimeSignatureModal = () => {
     this.setState({
       timeSignatureModal: true
     });
   }
 
+  openBpmModal = () => {
+    this.setState({
+      bpmModal: true
+    });
+  }
+
   closeModal = () => {
     this.setState({
       timeSignatureModal: false,
-      tuningModal: false
+      tuningModal: false,
+      bpmModal: false
     });
   }
 
@@ -481,13 +487,12 @@ class App extends Component {
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <EditorArea bpmChanged={this.bpmChanged}
-          handlePlay={this.handlePlay}
+        <EditorArea handlePlay={this.handlePlay}
           handleStop={this.handleStop}
           openModal={this.openTimeSignatureModal}
           openTuning={this.openTuningModal}
+          openBpm={this.openBpmModal}
           toggleLayout={this.toggleLayout}
-          bpm={this.state.bpm}
           timeSignature={timeSignature}
           layout={this.state.layout}
         />
@@ -501,6 +506,7 @@ class App extends Component {
           measureIndex={measureIndex} timeSignature={timeSignature}
         />
         <TuningModal isOpen={this.state.tuningModal} closeModal={this.closeModal} />
+        <BpmModal isOpen={this.state.bpmModal} closeModal={this.closeModal} index={this.state.currentEditingIndex} />
       </div>
     );
   }

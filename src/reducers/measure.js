@@ -64,8 +64,8 @@ export default function measure(state, action) {
   switch(action.type) {
     case CHANGE_TIME_SIGNATURE: {
       return {
-        timeSignature: action.timeSignature,
-        notes: state.notes
+        ...state,
+        timeSignature: action.timeSignature
       };
     }
 

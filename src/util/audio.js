@@ -78,10 +78,11 @@ const playNoteAtTime = (audioContext, currentNote, playTime, duration, buffers, 
   }
 };
 
-exports.playCurrentNote = (audioContext, track, bpm, playingIndex, buffers) => {
+exports.playCurrentNote = (audioContext, track, playingIndex, buffers) => {
   const { measures, tuning } = track;
 
   let measure = measures[playingIndex.measure];
+  const bpm = measure.bpm;
   let noteToPlay;
   if(measure.notes.length > 0) {
     noteToPlay = measure.notes[playingIndex.noteIndex];

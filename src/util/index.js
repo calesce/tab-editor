@@ -60,3 +60,10 @@ const trackWithRows = (track) => {
 export function prepareRows(track) {
   return trackWithRows(computeMeasureWidths(track));
 }
+
+export function defaultBpm(measures) {
+  return measures.map((measure) => ({
+    ...measure,
+    bpm: 120
+  }));
+}
