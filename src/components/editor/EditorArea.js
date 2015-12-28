@@ -12,6 +12,7 @@ export default class EditorArea extends Component {
         <button onClick={this.props.openModal}>{this.props.timeSignature}</button>
         <button onClick={this.props.toggleLayout}>{this.props.layout}</button>
         <button onClick={this.props.openTuning}>tuning</button>
+        <button onClick={this.props.openBpm}>bpm</button>
       </div>
     );
   }

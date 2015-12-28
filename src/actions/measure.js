@@ -52,3 +52,12 @@ export function pasteNote(index, note) {
     note
   };
 }
+
+export function changeBpm(index, bpm, all) {
+  return {
+    type: types.CHANGE_BPM,
+    index,
+    bpm,
+    all
+  };
+}

@@ -1,5 +1,5 @@
 import { prepareRows } from '../util';
-import { DELETE_MEASURE, INSERT_MEASURE, REPLACE_SONG, CHANGE_TUNING } from '../actions/types';
+import { DELETE_MEASURE, INSERT_MEASURE, REPLACE_SONG, CHANGE_TUNING, CHANGE_BPM } from '../actions/types';
 import measure from './measure';
 
 const replaceMeasure = (state, action) => {
@@ -24,8 +24,14 @@ export default function track(state = {}, action) {
       };
 
     case INSERT_MEASURE:
+      const lastMeasure = state.measures[state.measures.length - 1];
+
       return {
-        measures: prepareRows(state.measures.concat({ timeSignature: '4/4', notes: [] })),
+        measures: prepareRows(state.measures.concat({
+          timeSignature: lastMeasure.timeSignature,
+          bpm: lastMeasure.bpm,
+          notes: []
+        })),
         tuning: state.tuning
       };
 
@@ -34,6 +40,31 @@ export default function track(state = {}, action) {
 
     case CHANGE_TUNING:
       return Object.assign({}, state, { tuning: action.tuning });
+
+    case CHANGE_BPM:
+      if(action.all) {
+        return {
+          ...state,
+          measures: state.measures.map((measure) => ({
+            ...measure,
+            bpm: action.bpm
+          }))
+        };
+      }
+      else {
+        return {
+          ...state,
+          measures: state.measures.map((measure, i) => {
+            if(action.index.measureIndex > i) {
+              return measure;
+            }
+            return {
+              ...measure,
+              bpm: action.bpm
+            };
+          })
+        };
+      }
 
     default:
       return {
