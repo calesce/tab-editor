@@ -78,7 +78,7 @@ export default class Measure extends Component {
       strokeWidth = 0.1;
     }
 
-    return <Bars x={0} measureWidth={measureWidth} color={color} strokeWidth={strokeWidth} />;
+    return <Bars measureWidth={measureWidth} color={color} strokeWidth={strokeWidth} />;
   }
 
   renderCursor = () => {
@@ -145,11 +145,10 @@ export default class Measure extends Component {
   }
 
   render() {
-    const { measure, x, y, totalMeasureIndex, indexOfRow } = this.props;
-
+    const { measure, totalMeasureIndex, indexOfRow } = this.props;
     return (
-      <svg x={x} y={y} style={{ height: 250, width: measure.width }}>
-        { this.renderMeasure(totalMeasureIndex, measure, x) }
+      <svg style={{ height: 170, width: measure.width }}>
+        { this.renderMeasure(totalMeasureIndex, measure, 0) }
         { indexOfRow === 0 ? <Clef /> : null }
         { this.renderTimeSignature(totalMeasureIndex, measure) }
         { this.renderCursor() }

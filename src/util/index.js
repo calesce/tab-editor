@@ -46,7 +46,7 @@ const trackWithRows = (track) => {
     }, 0);
 
     let newRowIndex = currentRow;
-    if(currentRowWidth + (55 * measure.notes.length) > window.innerWidth - 20) {
+    if(currentRowWidth + measure.width >= window.innerWidth - 9) {
       newRowIndex = currentRow + 1;
     }
 
