@@ -57,7 +57,7 @@ class App extends Component {
   }
 
   handleResize = () => {
-    this.forceUpdate();
+    this.props.actions.resize();
   }
 
   getXOfCurrentNote = () => {
