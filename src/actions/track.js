@@ -42,3 +42,9 @@ export function cutNote(index, note) {
     note
   };
 }
+
+export function resize() {
+  return {
+    type: types.RESIZE
+  };
+}
