@@ -12,3 +12,4 @@ export const COPY_NOTE = 'COPY_NOTE';
 export const CUT_NOTE = 'CUT_NOTE';
 export const PASTE_NOTE = 'PASTE_NOTE';
 export const CHANGE_BPM = 'CHANGE_BPM';
+export const RESIZE = 'RESIZE';
