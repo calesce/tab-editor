@@ -486,7 +486,7 @@ class App extends Component {
     const timeSignature = measures[measureIndex] ? measures[measureIndex].timeSignature : '4/4';
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%' }}>
         <EditorArea handlePlay={this.handlePlay}
           handleStop={this.handleStop}
           openModal={this.openTimeSignatureModal}

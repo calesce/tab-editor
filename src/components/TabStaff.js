@@ -1,21 +1,14 @@
 import React, { Component } from 'react';
-
 import Measure from './Measure';
 
+const style = {
+  padding: 5,
+  display: 'flex',
+  flexWrap: 'wrap',
+  flex: 1
+};
+
 export default class TabStaff extends Component {
-  getXCoordOfMeasure = (rowIndex, totalMeasureIndex) => {
-    return this.props.track.reduce((accum, measure, i) => {
-      if(measure.rowIndex === rowIndex && i < totalMeasureIndex) {
-        return measure.width + accum;
-      }
-      return accum;
-    }, 0);
-  }
-
-  getYCoordOfRow = (rowIndex) => {
-    return 170 * rowIndex;
-  }
-
   getIndexOfRow = (rowIndex, totalMeasureIndex) => {
     return this.props.track.reduce((accum, measure, i) => {
       if(measure.rowIndex === rowIndex && i < totalMeasureIndex) {
@@ -27,12 +20,10 @@ export default class TabStaff extends Component {
 
   renderMeasureForRow = (measure, totalMeasureIndex) => {
     const rowIndex = measure.rowIndex;
-    const x = this.getXCoordOfMeasure(rowIndex, totalMeasureIndex);
-    const y = this.getYCoordOfRow(rowIndex);
     const indexOfRow = this.getIndexOfRow(rowIndex, totalMeasureIndex);
 
     return (
-      <Measure key={totalMeasureIndex} x={x} y={y}
+      <Measure key={totalMeasureIndex}
         measure={measure}
         isPlaying={this.props.isPlaying}
         currentPlayingNote={this.props.currentPlayingNote}
@@ -56,12 +47,12 @@ export default class TabStaff extends Component {
   }
 
   render() {
-    let height = this.props.layout === 'linear' ? '100%' : this.calcHeight();
-    let width = this.props.layout === 'linear' ? this.calcWidth(this.props.track) : '100%';
+    let height = this.props.layout === 'linear' ? '100% - 10' : this.calcHeight();
+    let width = this.props.layout === 'linear' ? this.calcWidth(this.props.track) : window.innerWidth - 10;
     return (
-      <svg style={{ width: width, height: height }}>
+      <div style={{ ...style, width, height }}>
         { this.props.track.map(this.renderMeasureForRow) }
-      </svg>
+      </div>
     );
   }
 }
