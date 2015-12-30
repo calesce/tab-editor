@@ -6,6 +6,7 @@ import Rest from './Rest';
 import Clef from './Clef';
 import TimeSignature from './TimeSignature';
 import Cursor from './Cursor';
+import Bpm from './Bpm';
 
 export default class Measure extends Component {
   calcMeasureValidity = (measure) => {
@@ -85,7 +86,7 @@ export default class Measure extends Component {
     const { noteIndex, stringIndex, measureIndex } = this.props.currentEditingIndex;
     if(this.props.totalMeasureIndex === measureIndex && !this.props.isPlaying) {
       const x = this.calcXForNote(noteIndex);
-      const y = 79 - (13 * stringIndex);
+      const y = 90 - (13 * stringIndex);
 
       let index = 0;
       let fret = 0;
@@ -115,7 +116,7 @@ export default class Measure extends Component {
     }
 
     return note.string.map((string, i) => {
-      const y = 80 - (13 * string);
+      const y = 90 - (13 * string);
       return (
         <g>
           <TabNote onClick={this.onClick.bind(this, noteIndex, string)} key={i} duration={note.duration} x={x} y={y} color={color}
@@ -131,6 +132,10 @@ export default class Measure extends Component {
     const { renderTimeSignature, timeSignature } = measure;
 
     return renderTimeSignature ? <TimeSignature x={x} numerator={timeSignature[0]} denominator={timeSignature.slice(2, 4)} /> : null;
+  }
+
+  renderBpm = (measure) => {
+    return measure.showBpm ? <Bpm bpm={measure.bpm} /> : null;
   }
 
   renderMeasure = (measureIndex, measure, x) => {
@@ -152,6 +157,7 @@ export default class Measure extends Component {
         { indexOfRow === 0 ? <Clef /> : null }
         { this.renderTimeSignature(totalMeasureIndex, measure) }
         { this.renderCursor() }
+        { this.renderBpm(measure) }
       </svg>
     );
   }

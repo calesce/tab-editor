@@ -1,18 +1,25 @@
 const computeMeasureWidths = (track) => {
   return track.map((measure, index) => {
     let width = 55 * measure.notes.length;
+    let showBpm = false;
     if(measure.notes.length === 0) {
       width = 40;
     }
     if(index === 0) {
       width += 15;
+      showBpm = true;
     }
 
     let prevMeasure = track[index-1];
     if(prevMeasure && prevMeasure.timeSignature === measure.timeSignature) {
+      if(prevMeasure.bpm !== measure.bpm) {
+        showBpm = true;
+      }
+
       return {
         ...measure,
-        width
+        width,
+        showBpm
       };
     }
     width += 30;
@@ -23,7 +30,8 @@ const computeMeasureWidths = (track) => {
     return {
       ...measure,
       width,
-      renderTimeSignature: true
+      renderTimeSignature: true,
+      showBpm
     };
   });
 };

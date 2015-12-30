@@ -9,14 +9,14 @@ export default class TabNote extends Component {
   }
 
   renderQuarterStem = (x, color) => {
-    return <rect x={x + 5} y={82} height={25} width={1} fill={color}></rect>;
+    return <rect x={x + 5} y={92} height={25} width={1} fill={color}></rect>;
   }
 
   renderEighthStem = (x, color) => {
     return (
       <g>
         { this.renderQuarterStem(x, color) }
-        <rect x={x + 5} y={82 + 24} height={2} width={20} fill={color}></rect>
+        <rect x={x + 5} y={92 + 24} height={2} width={20} fill={color}></rect>
       </g>
     );
   }
@@ -26,7 +26,7 @@ export default class TabNote extends Component {
       <g>
         { this.renderQuarterStem(x, color) }
         { this.renderEighthStem(x, color) }
-        <rect x={x + 5} y={82 + 18} height={2} width={20} fill={color}></rect>
+        <rect x={x + 5} y={92 + 18} height={2} width={20} fill={color}></rect>
       </g>
     );
   }
@@ -52,7 +52,7 @@ export default class TabNote extends Component {
     }
 
     return (
-      <svg x={x} y={105} width={20} height={20}>
+      <svg x={x} y={115} width={20} height={20}>
         <circle cx={6.5} cy={10} r={1.5} fill={color} stroke={color} />
       </svg>
     );

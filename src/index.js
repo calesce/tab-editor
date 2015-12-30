@@ -8,7 +8,7 @@ import track from './song';
 
 const trackWithWidths = {
   ...track,
-  measures: defaultBpm(prepareRows(track.measures))
+  measures: prepareRows(defaultBpm(track.measures))
 };
 
 const store = configureStore({
