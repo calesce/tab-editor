@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Measure from './Measure';
+import Measure from './measure/Measure';
 
 const style = {
   padding: 5,
@@ -19,8 +19,7 @@ export default class TabStaff extends Component {
   }
 
   renderMeasureForRow = (measure, totalMeasureIndex) => {
-    const rowIndex = measure.rowIndex;
-    const indexOfRow = this.getIndexOfRow(rowIndex, totalMeasureIndex);
+    const indexOfRow = this.getIndexOfRow(measure.rowIndex, totalMeasureIndex);
 
     return (
       <Measure key={totalMeasureIndex}
@@ -42,8 +41,7 @@ export default class TabStaff extends Component {
   }
 
   calcHeight = () => {
-    const rowCount = this.props.track[this.props.track.length - 1].rowIndex + 1;
-    return rowCount * 160 + 50;
+    return (this.props.track[this.props.track.length - 1].rowIndex + 1) * 160 + 50;
   }
 
   render() {
