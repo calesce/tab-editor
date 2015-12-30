@@ -15,6 +15,25 @@ const replaceMeasure = (state, action) => {
   });
 };
 
+const changeAllMeasures = (measures, bpm) => {
+  return measures.map((measure) => ({
+    ...measure,
+    bpm: bpm
+  }));
+};
+
+const changeMeasuresAfterCurrent = (measures, bpm, measureIndex) => {
+  return measures.map((measure, i) => {
+    if(measureIndex > i) {
+      return measure;
+    }
+    return {
+      ...measure,
+      bpm: bpm
+    };
+  });
+};
+
 export default function track(state = {}, action) {
   switch(action.type) {
     case DELETE_MEASURE:
@@ -42,29 +61,12 @@ export default function track(state = {}, action) {
       return Object.assign({}, state, { tuning: action.tuning });
 
     case CHANGE_BPM:
-      if(action.all) {
-        return {
-          ...state,
-          measures: state.measures.map((measure) => ({
-            ...measure,
-            bpm: action.bpm
-          }))
-        };
-      }
-      else {
-        return {
-          ...state,
-          measures: state.measures.map((measure, i) => {
-            if(action.index.measureIndex > i) {
-              return measure;
-            }
-            return {
-              ...measure,
-              bpm: action.bpm
-            };
-          })
-        };
-      }
+      let newMeasures = action.all ? changeAllMeasures(state.measures, action.bpm)
+                                   : changeMeasuresAfterCurrent(state.measures, action.bpm, action.index.measureIndex);
+      return {
+        ...state,
+        measures: prepareRows(newMeasures)
+      };
 
     default:
       return {
