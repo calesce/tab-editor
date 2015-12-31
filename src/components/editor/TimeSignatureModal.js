@@ -41,6 +41,9 @@ export default class TimeSignatureModal extends Component {
 
   render() {
     const style = {
+      overlay: {
+        zIndex: 100
+      },
       content: {
         left: '40%',
         height: '12%',

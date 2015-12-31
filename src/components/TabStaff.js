@@ -48,7 +48,7 @@ export default class TabStaff extends Component {
     let height = this.props.layout === 'linear' ? '100% - 10' : this.calcHeight();
     let width = this.props.layout === 'linear' ? this.calcWidth(this.props.track) : window.innerWidth - 10;
     return (
-      <div style={{ ...style, width, height }}>
+      <div style={{ ...style, width, height, paddingTop: '60' }}>
         { this.props.track.map(this.renderMeasureForRow) }
       </div>
     );

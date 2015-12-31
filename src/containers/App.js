@@ -486,7 +486,7 @@ class App extends Component {
     const timeSignature = measures[measureIndex] ? measures[measureIndex].timeSignature : '4/4';
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%' }}>
+      <div style={{ width: '100%', height: '100%' }}>
         <EditorArea handlePlay={this.handlePlay}
           handleStop={this.handleStop}
           openModal={this.openTimeSignatureModal}
@@ -495,6 +495,7 @@ class App extends Component {
           toggleLayout={this.toggleLayout}
           timeSignature={timeSignature}
           layout={this.state.layout}
+          isPlaying={this.state.isPlaying}
         />
         <TabRows track={measures} layout={this.state.layout}
           currentEditingIndex={this.state.currentEditingIndex}
