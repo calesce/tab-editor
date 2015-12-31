@@ -63,6 +63,9 @@ class TuningModal extends Component {
 
   render() {
     const style = {
+      overlay: {
+        zIndex: 100
+      },
       content: {
         left: '40%',
         height: '50%',
