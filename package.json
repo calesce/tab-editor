@@ -7,7 +7,7 @@
     "build:webpack": "NODE_ENV=production webpack --config webpack.config.prod.js",
     "build": "npm run clean && npm run build:webpack",
     "start": "node server.js",
-    "demo": "npm run build && git checkout gh-pages && git commit -a -m 'updated demo' && git push origin gh-pages && git checkout master",
+    "demo": "npm run build && mv dist dist1 && git checkout gh-pages && rm -rf dist && mv dist1 dist && git commit -a -m 'updated demo' && git push origin gh-pages && git checkout master",
     "lint": "eslint src"
   },
   "repository": {
