@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import Measure from './measure/Measure';
 
 const style = {
@@ -8,7 +9,7 @@ const style = {
   flex: 1
 };
 
-export default class TabStaff extends Component {
+class TabStaff extends Component {
   getIndexOfRow = (rowIndex, totalMeasureIndex) => {
     return this.props.track.reduce((accum, measure, i) => {
       if(measure.rowIndex === rowIndex && i < totalMeasureIndex) {
@@ -54,3 +55,11 @@ export default class TabStaff extends Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    layout: state.layout
+  };
+}
+
+export default connect(mapStateToProps, null)(TabStaff);

@@ -1,10 +1,16 @@
 import track from './track';
-import { COPY_NOTE, CUT_NOTE } from '../actions/types';
+import layout from './layout';
+import { prepareRows } from '../util';
+import { COPY_NOTE, CUT_NOTE, CHANGE_LAYOUT } from '../actions/types';
 
-const replaceTrack = (tracks, action, currentTrackIndex) => {
+const replaceTrack = (tracks, action, currentTrackIndex, layout = 'page') => {
   return tracks.map((t, index) => {
     if(index === currentTrackIndex) {
-      return track(t, action);
+      const newTrack = track(t, action);
+      return {
+        ...newTrack,
+        measures: prepareRows(newTrack.measures, layout)
+      };
     }
     return t;
   });
@@ -21,15 +27,24 @@ export default function tracks(state = {}, action) {
     case CUT_NOTE:
       return {
         ...state,
-        tracks: replaceTrack(state.tracks, action, state.currentTrackIndex),
+        tracks: replaceTrack(state.tracks, action, state.currentTrackIndex, state.layout),
         clipboard: action.note
+      };
+
+    case CHANGE_LAYOUT:
+      const newLayout = layout(state.layout, action);
+      return {
+        ...state,
+        tracks: replaceTrack(state.tracks, action, state.currentTrackIndex, newLayout),
+        layout: newLayout
       };
 
     default: {
       return {
-        tracks: replaceTrack(state.tracks, action, state.currentTrackIndex),
+        tracks: replaceTrack(state.tracks, action, state.currentTrackIndex, state.layout),
         currentTrackIndex: state.currentTrackIndex,
-        clipboard: state.clipboard
+        clipboard: state.clipboard,
+        layout: layout(state.layout, action)
       };
     }
   }

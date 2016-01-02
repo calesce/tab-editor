@@ -1,13 +1,21 @@
 import React, { Component } from 'react';
 import shouldPureComponentUpdate from 'react-pure-render/function';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
-export default class EditorArea extends Component {
+import { changeLayout } from '../../actions/track';
+
+class EditorArea extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
 
   renderPlayStop() {
     return this.props.isPlaying ?
       <button onClick={this.props.handleStop}>Stop</button> :
       <button onClick={this.props.handlePlay}>Play</button>;
+  }
+
+  toggleLayout = () => {
+    this.props.changeLayout(this.props.layout === 'page' ? 'linear' : 'page');
   }
 
   render() {
@@ -28,10 +36,24 @@ export default class EditorArea extends Component {
       <div style={style}>
         { this.renderPlayStop() }
         <button onClick={this.props.openModal}>{this.props.timeSignature}</button>
-        <button onClick={this.props.toggleLayout}>{this.props.layout}</button>
+        <button onClick={this.toggleLayout}>{this.props.layout}</button>
         <button onClick={this.props.openTuning}>tuning</button>
         <button onClick={this.props.openBpm}>bpm</button>
       </div>
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    layout: state.layout
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    changeLayout: bindActionCreators(changeLayout, dispatch)
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditorArea);

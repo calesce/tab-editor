@@ -1,4 +1,3 @@
-import { prepareRows } from '../util';
 import { DELETE_MEASURE, INSERT_MEASURE, REPLACE_SONG, CHANGE_TUNING, CHANGE_BPM } from '../actions/types';
 import measure from './measure';
 
@@ -46,11 +45,11 @@ export default function track(state = {}, action) {
       const lastMeasure = state.measures[state.measures.length - 1];
 
       return {
-        measures: prepareRows(state.measures.concat({
+        measures: state.measures.concat({
           timeSignature: lastMeasure.timeSignature,
           bpm: lastMeasure.bpm,
           notes: []
-        })),
+        }),
         tuning: state.tuning
       };
 
@@ -65,12 +64,12 @@ export default function track(state = {}, action) {
                                    : changeMeasuresAfterCurrent(state.measures, action.bpm, action.index.measureIndex);
       return {
         ...state,
-        measures: prepareRows(newMeasures)
+        measures: newMeasures
       };
 
     default:
       return {
-        measures: prepareRows(replaceMeasure(state.measures, action)),
+        measures: replaceMeasure(state.measures, action),
         tuning: state.tuning
       };
   }

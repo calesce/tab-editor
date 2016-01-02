@@ -48,3 +48,10 @@ export function resize() {
     type: types.RESIZE
   };
 }
+
+export function changeLayout(layout) {
+  return {
+    type: types.CHANGE_LAYOUT,
+    layout
+  };
+}
