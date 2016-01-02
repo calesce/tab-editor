@@ -42,7 +42,7 @@ class TabStaff extends Component {
   }
 
   calcHeight = () => {
-    return (this.props.track[this.props.track.length - 1].rowIndex + 1) * 160 + 50;
+    return (this.props.track[this.props.track.length - 1].rowIndex + 1) * 130 + 50;
   }
 
   render() {
