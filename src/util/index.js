@@ -65,8 +65,19 @@ const trackWithRows = (track) => {
   }, []);
 };
 
-export function prepareRows(track) {
-  return trackWithRows(computeMeasureWidths(track));
+const linearTrack = (track) => {
+  return track.map((measure) => {
+    return {
+      ...measure,
+      rowIndex: 0
+    };
+  });
+};
+
+export function prepareRows(measures, layout) {
+  return layout === 'page' ?
+    trackWithRows(computeMeasureWidths(measures)) :
+    linearTrack(computeMeasureWidths(measures));
 }
 
 export function defaultBpm(measures) {

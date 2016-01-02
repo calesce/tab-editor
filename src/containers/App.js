@@ -8,7 +8,7 @@ import { playCurrentNote, getReplaySpeedForNote } from '../util/audio';
 
 import Soundfont from 'soundfont-player';
 
-import TabRows from '../components/TabRows';
+import TabStaff from '../components/TabStaff';
 import EditorArea from '../components/editor/EditorArea';
 import TimeSignatureModal from '../components/editor/TimeSignatureModal';
 import TuningModal from '../components/editor/TuningModal';
@@ -43,8 +43,7 @@ class App extends Component {
         stringIndex: 0
       },
       audioContext,
-      isPlaying: false,
-      layout: 'page'
+      isPlaying: false
     };
   }
 
@@ -76,7 +75,7 @@ class App extends Component {
     const x = this.getXOfCurrentNote();
     const scrollX = window.scrollX;
 
-    if(x > window.innerWidth + scrollX - 200 && this.state.layout === 'linear') {
+    if(x > window.innerWidth + scrollX - 200 && this.props.layout === 'linear') {
       window.scroll(x - 200, 0);
     }
   }
@@ -469,11 +468,6 @@ class App extends Component {
     });
   }
 
-  toggleLayout = () => {
-    let layout = this.state.layout === 'page' ? 'linear' : 'page';
-    this.setState({ layout });
-  }
-
   openTuningModal = () => {
     this.setState({
       tuningModal: true
@@ -492,15 +486,12 @@ class App extends Component {
           openModal={this.openTimeSignatureModal}
           openTuning={this.openTuningModal}
           openBpm={this.openBpmModal}
-          toggleLayout={this.toggleLayout}
           timeSignature={timeSignature}
-          layout={this.state.layout}
           isPlaying={this.state.isPlaying}
         />
-        <TabRows track={measures} layout={this.state.layout}
+        <TabStaff track={measures} isPlaying={this.state.isPlaying}
           currentEditingIndex={this.state.currentEditingIndex}
           currentPlayingNote={this.state.currentPlayingNote}
-          isPlaying={this.state.isPlaying}
           onClick={this.onNoteClick}
         />
         <TimeSignatureModal isOpen={this.state.timeSignatureModal} closeModal={this.closeModal}
@@ -516,7 +507,8 @@ class App extends Component {
 function mapStateToProps(state) {
   return {
     track: state.tracks[state.currentTrackIndex],
-    clipboard: state.clipboard
+    clipboard: state.clipboard,
+    layout: state.layout
   };
 }
 

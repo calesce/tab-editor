@@ -13,3 +13,4 @@ export const CUT_NOTE = 'CUT_NOTE';
 export const PASTE_NOTE = 'PASTE_NOTE';
 export const CHANGE_BPM = 'CHANGE_BPM';
 export const RESIZE = 'RESIZE';
+export const CHANGE_LAYOUT = 'CHANGE_LAYOUT';
