@@ -471,13 +471,11 @@ class App extends Component {
           timeSignature={timeSignature}
           currentPlayingNote={this.state.currentPlayingNote}
         />
-        <TabStaff track={measures} onClick={this.onNoteClick}
+        <TabStaff onClick={this.onNoteClick}
           currentEditingIndex={this.state.currentEditingIndex}
           currentPlayingNote={this.state.currentPlayingNote}
         />
-        <TimeSignatureModal isOpen={this.state.timeSignatureModal} closeModal={this.closeModal}
-          measureIndex={measureIndex} timeSignature={timeSignature}
-        />
+        <TimeSignatureModal isOpen={this.state.timeSignatureModal} closeModal={this.closeModal} measureIndex={measureIndex} />
         <TuningModal isOpen={this.state.tuningModal} closeModal={this.closeModal} />
         <BpmModal isOpen={this.state.bpmModal} closeModal={this.closeModal} index={this.state.currentEditingIndex} />
       </div>

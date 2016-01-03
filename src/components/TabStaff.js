@@ -23,8 +23,7 @@ class TabStaff extends Component {
     const indexOfRow = this.getIndexOfRow(measure.rowIndex, totalMeasureIndex);
 
     return (
-      <Measure key={totalMeasureIndex}
-        measure={measure}
+      <Measure key={totalMeasureIndex} measure={measure}
         currentPlayingNote={this.props.currentPlayingNote}
         totalMeasureIndex={totalMeasureIndex}
         currentEditingIndex={this.props.currentEditingIndex}
@@ -57,6 +56,7 @@ class TabStaff extends Component {
 
 function mapStateToProps(state) {
   return {
+    track: state.tracks[state.currentTrackIndex].measures,
     layout: state.layout
   };
 }

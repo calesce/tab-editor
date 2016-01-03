@@ -66,10 +66,16 @@ export default class TimeSignatureModal extends Component {
   }
 }
 
+function mapStateToProps(state, props) {
+  return {
+    timeSignature: state.tracks[state.currentTrackIndex].measures[props.measureIndex].timeSignature,
+  };
+}
+
 function mapDispatchToProps(dispatch) {
   return {
     changeTimeSignature: bindActionCreators(changeTimeSignature, dispatch)
   };
 }
 
-export default connect(null, mapDispatchToProps)(TimeSignatureModal);
+export default connect(mapStateToProps, mapDispatchToProps)(TimeSignatureModal);
