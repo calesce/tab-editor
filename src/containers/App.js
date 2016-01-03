@@ -349,18 +349,23 @@ class App extends Component {
   pasteNote = () => {
     const { measureIndex, noteIndex, stringIndex } = this.state.currentEditingIndex;
 
-    this.props.actions.pasteNote(this.state.currentEditingIndex, this.props.clipboard);
-    this.setState({
-      currentEditingIndex: {
-        measureIndex,
-        noteIndex: this.props.track.measures[measureIndex].notes.length === 1 && noteIndex === 0 ? 0 : noteIndex + 1,
-        stringIndex
-      }
-    });
+    if(this.props.clipboard) {
+      event.preventDefault();
+      this.props.actions.pasteNote(this.state.currentEditingIndex, this.props.clipboard);
+      this.setState({
+        currentEditingIndex: {
+          measureIndex,
+          noteIndex: this.props.track.measures[measureIndex].notes.length === 1 && noteIndex === 0 ? 0 : noteIndex + 1,
+          stringIndex
+        }
+      });
+    }
   }
 
   handleKeyPress = (event) => {
-    if(this.state.timeSignatureModal || this.state.tuningModal || this.state.bpmModal) {
+    if(this.state.openModal) {
+      return;
+    } else if(this.state.currentPlayingNote && event.keyCode !== 32) {
       return;
     }
 
@@ -369,7 +374,6 @@ class App extends Component {
       return this.props.actions.copyNote(this.getCurrentNote());
     }
     if((event.metaKey || event.ctrlKey) && event.keyCode === 86) { // cmd/ctrl+v
-      event.preventDefault();
       return this.pasteNote();
     }
     if((event.metaKey || event.ctrlKey) && event.keyCode === 88) { // cmd/ctrl+x
@@ -391,14 +395,6 @@ class App extends Component {
       } else {
         return this.props.actions.cutNote({ noteIndex, measureIndex, stringIndex }, this.getCurrentNote());
       }
-    }
-
-    if(event.metaKey) {
-      return;
-    } else if(this.state.currentPlayingNote && event.keyCode !== 32) {
-      return;
-    } else if(this.state.tuningModal || this.state.timeSignatureModal) {
-      return;
     }
 
     if(event.keyCode <= 57 && event.keyCode >= 48) {
@@ -425,39 +421,32 @@ class App extends Component {
       return this.state.currentPlayingNote ? this.handleStop() : this.handlePlay();
     } else if(event.keyCode === 190) { // period
       this.props.actions.toggleNoteDotted(this.state.currentEditingIndex);
+    } else if(event.keyCode) { // plus
+    } else if(event.keyCode) { // minus
     } else {
       return this.navigateCursor(event);
     }
   }
 
   openTimeSignatureModal = () => {
-    this.setState({
-      timeSignatureModal: true
-    });
+    this.setState({ openModal: 'timeSignature' });
   }
 
   openBpmModal = () => {
-    this.setState({
-      bpmModal: true
-    });
+    this.setState({ openModal: 'bpm' });
   }
 
   closeModal = () => {
-    this.setState({
-      timeSignatureModal: false,
-      tuningModal: false,
-      bpmModal: false
-    });
+    this.setState({ openModal: null });
   }
 
   openTuningModal = () => {
-    this.setState({
-      tuningModal: true
-    });
+    this.setState({ openModal: 'tuning' });
   }
 
   render() {
     const { measures } = this.props.track;
+    const { openModal, currentEditingIndex } = this.state;
     const { measureIndex } = this.state.currentEditingIndex;
     const timeSignature = measures[measureIndex] ? measures[measureIndex].timeSignature : '4/4';
 
@@ -475,9 +464,9 @@ class App extends Component {
           currentEditingIndex={this.state.currentEditingIndex}
           currentPlayingNote={this.state.currentPlayingNote}
         />
-        <TimeSignatureModal isOpen={this.state.timeSignatureModal} closeModal={this.closeModal} measureIndex={measureIndex} />
-        <TuningModal isOpen={this.state.tuningModal} closeModal={this.closeModal} />
-        <BpmModal isOpen={this.state.bpmModal} closeModal={this.closeModal} index={this.state.currentEditingIndex} />
+        <TimeSignatureModal isOpen={openModal === 'timeSignature'} closeModal={this.closeModal} measureIndex={measureIndex} />
+        <TuningModal isOpen={openModal === 'tuning'} closeModal={this.closeModal} />
+        <BpmModal isOpen={openModal === 'bpm'} closeModal={this.closeModal} index={currentEditingIndex} />
       </div>
     );
   }
