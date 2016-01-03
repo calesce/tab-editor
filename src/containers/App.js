@@ -33,17 +33,12 @@ class App extends Component {
     }
 
     this.state = {
-      currentPlayingNote: {
-        measure: 0,
-        noteIndex: 0
-      },
       currentEditingIndex: {
         measureIndex: 0,
         noteIndex: 0,
         stringIndex: 0
       },
-      audioContext,
-      isPlaying: false
+      audioContext
     };
   }
 
@@ -163,30 +158,29 @@ class App extends Component {
     cancelAnimationFrame(this.state.timer);
 
     this.setState({
-      isPlaying: false
+      currentPlayingNote: null
     });
   }
 
   handlePlay = () => {
-    if(this.state.isPlaying || !this.state.buffers) {
+    if(this.state.currentPlayingNote || !this.state.buffers) {
       return;
     }
 
+    const { noteIndex, measureIndex } = this.state.currentEditingIndex;
+
     this.setState({
-      isPlaying: true,
+      currentPlayingNote: {
+        measure: measureIndex,
+        noteIndex
+      }
     }, () => {
       this.startPlayback();
     });
   }
 
   onNoteClick = (index) => {
-    this.setState({
-      currentEditingIndex: index,
-      currentPlayingNote: {
-        measure: index.measureIndex,
-        noteIndex: index.noteIndex
-      }
-    });
+    this.setState({ currentEditingIndex: index });
   }
 
   getCurrentNote = () => {
@@ -261,31 +255,19 @@ class App extends Component {
           noteIndex: 0
         };
         this.setState({
-          currentEditingIndex: newEditingIndex,
-          currentPlayingNote: {
-            measure: newEditingIndex.measureIndex,
-            noteIndex: newEditingIndex.noteIndex
-          }
+          currentEditingIndex: newEditingIndex
         });
       } else {
         newEditingIndex.stringIndex = stringIndex;
         this.setState({
-          currentEditingIndex: newEditingIndex,
-          currentPlayingNote: {
-            measure: newEditingIndex.measureIndex,
-            noteIndex: newEditingIndex.noteIndex
-          }
+          currentEditingIndex: newEditingIndex
         });
       }
     } else if(event.keyCode === 37) { // left arrow
       let newEditingIndex = this.getPrevNote(measureIndex, noteIndex);
       newEditingIndex.stringIndex = stringIndex;
       this.setState({
-        currentEditingIndex: newEditingIndex,
-        currentPlayingNote: {
-          measure: newEditingIndex.measureIndex,
-          noteIndex: newEditingIndex.noteIndex
-        }
+        currentEditingIndex: newEditingIndex
       });
     } else if(event.keyCode === 38) { // up arrow
       event.preventDefault();
@@ -390,7 +372,7 @@ class App extends Component {
       event.preventDefault();
       return this.pasteNote();
     }
-    if((event.metaKey || event.ctrlKey) && event.keyCode === 88) { // cmd/ctrl+c
+    if((event.metaKey || event.ctrlKey) && event.keyCode === 88) { // cmd/ctrl+x
       event.preventDefault();
       const { noteIndex, measureIndex, stringIndex } = this.state.currentEditingIndex;
       let notes = this.props.track.measures[measureIndex].notes;
@@ -413,7 +395,7 @@ class App extends Component {
 
     if(event.metaKey) {
       return;
-    } else if(this.state.isPlaying && event.keyCode !== 32) {
+    } else if(this.state.currentPlayingNote && event.keyCode !== 32) {
       return;
     } else if(this.state.tuningModal || this.state.timeSignatureModal) {
       return;
@@ -440,7 +422,7 @@ class App extends Component {
       return this.insertNote();
     } else if(event.keyCode === 32) { // spacebar
       event.preventDefault();
-      return this.state.isPlaying ? this.handleStop() : this.handlePlay();
+      return this.state.currentPlayingNote ? this.handleStop() : this.handlePlay();
     } else if(event.keyCode === 190) { // period
       this.props.actions.toggleNoteDotted(this.state.currentEditingIndex);
     } else {
@@ -487,12 +469,11 @@ class App extends Component {
           openTuning={this.openTuningModal}
           openBpm={this.openBpmModal}
           timeSignature={timeSignature}
-          isPlaying={this.state.isPlaying}
+          currentPlayingNote={this.state.currentPlayingNote}
         />
-        <TabStaff track={measures} isPlaying={this.state.isPlaying}
+        <TabStaff track={measures} onClick={this.onNoteClick}
           currentEditingIndex={this.state.currentEditingIndex}
           currentPlayingNote={this.state.currentPlayingNote}
-          onClick={this.onNoteClick}
         />
         <TimeSignatureModal isOpen={this.state.timeSignatureModal} closeModal={this.closeModal}
           measureIndex={measureIndex} timeSignature={timeSignature}
