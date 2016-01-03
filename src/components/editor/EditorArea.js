@@ -9,7 +9,7 @@ class EditorArea extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
 
   renderPlayStop() {
-    return this.props.isPlaying ?
+    return this.props.currentPlayingNote ?
       <button onClick={this.props.handleStop}>Stop</button> :
       <button onClick={this.props.handlePlay}>Play</button>;
   }
