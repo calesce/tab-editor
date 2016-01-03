@@ -7,8 +7,11 @@ import Clef from './Clef';
 import TimeSignature from './TimeSignature';
 import Cursor from './Cursor';
 import Bpm from './Bpm';
+import shouldPureComponentUpdate from 'react-pure-render/function';
 
 export default class Measure extends Component {
+  shouldComponentUpdate = shouldPureComponentUpdate;
+
   calcMeasureValidity = (measure) => {
     const timeSig = parseInt(measure.timeSignature[0]) / parseInt(measure.timeSignature.slice(2, 4));
     const notesTotal = measure.notes.reduce((total, note) => {
