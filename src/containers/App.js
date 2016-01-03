@@ -300,6 +300,58 @@ class App extends Component {
     this.props.actions.changeNoteLength(this.state.currentEditingIndex, duration);
   }
 
+  increaseNoteLength = ({ measureIndex, noteIndex }) => {
+    const note = this.props.track.measures[measureIndex].notes[noteIndex];
+
+    let newDuration;
+    switch(note.duration) {
+      case 'w':
+        newDuration = 'h';
+        break;
+      case 'h':
+        newDuration = 'q';
+        break;
+      case 'q':
+        newDuration = 'e';
+        break;
+      case 'e':
+        newDuration = 's';
+        break;
+      case 's':
+        newDuration = 't';
+        break;
+      default:
+        newDuration = 's';
+    }
+    this.props.actions.changeNoteLength(this.state.currentEditingIndex, newDuration);
+  }
+
+  decreaseNoteLength = ({ measureIndex, noteIndex }) => {
+    const note = this.props.track.measures[measureIndex].notes[noteIndex];
+
+    let newDuration;
+    switch(note.duration) {
+      case 't':
+        newDuration = 's';
+        break;
+      case 's':
+        newDuration = 'e';
+        break;
+      case 'e':
+        newDuration = 'q';
+        break;
+      case 'q':
+        newDuration = 'h';
+        break;
+      case 'h':
+        newDuration = 'w';
+        break;
+      default:
+        newDuration = 'w';
+    }
+    this.props.actions.changeNoteLength(this.state.currentEditingIndex, newDuration);
+  }
+
   deleteNote = () => {
     const { noteIndex, measureIndex, stringIndex } = this.state.currentEditingIndex;
     let notes = this.props.track.measures[measureIndex].notes;
@@ -421,8 +473,10 @@ class App extends Component {
       return this.state.currentPlayingNote ? this.handleStop() : this.handlePlay();
     } else if(event.keyCode === 190) { // period
       this.props.actions.toggleNoteDotted(this.state.currentEditingIndex);
-    } else if(event.keyCode) { // plus
-    } else if(event.keyCode) { // minus
+    } else if(event.shiftKey && event.keyCode === 187) { // plus
+      return this.increaseNoteLength(this.state.currentEditingIndex);
+    } else if(event.keyCode === 189) { // minus
+      return this.decreaseNoteLength(this.state.currentEditingIndex);
     } else {
       return this.navigateCursor(event);
     }
