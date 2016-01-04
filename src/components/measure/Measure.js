@@ -85,7 +85,7 @@ export default class Measure extends Component {
   }
 
   renderCursor = () => {
-    const { noteIndex, stringIndex, measureIndex } = this.props.currentEditingIndex;
+    const { noteIndex, stringIndex, measureIndex } = this.props.editingIndex;
     if(this.props.totalMeasureIndex === measureIndex && !this.props.currentPlayingNote) {
       const x = this.calcXForNote(noteIndex);
       const y = 95 - (13 * stringIndex);
