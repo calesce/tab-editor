@@ -55,7 +55,7 @@ class App extends Component {
   }
 
   getXOfCurrentNote = () => {
-    const { measure, noteIndex } = this.state.currentPlayingNote;
+    const { measure, noteIndex } = this.state.playingNote;
     const xOfMeasures = this.props.track.measures.reduce((acc, curr, i) => {
       if(i >= measure) {
         return acc;
@@ -78,7 +78,7 @@ class App extends Component {
   startPlayback = () => {
     let startTimestamp = Date.now();
     this.updateScrollPosition();
-    playCurrentNote(this.state.audioContext, this.props.track, this.state.currentPlayingNote, this.state.buffers);
+    playCurrentNote(this.state.audioContext, this.props.track, this.state.playingNote, this.state.buffers);
 
     this.setState({
       timer: requestAnimationFrame(() => {
@@ -88,14 +88,14 @@ class App extends Component {
   }
 
   loopThroughSong = (startTimestamp) => {
-    let { currentPlayingNote, audioContext } = this.state;
-    let { measure, noteIndex } = currentPlayingNote;
+    let { playingNote, audioContext } = this.state;
+    let { measure, noteIndex } = playingNote;
     let { measures } = this.props.track;
 
     let currentTimestamp = Date.now();
     let replayDiff = currentTimestamp - startTimestamp;
 
-    const measureToPlay = measures[currentPlayingNote.measure];
+    const measureToPlay = measures[playingNote.measure];
     const bpm = measureToPlay.bpm;
 
     let replaySpeed;
@@ -110,7 +110,7 @@ class App extends Component {
         this.handleStop();
       } else if(measure !== measures.length - 1 && noteIndex >= measures[measure].notes.length - 1) {
         this.setState({
-          currentPlayingNote: {
+          playingNote: {
             measure: measure + 1,
             noteIndex: 0
           },
@@ -124,12 +124,12 @@ class App extends Component {
           })
         }, () => {
           this.updateScrollPosition();
-          playCurrentNote(audioContext, this.props.track, this.state.currentPlayingNote, this.state.buffers);
+          playCurrentNote(audioContext, this.props.track, this.state.playingNote, this.state.buffers);
         });
       } else {
         this.setState({
-          currentPlayingNote: {
-            measure: measure,
+          playingNote: {
+            measure,
             noteIndex: noteIndex + 1
           },
           editingIndex: {
@@ -142,7 +142,7 @@ class App extends Component {
           })
         }, () => {
           this.updateScrollPosition();
-          playCurrentNote(audioContext, this.props.track, this.state.currentPlayingNote, this.state.buffers);
+          playCurrentNote(audioContext, this.props.track, this.state.playingNote, this.state.buffers);
         });
       }
     } else {
@@ -158,19 +158,19 @@ class App extends Component {
     cancelAnimationFrame(this.state.timer);
 
     this.setState({
-      currentPlayingNote: null
+      playingNote: null
     });
   }
 
   handlePlay = () => {
-    if(this.state.currentPlayingNote || !this.state.buffers) {
+    if(this.state.playingNote || !this.state.buffers) {
       return;
     }
 
     const { noteIndex, measureIndex } = this.state.editingIndex;
 
     this.setState({
-      currentPlayingNote: {
+      playingNote: {
         measure: measureIndex,
         noteIndex
       }
@@ -179,8 +179,8 @@ class App extends Component {
     });
   }
 
-  onNoteClick = (index) => {
-    this.setState({ editingIndex: index });
+  onNoteClick = (editingIndex) => {
+    this.setState({ editingIndex });
   }
 
   getCurrentNote = () => {
@@ -417,7 +417,7 @@ class App extends Component {
   handleKeyPress = (event) => {
     if(this.state.openModal) {
       return;
-    } else if(this.state.currentPlayingNote && event.keyCode !== 32) {
+    } else if(this.state.playingNote && event.keyCode !== 32) {
       return;
     }
 
@@ -470,7 +470,7 @@ class App extends Component {
       return this.insertNote();
     } else if(event.keyCode === 32) { // spacebar
       event.preventDefault();
-      return this.state.currentPlayingNote ? this.handleStop() : this.handlePlay();
+      return this.state.playingNote ? this.handleStop() : this.handlePlay();
     } else if(event.keyCode === 190) { // period
       this.props.actions.toggleNoteDotted(this.state.editingIndex);
     } else if(event.shiftKey && event.keyCode === 187) { // plus
@@ -502,24 +502,20 @@ class App extends Component {
 
   render() {
     const { measures } = this.props.track;
-    const { openModal, editingIndex } = this.state;
+    const { openModal, editingIndex, playingNote } = this.state;
     const { measureIndex } = this.state.editingIndex;
     const timeSignature = measures[measureIndex] ? measures[measureIndex].timeSignature : '4/4';
 
     return (
       <div style={{ width: '100%', height: '100%' }}>
-        <EditorArea handlePlay={this.handlePlay}
-          handleStop={this.handleStop}
+        <EditorArea handlePlay={this.handlePlay} handleStop={this.handleStop}
           openModal={this.openTimeSignatureModal}
           openTuning={this.openTuningModal}
           openBpm={this.openBpmModal}
           timeSignature={timeSignature}
-          currentPlayingNote={this.state.currentPlayingNote}
+          playingNote={playingNote}
         />
-        <TabStaff onClick={this.onNoteClick}
-          editingIndex={this.state.editingIndex}
-          currentPlayingNote={this.state.currentPlayingNote}
-        />
+        <TabStaff onClick={this.onNoteClick} editingIndex={editingIndex} playingNote={playingNote} />
         <TimeSignatureModal isOpen={openModal === 'timeSignature'} closeModal={this.closeModal} measureIndex={measureIndex} />
         <TuningModal isOpen={openModal === 'tuning'} closeModal={this.closeModal} />
         <BpmModal isOpen={openModal === 'bpm'} closeModal={this.closeModal} index={editingIndex} />
