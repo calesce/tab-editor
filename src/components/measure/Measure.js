@@ -8,6 +8,7 @@ import TimeSignature from './TimeSignature';
 import Cursor from './Cursor';
 import Bpm from './Bpm';
 import shouldPureComponentUpdate from 'react-pure-render/function';
+import _ from 'lodash';
 
 export default class Measure extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
@@ -119,12 +120,16 @@ export default class Measure extends Component {
       return <Rest onClick={this.onClick.bind(this, noteIndex, 0)} key={noteIndex} color={color} x={x} y={0} note={note} />;
     }
 
-    return note.string.map((string, i) => {
-      const y = 95 - (13 * string);
+    return [0, 1, 2, 3, 4, 5].map((i) => {
+      const stringIndex = _.findIndex(note.string, (index) => index === i);
+      const string = stringIndex === -1 ? i : note.string[stringIndex];
+      const fret = stringIndex === -1 ? undefined : note.fret[stringIndex];
+      const y = 95 - (13 * i);
       return (
         <g>
-          <TabNote onClick={this.onClick.bind(this, noteIndex, string)} key={i} duration={note.duration} x={x} y={y} color={color}
-            fret={note.fret[i]} dotted={note.dotted} tremelo={note.tremelo}
+          <TabNote onClick={this.onClick.bind(this, noteIndex, string)}
+            key={i} duration={note.duration} x={x} y={y} color={color}
+            fret={fret} dotted={note.dotted} tremelo={note.tremelo}
           />
         </g>
       );

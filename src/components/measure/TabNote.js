@@ -90,10 +90,18 @@ export default class TabNote extends Component {
       fontSize: 14
     };
 
+    const note = fret !== undefined ?
+      <text onClick={this.onClick} x={x+2} y={y} fill={color} style={style}>{fret}</text> :
+      null;
+
+    const space = fret !== undefined ?
+      <rect x={x} y={y-7} height={5.5} width={width} fill='#ffffff' stroke='#ffffff'></rect> :
+      <rect onClick={this.onClick} x={x-14} y={y-11} height={15} width={45} opacity={0}></rect>;
+
     return (
       <g>
-        <rect x={x} y={y-7} height={5.5} width={width} fill='#ffffff' stroke='#ffffff'></rect>
-        <text onClick={this.onClick} x={x+2} y={y} fill={color} style={style}>{fret}</text>
+        {space}
+        {note}
         {this.renderStem()}
         {this.renderDot(dotted, x, color)}
         {this.renderTremelo(tremelo, x, color)}
