@@ -16,6 +16,8 @@ exports.getReplaySpeedForNote = (note, bpm) => {
     replaySpeed = replaySpeed / 2;
   } else if(noteLength === 's') {
     replaySpeed = replaySpeed / 4;
+  } else if(noteLength === 't') {
+    replaySpeed = replaySpeed / 8;
   }
 
   if(note.dotted) {
@@ -94,6 +96,29 @@ exports.playCurrentNote = (audioContext, track, playingIndex, buffers) => {
 
   if(noteToPlay.fret[0] === 'rest') {
     playNoteAtTime(audioContext, 'rest', audioContext.currentTime, replaySpeed, buffers, tuning);
+  } else if(noteToPlay.tremelo) {
+
+    const currentTime = audioContext.currentTime;
+    switch(noteToPlay.duration) {
+      case 's':
+        [0, 1].forEach(() => {
+          playNoteAtTime(audioContext, noteToPlay, currentTime, replaySpeed / 2, buffers, tuning);
+        });
+        break;
+      case 'e':
+        break;
+      case 'q':
+        [0, 1, 2, 3, 4, 5, 6, 7].forEach((i) => {
+          playNoteAtTime(audioContext, noteToPlay, currentTime + (i * replaySpeed / 8), replaySpeed / 8, buffers, tuning);
+        });
+        break;
+      case 'h':
+        break;
+      case 'w':
+        break;
+      default:
+        break;
+    }
   } else {
     playNoteAtTime(audioContext, noteToPlay, audioContext.currentTime, replaySpeed, buffers, tuning);
   }

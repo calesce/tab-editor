@@ -45,6 +45,13 @@ export function toggleNoteDotted(index) {
   };
 }
 
+export function toggleNoteTremelo(index) {
+  return {
+    type: types.TOGGLE_NOTE_TREMELO,
+    index
+  };
+}
+
 export function pasteNote(index, note) {
   return {
     type: types.PASTE_NOTE,

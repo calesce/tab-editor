@@ -58,8 +58,24 @@ export default class TabNote extends Component {
     );
   }
 
+  renderTremelo = (tremelo, x, color) => {
+    if(!tremelo) {
+      return null;
+    }
+
+    return (
+      <svg x={x + 1.5} y={100} >
+        <g transform='scale(0.30)'>
+          <polygon fill={color} points='31.5,7 3.75,21.25 3.75,14.5 31.5,0.25'/>
+          <polygon fill={color} points='31.5,19.25 3.75,33.5 3.75,26.75 31.5,12.5'/>
+          <polygon fill={color} points='31.5,31.5 3.75,45.75 3.75,39 31.5,24.75'/>
+        </g>
+      </svg>
+    );
+  }
+
   render() {
-    const { x, y, fret, color, dotted } = this.props;
+    const { x, y, fret, color, dotted, tremelo } = this.props;
 
     let width = 12;
     if(fret > 9) {
@@ -80,6 +96,7 @@ export default class TabNote extends Component {
         <text onClick={this.onClick} x={x+2} y={y} fill={color} style={style}>{fret}</text>
         {this.renderStem()}
         {this.renderDot(dotted, x, color)}
+        {this.renderTremelo(tremelo, x, color)}
       </g>
     );
   }
