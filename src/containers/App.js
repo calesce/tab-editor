@@ -477,6 +477,8 @@ class App extends Component {
       return this.increaseNoteLength(this.state.currentEditingIndex);
     } else if(event.keyCode === 189) { // minus
       return this.decreaseNoteLength(this.state.currentEditingIndex);
+    } else if(event.shiftKey && event.keyCode === 222) { // "
+      this.props.actions.toggleNoteTremelo(this.state.currentEditingIndex);
     } else {
       return this.navigateCursor(event);
     }

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import {
   CHANGE_NOTE, DELETE_NOTE, CHANGE_NOTE_LENGTH, INSERT_NOTE, TOGGLE_NOTE_DOTTED, CHANGE_TIME_SIGNATURE,
-  PASTE_NOTE, CUT_NOTE
+  PASTE_NOTE, CUT_NOTE, TOGGLE_NOTE_TREMELO
 } from '../actions/types';
 
 const replaceNote = (state, note, noteIndex) => {
@@ -80,6 +80,12 @@ export default function measure(state, action) {
     case TOGGLE_NOTE_DOTTED: {
       const { noteIndex } = action.index;
       const note = Object.assign({}, state.notes[noteIndex], { dotted: state.notes[noteIndex].dotted ? false : true });
+      return replaceNote(state, note, noteIndex);
+    }
+
+    case TOGGLE_NOTE_TREMELO: {
+      const { noteIndex } = action.index;
+      const note = Object.assign({}, state.notes[noteIndex], { tremelo: state.notes[noteIndex].tremelo ? false : true });
       return replaceNote(state, note, noteIndex);
     }
 
