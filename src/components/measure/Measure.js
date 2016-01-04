@@ -66,13 +66,13 @@ export default class Measure extends Component {
   }
 
   renderBars = (x, measureWidth, measureIndex) => {
-    const { currentPlayingNote, measure } = this.props;
+    const { playingNote, measure } = this.props;
     const isValid = this.calcMeasureValidity(measure);
 
     let color = '#999999';
     let strokeWidth = 0.1;
-    if(currentPlayingNote) {
-      if(measureIndex === currentPlayingNote.measure) {
+    if(playingNote) {
+      if(measureIndex === playingNote.measure) {
         color = '#267754';
         strokeWidth = 1;
       }
@@ -86,7 +86,7 @@ export default class Measure extends Component {
 
   renderCursor = () => {
     const { noteIndex, stringIndex, measureIndex } = this.props.editingIndex;
-    if(this.props.totalMeasureIndex === measureIndex && !this.props.currentPlayingNote) {
+    if(this.props.totalMeasureIndex === measureIndex && !this.props.playingNote) {
       const x = this.calcXForNote(noteIndex);
       const y = 95 - (13 * stringIndex);
 
@@ -106,11 +106,11 @@ export default class Measure extends Component {
 
   renderNote = (note, measureIndex, noteIndex) => {
     const x = this.calcXForNote(noteIndex);
-    const { currentPlayingNote } = this.props;
+    const { playingNote } = this.props;
 
     let color = 'black';
-    if(currentPlayingNote) {
-      if(currentPlayingNote.measure === measureIndex && currentPlayingNote.noteIndex === noteIndex && currentPlayingNote) {
+    if(playingNote) {
+      if(playingNote.measure === measureIndex && playingNote.noteIndex === noteIndex && playingNote) {
         color = '#f9423a';
       }
     }
