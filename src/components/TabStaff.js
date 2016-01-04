@@ -26,7 +26,7 @@ class TabStaff extends Component {
       <Measure key={totalMeasureIndex} measure={measure}
         currentPlayingNote={this.props.currentPlayingNote}
         totalMeasureIndex={totalMeasureIndex}
-        currentEditingIndex={this.props.currentEditingIndex}
+        editingIndex={this.props.editingIndex}
         onClick={this.props.onClick}
         indexOfRow={indexOfRow}
       />
