@@ -1,4 +1,5 @@
 import { getIndexOfNote } from './midiNotes';
+import audioContext from './audioContext';
 
 const getSpeedFromBpm = (bpm) => {
   return 60000 / bpm;
@@ -27,7 +28,7 @@ exports.getReplaySpeedForNote = (note, bpm) => {
   return replaySpeed;
 };
 
-const playWithBuffer = (audioContext, startTime, buffer, duration) => {
+const playWithBuffer = (startTime, buffer, duration) => {
   let endTime = startTime + duration;
 
   let source = audioContext.createBufferSource();
@@ -46,7 +47,7 @@ const playWithBuffer = (audioContext, startTime, buffer, duration) => {
   source.stop(endTime);
 };
 
-const play = (audioContext, startTime, pitch, duration) => {
+const play = (startTime, pitch, duration) => {
   let endTime = startTime + duration;
 
   let oscillator = audioContext.createOscillator();
@@ -67,20 +68,20 @@ const play = (audioContext, startTime, pitch, duration) => {
   oscillator.stop(endTime);
 };
 
-const playNoteAtTime = (audioContext, currentNote, playTime, duration, buffers, tuning) => {
+const playNoteAtTime = (currentNote, playTime, duration, buffers, tuning) => {
   if(currentNote === 'rest') {
-    return play(audioContext, playTime, 'rest', duration / 1000);
+    return play(playTime, 'rest', duration / 1000);
   }
 
   for(let i = 0; i < currentNote.string.length; i++) {
     const openString = tuning[currentNote.string[i]];
     const noteToPlay = getIndexOfNote(openString) + currentNote.fret[i];
 
-    playWithBuffer(audioContext, playTime, buffers[noteToPlay], duration / 1000);
+    playWithBuffer(playTime, buffers[noteToPlay], duration / 1000);
   }
 };
 
-exports.playCurrentNote = (audioContext, track, playingIndex, buffers) => {
+exports.playCurrentNote = (track, playingIndex, buffers) => {
   const { measures, tuning } = track;
 
   let measure = measures[playingIndex.measure];
@@ -102,14 +103,14 @@ exports.playCurrentNote = (audioContext, track, playingIndex, buffers) => {
     switch(noteToPlay.duration) {
       case 's':
         [0, 1].forEach(() => {
-          playNoteAtTime(audioContext, noteToPlay, currentTime, replaySpeed / 2, buffers, tuning);
+          playNoteAtTime(noteToPlay, currentTime, replaySpeed / 2, buffers, tuning);
         });
         break;
       case 'e':
         break;
       case 'q':
         [0, 1, 2, 3, 4, 5, 6, 7].forEach((i) => {
-          playNoteAtTime(audioContext, noteToPlay, currentTime + (i * replaySpeed / 8), replaySpeed / 8, buffers, tuning);
+          playNoteAtTime(noteToPlay, currentTime + (i * replaySpeed / 8), replaySpeed / 8, buffers, tuning);
         });
         break;
       case 'h':
@@ -120,6 +121,6 @@ exports.playCurrentNote = (audioContext, track, playingIndex, buffers) => {
         break;
     }
   } else {
-    playNoteAtTime(audioContext, noteToPlay, audioContext.currentTime, replaySpeed, buffers, tuning);
+    playNoteAtTime(noteToPlay, audioContext.currentTime, replaySpeed, buffers, tuning);
   }
 };

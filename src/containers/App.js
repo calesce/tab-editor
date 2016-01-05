@@ -5,15 +5,16 @@ import _ from 'lodash';
 import * as TrackActions from '../actions/track';
 import * as MeasureActions from '../actions/measure';
 import * as PlayingNoteActions from '../actions/playingNote';
-import { playCurrentNote, getReplaySpeedForNote } from '../util/audio';
 
 import Soundfont from 'soundfont-player';
+import audioContext from '../util/audioContext';
 
 import TabStaff from '../components/TabStaff';
 import EditorArea from '../components/editor/EditorArea';
 import TimeSignatureModal from '../components/editor/TimeSignatureModal';
 import TuningModal from '../components/editor/TuningModal';
 import BpmModal from '../components/editor/BpmModal';
+import Playback from '../components/Playback';
 
 const Actions = _.merge(TrackActions, MeasureActions, PlayingNoteActions);
 
@@ -26,29 +27,33 @@ class App extends Component {
       window.addEventListener('resize', this.handleResize);
     }
 
-    let audioContext;
-    try {
-      audioContext = new AudioContext();
-    } catch(e) {
-      audioContext = new webkitAudioContext();
-    }
-
     this.state = {
       editingIndex: {
         measureIndex: 0,
         noteIndex: 0,
         stringIndex: 0
-      },
-      audioContext
+      }
     };
   }
 
   componentWillMount = () => {
-    const ctx = this.state.audioContext;
-
-    Soundfont.loadBuffers(ctx, 'acoustic_guitar_steel').then((buffers) => {
+    Soundfont.loadBuffers(audioContext, 'acoustic_guitar_steel').then((buffers) => {
       this.setState({ buffers });
     });
+  }
+
+  componentWillReceiveProps = (nextProps) => {
+    if(nextProps.playingNote) {
+      this.setState({
+        editingIndex: {
+          measureIndex: nextProps.playingNote.measure,
+          noteIndex: nextProps.playingNote.noteIndex,
+          stringIndex: this.state.editingIndex.stringIndex
+        }
+      }, () => {
+        this.updateScrollPosition();
+      });
+    }
   }
 
   handleResize = () => {
@@ -76,86 +81,6 @@ class App extends Component {
     }
   }
 
-  startPlayback = () => {
-    let startTimestamp = Date.now();
-    this.updateScrollPosition();
-    playCurrentNote(this.state.audioContext, this.props.track, this.props.playingNote, this.state.buffers);
-
-    this.setState({
-      timer: requestAnimationFrame(() => {
-        this.loopThroughSong(startTimestamp);
-      })
-    });
-  }
-
-  loopThroughSong = (startTimestamp) => {
-    let { audioContext } = this.state;
-    let { playingNote } = this.props;
-    let { measure, noteIndex } = playingNote;
-    let { measures } = this.props.track;
-
-    let currentTimestamp = Date.now();
-    let replayDiff = currentTimestamp - startTimestamp;
-
-    const measureToPlay = measures[playingNote.measure];
-    const bpm = measureToPlay.bpm;
-
-    let replaySpeed;
-    if(measureToPlay.notes.length > 0) {
-      replaySpeed = getReplaySpeedForNote(measureToPlay.notes[noteIndex], bpm);
-    } else {
-      replaySpeed = bpm * 4;
-    }
-
-    if(replayDiff >= replaySpeed) {
-      if(measure === measures.length - 1 && noteIndex >= measures[measure].notes.length - 1) {
-        this.handleStop();
-      } else if(measure !== measures.length - 1 && noteIndex >= measures[measure].notes.length - 1) {
-        this.props.actions.setPlayingNote({
-          measure: measure + 1,
-          noteIndex: 0
-        });
-        this.setState({
-          editingIndex: {
-            stringIndex: this.state.editingIndex.stringIndex,
-            measureIndex: measure + 1,
-            noteIndex: 0
-          },
-          timer: requestAnimationFrame(() => {
-            this.loopThroughSong(currentTimestamp);
-          })
-        }, () => {
-          this.updateScrollPosition();
-          playCurrentNote(audioContext, this.props.track, this.props.playingNote, this.state.buffers);
-        });
-      } else {
-        this.props.actions.setPlayingNote({
-          measure,
-          noteIndex: noteIndex + 1
-        });
-        this.setState({
-          editingIndex: {
-            stringIndex: this.state.editingIndex.stringIndex,
-            measureIndex: measure,
-            noteIndex: noteIndex + 1
-          },
-          timer: requestAnimationFrame(() => {
-            this.loopThroughSong(currentTimestamp);
-          })
-        }, () => {
-          this.updateScrollPosition();
-          playCurrentNote(audioContext, this.props.track, this.props.playingNote, this.state.buffers);
-        });
-      }
-    } else {
-      this.setState({
-        timer: requestAnimationFrame(() => {
-          this.loopThroughSong(startTimestamp);
-        })
-      });
-    }
-  }
-
   handleStop = () => {
     cancelAnimationFrame(this.state.timer);
 
@@ -173,7 +98,6 @@ class App extends Component {
       measure: measureIndex,
       noteIndex
     });
-    this.startPlayback();
   }
 
   onNoteClick = (editingIndex) => {
@@ -500,12 +424,13 @@ class App extends Component {
   render() {
     const { measures } = this.props.track;
     const { playingNote } = this.props;
-    const { openModal, editingIndex } = this.state;
+    const { openModal, editingIndex, buffers } = this.state;
     const { measureIndex } = this.state.editingIndex;
     const timeSignature = measures[measureIndex] ? measures[measureIndex].timeSignature : '4/4';
 
     return (
       <div style={{ width: '100%', height: '100%' }}>
+        { playingNote ? <Playback buffers={buffers} /> : null}
         <EditorArea handlePlay={this.handlePlay} handleStop={this.handleStop}
           openModal={this.openTimeSignatureModal}
           openTuning={this.openTuningModal}
