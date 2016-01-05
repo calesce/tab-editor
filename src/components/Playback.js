@@ -45,7 +45,7 @@ class Playback extends Component {
           noteIndex: 0
         };
         playCurrentNote(this.props.track, newPlayingNote, this.props.buffers);
-        this.props.actions.setPlayingNote(newPlayingNote);
+        this.updateNote(newPlayingNote);
         this.setState({
           timer: requestAnimationFrame(() => {
             this.loopThroughSong(currentTimestamp, newPlayingNote);
@@ -57,7 +57,7 @@ class Playback extends Component {
           noteIndex: noteIndex + 1
         };
         playCurrentNote(this.props.track, newPlayingNote, this.props.buffers);
-        this.props.actions.setPlayingNote(newPlayingNote);
+        this.updateNote(newPlayingNote);
         this.setState({
           timer: requestAnimationFrame(() => {
             this.loopThroughSong(currentTimestamp, newPlayingNote);
@@ -81,6 +81,12 @@ class Playback extends Component {
       timer: requestAnimationFrame(() => {
         this.loopThroughSong(null, playingNote);
       })
+    });
+  }
+
+  updateNote = (playingNote) => {
+    _.defer(() => {
+      this.props.actions.setPlayingNote(playingNote);
     });
   }
 
