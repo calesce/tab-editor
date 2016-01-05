@@ -60,4 +60,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, null)(TabStaff);
+export default connect(mapStateToProps)(TabStaff);

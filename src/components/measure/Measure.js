@@ -7,13 +7,10 @@ import Clef from './Clef';
 import TimeSignature from './TimeSignature';
 import Cursor from './Cursor';
 import Bpm from './Bpm';
-import shouldPureComponentUpdate from 'react-pure-render/function';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 
 class Measure extends Component {
-  shouldComponentUpdate = shouldPureComponentUpdate;
-
   calcMeasureValidity = (measure) => {
     const timeSig = parseInt(measure.timeSignature[0]) / parseInt(measure.timeSignature.slice(2, 4));
     const notesTotal = measure.notes.reduce((total, note) => {
@@ -185,4 +182,4 @@ function mapStateToProps(state, props) {
   };
 }
 
-export default connect(mapStateToProps, null)(Measure);
+export default connect(mapStateToProps)(Measure);
