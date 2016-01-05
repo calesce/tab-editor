@@ -1,5 +1,6 @@
 import track from './track';
 import layout from './layout';
+import playingNote from './playingNote';
 import { prepareRows } from '../util';
 import { COPY_NOTE, CUT_NOTE, CHANGE_LAYOUT } from '../actions/types';
 
@@ -44,7 +45,8 @@ export default function tracks(state = {}, action) {
         tracks: replaceTrack(state.tracks, action, state.currentTrackIndex, state.layout),
         currentTrackIndex: state.currentTrackIndex,
         clipboard: state.clipboard,
-        layout: layout(state.layout, action)
+        layout: layout(state.layout, action),
+        playingNote: playingNote(state.playingNote, action)
       };
     }
   }
