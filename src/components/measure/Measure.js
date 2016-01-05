@@ -9,8 +9,9 @@ import Cursor from './Cursor';
 import Bpm from './Bpm';
 import shouldPureComponentUpdate from 'react-pure-render/function';
 import _ from 'lodash';
+import { connect } from 'react-redux';
 
-export default class Measure extends Component {
+class Measure extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
 
   calcMeasureValidity = (measure) => {
@@ -176,3 +177,12 @@ export default class Measure extends Component {
     );
   }
 }
+
+function mapStateToProps(state, props) {
+  return {
+    measure: state.tracks[state.currentTrackIndex].measures[props.totalMeasureIndex],
+    playingNote: state.playingNote
+  };
+}
+
+export default connect(mapStateToProps, null)(Measure);

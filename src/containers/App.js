@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import _ from 'lodash';
 import * as TrackActions from '../actions/track';
 import * as MeasureActions from '../actions/measure';
+import * as PlayingNoteActions from '../actions/playingNote';
 import { playCurrentNote, getReplaySpeedForNote } from '../util/audio';
 
 import Soundfont from 'soundfont-player';
@@ -14,7 +15,7 @@ import TimeSignatureModal from '../components/editor/TimeSignatureModal';
 import TuningModal from '../components/editor/TuningModal';
 import BpmModal from '../components/editor/BpmModal';
 
-const Actions = _.merge(TrackActions, MeasureActions);
+const Actions = _.merge(TrackActions, MeasureActions, PlayingNoteActions);
 
 class App extends Component {
   constructor(props) {
@@ -55,7 +56,7 @@ class App extends Component {
   }
 
   getXOfCurrentNote = () => {
-    const { measure, noteIndex } = this.state.playingNote;
+    const { measure, noteIndex } = this.props.playingNote;
     const xOfMeasures = this.props.track.measures.reduce((acc, curr, i) => {
       if(i >= measure) {
         return acc;
@@ -78,7 +79,7 @@ class App extends Component {
   startPlayback = () => {
     let startTimestamp = Date.now();
     this.updateScrollPosition();
-    playCurrentNote(this.state.audioContext, this.props.track, this.state.playingNote, this.state.buffers);
+    playCurrentNote(this.state.audioContext, this.props.track, this.props.playingNote, this.state.buffers);
 
     this.setState({
       timer: requestAnimationFrame(() => {
@@ -88,7 +89,8 @@ class App extends Component {
   }
 
   loopThroughSong = (startTimestamp) => {
-    let { playingNote, audioContext } = this.state;
+    let { audioContext } = this.state;
+    let { playingNote } = this.props;
     let { measure, noteIndex } = playingNote;
     let { measures } = this.props.track;
 
@@ -109,11 +111,11 @@ class App extends Component {
       if(measure === measures.length - 1 && noteIndex >= measures[measure].notes.length - 1) {
         this.handleStop();
       } else if(measure !== measures.length - 1 && noteIndex >= measures[measure].notes.length - 1) {
+        this.props.actions.setPlayingNote({
+          measure: measure + 1,
+          noteIndex: 0
+        });
         this.setState({
-          playingNote: {
-            measure: measure + 1,
-            noteIndex: 0
-          },
           editingIndex: {
             stringIndex: this.state.editingIndex.stringIndex,
             measureIndex: measure + 1,
@@ -124,14 +126,14 @@ class App extends Component {
           })
         }, () => {
           this.updateScrollPosition();
-          playCurrentNote(audioContext, this.props.track, this.state.playingNote, this.state.buffers);
+          playCurrentNote(audioContext, this.props.track, this.props.playingNote, this.state.buffers);
         });
       } else {
+        this.props.actions.setPlayingNote({
+          measure,
+          noteIndex: noteIndex + 1
+        });
         this.setState({
-          playingNote: {
-            measure,
-            noteIndex: noteIndex + 1
-          },
           editingIndex: {
             stringIndex: this.state.editingIndex.stringIndex,
             measureIndex: measure,
@@ -142,7 +144,7 @@ class App extends Component {
           })
         }, () => {
           this.updateScrollPosition();
-          playCurrentNote(audioContext, this.props.track, this.state.playingNote, this.state.buffers);
+          playCurrentNote(audioContext, this.props.track, this.props.playingNote, this.state.buffers);
         });
       }
     } else {
@@ -157,26 +159,21 @@ class App extends Component {
   handleStop = () => {
     cancelAnimationFrame(this.state.timer);
 
-    this.setState({
-      playingNote: null
-    });
+    this.props.actions.setPlayingNote(null);
   }
 
   handlePlay = () => {
-    if(this.state.playingNote || !this.state.buffers) {
+    if(this.props.playingNote || !this.state.buffers) {
       return;
     }
 
     const { noteIndex, measureIndex } = this.state.editingIndex;
 
-    this.setState({
-      playingNote: {
-        measure: measureIndex,
-        noteIndex
-      }
-    }, () => {
-      this.startPlayback();
+    this.props.actions.setPlayingNote({
+      measure: measureIndex,
+      noteIndex
     });
+    this.startPlayback();
   }
 
   onNoteClick = (editingIndex) => {
@@ -417,7 +414,7 @@ class App extends Component {
   handleKeyPress = (event) => {
     if(this.state.openModal) {
       return;
-    } else if(this.state.playingNote && event.keyCode !== 32) {
+    } else if(this.props.playingNote && event.keyCode !== 32) {
       return;
     }
 
@@ -470,7 +467,7 @@ class App extends Component {
       return this.insertNote();
     } else if(event.keyCode === 32) { // spacebar
       event.preventDefault();
-      return this.state.playingNote ? this.handleStop() : this.handlePlay();
+      return this.props.playingNote ? this.handleStop() : this.handlePlay();
     } else if(event.keyCode === 190) { // period
       this.props.actions.toggleNoteDotted(this.state.editingIndex);
     } else if(event.shiftKey && event.keyCode === 187) { // plus
@@ -502,7 +499,8 @@ class App extends Component {
 
   render() {
     const { measures } = this.props.track;
-    const { openModal, editingIndex, playingNote } = this.state;
+    const { playingNote } = this.props;
+    const { openModal, editingIndex } = this.state;
     const { measureIndex } = this.state.editingIndex;
     const timeSignature = measures[measureIndex] ? measures[measureIndex].timeSignature : '4/4';
 
@@ -515,7 +513,7 @@ class App extends Component {
           timeSignature={timeSignature}
           playingNote={playingNote}
         />
-        <TabStaff onClick={this.onNoteClick} editingIndex={editingIndex} playingNote={playingNote} />
+        <TabStaff onClick={this.onNoteClick} editingIndex={editingIndex} />
         <TimeSignatureModal isOpen={openModal === 'timeSignature'} closeModal={this.closeModal} measureIndex={measureIndex} />
         <TuningModal isOpen={openModal === 'tuning'} closeModal={this.closeModal} />
         <BpmModal isOpen={openModal === 'bpm'} closeModal={this.closeModal} index={editingIndex} />
@@ -528,7 +526,8 @@ function mapStateToProps(state) {
   return {
     track: state.tracks[state.currentTrackIndex],
     clipboard: state.clipboard,
-    layout: state.layout
+    layout: state.layout,
+    playingNote: state.playingNote
   };
 }
 
