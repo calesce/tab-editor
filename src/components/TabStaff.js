@@ -23,8 +23,7 @@ class TabStaff extends Component {
     const indexOfRow = this.getIndexOfRow(measure.rowIndex, totalMeasureIndex);
 
     return (
-      <Measure key={totalMeasureIndex} measure={measure}
-        playingNote={this.props.playingNote}
+      <Measure key={totalMeasureIndex}
         totalMeasureIndex={totalMeasureIndex}
         editingIndex={this.props.editingIndex}
         onClick={this.props.onClick}
