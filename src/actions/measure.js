@@ -45,9 +45,9 @@ export function toggleNoteDotted(index) {
   };
 }
 
-export function toggleNoteTremelo(index) {
+export function toggleNoteTremolo(index) {
   return {
-    type: types.TOGGLE_NOTE_TREMELO,
+    type: types.TOGGLE_NOTE_TREMOLO,
     index
   };
 }

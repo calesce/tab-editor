@@ -58,8 +58,8 @@ export default class TabNote extends Component {
     );
   }
 
-  renderTremelo = (tremelo, x, color) => {
-    if(!tremelo) {
+  renderTremolo = (tremolo, x, color) => {
+    if(!tremolo) {
       return null;
     }
 
@@ -75,7 +75,7 @@ export default class TabNote extends Component {
   }
 
   render() {
-    const { x, y, fret, color, dotted, tremelo } = this.props;
+    const { x, y, fret, color, dotted, tremolo } = this.props;
 
     let width = 12;
     if(fret > 9) {
@@ -104,7 +104,7 @@ export default class TabNote extends Component {
         {note}
         {this.renderStem()}
         {this.renderDot(dotted, x, color)}
-        {this.renderTremelo(tremelo, x, color)}
+        {this.renderTremolo(tremolo, x, color)}
       </g>
     );
   }

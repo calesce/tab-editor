@@ -34,8 +34,18 @@ const playWithBuffer = (startTime, buffer, duration) => {
   let source = audioContext.createBufferSource();
   source.buffer = buffer;
   let gainNode = audioContext.createGain();
-  source.connect(gainNode);
+  let freqGain = audioContext.createGain();
+  let lfo = audioContext.createOscillator();
   gainNode.connect(audioContext.destination);
+  source.connect(gainNode);
+
+  // /*console.log(source);
+  freqGain.gain.value = 20; // range of vibrato
+  freqGain.connect(source.detune);
+
+  lfo.frequency.value = 4; // fast vibrato
+  // lfo.type = 'square';
+  lfo.connect(freqGain);
 
   if(buffer !== 'rest') {
     gainNode.gain.value = 1.0;
@@ -45,6 +55,8 @@ const playWithBuffer = (startTime, buffer, duration) => {
 
   source.start(startTime);
   source.stop(endTime);
+  //lfo.start(startTime);
+  //lfo.stop(endTime);
 };
 
 const play = (startTime, pitch, duration) => {
@@ -81,6 +93,37 @@ const playNoteAtTime = (currentNote, playTime, duration, buffers, tuning) => {
   }
 };
 
+const playTremolo = (n, replaySpeed, buffers, tuning, noteToPlay) => {
+  const currentTime = audioContext.currentTime;
+
+  _.times(n, (i) => {
+    playNoteAtTime(noteToPlay, currentTime + (i * replaySpeed / (n * 1000)), replaySpeed / n, buffers, tuning);
+  });
+};
+
+const playTremoloNote = (noteToPlay, replaySpeed, buffers, tuning) => {
+  switch(noteToPlay.duration) {
+    case 's':
+      playTremolo(2, replaySpeed, buffers, tuning, noteToPlay);
+      break;
+    case 'e':
+      playTremolo(4, replaySpeed, buffers, tuning, noteToPlay);
+      break;
+    case 'q':
+      playTremolo(8, replaySpeed, buffers, tuning, noteToPlay);
+      break;
+    case 'h':
+      playTremolo(16, replaySpeed, buffers, tuning, noteToPlay);
+      break;
+    case 'w':
+      playTremolo(32, replaySpeed, buffers, tuning, noteToPlay);
+      break;
+    default:
+      playTremolo(1, replaySpeed, buffers, tuning, noteToPlay);
+      break;
+  }
+};
+
 exports.playCurrentNote = (track, playingIndex, buffers) => {
   const { measures, tuning } = track;
 
@@ -97,29 +140,8 @@ exports.playCurrentNote = (track, playingIndex, buffers) => {
 
   if(noteToPlay.fret[0] === 'rest') {
     playNoteAtTime(audioContext, 'rest', audioContext.currentTime, replaySpeed, buffers, tuning);
-  } else if(noteToPlay.tremelo) {
-
-    const currentTime = audioContext.currentTime;
-    switch(noteToPlay.duration) {
-      case 's':
-        [0, 1].forEach(() => {
-          playNoteAtTime(noteToPlay, currentTime, replaySpeed / 2, buffers, tuning);
-        });
-        break;
-      case 'e':
-        break;
-      case 'q':
-        [0, 1, 2, 3, 4, 5, 6, 7].forEach((i) => {
-          playNoteAtTime(noteToPlay, currentTime + (i * replaySpeed / 8), replaySpeed / 8, buffers, tuning);
-        });
-        break;
-      case 'h':
-        break;
-      case 'w':
-        break;
-      default:
-        break;
-    }
+  } else if(noteToPlay.tremolo) {
+    playTremoloNote(noteToPlay, replaySpeed, buffers, tuning);
   } else {
     playNoteAtTime(noteToPlay, audioContext.currentTime, replaySpeed, buffers, tuning);
   }
