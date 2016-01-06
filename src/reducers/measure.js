@@ -43,17 +43,15 @@ const deleteNote = (state, action) => {
     let newNote;
     if(note.fret.length === 1) {
        newNote = {
-        fret: ['rest'],
-        string: ['rest'],
-        duration: note.duration,
-        dotted: note.dotted
+         ...note,
+         fret: ['rest'],
+         string: ['rest']
       };
     } else {
       newNote = {
+        ...note,
         fret: note.fret.filter((fret, i) => i !== currentStringIndex),
-        string:  note.string.filter((string) => string !== stringIndex),
-        duration: note.duration,
-        dotted: note.dotted
+        string:  note.string.filter((string) => string !== stringIndex)
       };
     }
     return replaceNote(state, newNote, noteIndex);
@@ -102,10 +100,9 @@ export default function measure(state, action) {
       let note;
       if(action.fret === 'rest') {
         note = {
+          ...oldNote,
           fret: ['rest'],
-          string: ['rest'],
-          duration: oldNote.duration,
-          dotted: oldNote.dotted
+          string: ['rest']
         };
       } else if(!oldNote) {
         note = {
@@ -117,21 +114,19 @@ export default function measure(state, action) {
         let currentStringIndex = _.findIndex(oldNote.string, (note) => note === stringIndex);
         if(oldNote.fret[0] === 'rest') {
           note = {
+            ...oldNote,
             fret: [action.fret],
-            string: [stringIndex],
-            duration: oldNote.duration,
-            dotted: oldNote.dotted
+            string: [stringIndex]
           };
         } else if(currentStringIndex === -1) {
           note = {
+            ...oldNote,
             fret: oldNote.fret.concat(action.fret),
-            string: oldNote.string.concat(stringIndex),
-            duration: oldNote.duration,
-            dotted: oldNote.dotted
+            string: oldNote.string.concat(stringIndex)
           };
         } else {
           const oldFret = oldNote.fret[currentStringIndex];
-          note = oldNote;
+          note = _.cloneDeep(oldNote);
           if(oldFret === 1) {
             note.fret[currentStringIndex] = action.fret + 10;
           } else if(oldFret === 2 && action.fret <= 5) {
