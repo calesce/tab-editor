@@ -19,6 +19,7 @@ const computeMeasureWidths = (track) => {
       return {
         ...measure,
         width,
+        renderTimeSignature: false,
         showBpm
       };
     }
