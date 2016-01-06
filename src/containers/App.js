@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import _ from 'lodash';
 import * as TrackActions from '../actions/track';
 import * as MeasureActions from '../actions/measure';
 import * as PlayingNoteActions from '../actions/playingNote';
@@ -16,7 +15,7 @@ import TuningModal from '../components/editor/TuningModal';
 import BpmModal from '../components/editor/BpmModal';
 import Playback from '../components/Playback';
 
-const Actions = _.merge(TrackActions, MeasureActions, PlayingNoteActions);
+const Actions = Object.assign(TrackActions, MeasureActions, PlayingNoteActions);
 
 class App extends Component {
   constructor(props) {
@@ -288,15 +287,25 @@ class App extends Component {
         this.props.actions.deleteNote({ stringIndex, measureIndex, noteIndex });
       });
     } else if(notes.length === 0) {
-      this.props.actions.deleteMeasure(measureIndex);
-
-      if(measureIndex === this.props.track.measures.length) {
+      if(measureIndex === this.props.track.measures.length - 1) {
         this.setState({
           editingIndex: {
             stringIndex,
             measureIndex: measureIndex - 1,
             noteIndex: 0
           }
+        }, () => {
+          this.props.actions.deleteMeasure(measureIndex);
+        });
+      } else {
+        this.setState({
+          editingIndex: {
+            stringIndex,
+            measureIndex,
+            noteIndex: 0
+          }
+        }, () => {
+          this.props.actions.deleteMeasure(measureIndex);
         });
       }
     } else {
