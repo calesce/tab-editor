@@ -12,8 +12,45 @@ import Clef from './Clef';
 import TimeSignature from './TimeSignature';
 import Cursor from './Cursor';
 import Bpm from './Bpm';
+import shallowEqual from 'react-pure-render/shallowEqual';
 
 class Measure extends Component {
+  shouldComponentUpdate(nextProps) {
+    const playingNoteEqual = !shallowEqual(this.props.playingNote, nextProps.playingNote);
+    if(playingNoteEqual) {
+      return true;
+    }
+    const indexEqual = this.props.indexOfRow !== nextProps.indexOfRow || this.props.measureIndex !== nextProps.measureIndex;
+    if(indexEqual) {
+      return true;
+    }
+    const cursorEqual = !shallowEqual(this.props.cursor, nextProps.cursor);
+    if(cursorEqual) {
+      return true;
+    }
+    const measureShallowEqual = !shallowEqual(this.props.measure, nextProps.measure);
+
+    for(let i = 0; i < this.props.measure.notes.length; i++) {
+      const oldNote = this.props.measure.notes[i];
+      const newNote = nextProps.measure.notes[i];
+
+      if(oldNote.duration !== newNote.duration) {
+        return true;
+      }
+      if(!shallowEqual(oldNote.string, newNote.string)) {
+        return true;
+      }
+      if(!shallowEqual(oldNote.fret, newNote.fret)) {
+        return true;
+      }
+    }
+
+    if(measureShallowEqual) {
+      return true;
+    }
+    return false;
+  }
+
   calcMeasureValidity = (measure) => {
     const timeSig = parseInt(measure.timeSignature[0]) / parseInt(measure.timeSignature.slice(2, 4));
     const notesTotal = measure.notes.reduce((total, note) => {
@@ -87,23 +124,23 @@ class Measure extends Component {
   }
 
   renderCursor = () => {
-    const { noteIndex, stringIndex, measureIndex } = this.props.cursor;
-    if(this.props.measureIndex === measureIndex && !this.props.playingNote) {
-      const x = this.calcXForNote(noteIndex);
-      const y = 95 - (13 * stringIndex);
+    if(!this.props.cursor) {
+      return null;
+    }
+    const { noteIndex, stringIndex } = this.props.cursor;
 
-      let index = 0;
-      let fret = 0;
+    const x = this.calcXForNote(noteIndex);
+    const y = 95 - (13 * stringIndex);
 
-      if(this.props.measure.notes.length > 0) {
-        index = _.findIndex(this.props.measure.notes[noteIndex].string, (s) => s === stringIndex);
-        fret = this.props.measure.notes[noteIndex].fret[index];
-      }
+    let index = 0;
+    let fret = 0;
 
-      return <Cursor x={x} y={y} fret={fret} />;
+    if(this.props.measure.notes.length > 0) {
+      index = _.findIndex(this.props.measure.notes[noteIndex].string, (s) => s === stringIndex);
+      fret = this.props.measure.notes[noteIndex].fret[index];
     }
 
-    return null;
+    return <Cursor x={x} y={y} fret={fret} />;
   }
 
   renderNote = (note, measureIndex, noteIndex) => {
@@ -183,10 +220,18 @@ function mapStateToProps(state, props) {
   if(state.tracks[state.currentTrackIndex].measures.length - 1 < props.measureIndex) {
     measureIndex -= 1;
   }
+  let playingNote = state.playingNote;
+  if(playingNote) {
+    playingNote = state.playingNote.measure === measureIndex ? playingNote : undefined;
+  }
+  let cursor = state.cursor;
+  if(cursor) {
+    cursor = (state.cursor.measureIndex === measureIndex && !playingNote) ? cursor : undefined;
+  }
   return {
     measure: state.tracks[state.currentTrackIndex].measures[measureIndex],
-    playingNote: state.playingNote,
-    cursor: state.cursor
+    playingNote,
+    cursor
   };
 }
 

@@ -43,11 +43,6 @@ class App extends Component {
 
     if(this.props.playingNote && playingNote) {
       if(playingNote.noteIndex !== this.props.playingNote.noteIndex || playingNote.measure !== this.props.playingNote.measure) {
-        this.props.actions.setCursor({
-          measureIndex: playingNote.measure,
-          noteIndex: playingNote.noteIndex,
-          stringIndex: this.props.cursor.stringIndex
-        });
         this.updateScrollPosition(nextProps.playingNote);
       }
     }
@@ -79,6 +74,11 @@ class App extends Component {
   }
 
   handleStop = () => {
+    this.props.actions.setCursor({
+      measureIndex: this.props.playingNote.measure,
+      noteIndex: this.props.playingNote.noteIndex,
+      stringIndex: this.props.cursor.stringIndex
+    });
     this.props.actions.setPlayingNote(null);
   }
 
