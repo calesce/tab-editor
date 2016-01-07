@@ -34,18 +34,17 @@ const playWithBuffer = (startTime, buffer, duration) => {
   let source = audioContext.createBufferSource();
   source.buffer = buffer;
   let gainNode = audioContext.createGain();
-  let freqGain = audioContext.createGain();
-  let lfo = audioContext.createOscillator();
+  // let freqGain = audioContext.createGain();
+  // let lfo = audioContext.createOscillator();
   gainNode.connect(audioContext.destination);
   source.connect(gainNode);
 
-  // /*console.log(source);
-  freqGain.gain.value = 20; // range of vibrato
-  freqGain.connect(source.detune);
+  // freqGain.gain.value = 20; // range of vibrato
+  // freqGain.connect(source.detune);
 
-  lfo.frequency.value = 4; // fast vibrato
+  // lfo.frequency.value = 4; // fast vibrato
   // lfo.type = 'square';
-  lfo.connect(freqGain);
+  // lfo.connect(freqGain);
 
   if(buffer !== 'rest') {
     gainNode.gain.value = 1.0;

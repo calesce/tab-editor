@@ -37,20 +37,20 @@ export default function track(state = {}, action) {
   switch(action.type) {
     case DELETE_MEASURE:
       return {
-        measures: state.measures.filter((_, index) => index !== action.measureIndex),
-        tuning: state.tuning
+        ...state,
+        measures: state.measures.filter((_, index) => index !== action.measureIndex)
       };
 
     case INSERT_MEASURE:
       const lastMeasure = state.measures[state.measures.length - 1];
 
       return {
+        ...state,
         measures: state.measures.concat({
           timeSignature: lastMeasure.timeSignature,
           bpm: lastMeasure.bpm,
           notes: []
-        }),
-        tuning: state.tuning
+        })
       };
 
     case REPLACE_SONG:

@@ -19,3 +19,10 @@ export const CHANGE_LAYOUT = 'CHANGE_LAYOUT';
 // playingNote
 export const SET_PLAYING_NOTE = 'SET_PLAYING_NOTE';
 export const ADVANCE_PLAYING_NOTE = 'ADVANCE_PLAYING_NOTE';
+
+// cursor
+export const SET_CURSOR = 'SET_CURSOR';
+export const MOVE_CURSOR_LEFT = 'MOVE_CURSOR_LEFT';
+export const MOVE_CURSOR_RIGHT = 'MOVE_CURSOR_RIGHT';
+export const MOVE_CURSOR_UP= 'MOVE_CURSOR_UP';
+export const MOVE_CURSOR_DOWN = 'MOVE_CURSOR_DOWN';

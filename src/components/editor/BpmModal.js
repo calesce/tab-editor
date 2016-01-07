@@ -23,7 +23,7 @@ export default class TimeSignatureModal extends Component {
   }
 
   onRequestClose = () => {
-    this.props.changeBpm(this.props.index, this.state.bpm, this.state.checked);
+    this.props.changeBpm(this.props.cursor, this.state.bpm, this.state.checked);
 
     this.props.closeModal();
   }
@@ -68,9 +68,10 @@ export default class TimeSignatureModal extends Component {
   }
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
   return {
-    measure: state.tracks[state.currentTrackIndex].measures[ownProps.index.measureIndex]
+    measure: state.tracks[state.currentTrackIndex].measures[state.cursor.measureIndex],
+    cursor: state.cursor
   };
 }
 

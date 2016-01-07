@@ -1,6 +1,7 @@
 import track from './track';
 import layout from './layout';
 import playingNote from './playingNote';
+import cursor from './cursor';
 import { prepareRows } from '../util';
 import { COPY_NOTE, CUT_NOTE, CHANGE_LAYOUT } from '../actions/types';
 
@@ -29,7 +30,8 @@ export default function tracks(state = {}, action) {
       return {
         ...state,
         tracks: replaceTrack(state.tracks, action, state.currentTrackIndex, state.layout),
-        clipboard: action.note
+        clipboard: action.note,
+        cursor: cursor(state.cursor, state.tracks[state.currentTrackIndex].measures, action)
       };
 
     case CHANGE_LAYOUT:
@@ -46,7 +48,8 @@ export default function tracks(state = {}, action) {
         currentTrackIndex: state.currentTrackIndex,
         clipboard: state.clipboard,
         layout: layout(state.layout, action),
-        playingNote: playingNote(state.playingNote, action)
+        playingNote: playingNote(state.playingNote, action),
+        cursor: cursor(state.cursor, state.tracks[state.currentTrackIndex].measures, action)
       };
     }
   }

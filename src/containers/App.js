@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import * as TrackActions from '../actions/track';
 import * as MeasureActions from '../actions/measure';
 import * as PlayingNoteActions from '../actions/playingNote';
+import * as CursorActions from '../actions/cursor';
 
 import Soundfont from 'soundfont-player';
 import audioContext from '../util/audioContext';
@@ -15,7 +16,7 @@ import TuningModal from '../components/editor/TuningModal';
 import BpmModal from '../components/editor/BpmModal';
 import Playback from '../components/Playback';
 
-const Actions = Object.assign(TrackActions, MeasureActions, PlayingNoteActions);
+const Actions = Object.assign(TrackActions, MeasureActions, PlayingNoteActions, CursorActions);
 
 class App extends Component {
   constructor(props) {
@@ -27,11 +28,7 @@ class App extends Component {
     }
 
     this.state = {
-      editingIndex: {
-        measureIndex: 0,
-        noteIndex: 0,
-        stringIndex: 0
-      }
+      openModal: null
     };
   }
 
@@ -42,16 +39,17 @@ class App extends Component {
   }
 
   componentWillReceiveProps = (nextProps) => {
-    if(nextProps.playingNote) {
-      this.setState({
-        editingIndex: {
-          measureIndex: nextProps.playingNote.measure,
-          noteIndex: nextProps.playingNote.noteIndex,
-          stringIndex: this.state.editingIndex.stringIndex
-        }
-      }, () => {
-        this.updateScrollPosition();
-      });
+    const { playingNote } = nextProps;
+
+    if(this.props.playingNote && playingNote) {
+      if(playingNote.noteIndex !== this.props.playingNote.noteIndex || playingNote.measure !== this.props.playingNote.measure) {
+        this.props.actions.setCursor({
+          measureIndex: playingNote.measure,
+          noteIndex: playingNote.noteIndex,
+          stringIndex: this.props.cursor.stringIndex
+        });
+        this.updateScrollPosition(nextProps.playingNote);
+      }
     }
   }
 
@@ -59,8 +57,8 @@ class App extends Component {
     this.props.actions.resize();
   }
 
-  getXOfCurrentNote = () => {
-    const { measure, noteIndex } = this.props.playingNote;
+  getXOfCurrentNote = (playingNote) => {
+    const { measure, noteIndex } = playingNote;
     const xOfMeasures = this.props.track.measures.reduce((acc, curr, i) => {
       if(i >= measure) {
         return acc;
@@ -71,8 +69,8 @@ class App extends Component {
     return xOfMeasures + 55 * noteIndex;
   }
 
-  updateScrollPosition = () => {
-    const x = this.getXOfCurrentNote();
+  updateScrollPosition = (playingNote) => {
+    const x = this.getXOfCurrentNote(playingNote);
     const scrollX = window.scrollX;
 
     if(x > window.innerWidth + scrollX - 200 && this.props.layout === 'linear') {
@@ -81,8 +79,6 @@ class App extends Component {
   }
 
   handleStop = () => {
-    cancelAnimationFrame(this.state.timer);
-
     this.props.actions.setPlayingNote(null);
   }
 
@@ -91,7 +87,7 @@ class App extends Component {
       return;
     }
 
-    const { noteIndex, measureIndex } = this.state.editingIndex;
+    const { noteIndex, measureIndex } = this.props.cursor;
 
     this.props.actions.setPlayingNote({
       measure: measureIndex,
@@ -99,125 +95,39 @@ class App extends Component {
     });
   }
 
-  onNoteClick = (editingIndex) => {
-    this.setState({ editingIndex });
-  }
-
   getCurrentNote = () => {
     const { measures } = this.props.track;
-    const { measureIndex, noteIndex } = this.state.editingIndex;
+    const { measureIndex, noteIndex } = this.props.cursor;
 
     return measures[measureIndex].notes[noteIndex];
   }
 
-  getNextNote = (measureIndex, noteIndex) => {
-    const { measures } = this.props.track;
-
-    if(measureIndex === measures.length - 1 && noteIndex >= measures[measureIndex].notes.length - 1) {
-      return 'NEW';
-    } else if(noteIndex >= measures[measureIndex].notes.length - 1) {
-      return {
-        measureIndex: measureIndex + 1,
-        noteIndex: 0
-      };
-    } else {
-      return {
-        measureIndex,
-        noteIndex: noteIndex + 1
-      };
-    }
-  }
-
-  getPrevNote = (measureIndex, noteIndex) => {
-    const { measures } = this.props.track;
-
-    if(measureIndex === 0 && noteIndex === 0) {
-      return { measureIndex, noteIndex };
-    } else if(noteIndex === 0) {
-      let prevMeasure = measures[measureIndex - 1];
-      if(prevMeasure.notes.length > 0) {
-        return {
-          measureIndex: measureIndex - 1,
-          noteIndex: measures[measureIndex - 1].notes.length - 1
-        };
-      } else {
-        return {
-          measureIndex: measureIndex - 1,
-          noteIndex: 0
-        };
-      }
-    } else {
-      return {
-        measureIndex,
-        noteIndex: noteIndex - 1
-      };
-    }
-  }
-
-  getUpperString = (stringIndex) => {
-    return stringIndex === 5 ? 0 : stringIndex + 1;
-  }
-
-  getLowerString = (stringIndex) => {
-    return stringIndex === 0 ? 5 : stringIndex - 1;
-  }
-
   navigateCursor = (event) => {
-    let { measureIndex, noteIndex, stringIndex } = this.state.editingIndex;
-
+    //event.preventDefault();
     if(event.keyCode === 39) { // right arrow
-      let newEditingIndex = this.getNextNote(measureIndex, noteIndex);
-      if(newEditingIndex === 'NEW') {
-        this.props.actions.insertMeasure(0);
-        newEditingIndex = {
-          stringIndex,
-          measureIndex: measureIndex + 1,
-          noteIndex: 0
-        };
-        this.setState({
-          editingIndex: newEditingIndex
-        });
-      } else {
-        newEditingIndex.stringIndex = stringIndex;
-        this.setState({
-          editingIndex: newEditingIndex
-        });
+      const { measures } = this.props.track;
+      const { measureIndex, noteIndex } = this.props.cursor;
+      if(measureIndex === measures.length - 1 &&
+        (noteIndex === measures[measureIndex].notes.length - 1 || measures[measureIndex].notes.length === 0)
+      ) {
+        this.props.actions.insertMeasure();
       }
+      this.props.actions.moveCursorRight();
     } else if(event.keyCode === 37) { // left arrow
-      let newEditingIndex = this.getPrevNote(measureIndex, noteIndex);
-      newEditingIndex.stringIndex = stringIndex;
-      this.setState({
-        editingIndex: newEditingIndex
-      });
+      this.props.actions.moveCursorLeft();
     } else if(event.keyCode === 38) { // up arrow
-      event.preventDefault();
-      let newEditingIndex = {
-        stringIndex: this.getUpperString(stringIndex),
-        noteIndex,
-        measureIndex
-      };
-      this.setState({
-        editingIndex: newEditingIndex
-      });
+      this.props.actions.moveCursorUp();
     } else if(event.keyCode === 40) { // down arrow
-      event.preventDefault();
-      let newEditingIndex = {
-        stringIndex: this.getLowerString(stringIndex),
-        noteIndex,
-        measureIndex
-      };
-      this.setState({
-        editingIndex: newEditingIndex
-      });
+      this.props.actions.moveCursorDown();
     }
   }
 
   editNote = (fret) => {
-    this.props.actions.changeNote(this.state.editingIndex, fret);
+    this.props.actions.changeNote(this.props.cursor, fret);
   }
 
   changeNoteLength = (duration) => {
-    this.props.actions.changeNoteLength(this.state.editingIndex, duration);
+    this.props.actions.changeNoteLength(this.props.cursor, duration);
   }
 
   increaseNoteLength = ({ measureIndex, noteIndex }) => {
@@ -243,7 +153,7 @@ class App extends Component {
       default:
         newDuration = 's';
     }
-    this.props.actions.changeNoteLength(this.state.editingIndex, newDuration);
+    this.props.actions.changeNoteLength(this.props.cursor, newDuration);
   }
 
   decreaseNoteLength = ({ measureIndex, noteIndex }) => {
@@ -269,85 +179,33 @@ class App extends Component {
       default:
         newDuration = 'w';
     }
-    this.props.actions.changeNoteLength(this.state.editingIndex, newDuration);
+    this.props.actions.changeNoteLength(this.props.cursor, newDuration);
   }
 
   deleteNote = () => {
-    const { noteIndex, measureIndex, stringIndex } = this.state.editingIndex;
+    const { measureIndex } = this.props.cursor;
     let notes = this.props.track.measures[measureIndex].notes;
 
-    if(notes.length > 1 && noteIndex === notes.length - 1 && notes[notes.length - 1].fret[0] === 'rest') {
-      this.setState({
-        editingIndex: {
-          stringIndex,
-          measureIndex,
-          noteIndex: noteIndex - 1
-        }
-      }, () => {
-        this.props.actions.deleteNote({ stringIndex, measureIndex, noteIndex });
-      });
+    if(notes.length > 0) {
+      this.props.actions.deleteNote(this.props.cursor);
     } else if(notes.length === 0) {
-      if(measureIndex === this.props.track.measures.length - 1) {
-        this.setState({
-          editingIndex: {
-            stringIndex,
-            measureIndex: measureIndex - 1,
-            noteIndex: 0
-          }
-        }, () => {
-          this.props.actions.deleteMeasure(measureIndex);
-        });
-      } else {
-        this.setState({
-          editingIndex: {
-            stringIndex,
-            measureIndex,
-            noteIndex: 0
-          }
-        }, () => {
-          this.props.actions.deleteMeasure(measureIndex);
-        });
-      }
-    } else {
-      this.props.actions.deleteNote(this.state.editingIndex);
+      this.props.actions.deleteMeasure(measureIndex);
     }
   }
 
   insertNote = () => {
-    const { noteIndex, measureIndex, stringIndex } = this.state.editingIndex;
-    this.props.actions.insertNote(this.state.editingIndex);
-
-    if(this.props.track.measures[measureIndex].notes.length !== 1) {
-      this.setState({
-        editingIndex: {
-          measureIndex,
-          stringIndex,
-          noteIndex: noteIndex + 1
-        }
-      });
-    }
+    this.props.actions.insertNote(this.props.cursor);
   }
 
   pasteNote = () => {
-    const { measureIndex, noteIndex, stringIndex } = this.state.editingIndex;
-
     if(this.props.clipboard) {
       event.preventDefault();
-      this.props.actions.pasteNote(this.state.editingIndex, this.props.clipboard);
-      this.setState({
-        editingIndex: {
-          measureIndex,
-          noteIndex: this.props.track.measures[measureIndex].notes.length === 1 && noteIndex === 0 ? 0 : noteIndex + 1,
-          stringIndex
-        }
-      });
+      this.props.actions.pasteNote(this.props.cursor, this.props.clipboard);
     }
   }
 
   handleKeyPress = (event) => {
-    if(this.state.openModal) {
-      return;
-    } else if(this.props.playingNote && event.keyCode !== 32) {
+    if(this.state.openModal || (this.props.playingNote && event.keyCode !== 32)) {
       return;
     }
 
@@ -360,29 +218,13 @@ class App extends Component {
     }
     if((event.metaKey || event.ctrlKey) && event.keyCode === 88) { // cmd/ctrl+x
       event.preventDefault();
-      const { noteIndex, measureIndex, stringIndex } = this.state.editingIndex;
-      let notes = this.props.track.measures[measureIndex].notes;
-      if(notes.length > 1 && noteIndex === notes.length - 1) {
-        const currentNote = this.getCurrentNote();
-
-        this.setState({
-          editingIndex: {
-            stringIndex,
-            measureIndex,
-            noteIndex: noteIndex - 1
-          }
-        }, () => {
-          this.props.actions.cutNote({ noteIndex: noteIndex, measureIndex, stringIndex }, currentNote);
-        });
-      } else {
-        return this.props.actions.cutNote({ noteIndex, measureIndex, stringIndex }, this.getCurrentNote());
-      }
+      this.props.actions.cutNote(this.props.cursor, this.getCurrentNote());
     }
 
     if(event.keyCode <= 57 && event.keyCode >= 48) {
       return this.editNote(event.keyCode - 48);
     } else if(event.keyCode === 82 && !event.metaKey && !event.ctrlKey) {
-      this.props.actions.changeNote(this.state.editingIndex, 'rest');
+      this.props.actions.changeNote(this.props.cursor, 'rest');
     } else if(event.keyCode === 8) { // delete
       event.preventDefault();
       this.deleteNote();
@@ -402,13 +244,13 @@ class App extends Component {
       event.preventDefault();
       return this.props.playingNote ? this.handleStop() : this.handlePlay();
     } else if(event.keyCode === 190) { // period
-      this.props.actions.toggleNoteDotted(this.state.editingIndex);
+      this.props.actions.toggleNoteDotted(this.props.cursor);
     } else if(event.shiftKey && event.keyCode === 187) { // plus
-      return this.increaseNoteLength(this.state.editingIndex);
+      return this.increaseNoteLength(this.props.cursor);
     } else if(event.keyCode === 189) { // minus
-      return this.decreaseNoteLength(this.state.editingIndex);
+      return this.decreaseNoteLength(this.props.cursor);
     } else if(event.shiftKey && event.keyCode === 222) { // "
-      this.props.actions.toggleNoteTremolo(this.state.editingIndex);
+      this.props.actions.toggleNoteTremolo(this.props.cursor);
     } else {
       return this.navigateCursor(event);
     }
@@ -432,25 +274,24 @@ class App extends Component {
 
   render() {
     const { measures } = this.props.track;
-    const { playingNote } = this.props;
-    const { openModal, editingIndex, buffers } = this.state;
-    const { measureIndex } = this.state.editingIndex;
+    const { cursor } = this.props;
+    const { openModal, buffers } = this.state;
+    const { measureIndex } = cursor;
     const timeSignature = measures[measureIndex] ? measures[measureIndex].timeSignature : '4/4';
 
     return (
       <div style={{ width: '100%', height: '100%' }}>
-        { playingNote ? <Playback buffers={buffers} /> : null}
+        { this.props.playingNote ? <Playback buffers={buffers} /> : null}
         <EditorArea handlePlay={this.handlePlay} handleStop={this.handleStop}
           openModal={this.openTimeSignatureModal}
           openTuning={this.openTuningModal}
           openBpm={this.openBpmModal}
           timeSignature={timeSignature}
-          playingNote={playingNote}
         />
-        <TabStaff onClick={this.onNoteClick} editingIndex={editingIndex} />
-        <TimeSignatureModal isOpen={openModal === 'timeSignature'} closeModal={this.closeModal} measureIndex={measureIndex} />
+        <TabStaff />
+        <TimeSignatureModal isOpen={openModal === 'timeSignature'} closeModal={this.closeModal} />
         <TuningModal isOpen={openModal === 'tuning'} closeModal={this.closeModal} />
-        <BpmModal isOpen={openModal === 'bpm'} closeModal={this.closeModal} index={editingIndex} />
+        <BpmModal isOpen={openModal === 'bpm'} closeModal={this.closeModal} />
       </div>
     );
   }
@@ -461,7 +302,8 @@ function mapStateToProps(state) {
     track: state.tracks[state.currentTrackIndex],
     clipboard: state.clipboard,
     layout: state.layout,
-    playingNote: state.playingNote
+    playingNote: state.playingNote,
+    cursor: state.cursor
   };
 }
 

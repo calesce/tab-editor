@@ -10,25 +10,20 @@ const style = {
 };
 
 class TabStaff extends Component {
-  getIndexOfRow = (rowIndex, totalMeasureIndex) => {
+  getIndexOfRow = (rowIndex, measureIndex) => {
     return this.props.track.reduce((accum, measure, i) => {
-      if(measure.rowIndex === rowIndex && i < totalMeasureIndex) {
+      if(measure.rowIndex === rowIndex && i < measureIndex) {
         return accum + 1;
       }
       return accum;
     }, 0);
   }
 
-  renderMeasureForRow = (measure, totalMeasureIndex) => {
-    const indexOfRow = this.getIndexOfRow(measure.rowIndex, totalMeasureIndex);
+  renderMeasureForRow = (measure, measureIndex) => {
+    const indexOfRow = this.getIndexOfRow(measure.rowIndex, measureIndex);
 
     return (
-      <Measure key={totalMeasureIndex}
-        totalMeasureIndex={totalMeasureIndex}
-        editingIndex={this.props.editingIndex}
-        onClick={this.props.onClick}
-        indexOfRow={indexOfRow}
-      />
+      <Measure key={measureIndex} measureIndex={measureIndex} indexOfRow={indexOfRow} />
     );
   }
 

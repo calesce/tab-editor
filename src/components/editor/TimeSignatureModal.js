@@ -66,9 +66,9 @@ export default class TimeSignatureModal extends Component {
   }
 }
 
-function mapStateToProps(state, props) {
+function mapStateToProps(state) {
   return {
-    timeSignature: state.tracks[state.currentTrackIndex].measures[props.measureIndex].timeSignature,
+    timeSignature: state.tracks[state.currentTrackIndex].measures[state.cursor.measureIndex].timeSignature,
   };
 }
 

@@ -1,4 +1,9 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import _ from 'lodash';
+
+import * as Actions from '../../actions/cursor';
 
 import TabNote from './TabNote';
 import Bars from './Bars';
@@ -7,8 +12,6 @@ import Clef from './Clef';
 import TimeSignature from './TimeSignature';
 import Cursor from './Cursor';
 import Bpm from './Bpm';
-import _ from 'lodash';
-import { connect } from 'react-redux';
 
 class Measure extends Component {
   calcMeasureValidity = (measure) => {
@@ -57,10 +60,10 @@ class Measure extends Component {
   }
 
   onClick = (noteIndex, stringIndex) => {
-    this.props.onClick({
+    this.props.actions.setCursor({
       noteIndex,
       stringIndex,
-      measureIndex: this.props.totalMeasureIndex
+      measureIndex: this.props.measureIndex
     });
   }
 
@@ -84,8 +87,8 @@ class Measure extends Component {
   }
 
   renderCursor = () => {
-    const { noteIndex, stringIndex, measureIndex } = this.props.editingIndex;
-    if(this.props.totalMeasureIndex === measureIndex && !this.props.playingNote) {
+    const { noteIndex, stringIndex, measureIndex } = this.props.cursor;
+    if(this.props.measureIndex === measureIndex && !this.props.playingNote) {
       const x = this.calcXForNote(noteIndex);
       const y = 95 - (13 * stringIndex);
 
@@ -134,7 +137,7 @@ class Measure extends Component {
     });
   }
 
-  renderTimeSignature = (totalMeasureIndex, measure) => {
+  renderTimeSignature = (measureIndex, measure) => {
     const x = this.props.indexOfRow === 0 ? 36 : 20;
     const { renderTimeSignature, timeSignature } = measure;
 
@@ -145,8 +148,8 @@ class Measure extends Component {
     return measure.showBpm ? <Bpm bpm={measure.bpm} /> : null;
   }
 
-  renderMeasureNumber = (totalMeasureIndex) => {
-    return <text x={0} y={23} style={{ fontSize: 9, fill: 'tomato' }}>{totalMeasureIndex + 1}</text>;
+  renderMeasureNumber = (measureIndex) => {
+    return <text x={0} y={23} style={{ fontSize: 9, fill: 'tomato' }}>{measureIndex + 1}</text>;
   }
 
   renderMeasure = (measureIndex, measure, x) => {
@@ -161,25 +164,36 @@ class Measure extends Component {
   }
 
   render() {
-    const { measure, totalMeasureIndex, indexOfRow } = this.props;
+    const { measure, measureIndex, indexOfRow } = this.props;
     return (
       <svg style={{ height: 130, width: measure.width }}>
-        { this.renderMeasure(totalMeasureIndex, measure, 0) }
+        { this.renderMeasure(measureIndex, measure, 0) }
         { indexOfRow === 0 ? <Clef /> : null }
-        { this.renderTimeSignature(totalMeasureIndex, measure) }
+        { this.renderTimeSignature(measureIndex, measure) }
         { this.renderCursor() }
         { this.renderBpm(measure) }
-        { this.renderMeasureNumber(totalMeasureIndex) }
+        { this.renderMeasureNumber(measureIndex) }
       </svg>
     );
   }
 }
 
 function mapStateToProps(state, props) {
+  let measureIndex = _.cloneDeep(props.measureIndex);
+  if(state.tracks[state.currentTrackIndex].measures.length - 1 < props.measureIndex) {
+    measureIndex -= 1;
+  }
   return {
-    measure: state.tracks[state.currentTrackIndex].measures[props.totalMeasureIndex],
-    playingNote: state.playingNote
+    measure: state.tracks[state.currentTrackIndex].measures[measureIndex],
+    playingNote: state.playingNote,
+    cursor: state.cursor
   };
 }
 
-export default connect(mapStateToProps)(Measure);
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(Actions, dispatch)
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Measure);

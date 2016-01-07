@@ -46,7 +46,8 @@ class EditorArea extends Component {
 
 function mapStateToProps(state) {
   return {
-    layout: state.layout
+    layout: state.layout,
+    playingNote: state.playingNote
   };
 }
 
