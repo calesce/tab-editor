@@ -220,14 +220,14 @@ function mapStateToProps(state, props) {
   if(state.tracks[state.currentTrackIndex].measures.length - 1 < props.measureIndex) {
     measureIndex -= 1;
   }
-  let playingNote = state.playingNote;
-  if(playingNote) {
-    playingNote = state.playingNote.measure === measureIndex ? playingNote : undefined;
+
+  let playingNote, cursor;
+  if(state.playingNote) {
+    playingNote = state.playingNote.measure === measureIndex ? state.playingNote : undefined;
+  } else {
+    cursor = state.cursor.measureIndex === measureIndex ? state.cursor : undefined;
   }
-  let cursor = state.cursor;
-  if(cursor) {
-    cursor = (state.cursor.measureIndex === measureIndex && !playingNote) ? cursor : undefined;
-  }
+
   return {
     measure: state.tracks[state.currentTrackIndex].measures[measureIndex],
     playingNote,
