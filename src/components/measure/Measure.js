@@ -13,6 +13,7 @@ import TimeSignature from './TimeSignature';
 import Cursor from './Cursor';
 import Bpm from './Bpm';
 import shallowEqual from 'react-pure-render/shallowEqual';
+import { finalMeasureSelector } from '../../util/selectors';
 
 class Measure extends Component {
   shouldComponentUpdate(nextProps) {
@@ -51,37 +52,6 @@ class Measure extends Component {
     return false;
   }
 
-  calcMeasureValidity = (measure) => {
-    const timeSig = parseInt(measure.timeSignature[0]) / parseInt(measure.timeSignature.slice(2, 4));
-    const notesTotal = measure.notes.reduce((total, note) => {
-      let duration;
-      switch(note.duration) {
-        case 'q':
-          duration = 0.25;
-          break;
-        case 'e':
-          duration = 0.125;
-          break;
-        case 's':
-          duration = 0.0625;
-          break;
-        case 'h':
-         duration = 0.5;
-         break;
-        default:
-         duration = 1.0;
-      }
-
-      if(note.dotted) {
-        duration *= 1.5;
-      }
-
-      return total + duration;
-    }, 0);
-
-    return timeSig === notesTotal;
-  }
-
   calcXForNote = (noteIndex) => {
     let x = 0 + (noteIndex * 53 + 33);
     if(this.props.indexOfRow === 0) {
@@ -94,7 +64,7 @@ class Measure extends Component {
       x -= this.props.measure.renderTimeSignature ? 0 : 25;
     }
     return x;
-  }
+  };
 
   onClick = (noteIndex, stringIndex) => {
     this.props.actions.setCursor({
@@ -102,11 +72,10 @@ class Measure extends Component {
       stringIndex,
       measureIndex: this.props.measureIndex
     });
-  }
+  };
 
-  renderBars = (x, measureWidth, measureIndex) => {
-    const { playingNote, measure } = this.props;
-    const isValid = this.calcMeasureValidity(measure);
+  renderBars = (x, measureWidth) => {
+    const { playingNote, isValid, measureIndex } = this.props;
 
     let color = '#999999';
     let strokeWidth = 0.1;
@@ -121,7 +90,7 @@ class Measure extends Component {
     }
 
     return <Bars measureWidth={measureWidth} color={color} strokeWidth={strokeWidth} />;
-  }
+  };
 
   renderCursor = () => {
     if(!this.props.cursor) {
@@ -141,7 +110,7 @@ class Measure extends Component {
     }
 
     return <Cursor x={x} y={y} fret={fret} />;
-  }
+  };
 
   renderNote = (note, measureIndex, noteIndex) => {
     const x = this.calcXForNote(noteIndex);
@@ -172,33 +141,33 @@ class Measure extends Component {
         </g>
       );
     });
-  }
+  };
 
   renderTimeSignature = (measureIndex, measure) => {
     const x = this.props.indexOfRow === 0 ? 36 : 20;
     const { renderTimeSignature, timeSignature } = measure;
 
     return renderTimeSignature ? <TimeSignature x={x} numerator={timeSignature[0]} denominator={timeSignature.slice(2, 4)} /> : null;
-  }
+  };
 
   renderBpm = (measure) => {
     return measure.showBpm ? <Bpm bpm={measure.bpm} /> : null;
-  }
+  };
 
   renderMeasureNumber = (measureIndex) => {
     return <text x={0} y={23} style={{ fontSize: 9, fill: 'tomato' }}>{measureIndex + 1}</text>;
-  }
+  };
 
   renderMeasure = (measureIndex, measure, x) => {
     return (
       <g>
-        { this.renderBars(x, measure.width, measureIndex) }
+        { this.renderBars(x, measure.width) }
         {
           measure.notes.map((note, noteIndex) => this.renderNote(note, measureIndex, noteIndex, x))
         }
       </g>
     );
-  }
+  };
 
   render() {
     const { measure, measureIndex, indexOfRow } = this.props;
@@ -215,30 +184,10 @@ class Measure extends Component {
   }
 }
 
-function mapStateToProps(state, props) {
-  let measureIndex = _.cloneDeep(props.measureIndex);
-  if(state.tracks[state.currentTrackIndex].measures.length - 1 < props.measureIndex) {
-    measureIndex -= 1;
-  }
-
-  let playingNote, cursor;
-  if(state.playingNote) {
-    playingNote = state.playingNote.measure === measureIndex ? state.playingNote : undefined;
-  } else {
-    cursor = state.cursor.measureIndex === measureIndex ? state.cursor : undefined;
-  }
-
-  return {
-    measure: state.tracks[state.currentTrackIndex].measures[measureIndex],
-    playingNote,
-    cursor
-  };
-}
-
 function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(Actions, dispatch)
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Measure);
+export default connect(finalMeasureSelector, mapDispatchToProps)(Measure);
