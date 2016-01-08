@@ -6,7 +6,7 @@ export default class Rest extends Component {
 
   restClicked = () => {
     this.props.onClick();
-  }
+  };
 
   renderQuarterRest = (style) => {
     return (
@@ -19,7 +19,7 @@ export default class Rest extends Component {
         { this.renderDot(14, 25) }
       </svg>
     );
-  }
+  };
 
   renderEighthRest = (style) => {
     return (
@@ -36,7 +36,7 @@ export default class Rest extends Component {
         { this.renderDot(14, 24) }
       </svg>
     );
-  }
+  };
 
   renderSixteenthRest = (style) => {
     return (
@@ -53,7 +53,7 @@ export default class Rest extends Component {
         { this.renderDot(15, 24) }
       </svg>
     );
-  }
+  };
 
   renderHalfRest = (style) => {
     return (
@@ -65,7 +65,7 @@ export default class Rest extends Component {
         { this.renderDot(27, 36) }
       </svg>
     );
-  }
+  };
 
   renderWholeRest = (style) => {
     return (
@@ -77,7 +77,7 @@ export default class Rest extends Component {
         { this.renderDot(27, 35) }
       </svg>
     );
-  }
+  };
 
   renderDot = (x, y) => {
     if(!this.props.note.dotted) {
@@ -87,7 +87,7 @@ export default class Rest extends Component {
     return (
       <circle cx={x} cy={y} r={1.5} fill={this.props.color} stroke={this.props.color} />
     );
-  }
+  };
 
   render() {
     const style = {

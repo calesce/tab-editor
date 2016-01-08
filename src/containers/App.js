@@ -32,13 +32,13 @@ class App extends Component {
     };
   }
 
-  componentWillMount = () => {
+  componentWillMount() {
     Soundfont.loadBuffers(audioContext, 'acoustic_guitar_steel').then((buffers) => {
       this.setState({ buffers });
     });
   }
 
-  componentWillReceiveProps = (nextProps) => {
+  componentWillReceiveProps(nextProps) {
     const { playingNote } = nextProps;
 
     if(this.props.playingNote && playingNote) {
@@ -50,7 +50,7 @@ class App extends Component {
 
   handleResize = () => {
     this.props.actions.resize();
-  }
+  };
 
   getXOfCurrentNote = (playingNote) => {
     const { measure, noteIndex } = playingNote;
@@ -62,7 +62,7 @@ class App extends Component {
     }, 0);
 
     return xOfMeasures + 55 * noteIndex;
-  }
+  };
 
   updateScrollPosition = (playingNote) => {
     const x = this.getXOfCurrentNote(playingNote);
@@ -71,7 +71,7 @@ class App extends Component {
     if(x > window.innerWidth + scrollX - 200 && this.props.layout === 'linear') {
       window.scroll(x - 200, 0);
     }
-  }
+  };
 
   handleStop = () => {
     this.props.actions.setCursor({
@@ -80,7 +80,7 @@ class App extends Component {
       stringIndex: this.props.cursor.stringIndex
     });
     this.props.actions.setPlayingNote(null);
-  }
+  };
 
   handlePlay = () => {
     if(this.props.playingNote || !this.state.buffers) {
@@ -93,14 +93,14 @@ class App extends Component {
       measure: measureIndex,
       noteIndex
     });
-  }
+  };
 
   getCurrentNote = () => {
     const { measures } = this.props.track;
     const { measureIndex, noteIndex } = this.props.cursor;
 
     return measures[measureIndex].notes[noteIndex];
-  }
+  };
 
   navigateCursor = (event) => {
     //event.preventDefault();
@@ -120,15 +120,15 @@ class App extends Component {
     } else if(event.keyCode === 40) { // down arrow
       this.props.actions.moveCursorDown();
     }
-  }
+  };
 
   editNote = (fret) => {
     this.props.actions.changeNote(this.props.cursor, fret);
-  }
+  };
 
   changeNoteLength = (duration) => {
     this.props.actions.changeNoteLength(this.props.cursor, duration);
-  }
+  };
 
   increaseNoteLength = ({ measureIndex, noteIndex }) => {
     const note = this.props.track.measures[measureIndex].notes[noteIndex];
@@ -154,7 +154,7 @@ class App extends Component {
         newDuration = 's';
     }
     this.props.actions.changeNoteLength(this.props.cursor, newDuration);
-  }
+  };
 
   decreaseNoteLength = ({ measureIndex, noteIndex }) => {
     const note = this.props.track.measures[measureIndex].notes[noteIndex];
@@ -180,7 +180,7 @@ class App extends Component {
         newDuration = 'w';
     }
     this.props.actions.changeNoteLength(this.props.cursor, newDuration);
-  }
+  };
 
   deleteNote = () => {
     const { measureIndex } = this.props.cursor;
@@ -191,18 +191,18 @@ class App extends Component {
     } else if(notes.length === 0) {
       this.props.actions.deleteMeasure(measureIndex);
     }
-  }
+  };
 
   insertNote = () => {
     this.props.actions.insertNote(this.props.cursor);
-  }
+  };
 
   pasteNote = () => {
     if(this.props.clipboard) {
       event.preventDefault();
       this.props.actions.pasteNote(this.props.cursor, this.props.clipboard);
     }
-  }
+  };
 
   handleKeyPress = (event) => {
     if(this.state.openModal || (this.props.playingNote && event.keyCode !== 32)) {
@@ -254,23 +254,23 @@ class App extends Component {
     } else {
       return this.navigateCursor(event);
     }
-  }
+  };
 
   openTimeSignatureModal = () => {
     this.setState({ openModal: 'timeSignature' });
-  }
+  };
 
   openBpmModal = () => {
     this.setState({ openModal: 'bpm' });
-  }
+  };
 
   closeModal = () => {
     this.setState({ openModal: null });
-  }
+  };
 
   openTuningModal = () => {
     this.setState({ openModal: 'tuning' });
-  }
+  };
 
   render() {
     const { measures } = this.props.track;

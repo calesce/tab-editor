@@ -4,7 +4,7 @@ import shouldPureComponentUpdate from 'react-pure-render/function';
 export default class Clef extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
 
-  renderTabClef = () => {
+  renderTabClef() {
     let style = {
       MozUserSelect: 'none',
       WebkitUserSelect: 'none',

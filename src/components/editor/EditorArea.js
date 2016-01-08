@@ -9,14 +9,14 @@ class EditorArea extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
 
   renderPlayStop() {
-    return this.props.playingNote ?
+    return this.props.isPlaying ?
       <button onClick={this.props.handleStop}>Stop</button> :
       <button onClick={this.props.handlePlay}>Play</button>;
-  }
+  };
 
   toggleLayout = () => {
     this.props.changeLayout(this.props.layout === 'page' ? 'linear' : 'page');
-  }
+  };
 
   render() {
     const style = {
@@ -47,7 +47,7 @@ class EditorArea extends Component {
 function mapStateToProps(state) {
   return {
     layout: state.layout,
-    playingNote: state.playingNote
+    isPlaying: state.playingNote ? true : false
   };
 }
 

@@ -2,10 +2,13 @@ import React, { Component } from 'react';
 import Modal from 'react-modal';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import shouldPureComponentUpdate from 'react-pure-render/function';
 
 import { changeTimeSignature } from '../../actions/measure';
 
 export default class TimeSignatureModal extends Component {
+  shouldComponentUpdate = shouldPureComponentUpdate;
+
   onRequestClose = () => {
     let timeSignature = `${this.refs.numerator.value}/${this.refs.denominator.value}`;
     if(timeSignature !== this.props.timeSignature) {
@@ -13,7 +16,7 @@ export default class TimeSignatureModal extends Component {
     }
 
     this.props.closeModal();
-  }
+  };
 
   renderNumerator = (numerator) => {
     let options = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((number) => {
@@ -25,7 +28,7 @@ export default class TimeSignatureModal extends Component {
         {options}
       </select>
     );
-  }
+  };
 
   renderDenominator = (denominator) => {
     let options = [1, 2, 4, 8, 16, 32].map((number) => {
@@ -37,7 +40,7 @@ export default class TimeSignatureModal extends Component {
         {options}
       </select>
     );
-  }
+  };
 
   render() {
     const style = {
@@ -69,6 +72,7 @@ export default class TimeSignatureModal extends Component {
 function mapStateToProps(state) {
   return {
     timeSignature: state.tracks[state.currentTrackIndex].measures[state.cursor.measureIndex].timeSignature,
+    measureIndex: state.cursor.measureIndex
   };
 }
 

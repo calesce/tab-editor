@@ -7,11 +7,15 @@ import * as Actions from '../actions/playingNote';
 import { playCurrentNote, getReplaySpeedForNote } from '../util/audio';
 
 class Playback extends Component {
-  componentWillMount = () => {
+  shouldComponentUpdate() {
+    return false;
+  }
+
+  componentWillMount() {
     this.startPlayback();
   }
 
-  componentWillUnmount = () => {
+  componentWillUnmount() {
     cancelAnimationFrame(this.state.timer);
   }
 
@@ -71,7 +75,7 @@ class Playback extends Component {
         })
       });
     }
-  }
+  };
 
   startPlayback = () => {
     const playingNote = _.cloneDeep(this.props.playingNote);
@@ -82,13 +86,13 @@ class Playback extends Component {
         this.loopThroughSong(null, playingNote);
       })
     });
-  }
+  };
 
   updateNote = (playingNote) => {
     _.defer(() => {
       this.props.actions.setPlayingNote(playingNote);
     });
-  }
+  };
 
   render() {
     return <div style={{ display: 'none' }}></div>;

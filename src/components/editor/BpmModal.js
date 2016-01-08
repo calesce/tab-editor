@@ -26,17 +26,17 @@ export default class TimeSignatureModal extends Component {
     this.props.changeBpm(this.props.cursor, this.state.bpm, this.state.checked);
 
     this.props.closeModal();
-  }
+  };
 
   onChange = (e) => {
     this.setState({
       bpm: e.target.value
     });
-  }
+  };
 
   checkboxChanged = () => {
     this.setState({ checked: !this.state.checked });
-  }
+  };
 
   render() {
     const style = {

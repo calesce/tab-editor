@@ -6,11 +6,11 @@ export default class TabNote extends Component {
 
   onClick = () => {
     this.props.onClick();
-  }
+  };
 
   renderQuarterStem = (x, color) => {
     return <rect x={x + 5} y={97} height={25} width={1} fill={color}></rect>;
-  }
+  };
 
   renderEighthStem = (x, color) => {
     return (
@@ -19,7 +19,7 @@ export default class TabNote extends Component {
         <rect x={x + 5} y={97 + 24} height={2} width={20} fill={color}></rect>
       </g>
     );
-  }
+  };
 
   renderSixteenthStem = (x, color) => {
     return (
@@ -29,7 +29,7 @@ export default class TabNote extends Component {
         <rect x={x + 5} y={97 + 18} height={2} width={20} fill={color}></rect>
       </g>
     );
-  }
+  };
 
   renderStem = () => {
     const { x, color } = this.props;
@@ -44,7 +44,7 @@ export default class TabNote extends Component {
       default:
         return null;
     }
-  }
+  };
 
   renderDot = (dotted, x, color) => {
     if(!dotted) {
@@ -56,7 +56,7 @@ export default class TabNote extends Component {
         <circle cx={6.5} cy={10} r={1.5} fill={color} stroke={color} />
       </svg>
     );
-  }
+  };
 
   renderTremolo = (tremolo, x, color) => {
     if(!tremolo) {
@@ -72,7 +72,7 @@ export default class TabNote extends Component {
         </g>
       </svg>
     );
-  }
+  };
 
   render() {
     const { x, y, fret, color, dotted, tremolo } = this.props;

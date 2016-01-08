@@ -17,7 +17,7 @@ class TabStaff extends Component {
       }
       return accum;
     }, 0);
-  }
+  };
 
   renderMeasureForRow = (measure, measureIndex) => {
     const indexOfRow = this.getIndexOfRow(measure.rowIndex, measureIndex);
@@ -25,17 +25,17 @@ class TabStaff extends Component {
     return (
       <Measure key={measureIndex} measureIndex={measureIndex} indexOfRow={indexOfRow} />
     );
-  }
+  };
 
   calcWidth = (track) => {
     return track.reduce((width, measure) => {
       return measure.width + width;
     }, 20);
-  }
+  };
 
   calcHeight = () => {
     return (this.props.track[this.props.track.length - 1].rowIndex + 1) * 130 + 50;
-  }
+  };
 
   render() {
     let height = this.props.layout === 'linear' ? '100% - 10' : this.calcHeight();

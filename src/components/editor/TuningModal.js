@@ -19,31 +19,31 @@ class TuningModal extends Component {
   onRequestClose = () => {
     this.props.changeTuning(this.state.tuning);
     this.props.closeModal();
-  }
+  };
 
   incrementAllStrings = () => {
     this.setState({
       tuning: this.state.tuning.map(nextNote)
     });
-  }
+  };
 
   decrementAllStrings = () => {
     this.setState({
       tuning: this.state.tuning.map(previousNote)
     });
-  }
+  };
 
   incrementString = (index) => {
     this.setState({
       tuning: this.state.tuning.map((string, i) => i === index ? nextNote(string) : string)
     });
-  }
+  };
 
   decrementString = (index) => {
     this.setState({
       tuning: this.state.tuning.map((string, i) => i === index ? previousNote(string) : string)
     });
-  }
+  };
 
   renderTuningEditor = () => {
     return (
@@ -59,7 +59,7 @@ class TuningModal extends Component {
         })}
       </div>
     );
-  }
+  };
 
   render() {
     const style = {
