@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import _ from 'lodash';
+import { findIndex } from 'lodash';
 
 import * as Actions from '../../actions/cursor';
 
@@ -27,6 +27,10 @@ class Measure extends Component {
     }
     const cursorEqual = !shallowEqual(this.props.cursor, nextProps.cursor);
     if(cursorEqual) {
+      return true;
+    }
+    const tuningEqual = !shallowEqual(this.props.tuning, nextProps.tuning);
+    if(tuningEqual) {
       return true;
     }
     const measureShallowEqual = !shallowEqual(this.props.measure, nextProps.measure);
@@ -75,7 +79,7 @@ class Measure extends Component {
   };
 
   renderBars = (x, measureWidth) => {
-    const { playingNote, isValid, measureIndex } = this.props;
+    const { playingNote, isValid, measureIndex, tuning } = this.props;
 
     let color = '#999999';
     let strokeWidth = 0.1;
@@ -89,7 +93,7 @@ class Measure extends Component {
       strokeWidth = 1;
     }
 
-    return <Bars measureWidth={measureWidth} color={color} strokeWidth={strokeWidth} />;
+    return <Bars measureWidth={measureWidth} color={color} strokeWidth={strokeWidth} stringCount={tuning.length} />;
   };
 
   renderCursor = () => {
@@ -105,7 +109,7 @@ class Measure extends Component {
     let fret = 0;
 
     if(this.props.measure.notes.length > 0) {
-      index = _.findIndex(this.props.measure.notes[noteIndex].string, (s) => s === stringIndex);
+      index = findIndex(this.props.measure.notes[noteIndex].string, (s) => s === stringIndex);
       fret = this.props.measure.notes[noteIndex].fret[index];
     }
 
@@ -114,7 +118,7 @@ class Measure extends Component {
 
   renderNote = (note, measureIndex, noteIndex) => {
     const x = this.calcXForNote(noteIndex);
-    const { playingNote } = this.props;
+    const { playingNote, tuning } = this.props;
 
     let color = 'black';
     if(playingNote) {
@@ -127,8 +131,8 @@ class Measure extends Component {
       return <Rest onClick={this.onClick.bind(this, noteIndex, 0)} key={noteIndex} color={color} x={x} y={0} note={note} />;
     }
 
-    return [0, 1, 2, 3, 4, 5].map((i) => {
-      const stringIndex = _.findIndex(note.string, (index) => index === i);
+    return tuning.map((_, i) => {
+      const stringIndex = findIndex(note.string, (index) => index === i);
       const string = stringIndex === -1 ? i : note.string[stringIndex];
       const fret = stringIndex === -1 ? undefined : note.fret[stringIndex];
       const y = 95 - (13 * i);
@@ -170,9 +174,10 @@ class Measure extends Component {
   };
 
   render() {
-    const { measure, measureIndex, indexOfRow } = this.props;
+    const { measure, measureIndex, indexOfRow, tuning } = this.props;
+
     return (
-      <svg style={{ height: 130, width: measure.width }}>
+      <svg style={{ height: (tuning.length * 22), width: measure.width }}>
         { this.renderMeasure(measureIndex, measure, 0) }
         { indexOfRow === 0 ? <Clef /> : null }
         { this.renderTimeSignature(measureIndex, measure) }

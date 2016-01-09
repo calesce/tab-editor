@@ -10,8 +10,8 @@ const style = {
 };
 
 class TabStaff extends Component {
-  getIndexOfRow = (rowIndex, measureIndex) => {
-    return this.props.track.reduce((accum, measure, i) => {
+  getIndexOfRow = (measures, rowIndex, measureIndex) => {
+    return measures.reduce((accum, measure, i) => {
       if(measure.rowIndex === rowIndex && i < measureIndex) {
         return accum + 1;
       }
@@ -19,38 +19,43 @@ class TabStaff extends Component {
     }, 0);
   };
 
+  calcWidth = (measures) => {
+    return measures.reduce((width, measure) => {
+      return measure.width + width;
+    }, 20);
+  };
+
+  calcHeight = (measures, tuning) => {
+    return (measures[measures.length - 1].rowIndex + 1) * (22 * tuning.length) + 50;
+  };
+
   renderMeasureForRow = (measure, measureIndex) => {
-    const indexOfRow = this.getIndexOfRow(measure.rowIndex, measureIndex);
+    const indexOfRow = this.getIndexOfRow(this.props.measures, measure.rowIndex, measureIndex);
 
     return (
       <Measure key={measureIndex} measureIndex={measureIndex} indexOfRow={indexOfRow} />
     );
   };
 
-  calcWidth = (track) => {
-    return track.reduce((width, measure) => {
-      return measure.width + width;
-    }, 20);
-  };
-
-  calcHeight = () => {
-    return (this.props.track[this.props.track.length - 1].rowIndex + 1) * 130 + 50;
-  };
-
   render() {
-    let height = this.props.layout === 'linear' ? '100% - 10' : this.calcHeight();
-    let width = this.props.layout === 'linear' ? this.calcWidth(this.props.track) : window.innerWidth - 10;
+    const { layout, tuning, measures } = this.props;
+
+    let height = layout === 'linear' ? '100% - 10' : this.calcHeight(measures, tuning);
+    let width = layout === 'linear' ? this.calcWidth(measures) : window.innerWidth - 10;
     return (
       <div style={{ ...style, width, height, paddingTop: '60' }}>
-        { this.props.track.map(this.renderMeasureForRow) }
+        { this.props.measures.map(this.renderMeasureForRow) }
       </div>
     );
   }
 }
 
 function mapStateToProps(state) {
+  const track = state.tracks[state.currentTrackIndex];
+
   return {
-    track: state.tracks[state.currentTrackIndex].measures,
+    measures: track.measures,
+    tuning: track.tuning,
     layout: state.layout
   };
 }

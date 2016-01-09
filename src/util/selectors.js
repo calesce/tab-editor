@@ -52,12 +52,14 @@ const measureSelector = (state, props) => {
 
 const playingNoteSelector = state => state.playingNote;
 const cursorSelector = state => state.cursor;
+const tuningSelector = state => state.tracks[state.currentTrackIndex].tuning;
 
 export const finalMeasureSelector = createSelector(
   measureSelector,
   playingNoteSelector,
   cursorSelector,
-  ({ measure, measureIndex }, playingNote, cursor) => {
+  tuningSelector,
+  ({ measure, measureIndex }, playingNote, cursor, tuning) => {
     let newPlayingNote, newCursor;
     if(playingNote) {
       newPlayingNote = playingNote.measure === measureIndex ? playingNote : undefined;
@@ -69,7 +71,8 @@ export const finalMeasureSelector = createSelector(
       measure,
       playingNote: newPlayingNote,
       cursor: newCursor,
-      isValid: calcMeasureValidity(measure)
+      isValid: calcMeasureValidity(measure),
+      tuning
     };
   }
 );
