@@ -93,7 +93,7 @@ class Measure extends Component {
       strokeWidth = 1;
     }
 
-    return <Bars measureWidth={measureWidth} color={color} strokeWidth={strokeWidth} stringCount={tuning.length} />;
+    return <Bars measureWidth={measureWidth} color={color} strokeWidth={strokeWidth} strings={tuning} />;
   };
 
   renderCursor = () => {
@@ -149,9 +149,13 @@ class Measure extends Component {
 
   renderTimeSignature = (measureIndex, measure) => {
     const x = this.props.indexOfRow === 0 ? 36 : 20;
+    const strings = this.props.tuning.length;
+    const y = strings * 6 - 6; // y of top of time signature
     const { renderTimeSignature, timeSignature } = measure;
 
-    return renderTimeSignature ? <TimeSignature x={x} numerator={timeSignature[0]} denominator={timeSignature.slice(2, 4)} /> : null;
+    return renderTimeSignature ?
+      <TimeSignature x={x} y={y} strings={strings} numerator={timeSignature[0]} denominator={timeSignature.slice(2, 4)} /> :
+      null;
   };
 
   renderBpm = (measure) => {
