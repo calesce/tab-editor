@@ -138,7 +138,7 @@ exports.playCurrentNote = (track, playingIndex, buffers) => {
   let replaySpeed = exports.getReplaySpeedForNote(noteToPlay, bpm);
 
   if(noteToPlay.fret[0] === 'rest') {
-    playNoteAtTime(audioContext, 'rest', audioContext.currentTime, replaySpeed, buffers, tuning);
+    playNoteAtTime('rest', audioContext.currentTime, replaySpeed, buffers, tuning);
   } else if(noteToPlay.tremolo) {
     playTremoloNote(noteToPlay, replaySpeed, buffers, tuning);
   } else {
