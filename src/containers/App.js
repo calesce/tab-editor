@@ -256,20 +256,12 @@ class App extends Component {
     }
   };
 
-  openTimeSignatureModal = () => {
-    this.setState({ openModal: 'timeSignature' });
-  };
-
-  openBpmModal = () => {
-    this.setState({ openModal: 'bpm' });
+  openModal = (modalToOpen) => {
+    this.setState({ openModal: modalToOpen });
   };
 
   closeModal = () => {
     this.setState({ openModal: null });
-  };
-
-  openTuningModal = () => {
-    this.setState({ openModal: 'tuning' });
   };
 
   render() {
@@ -278,11 +270,7 @@ class App extends Component {
     return (
       <div style={{ width: '100%', height: '100%' }}>
         { this.props.playingNote ? <Playback buffers={buffers} /> : null}
-        <EditorArea handlePlay={this.handlePlay} handleStop={this.handleStop}
-          openModal={this.openTimeSignatureModal}
-          openTuning={this.openTuningModal}
-          openBpm={this.openBpmModal}
-        />
+        <EditorArea handlePlay={this.handlePlay} handleStop={this.handleStop} openModal={this.openModal} />
         <TabStaff />
         <TimeSignatureModal isOpen={openModal === 'timeSignature'} closeModal={this.closeModal} />
         <TuningModal isOpen={openModal === 'tuning'} closeModal={this.closeModal} />

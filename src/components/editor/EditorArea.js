@@ -20,6 +20,8 @@ class EditorArea extends Component {
   };
 
   render() {
+    const { openModal, timeSignature, layout } = this.props;
+
     const style = {
       position: 'fixed',
       display: 'flex',
@@ -36,10 +38,10 @@ class EditorArea extends Component {
     return (
       <div style={style}>
         { this.renderPlayStop() }
-        <button onClick={this.props.openModal}>{this.props.timeSignature}</button>
-        <button onClick={this.toggleLayout}>{this.props.layout}</button>
-        <button onClick={this.props.openTuning}>tuning</button>
-        <button onClick={this.props.openBpm}>bpm</button>
+        <button onClick={openModal.bind(this, 'timeSig')}>{timeSignature}</button>
+        <button onClick={this.toggleLayout}>{layout}</button>
+        <button onClick={openModal.bind(this, 'tuning')}>tuning</button>
+        <button onClick={openModal.bind(this, 'bpm')}>bpm</button>
       </div>
     );
   }
