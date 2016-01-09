@@ -54,7 +54,7 @@ class App extends Component {
 
   getXOfCurrentNote = (playingNote) => {
     const { measure, noteIndex } = playingNote;
-    const xOfMeasures = this.props.track.measures.reduce((acc, curr, i) => {
+    const xOfMeasures = this.props.measures.reduce((acc, curr, i) => {
       if(i >= measure) {
         return acc;
       }
@@ -96,7 +96,7 @@ class App extends Component {
   };
 
   getCurrentNote = () => {
-    const { measures } = this.props.track;
+    const { measures } = this.props;
     const { measureIndex, noteIndex } = this.props.cursor;
 
     return measures[measureIndex].notes[noteIndex];
@@ -105,7 +105,7 @@ class App extends Component {
   navigateCursor = (event) => {
     if(event.keyCode === 39) { // right arrow
       event.preventDefault();
-      const { measures } = this.props.track;
+      const { measures } = this.props;
       const { measureIndex, noteIndex } = this.props.cursor;
       if(measureIndex === measures.length - 1 &&
         (noteIndex === measures[measureIndex].notes.length - 1 || measures[measureIndex].notes.length === 0)
@@ -133,7 +133,7 @@ class App extends Component {
 
   deleteNote = () => {
     const { measureIndex } = this.props.cursor;
-    let notes = this.props.track.measures[measureIndex].notes;
+    let notes = this.props.measures[measureIndex].notes;
 
     if(notes.length > 0) {
       this.props.actions.deleteNote(this.props.cursor);
@@ -231,7 +231,7 @@ class App extends Component {
 
 function mapStateToProps(state) {
   return {
-    track: state.tracks[state.currentTrackIndex],
+    measures: state.tracks[state.currentTrackIndex].measures,
     clipboard: state.clipboard,
     layout: state.layout,
     playingNote: state.playingNote,
