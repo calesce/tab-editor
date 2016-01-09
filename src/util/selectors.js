@@ -1,5 +1,11 @@
 import { createSelector } from 'reselect';
 
+export function timeSignatureSelector(state) {
+  const measures = state.tracks[state.currentTrackIndex].measures;
+  const measureIndex = state.cursor.measureIndex;
+  return measures[measureIndex] ? measures[measureIndex].timeSignature : '4/4';
+}
+
 const calcMeasureValidity = (measure) => {
   const timeSig = parseInt(measure.timeSignature[0]) / parseInt(measure.timeSignature.slice(2, 4));
   const notesTotal = measure.notes.reduce((total, note) => {

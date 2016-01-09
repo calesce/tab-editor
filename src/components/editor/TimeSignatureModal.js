@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import shouldPureComponentUpdate from 'react-pure-render/function';
 
 import { changeTimeSignature } from '../../actions/measure';
+import { timeSignatureSelector } from '../../util/selectors';
 
 export default class TimeSignatureModal extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
@@ -71,7 +72,7 @@ export default class TimeSignatureModal extends Component {
 
 function mapStateToProps(state) {
   return {
-    timeSignature: state.tracks[state.currentTrackIndex].measures[state.cursor.measureIndex].timeSignature,
+    timeSignature: timeSignatureSelector(state),
     measureIndex: state.cursor.measureIndex
   };
 }

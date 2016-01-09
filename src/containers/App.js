@@ -273,11 +273,7 @@ class App extends Component {
   };
 
   render() {
-    const { measures } = this.props.track;
-    const { cursor } = this.props;
     const { openModal, buffers } = this.state;
-    const { measureIndex } = cursor;
-    const timeSignature = measures[measureIndex] ? measures[measureIndex].timeSignature : '4/4';
 
     return (
       <div style={{ width: '100%', height: '100%' }}>
@@ -286,7 +282,6 @@ class App extends Component {
           openModal={this.openTimeSignatureModal}
           openTuning={this.openTuningModal}
           openBpm={this.openBpmModal}
-          timeSignature={timeSignature}
         />
         <TabStaff />
         <TimeSignatureModal isOpen={openModal === 'timeSignature'} closeModal={this.closeModal} />

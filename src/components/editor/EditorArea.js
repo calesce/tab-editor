@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import { changeLayout } from '../../actions/track';
+import { timeSignatureSelector } from '../../util/selectors';
 
 class EditorArea extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
@@ -47,7 +48,8 @@ class EditorArea extends Component {
 function mapStateToProps(state) {
   return {
     layout: state.layout,
-    isPlaying: state.playingNote ? true : false
+    isPlaying: state.playingNote ? true : false,
+    timeSignature: timeSignatureSelector(state)
   };
 }
 
