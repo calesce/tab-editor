@@ -103,8 +103,8 @@ class App extends Component {
   };
 
   navigateCursor = (event) => {
-    //event.preventDefault();
     if(event.keyCode === 39) { // right arrow
+      event.preventDefault();
       const { measures } = this.props.track;
       const { measureIndex, noteIndex } = this.props.cursor;
       if(measureIndex === measures.length - 1 &&
@@ -114,6 +114,7 @@ class App extends Component {
       }
       this.props.actions.moveCursorRight();
     } else if(event.keyCode === 37) { // left arrow
+      event.preventDefault();
       this.props.actions.moveCursorLeft();
     } else if(event.keyCode === 38) { // up arrow
       this.props.actions.moveCursorUp();
@@ -128,58 +129,6 @@ class App extends Component {
 
   changeNoteLength = (duration) => {
     this.props.actions.changeNoteLength(this.props.cursor, duration);
-  };
-
-  increaseNoteLength = ({ measureIndex, noteIndex }) => {
-    const note = this.props.track.measures[measureIndex].notes[noteIndex];
-
-    let newDuration;
-    switch(note.duration) {
-      case 'w':
-        newDuration = 'h';
-        break;
-      case 'h':
-        newDuration = 'q';
-        break;
-      case 'q':
-        newDuration = 'e';
-        break;
-      case 'e':
-        newDuration = 's';
-        break;
-      case 's':
-        newDuration = 't';
-        break;
-      default:
-        newDuration = 's';
-    }
-    this.props.actions.changeNoteLength(this.props.cursor, newDuration);
-  };
-
-  decreaseNoteLength = ({ measureIndex, noteIndex }) => {
-    const note = this.props.track.measures[measureIndex].notes[noteIndex];
-
-    let newDuration;
-    switch(note.duration) {
-      case 't':
-        newDuration = 's';
-        break;
-      case 's':
-        newDuration = 'e';
-        break;
-      case 'e':
-        newDuration = 'q';
-        break;
-      case 'q':
-        newDuration = 'h';
-        break;
-      case 'h':
-        newDuration = 'w';
-        break;
-      default:
-        newDuration = 'w';
-    }
-    this.props.actions.changeNoteLength(this.props.cursor, newDuration);
   };
 
   deleteNote = () => {
@@ -246,9 +195,9 @@ class App extends Component {
     } else if(event.keyCode === 190) { // period
       this.props.actions.toggleNoteDotted(this.props.cursor);
     } else if(event.shiftKey && event.keyCode === 187) { // plus
-      return this.increaseNoteLength(this.props.cursor);
+      return this.props.actions.increaseNoteLength(this.props.cursor);
     } else if(event.keyCode === 189) { // minus
-      return this.decreaseNoteLength(this.props.cursor);
+      return this.props.actions.decreaseNoteLength(this.props.cursor);
     } else if(event.shiftKey && event.keyCode === 222) { // "
       this.props.actions.toggleNoteTremolo(this.props.cursor);
     } else {

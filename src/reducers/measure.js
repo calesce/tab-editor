@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import {
   CHANGE_NOTE, DELETE_NOTE, CHANGE_NOTE_LENGTH, INSERT_NOTE, TOGGLE_NOTE_DOTTED, CHANGE_TIME_SIGNATURE,
-  PASTE_NOTE, CUT_NOTE, TOGGLE_NOTE_TREMOLO
+  PASTE_NOTE, CUT_NOTE, TOGGLE_NOTE_TREMOLO, INCREASE_NOTE_LENGTH, DECREASE_NOTE_LENGTH
 } from '../actions/types';
 
 const replaceNote = (state, note, noteIndex) => {
@@ -58,6 +58,54 @@ const deleteNote = (state, action) => {
   }
 };
 
+const increaseNoteLength = (note) => {
+  let newDuration;
+  switch(note.duration) {
+    case 'w':
+      newDuration = 'h';
+      break;
+    case 'h':
+      newDuration = 'q';
+      break;
+    case 'q':
+      newDuration = 'e';
+      break;
+    case 'e':
+      newDuration = 's';
+      break;
+    case 's':
+      newDuration = 't';
+      break;
+    default:
+      newDuration = 's';
+  }
+  return newDuration;
+};
+
+const decreaseNoteLength = (note) => {
+  let newDuration;
+  switch(note.duration) {
+    case 't':
+      newDuration = 's';
+      break;
+    case 's':
+      newDuration = 'e';
+      break;
+    case 'e':
+      newDuration = 'q';
+      break;
+    case 'q':
+      newDuration = 'h';
+      break;
+    case 'h':
+      newDuration = 'w';
+      break;
+    default:
+      newDuration = 'w';
+  }
+  return newDuration;
+};
+
 export default function measure(state, action) {
   switch(action.type) {
     case CHANGE_TIME_SIGNATURE: {
@@ -90,6 +138,20 @@ export default function measure(state, action) {
     case CHANGE_NOTE_LENGTH: {
       const { noteIndex } = action.index;
       const note = Object.assign({}, state.notes[noteIndex], { duration: action.duration });
+      return replaceNote(state, note, noteIndex);
+    }
+
+    case INCREASE_NOTE_LENGTH: {
+      const { noteIndex } = action.index;
+      const duration = increaseNoteLength(state.notes[noteIndex]);
+      const note = Object.assign({}, state.notes[noteIndex], { duration });
+      return replaceNote(state, note, noteIndex);
+    }
+
+    case DECREASE_NOTE_LENGTH: {
+      const { noteIndex } = action.index;
+      const duration = decreaseNoteLength(state.notes[noteIndex]);
+      const note = Object.assign({}, state.notes[noteIndex], { duration });
       return replaceNote(state, note, noteIndex);
     }
 

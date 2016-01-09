@@ -15,6 +15,8 @@ export const PASTE_NOTE = 'PASTE_NOTE';
 export const CHANGE_BPM = 'CHANGE_BPM';
 export const RESIZE = 'RESIZE';
 export const CHANGE_LAYOUT = 'CHANGE_LAYOUT';
+export const INCREASE_NOTE_LENGTH = 'INCREASE_NOTE_LENGTH';
+export const DECREASE_NOTE_LENGTH = 'DECREASE_NOTE_LENGTH';
 
 // playingNote
 export const SET_PLAYING_NOTE = 'SET_PLAYING_NOTE';

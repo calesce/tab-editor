@@ -68,3 +68,17 @@ export function changeBpm(index, bpm, all) {
     all
   };
 }
+
+export function increaseNoteLength(index) {
+  return {
+    type: types.INCREASE_NOTE_LENGTH,
+    index
+  };
+}
+
+export function decreaseNoteLength(index) {
+  return {
+    type: types.DECREASE_NOTE_LENGTH,
+    index
+  };
+}
