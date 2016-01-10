@@ -45,12 +45,12 @@ const getPrevNote = (measures, { stringIndex, measureIndex, noteIndex }) => {
   }
 };
 
-const getUpperString = (stringIndex) => {
-  return stringIndex === 5 ? 0 : stringIndex + 1;
+const getUpperString = (stringIndex, stringCount) => {
+  return stringIndex === stringCount - 1 ? 0 : stringIndex + 1;
 };
 
-const getLowerString = (stringIndex) => {
-  return stringIndex === 0 ? 5 : stringIndex - 1;
+const getLowerString = (stringIndex, stringCount) => {
+  return stringIndex === 0 ? stringCount - 1 : stringIndex - 1;
 };
 
 const initialState = {
@@ -59,7 +59,7 @@ const initialState = {
   stringIndex: 0
 };
 
-export default function cursor(state = initialState, measures, action) {
+export default function cursor(state = initialState, measures, tuning, action) {
   const { noteIndex, measureIndex, stringIndex } = state;
 
   switch(action.type) {
@@ -72,12 +72,12 @@ export default function cursor(state = initialState, measures, action) {
     case MOVE_CURSOR_UP:
       return {
         ...state,
-        stringIndex: getUpperString(state.stringIndex)
+        stringIndex: getUpperString(state.stringIndex, tuning.length)
       };
     case MOVE_CURSOR_DOWN:
       return {
         ...state,
-        stringIndex: getLowerString(state.stringIndex)
+        stringIndex: getLowerString(state.stringIndex, tuning.length)
       };
     case DELETE_NOTE:
       const measure = measures[measureIndex];

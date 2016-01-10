@@ -101,9 +101,11 @@ class Measure extends Component {
       return null;
     }
     const { noteIndex, stringIndex } = this.props.cursor;
+    const strings = this.props.tuning.length;
+    const stringOffset = (6 - strings);
 
     const x = this.calcXForNote(noteIndex);
-    const y = 95 - (13 * stringIndex);
+    const y = 95 - (13 * (stringIndex + stringOffset));
 
     let index = 0;
     let fret = 0;
@@ -119,6 +121,8 @@ class Measure extends Component {
   renderNote = (note, measureIndex, noteIndex) => {
     const x = this.calcXForNote(noteIndex);
     const { playingNote, tuning } = this.props;
+    const strings = this.props.tuning.length;
+    const stringOffset = (6 - strings);
 
     let color = 'black';
     if(playingNote) {
@@ -127,20 +131,22 @@ class Measure extends Component {
       }
     }
 
+    const y = tuning.length * 6.5 + 6; // 45 for 6 strings
     if(note.string[0] === 'rest') {
-      return <Rest onClick={this.onClick.bind(this, noteIndex, 0)} key={noteIndex} color={color} x={x} y={0} note={note} />;
+      return <Rest onClick={this.onClick.bind(this, noteIndex, 0)} key={noteIndex} color={color} x={x} y={y} note={note} />;
     }
 
     return tuning.map((_, i) => {
       const stringIndex = findIndex(note.string, (index) => index === i);
       const string = stringIndex === -1 ? i : note.string[stringIndex];
       const fret = stringIndex === -1 ? undefined : note.fret[stringIndex];
-      const y = 95 - (13 * i);
+      const y = 95 - (13 * (i + stringOffset));
       return (
         <g>
           <TabNote onClick={this.onClick.bind(this, noteIndex, string)}
             key={i} duration={note.duration} x={x} y={y} color={color}
             fret={fret} dotted={note.dotted} tremolo={note.tremolo}
+            stringOffset={stringOffset}
           />
         </g>
       );
@@ -181,9 +187,9 @@ class Measure extends Component {
     const { measure, measureIndex, indexOfRow, tuning } = this.props;
 
     return (
-      <svg style={{ height: (tuning.length * 22), width: measure.width }}>
+      <svg style={{ height: (tuning.length * 27), width: measure.width }}>
         { this.renderMeasure(measureIndex, measure, 0) }
-        { indexOfRow === 0 ? <Clef /> : null }
+        { indexOfRow === 0 ? <Clef y={25} strings={tuning.length} /> : null }
         { this.renderTimeSignature(measureIndex, measure) }
         { this.renderCursor() }
         { this.renderBpm(measure) }

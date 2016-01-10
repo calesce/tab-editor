@@ -8,63 +8,68 @@ export default class TabNote extends Component {
     this.props.onClick();
   };
 
-  renderQuarterStem = (x, color) => {
-    return <rect x={x + 5} y={97} height={25} width={1} fill={color}></rect>;
+  renderQuarterStem = (x, color, stringOffset) => {
+    const y = 97 - (13 * stringOffset);
+    return <rect x={x + 5} y={y} height={25} width={1} fill={color}></rect>;
   };
 
-  renderEighthStem = (x, color) => {
+  renderEighthStem = (x, color, stringOffset) => {
+    const y = 121 - (13 * stringOffset);
     return (
       <g>
-        { this.renderQuarterStem(x, color) }
-        <rect x={x + 5} y={97 + 24} height={2} width={20} fill={color}></rect>
+        { this.renderQuarterStem(x, color, stringOffset) }
+        <rect x={x + 5} y={y} height={2} width={20} fill={color}></rect>
       </g>
     );
   };
 
-  renderSixteenthStem = (x, color) => {
+  renderSixteenthStem = (x, color, stringOffset) => {
+    const y = 115 - (13 * stringOffset);
     return (
       <g>
-        { this.renderQuarterStem(x, color) }
-        { this.renderEighthStem(x, color) }
-        <rect x={x + 5} y={97 + 18} height={2} width={20} fill={color}></rect>
+        { this.renderQuarterStem(x, color, stringOffset) }
+        { this.renderEighthStem(x, color, stringOffset) }
+        <rect x={x + 5} y={y} height={2} width={20} fill={color}></rect>
       </g>
     );
   };
 
   renderStem = () => {
-    const { x, color } = this.props;
+    const { x, color, stringOffset } = this.props;
 
     switch(this.props.duration) {
       case 'q':
-        return this.renderQuarterStem(x + 1, color);
+        return this.renderQuarterStem(x + 1, color, stringOffset);
       case 'e':
-        return this.renderEighthStem(x + 1, color);
+        return this.renderEighthStem(x + 1, color, stringOffset);
       case 's':
-        return this.renderSixteenthStem(x + 1, color);
+        return this.renderSixteenthStem(x + 1, color, stringOffset);
       default:
         return null;
     }
   };
 
-  renderDot = (dotted, x, color) => {
+  renderDot = (dotted, x, stringOffset, color) => {
     if(!dotted) {
       return null;
     }
+    const y = 119 - (13 * stringOffset);
 
     return (
-      <svg x={x} y={115} width={20} height={20}>
+      <svg x={x} y={y} width={20} height={20}>
         <circle cx={6.5} cy={10} r={1.5} fill={color} stroke={color} />
       </svg>
     );
   };
 
-  renderTremolo = (tremolo, x, color) => {
+  renderTremolo = (tremolo, x, stringOffset, color) => {
     if(!tremolo) {
       return null;
     }
+    const y = 100 - (13 * stringOffset);
 
     return (
-      <svg x={x + 1.5} y={100} >
+      <svg x={x + 1.5} y={y} >
         <g transform='scale(0.30)'>
           <polygon fill={color} points='31.5,7 3.75,21.25 3.75,14.5 31.5,0.25'/>
           <polygon fill={color} points='31.5,19.25 3.75,33.5 3.75,26.75 31.5,12.5'/>
@@ -75,7 +80,7 @@ export default class TabNote extends Component {
   };
 
   render() {
-    const { x, y, fret, color, dotted, tremolo } = this.props;
+    const { x, y, fret, color, dotted, tremolo, stringOffset } = this.props;
 
     let width = 12;
     if(fret > 9) {
@@ -102,9 +107,9 @@ export default class TabNote extends Component {
       <g>
         {space}
         {note}
-        {this.renderStem()}
-        {this.renderDot(dotted, x, color)}
-        {this.renderTremolo(tremolo, x, color)}
+        {fret !== undefined ? this.renderStem() : null}
+        {fret !== undefined ? this.renderDot(dotted, x, stringOffset, color) : null}
+        {fret !== undefined ? this.renderTremolo(tremolo, x, stringOffset, color): null}
       </g>
     );
   }

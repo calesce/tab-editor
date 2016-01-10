@@ -26,13 +26,16 @@ export default function tracks(state = {}, action) {
         clipboard: action.note
       };
 
-    case CUT_NOTE:
+    case CUT_NOTE: {
+      const currentTrack = state.tracks[state.currentTrackIndex];
+
       return {
         ...state,
         tracks: replaceTrack(state.tracks, action, state.currentTrackIndex, state.layout),
         clipboard: action.note,
-        cursor: cursor(state.cursor, state.tracks[state.currentTrackIndex].measures, action)
+        cursor: cursor(state.cursor, currentTrack.measures, currentTrack.tuning, action)
       };
+    }
 
     case CHANGE_LAYOUT:
       const newLayout = layout(state.layout, action);
@@ -43,13 +46,15 @@ export default function tracks(state = {}, action) {
       };
 
     default: {
+      const currentTrack = state.tracks[state.currentTrackIndex];
+
       return {
         tracks: replaceTrack(state.tracks, action, state.currentTrackIndex, state.layout),
         currentTrackIndex: state.currentTrackIndex,
         clipboard: state.clipboard,
         layout: layout(state.layout, action),
         playingNote: playingNote(state.playingNote, action),
-        cursor: cursor(state.cursor, state.tracks[state.currentTrackIndex].measures, action)
+        cursor: cursor(state.cursor, currentTrack.measures, currentTrack.tuning, action)
       };
     }
   }
