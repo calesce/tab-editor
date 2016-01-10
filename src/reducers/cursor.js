@@ -1,6 +1,6 @@
 import { SET_CURSOR, MOVE_CURSOR_LEFT, MOVE_CURSOR_RIGHT,
 MOVE_CURSOR_UP, MOVE_CURSOR_DOWN, DELETE_NOTE, DELETE_MEASURE,
-PASTE_NOTE, CUT_NOTE } from '../actions/types';
+PASTE_NOTE, CUT_NOTE, INSERT_NOTE } from '../actions/types';
 
 const getNextNote = (measures, { stringIndex, measureIndex, noteIndex }) => {
   if(noteIndex >= measures[measureIndex].notes.length - 1) {
@@ -79,6 +79,10 @@ export default function cursor(state = initialState, measures, tuning, action) {
         ...state,
         stringIndex: getLowerString(state.stringIndex, tuning.length)
       };
+
+    case INSERT_NOTE:
+      return Object.assign({}, state, { noteIndex: state.noteIndex + 1 });
+
     case DELETE_NOTE:
       const measure = measures[measureIndex];
       const note = measure.notes[noteIndex];
