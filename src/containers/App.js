@@ -43,7 +43,7 @@ class App extends Component {
 
     if(this.props.playingNote && playingNote) {
       if(playingNote.noteIndex !== this.props.playingNote.noteIndex || playingNote.measure !== this.props.playingNote.measure) {
-        this.updateScrollPosition(nextProps.playingNote);
+        this.updateScrollPosition(nextProps.playingNote, nextProps.measures);
       }
     }
   }
@@ -52,9 +52,9 @@ class App extends Component {
     this.props.actions.resize();
   };
 
-  getXOfCurrentNote = (playingNote) => {
+  getXOfCurrentNote = (playingNote, measures) => {
     const { measure, noteIndex } = playingNote;
-    const xOfMeasures = this.props.measures.reduce((acc, curr, i) => {
+    const xOfMeasures = measures.reduce((acc, curr, i) => {
       if(i >= measure) {
         return acc;
       }
@@ -64,12 +64,26 @@ class App extends Component {
     return xOfMeasures + 55 * noteIndex;
   };
 
-  updateScrollPosition = (playingNote) => {
-    const x = this.getXOfCurrentNote(playingNote);
-    const scrollX = window.scrollX;
+  getYOfCurrentNote = (playingNote, measures) => {
+    const position = measures[playingNote.measure];
+    return (position.rowIndex) * (27 * this.props.tuning.length) + 50;
+  };
 
-    if(x > window.innerWidth + scrollX - 200 && this.props.layout === 'linear') {
-      window.scroll(x - 200, 0);
+  updateScrollPosition = (playingNote, measures) => {
+    if(this.props.layout === 'linear') {
+      const x = this.getXOfCurrentNote(playingNote, measures);
+      const { scrollX, innerWidth } = window;
+
+      if(x > innerWidth + scrollX - 200) {
+        window.scroll(x - 200, 0);
+      }
+    } else {
+      const y = this.getYOfCurrentNote(playingNote, measures);
+      const { innerHeight, scrollY } = window;
+
+      if(y > innerHeight + scrollY - 270) {
+        window.scroll(0, y - 100);
+      }
     }
   };
 
@@ -170,7 +184,7 @@ class App extends Component {
       this.props.actions.cutNote(this.props.cursor, this.getCurrentNote());
     }
 
-    if(event.keyCode <= 57 && event.keyCode >= 48) {
+    if(event.keyCode <= 57 && event.keyCode >= 48 && !event.metaKey) {
       return this.editNote(event.keyCode - 48);
     } else if(event.keyCode === 82 && !event.metaKey && !event.ctrlKey) {
       this.props.actions.changeNote(this.props.cursor, 'rest');
@@ -187,7 +201,7 @@ class App extends Component {
       return this.changeNoteLength('w');
     } else if(event.keyCode === 72 && !event.ctrlKey) { // h
       return this.changeNoteLength('h');
-    } else if(event.keyCode === 73) { // i
+    } else if(event.keyCode === 73 && !event.metaKey) { // i
       return this.insertNote();
     } else if(event.keyCode === 32) { // spacebar
       event.preventDefault();
@@ -235,7 +249,8 @@ function mapStateToProps(state) {
     clipboard: state.clipboard,
     layout: state.layout,
     playingNote: state.playingNote,
-    cursor: state.cursor
+    cursor: state.cursor,
+    tuning: state.tracks[state.currentTrackIndex].tuning
   };
 }
 
