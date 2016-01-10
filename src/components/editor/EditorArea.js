@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 
 import { changeLayout } from '../../actions/track';
 import { timeSignatureSelector } from '../../util/selectors';
+import InstrumentSelect from './InstrumentSelect';
 
 class EditorArea extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
@@ -42,6 +43,7 @@ class EditorArea extends Component {
         <button onClick={this.toggleLayout}>{layout}</button>
         <button onClick={openModal.bind(this, 'tuning')}>tuning</button>
         <button onClick={openModal.bind(this, 'bpm')}>bpm</button>
+        <InstrumentSelect />
       </div>
     );
   }

@@ -28,6 +28,13 @@ export function changeTuning(tuning) {
   };
 }
 
+export function setInstrument(instrument) {
+  return {
+    type: types.SET_INSTRUMENT,
+    instrument
+  };
+}
+
 export function copyNote(note) {
   return {
     type: types.COPY_NOTE,

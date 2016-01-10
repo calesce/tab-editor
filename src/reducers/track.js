@@ -1,4 +1,4 @@
-import { DELETE_MEASURE, INSERT_MEASURE, REPLACE_SONG, CHANGE_TUNING, CHANGE_BPM } from '../actions/types';
+import { DELETE_MEASURE, INSERT_MEASURE, REPLACE_SONG, CHANGE_TUNING, CHANGE_BPM, SET_INSTRUMENT } from '../actions/types';
 import measure from './measure';
 
 const replaceMeasure = (state, action) => {
@@ -56,6 +56,9 @@ export default function track(state = {}, action) {
     case REPLACE_SONG:
       return action.track;
 
+    case SET_INSTRUMENT:
+      return Object.assign({}, state, { instrument: action.instrument });
+
     case CHANGE_TUNING:
       return Object.assign({}, state, { tuning: action.tuning });
 
@@ -70,7 +73,8 @@ export default function track(state = {}, action) {
     default:
       return {
         measures: replaceMeasure(state.measures, action),
-        tuning: state.tuning
+        tuning: state.tuning,
+        instrument: state.instrument
       };
   }
 }

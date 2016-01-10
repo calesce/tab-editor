@@ -28,3 +28,6 @@ export const MOVE_CURSOR_LEFT = 'MOVE_CURSOR_LEFT';
 export const MOVE_CURSOR_RIGHT = 'MOVE_CURSOR_RIGHT';
 export const MOVE_CURSOR_UP= 'MOVE_CURSOR_UP';
 export const MOVE_CURSOR_DOWN = 'MOVE_CURSOR_DOWN';
+
+// instrument
+export const SET_INSTRUMENT = 'SET_INSTRUMENT';

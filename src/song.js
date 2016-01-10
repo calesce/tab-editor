@@ -1,4 +1,5 @@
 let track = {
+  instrument: 'acoustic_guitar_steel',
   tuning: [ 'e2', 'a2', 'd3', 'g3', 'b3', 'e4' ],
   measures: [
   {

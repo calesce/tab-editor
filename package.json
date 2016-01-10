@@ -33,6 +33,7 @@
     "eslint-plugin-react": "^3.11.3",
     "eslint-plugin-require-path-exists": "^1.0.25",
     "express": "^4.13.3",
+    "json-loader": "^0.5.4",
     "react-pure-render": "^1.0.2",
     "react-transform-catch-errors": "^1.0.0",
     "react-transform-hmr": "^1.0.1",

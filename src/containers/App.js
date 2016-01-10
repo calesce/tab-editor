@@ -33,9 +33,7 @@ class App extends Component {
   }
 
   componentWillMount() {
-    Soundfont.loadBuffers(audioContext, 'acoustic_guitar_steel').then((buffers) => {
-      this.setState({ buffers });
-    });
+    this.loadSoundfont(this.props.instrument);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -45,8 +43,16 @@ class App extends Component {
       if(playingNote.noteIndex !== this.props.playingNote.noteIndex || playingNote.measure !== this.props.playingNote.measure) {
         this.updateScrollPosition(nextProps.playingNote, nextProps.measures);
       }
+    } else if(this.props.instrument !== nextProps.instrument) {
+      this.loadSoundfont(nextProps.instrument);
     }
   }
+
+  loadSoundfont = (instrument) => {
+    Soundfont.loadBuffers(audioContext, instrument).then((buffers) => {
+      this.setState({ buffers });
+    });
+  };
 
   handleResize = () => {
     this.props.actions.resize();
@@ -250,7 +256,8 @@ function mapStateToProps(state) {
     layout: state.layout,
     playingNote: state.playingNote,
     cursor: state.cursor,
-    tuning: state.tracks[state.currentTrackIndex].tuning
+    tuning: state.tracks[state.currentTrackIndex].tuning,
+    instrument: state.tracks[state.currentTrackIndex].instrument
   };
 }
 

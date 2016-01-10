@@ -101,10 +101,13 @@ export default class TabNote extends Component {
 
     const space = fret !== undefined ?
       <rect x={x} y={y-7} height={5.5} width={width} fill='#ffffff' stroke='#ffffff'></rect> :
-      <rect onClick={this.onClick} x={x-14} y={y-11} height={15} width={45} opacity={0}></rect>;
+      null;
+
+    const clickArea = <rect onClick={this.onClick} x={x-14} y={y-11} height={15} width={45} opacity={0}></rect>;
 
     return (
       <g>
+        {clickArea}
         {space}
         {note}
         {fret !== undefined ? this.renderStem() : null}
