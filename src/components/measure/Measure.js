@@ -39,6 +39,9 @@ class Measure extends Component {
       const oldNote = this.props.measure.notes[i];
       const newNote = nextProps.measure.notes[i];
 
+      if(!newNote) {
+        return true;
+      }
       if(oldNote.duration !== newNote.duration) {
         return true;
       }

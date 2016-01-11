@@ -105,7 +105,7 @@ export default function cursor(state = initialState, measures, tuning, action) {
       return getNextNote(measures, state);
 
     case CUT_NOTE:
-      if(measures[state.measureIndex].notes === 0 || state.noteIndex === 0) {
+      if(measures[state.measureIndex].notes <= 1 || state.noteIndex === 0) {
         return state;
       }
       return getPrevNote(measures, state);
