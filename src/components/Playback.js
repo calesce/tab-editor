@@ -7,6 +7,11 @@ import * as Actions from '../actions/playingNote';
 import { playCurrentNote, getReplaySpeedForNote } from '../util/audio';
 
 class Playback extends Component {
+  constructor(props) {
+    super(props);
+    this.timers = [];
+  }
+
   shouldComponentUpdate() {
     return false;
   }
@@ -16,8 +21,8 @@ class Playback extends Component {
   }
 
   componentWillUnmount() {
-    this.props.tracks.map((track, i) => {
-      cancelAnimationFrame(this[`timer${i}`]);
+    this.timers.map((timer) => {
+      cancelAnimationFrame(timer);
     });
   }
 
@@ -54,7 +59,7 @@ class Playback extends Component {
         if(isCurrent) {
           this.updateNote(newPlayingNote);
         }
-        this[`timer${trackIndex}`] = requestAnimationFrame(() => {
+        this.timers[trackIndex] = requestAnimationFrame(() => {
           this.loopThroughSong(currentTimestamp, newPlayingNote, track, isCurrent, trackIndex);
         });
       } else {
@@ -66,12 +71,12 @@ class Playback extends Component {
         if(isCurrent) {
           this.updateNote(newPlayingNote);
         }
-        this[`timer${trackIndex}`] = requestAnimationFrame(() => {
+        this.timers[trackIndex] = requestAnimationFrame(() => {
           this.loopThroughSong(currentTimestamp, newPlayingNote, track, isCurrent, trackIndex);
         });
       }
     } else {
-      this[`timer${trackIndex}`] = requestAnimationFrame(() => {
+      this.timers[trackIndex] = requestAnimationFrame(() => {
         this.loopThroughSong(startTimestamp, playingNote, track, isCurrent, trackIndex);
       });
     }
@@ -86,7 +91,7 @@ class Playback extends Component {
     });
 
     tracks.map((track, i) => {
-      this[`timer${i}`] = requestAnimationFrame(() => {
+      this.timers[i] = requestAnimationFrame(() => {
         this.loopThroughSong(null, playingNote, track, i === currentTrackIndex, i);
       });
     });

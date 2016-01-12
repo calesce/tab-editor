@@ -227,8 +227,8 @@ class App extends Component {
     }
   };
 
-  openModal = (modalToOpen) => {
-    this.setState({ openModal: modalToOpen });
+  openModal = (openModal) => {
+    this.setState({ openModal });
   };
 
   closeModal = () => {
@@ -243,7 +243,7 @@ class App extends Component {
         { this.props.playingNote ? <Playback buffers={buffers} /> : null}
         <EditorArea handlePlay={this.handlePlay} handleStop={this.handleStop} openModal={this.openModal} />
         <TabStaff />
-        <TimeSignatureModal isOpen={openModal === 'timeSignature'} closeModal={this.closeModal} />
+        <TimeSignatureModal isOpen={openModal === 'timeSig'} closeModal={this.closeModal} />
         <TuningModal isOpen={openModal === 'tuning'} closeModal={this.closeModal} />
         <BpmModal isOpen={openModal === 'bpm'} closeModal={this.closeModal} />
       </div>

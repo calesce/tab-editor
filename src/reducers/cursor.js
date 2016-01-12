@@ -81,6 +81,9 @@ export default function cursor(state = initialState, measures, tuning, action) {
       };
 
     case INSERT_NOTE:
+      if(measures[measureIndex].notes.length === 0) {
+        return state;
+      }
       return Object.assign({}, state, { noteIndex: state.noteIndex + 1 });
 
     case DELETE_NOTE:
