@@ -16,19 +16,21 @@ class Playback extends Component {
   }
 
   componentWillUnmount() {
-    cancelAnimationFrame(this.state.timer);
+    this.props.tracks.map((track, i) => {
+      cancelAnimationFrame(this[`timer${i}`]);
+    });
   }
 
-  loopThroughSong = (startTimestamp, playingNote) => {
+  loopThroughSong = (startTimestamp, playingNote, track, isCurrent, trackIndex) => {
     if(!startTimestamp) {
       startTimestamp = Date.now();
     }
 
-    let { measure, noteIndex } = playingNote;
-    let { measures } = this.props.track;
+    const { measure, noteIndex } = playingNote;
+    const { measures } = track;
 
-    let currentTimestamp = Date.now();
-    let replayDiff = currentTimestamp - startTimestamp;
+    const currentTimestamp = Date.now();
+    const replayDiff = currentTimestamp - startTimestamp;
 
     const measureToPlay = measures[measure];
     const bpm = measureToPlay.bpm;
@@ -48,43 +50,45 @@ class Playback extends Component {
           measure: measure + 1,
           noteIndex: 0
         };
-        playCurrentNote(this.props.track, newPlayingNote, this.props.buffers);
-        this.updateNote(newPlayingNote);
-        this.setState({
-          timer: requestAnimationFrame(() => {
-            this.loopThroughSong(currentTimestamp, newPlayingNote);
-          })
+        playCurrentNote(track, newPlayingNote, this.props.buffers);
+        if(isCurrent) {
+          this.updateNote(newPlayingNote);
+        }
+        this[`timer${trackIndex}`] = requestAnimationFrame(() => {
+          this.loopThroughSong(currentTimestamp, newPlayingNote, track, isCurrent, trackIndex);
         });
       } else {
         const newPlayingNote = {
           measure,
           noteIndex: noteIndex + 1
         };
-        playCurrentNote(this.props.track, newPlayingNote, this.props.buffers);
-        this.updateNote(newPlayingNote);
-        this.setState({
-          timer: requestAnimationFrame(() => {
-            this.loopThroughSong(currentTimestamp, newPlayingNote);
-          })
+        playCurrentNote(track, newPlayingNote, this.props.buffers);
+        if(isCurrent) {
+          this.updateNote(newPlayingNote);
+        }
+        this[`timer${trackIndex}`] = requestAnimationFrame(() => {
+          this.loopThroughSong(currentTimestamp, newPlayingNote, track, isCurrent, trackIndex);
         });
       }
     } else {
-      this.setState({
-        timer: requestAnimationFrame(() => {
-          this.loopThroughSong(startTimestamp, playingNote);
-        })
+      this[`timer${trackIndex}`] = requestAnimationFrame(() => {
+        this.loopThroughSong(startTimestamp, playingNote, track, isCurrent, trackIndex);
       });
     }
   };
 
   startPlayback = () => {
-    const playingNote = _.cloneDeep(this.props.playingNote);
-    playCurrentNote(this.props.track, playingNote, this.props.buffers);
+    const { buffers, tracks, currentTrackIndex } = this.props;
 
-    this.setState({
-      timer: requestAnimationFrame(() => {
-        this.loopThroughSong(null, playingNote);
-      })
+    const playingNote = _.cloneDeep(this.props.playingNote);
+    this.props.tracks.map((track) => {
+      playCurrentNote(track, playingNote, buffers);
+    });
+
+    tracks.map((track, i) => {
+      this[`timer${i}`] = requestAnimationFrame(() => {
+        this.loopThroughSong(null, playingNote, track, i === currentTrackIndex, i);
+      });
     });
   };
 
@@ -101,7 +105,8 @@ class Playback extends Component {
 
 function mapStateToProps(state) {
   return {
-    track: state.tracks[state.currentTrackIndex],
+    tracks: state.tracks,
+    currentTrackIndex: state.currentTrackIndex,
     playingNote: state.playingNote
   };
 }

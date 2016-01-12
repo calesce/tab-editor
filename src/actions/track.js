@@ -49,16 +49,3 @@ export function cutNote(index, note) {
     note
   };
 }
-
-export function resize() {
-  return {
-    type: types.RESIZE
-  };
-}
-
-export function changeLayout(layout) {
-  return {
-    type: types.CHANGE_LAYOUT,
-    layout
-  };
-}

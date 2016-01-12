@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+
+import * as TracksActions from '../actions/tracks';
 import * as TrackActions from '../actions/track';
 import * as MeasureActions from '../actions/measure';
 import * as PlayingNoteActions from '../actions/playingNote';
@@ -16,7 +18,7 @@ import TuningModal from '../components/editor/TuningModal';
 import BpmModal from '../components/editor/BpmModal';
 import Playback from '../components/Playback';
 
-const Actions = Object.assign(TrackActions, MeasureActions, PlayingNoteActions, CursorActions);
+const Actions = Object.assign(TracksActions, TrackActions, MeasureActions, PlayingNoteActions, CursorActions);
 
 class App extends Component {
   constructor(props) {

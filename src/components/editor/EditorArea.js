@@ -3,9 +3,10 @@ import shouldPureComponentUpdate from 'react-pure-render/function';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { changeLayout } from '../../actions/track';
+import { changeLayout, insertTrack, deleteTrack } from '../../actions/tracks';
 import { timeSignatureSelector } from '../../util/selectors';
 import InstrumentSelect from './InstrumentSelect';
+import TrackSelect from './TrackSelect';
 
 class EditorArea extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
@@ -44,6 +45,9 @@ class EditorArea extends Component {
         <button onClick={openModal.bind(this, 'tuning')}>tuning</button>
         <button onClick={openModal.bind(this, 'bpm')}>bpm</button>
         <InstrumentSelect />
+        <button onClick={this.props.insertTrack}>add track</button>
+        <button onClick={this.props.deleteTrack}>remove track</button>
+        <TrackSelect />
       </div>
     );
   }
@@ -59,7 +63,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    changeLayout: bindActionCreators(changeLayout, dispatch)
+    changeLayout: bindActionCreators(changeLayout, dispatch),
+    insertTrack: bindActionCreators(insertTrack, dispatch),
+    deleteTrack: bindActionCreators(deleteTrack, dispatch)
   };
 }
 

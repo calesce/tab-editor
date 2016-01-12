@@ -3,7 +3,7 @@ import { createSelector } from 'reselect';
 export function timeSignatureSelector(state) {
   const measures = state.tracks[state.currentTrackIndex].measures;
   const measureIndex = state.cursor.measureIndex;
-  return measures[measureIndex] ? measures[measureIndex].timeSignature : '4/4';
+  return measures.length > 0 ? measures[measureIndex].timeSignature : '4/4';
 }
 
 const calcMeasureValidity = (measure) => {

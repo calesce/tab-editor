@@ -3,7 +3,7 @@ import layout from './layout';
 import playingNote from './playingNote';
 import cursor from './cursor';
 import { prepareRows } from '../util';
-import { COPY_NOTE, CUT_NOTE, CHANGE_LAYOUT } from '../actions/types';
+import { COPY_NOTE, CUT_NOTE, CHANGE_LAYOUT, INSERT_TRACK, DELETE_TRACK, SELECT_TRACK } from '../actions/types';
 
 const replaceTrack = (tracks, action, currentTrackIndex, layout = 'page') => {
   return tracks.map((t, index) => {
@@ -18,8 +18,59 @@ const replaceTrack = (tracks, action, currentTrackIndex, layout = 'page') => {
   });
 };
 
+const defaultCursor = () => ({
+  measureIndex: 0,
+  noteIndex: 0,
+  stringIndex: 0
+});
+
+const defaultTrack = (state) => ({
+  instrument: state.tracks[state.currentTrackIndex].instrument,
+  tuning: state.tracks[state.currentTrackIndex].tuning,
+  measures: [
+    {
+      bpm: state.tracks[state.currentTrackIndex].measures[0].bpm,
+      timeSignature: state.tracks[state.currentTrackIndex].measures[0].timeSignature,
+      notes: []
+    }
+  ]
+});
+
 export default function tracks(state = {}, action) {
   switch(action.type) {
+    case INSERT_TRACK: {
+      const newTrack = defaultTrack(state);
+
+      return {
+        ...state,
+        tracks: replaceTrack(state.tracks.concat(newTrack), action, state.tracks.length, state.layout),
+        currentTrackIndex: state.tracks.length,
+        cursor: defaultCursor()
+      };
+    }
+
+    case DELETE_TRACK:
+      if(state.tracks.length === 1) {
+        return {
+          ...state,
+          tracks: replaceTrack([defaultTrack(state)], action, 0, state.layout),
+          cursor: defaultCursor()
+        };
+      }
+      return {
+        ...state,
+        tracks: state.tracks.filter((_, i) => state.currentTrackIndex !== i),
+        currentTrackIndex: 0,
+        cursor: defaultCursor()
+      };
+
+    case SELECT_TRACK:
+      return {
+        ...state,
+        currentTrackIndex: action.index,
+        cursor: defaultCursor()
+      };
+
     case COPY_NOTE:
       return {
         ...state,

@@ -29,10 +29,6 @@ export default class InstrumentSelect extends Component {
     });
   };
 
-  checkboxChanged = () => {
-    this.setState({ checked: !this.state.checked });
-  };
-
   render() {
     return (
       <select onChange={this.onChange} defaultValue={this.state.instrument}>
