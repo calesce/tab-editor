@@ -35,7 +35,8 @@ class App extends Component {
   }
 
   componentWillMount() {
-    this.loadSoundfont(this.props.instrument);
+    this.loadSoundfont2(this.props.instrument);
+    // this.loadSoundfont(this.props.instrument);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -46,7 +47,8 @@ class App extends Component {
         this.updateScrollPosition(nextProps.playingNote, nextProps.measures);
       }
     } else if(this.props.instrument !== nextProps.instrument) {
-      this.loadSoundfont(nextProps.instrument);
+      this.loadSoundfont2(nextProps.instrument);
+      // this.loadSoundfont(nextProps.instrument);
     }
   }
 
@@ -54,6 +56,23 @@ class App extends Component {
     Soundfont.loadBuffers(audioContext, instrument).then((buffers) => {
       this.setState({ buffers });
     });
+  };
+
+  loadSoundfont2 = (instrument) => {
+    const nonbuffers = localStorage.getItem(instrument);
+
+    if(nonbuffers) {
+      Soundfont.decodeArray(audioContext, JSON.parse(nonbuffers)).then((buffers) => {
+        this.setState({ buffers });
+      });
+    } else {
+      Soundfont.loadNonBuffers(audioContext, instrument).then((ns) => {
+        localStorage.setItem(instrument, JSON.stringify(ns));
+        Soundfont.decodeArray(audioContext, ns).then((buffers) => {
+          this.setState({ buffers });
+        });
+      });
+    }
   };
 
   handleResize = () => {
