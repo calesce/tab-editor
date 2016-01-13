@@ -21,10 +21,6 @@ class Measure extends Component {
     if(playingNoteEqual) {
       return true;
     }
-    const indexEqual = this.props.indexOfRow !== nextProps.indexOfRow || this.props.measureIndex !== nextProps.measureIndex;
-    if(indexEqual) {
-      return true;
-    }
     const cursorEqual = !shallowEqual(this.props.cursor, nextProps.cursor);
     if(cursorEqual) {
       return true;
@@ -61,13 +57,13 @@ class Measure extends Component {
 
   calcXForNote = (noteIndex) => {
     let x = 0 + (noteIndex * 53 + 33);
-    if(this.props.indexOfRow === 0) {
+    if(this.props.measure.indexOfRow === 0) {
       x += 8;
     }
     if(this.props.measure.renderTimeSignature) {
       x += 30;
     }
-    if(this.props.measure.notes.length === 0 && this.props.indexOfRow !== 0) {
+    if(this.props.measure.notes.length === 0 && this.props.measure.indexOfRow !== 0) {
       x -= this.props.measure.renderTimeSignature ? 0 : 25;
     }
     return x;
@@ -157,7 +153,7 @@ class Measure extends Component {
   };
 
   renderTimeSignature = (measureIndex, measure) => {
-    const x = this.props.indexOfRow === 0 ? 36 : 20;
+    const x = this.props.measure.indexOfRow === 0 ? 36 : 20;
     const strings = this.props.tuning.length;
     const y = strings * 6 - 6; // y of top of time signature
     const { renderTimeSignature, timeSignature } = measure;
@@ -187,12 +183,12 @@ class Measure extends Component {
   };
 
   render() {
-    const { measure, measureIndex, indexOfRow, tuning } = this.props;
+    const { measure, measureIndex, tuning } = this.props;
 
     return (
       <svg style={{ height: (tuning.length * 27), width: measure.width }}>
         { this.renderMeasure(measureIndex, measure, 0) }
-        { indexOfRow === 0 ? <Clef y={25} strings={tuning.length} /> : null }
+        { measure.indexOfRow === 0 ? <Clef y={25} strings={tuning.length} /> : null }
         { this.renderTimeSignature(measureIndex, measure) }
         { this.renderCursor() }
         { this.renderBpm(measure) }

@@ -42,7 +42,8 @@ const trackWithRows = (track) => {
     if(index === 0) {
       return [{
         ...measure,
-        rowIndex: index
+        rowIndex: index,
+        indexOfRow: 0
       }];
     }
 
@@ -55,22 +56,26 @@ const trackWithRows = (track) => {
     }, 0);
 
     let newRowIndex = currentRow;
+    let indexOfRow;
     if(currentRowWidth + measure.width >= window.innerWidth - 9) {
       newRowIndex = currentRow + 1;
+      indexOfRow = 0;
     }
 
     return newTrack.concat({
       ...measure,
-      rowIndex: newRowIndex
+      rowIndex: newRowIndex,
+      indexOfRow
     });
   }, []);
 };
 
 const linearTrack = (track) => {
-  return track.map((measure) => {
+  return track.map((measure, i) => {
     return {
       ...measure,
-      rowIndex: 0
+      rowIndex: 0,
+      indexOfRow: i === 0 ? 0 : undefined
     };
   });
 };
