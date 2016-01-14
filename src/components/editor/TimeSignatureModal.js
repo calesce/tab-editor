@@ -10,10 +10,18 @@ import { timeSignatureSelector } from '../../util/selectors';
 export default class TimeSignatureModal extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      checked: false
+    };
+  }
+
   onRequestClose = () => {
     let timeSignature = `${this.refs.numerator.value}/${this.refs.denominator.value}`;
     if(timeSignature !== this.props.timeSignature) {
-      this.props.changeTimeSignature({ measureIndex: this.props.measureIndex }, timeSignature);
+      this.props.changeTimeSignature({ measureIndex: this.props.measureIndex }, timeSignature, this.state.checked);
     }
 
     this.props.closeModal();
@@ -43,6 +51,10 @@ export default class TimeSignatureModal extends Component {
     );
   };
 
+  checkboxChanged = () => {
+    this.setState({ checked: !this.state.checked });
+  };
+
   render() {
     const style = {
       overlay: {
@@ -64,6 +76,10 @@ export default class TimeSignatureModal extends Component {
         <small style={{ bottom: '5%' }}>Time Signature:</small>
         {this.renderNumerator(this.props.timeSignature[0])}
         {this.renderDenominator(this.props.timeSignature[2])}
+        <span>
+          <input type='checkbox' value={this.state.checked} onChange={this.checkboxChanged}/>
+          <small>All Measures</small>
+        </span>
         <button onClick={this.props.closeModal}>Cancel</button>
       </Modal>
     );

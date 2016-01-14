@@ -4,7 +4,8 @@ import playingNote from './playingNote';
 import cursor from './cursor';
 import { prepareRows, prepareTrack } from '../util';
 import { COPY_NOTE, CUT_NOTE, CHANGE_LAYOUT, INSERT_TRACK,
-  DELETE_TRACK, SELECT_TRACK, INSERT_MEASURE, DELETE_MEASURE, CHANGE_BPM } from '../actions/types';
+  DELETE_TRACK, SELECT_TRACK, INSERT_MEASURE, DELETE_MEASURE,
+  CHANGE_BPM, CHANGE_TIME_SIGNATURE } from '../actions/types';
 
 const replaceTrack = (tracks, action, currentTrackIndex, layout = 'page') => {
   return tracks.map((t, index) => {
@@ -97,6 +98,10 @@ export default function tracks(state = {}, action) {
     }
 
     case CHANGE_BPM: {
+      return applyActionToEachTrack(state, action);
+    }
+
+    case CHANGE_TIME_SIGNATURE: {
       return applyActionToEachTrack(state, action);
     }
 

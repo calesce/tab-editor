@@ -30,11 +30,12 @@ export function insertNote(index) {
   };
 }
 
-export function changeTimeSignature(index, timeSignature) {
+export function changeTimeSignature(index, timeSignature, all) {
   return {
     type: types.CHANGE_TIME_SIGNATURE,
     index,
-    timeSignature
+    timeSignature,
+    all
   };
 }
 

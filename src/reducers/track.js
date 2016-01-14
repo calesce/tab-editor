@@ -1,4 +1,5 @@
-import { DELETE_MEASURE, INSERT_MEASURE, REPLACE_SONG, CHANGE_TUNING, CHANGE_BPM, SET_INSTRUMENT } from '../actions/types';
+import { DELETE_MEASURE, INSERT_MEASURE, REPLACE_SONG, CHANGE_TUNING,
+  CHANGE_BPM, SET_INSTRUMENT, CHANGE_TIME_SIGNATURE } from '../actions/types';
 import measure from './measure';
 
 const replaceMeasure = (state, action) => {
@@ -17,7 +18,7 @@ const replaceMeasure = (state, action) => {
 const changeAllMeasures = (measures, bpm) => {
   return measures.map((measure) => ({
     ...measure,
-    bpm: bpm
+    bpm
   }));
 };
 
@@ -28,7 +29,26 @@ const changeMeasuresAfterCurrent = (measures, bpm, measureIndex) => {
     }
     return {
       ...measure,
-      bpm: bpm
+      bpm
+    };
+  });
+};
+
+const changeTimeSigAllMeasures = (measures, timeSignature) => {
+  return measures.map((measure) => ({
+    ...measure,
+    timeSignature
+  }));
+};
+
+const changeTimeSigMeasuresAfterCurrent = (measures, timeSignature, measureIndex) => {
+  return measures.map((measure, i) => {
+    if(measureIndex > i) {
+      return measure;
+    }
+    return {
+      ...measure,
+      timeSignature
     };
   });
 };
@@ -63,12 +83,22 @@ export default function track(state = {}, action) {
       return Object.assign({}, state, { tuning: action.tuning });
 
     case CHANGE_BPM:
-      let newMeasures = action.all ? changeAllMeasures(state.measures, action.bpm)
+      const newMeasures = action.all ? changeAllMeasures(state.measures, action.bpm)
                                    : changeMeasuresAfterCurrent(state.measures, action.bpm, action.index.measureIndex);
       return {
         ...state,
         measures: newMeasures
       };
+
+    case CHANGE_TIME_SIGNATURE: {
+      const { timeSignature, index } = action;
+      const newMeasures = action.all ? changeTimeSigAllMeasures(state.measures, timeSignature)
+                                   : changeTimeSigMeasuresAfterCurrent(state.measures, timeSignature, index.measureIndex);
+      return {
+        ...state,
+        measures: newMeasures
+      };
+    }
 
     default:
       return {

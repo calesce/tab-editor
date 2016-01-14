@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import {
-  CHANGE_NOTE, DELETE_NOTE, CHANGE_NOTE_LENGTH, INSERT_NOTE, TOGGLE_NOTE_DOTTED, CHANGE_TIME_SIGNATURE,
+  CHANGE_NOTE, DELETE_NOTE, CHANGE_NOTE_LENGTH, INSERT_NOTE, TOGGLE_NOTE_DOTTED,
   PASTE_NOTE, CUT_NOTE, TOGGLE_NOTE_TREMOLO, INCREASE_NOTE_LENGTH, DECREASE_NOTE_LENGTH
 } from '../actions/types';
 
@@ -108,13 +108,6 @@ const decreaseNoteLength = (note) => {
 
 export default function measure(state, action) {
   switch(action.type) {
-    case CHANGE_TIME_SIGNATURE: {
-      return {
-        ...state,
-        timeSignature: action.timeSignature
-      };
-    }
-
     case INSERT_NOTE: {
       return insertNote(state, action);
     }
