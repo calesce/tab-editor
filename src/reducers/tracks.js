@@ -2,8 +2,9 @@ import track from './track';
 import layout from './layout';
 import playingNote from './playingNote';
 import cursor from './cursor';
-import { prepareRows } from '../util';
-import { COPY_NOTE, CUT_NOTE, CHANGE_LAYOUT, INSERT_TRACK, DELETE_TRACK, SELECT_TRACK } from '../actions/types';
+import { prepareRows, prepareTrack } from '../util';
+import { COPY_NOTE, CUT_NOTE, CHANGE_LAYOUT, INSERT_TRACK,
+  DELETE_TRACK, SELECT_TRACK, INSERT_MEASURE, DELETE_MEASURE, CHANGE_BPM } from '../actions/types';
 
 const replaceTrack = (tracks, action, currentTrackIndex, layout = 'page') => {
   return tracks.map((t, index) => {
@@ -18,23 +19,39 @@ const replaceTrack = (tracks, action, currentTrackIndex, layout = 'page') => {
   });
 };
 
-const defaultCursor = () => ({
+const applyActionToEachTrack = (state, action) => {
+  const currentTrack = state.tracks[state.currentTrackIndex];
+  const newTracks = state.tracks.map((t) => prepareTrack(track(t, action), state.layout));
+
+  return {
+    tracks: newTracks,
+    currentTrackIndex: state.currentTrackIndex,
+    clipboard: state.clipboard,
+    layout: layout(state.layout, action),
+    playingNote: playingNote(state.playingNote, action),
+    cursor: cursor(state.cursor, currentTrack.measures, currentTrack.tuning, action)
+  };
+};
+
+const defaultCursor = {
   measureIndex: 0,
   noteIndex: 0,
   stringIndex: 0
-});
+};
 
-const defaultTrack = (state) => ({
-  instrument: state.tracks[state.currentTrackIndex].instrument,
-  tuning: state.tracks[state.currentTrackIndex].tuning,
-  measures: [
-    {
-      bpm: state.tracks[state.currentTrackIndex].measures[0].bpm,
-      timeSignature: state.tracks[state.currentTrackIndex].measures[0].timeSignature,
+const defaultTrack = (state) => {
+  const currentTrack = state.tracks[state.currentTrackIndex];
+
+  return {
+    instrument: currentTrack.instrument,
+    tuning: currentTrack.tuning,
+    measures: currentTrack.measures.map((measure) => ({
+      bpm: measure.bpm,
+      timeSignature: measure.timeSignature,
       notes: []
-    }
-  ]
-});
+    }))
+  };
+};
 
 export default function tracks(state = {}, action) {
   switch(action.type) {
@@ -45,7 +62,7 @@ export default function tracks(state = {}, action) {
         ...state,
         tracks: replaceTrack(state.tracks.concat(newTrack), action, state.tracks.length, state.layout),
         currentTrackIndex: state.tracks.length,
-        cursor: defaultCursor()
+        cursor: defaultCursor
       };
     }
 
@@ -54,22 +71,34 @@ export default function tracks(state = {}, action) {
         return {
           ...state,
           tracks: replaceTrack([defaultTrack(state)], action, 0, state.layout),
-          cursor: defaultCursor()
+          cursor: defaultCursor
         };
       }
       return {
         ...state,
         tracks: state.tracks.filter((_, i) => state.currentTrackIndex !== i),
         currentTrackIndex: 0,
-        cursor: defaultCursor()
+        cursor: defaultCursor
       };
 
     case SELECT_TRACK:
       return {
         ...state,
         currentTrackIndex: action.index,
-        cursor: defaultCursor()
+        cursor: defaultCursor
       };
+
+    case INSERT_MEASURE: {
+      return applyActionToEachTrack(state, action);
+    }
+
+    case DELETE_MEASURE: {
+      return applyActionToEachTrack(state, action);
+    }
+
+    case CHANGE_BPM: {
+      return applyActionToEachTrack(state, action);
+    }
 
     case COPY_NOTE:
       return {

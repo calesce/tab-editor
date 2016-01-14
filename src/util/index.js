@@ -86,6 +86,13 @@ export function prepareRows(measures, layout) {
     linearTrack(computeMeasureWidths(measures));
 }
 
+export function prepareTrack(track, layout) {
+  return {
+    ...track,
+    measures: prepareRows(track.measures, layout)
+  };
+}
+
 export function defaultBpm(measures) {
   return measures.map((measure) => ({
     ...measure,
