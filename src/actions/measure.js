@@ -53,6 +53,13 @@ export function toggleNoteTremolo(index) {
   };
 }
 
+export function toggleNoteVibrato(index) {
+  return {
+    type: types.TOGGLE_NOTE_VIBRATO,
+    index
+  };
+}
+
 export function pasteNote(index, note) {
   return {
     type: types.PASTE_NOTE,

@@ -241,6 +241,8 @@ class App extends Component {
       return this.props.actions.decreaseNoteLength(this.props.cursor);
     } else if(event.shiftKey && event.keyCode === 222) { // "
       this.props.actions.toggleNoteTremolo(this.props.cursor);
+    } else if(event.keyCode === 86) { // v
+      this.props.actions.toggleNoteVibrato(this.props.cursor);
     } else {
       return this.navigateCursor(event);
     }

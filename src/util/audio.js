@@ -28,34 +28,34 @@ exports.getReplaySpeedForNote = (note, bpm) => {
   return replaySpeed;
 };
 
-const playWithBuffer = (startTime, buffer, duration) => {
+const playVibrato = (source, startTime, endTime) => {
+  let freqGain = audioContext.createGain();
+  let lfo = audioContext.createOscillator();
+  freqGain.gain.value = 20; // range of vibrato
+  freqGain.connect(source.detune);
+  lfo.frequency.value = 4; // fast vibrato
+  lfo.type = 'square';
+  lfo.connect(freqGain);
+
+  lfo.start(startTime);
+  lfo.stop(endTime);
+};
+
+const playWithBuffer = (startTime, buffer, duration, vibrato) => {
   let endTime = startTime + duration;
 
   let source = audioContext.createBufferSource();
   source.buffer = buffer;
   let gainNode = audioContext.createGain();
-  // let freqGain = audioContext.createGain();
-  // let lfo = audioContext.createOscillator();
   gainNode.connect(audioContext.destination);
   source.connect(gainNode);
 
-  // freqGain.gain.value = 20; // range of vibrato
-  // freqGain.connect(source.detune);
-
-  // lfo.frequency.value = 4; // fast vibrato
-  // lfo.type = 'square';
-  // lfo.connect(freqGain);
-
-  if(buffer !== 'rest') {
-    gainNode.gain.value = 1.0;
-  } else {
-    gainNode.gain.value = 0;
+  if(vibrato) {
+    playVibrato(source, startTime, endTime);
   }
 
   source.start(startTime);
   source.stop(endTime);
-  //lfo.start(startTime);
-  //lfo.stop(endTime);
 };
 
 const play = (startTime, pitch, duration) => {
@@ -88,7 +88,7 @@ const playNoteAtTime = (currentNote, playTime, duration, buffers, tuning) => {
     const openString = tuning[currentNote.string[i]];
     const noteToPlay = getIndexOfNote(openString) + currentNote.fret[i];
 
-    playWithBuffer(playTime, buffers[noteToPlay], duration / 1000);
+    playWithBuffer(playTime, buffers[noteToPlay], duration / 1000, currentNote.vibrato);
   }
 };
 

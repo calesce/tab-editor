@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import {
   CHANGE_NOTE, DELETE_NOTE, CHANGE_NOTE_LENGTH, INSERT_NOTE, TOGGLE_NOTE_DOTTED,
-  PASTE_NOTE, CUT_NOTE, TOGGLE_NOTE_TREMOLO, INCREASE_NOTE_LENGTH, DECREASE_NOTE_LENGTH
+  PASTE_NOTE, CUT_NOTE, TOGGLE_NOTE_TREMOLO, INCREASE_NOTE_LENGTH, DECREASE_NOTE_LENGTH,
+  TOGGLE_NOTE_VIBRATO
 } from '../actions/types';
 
 const replaceNote = (state, note, noteIndex) => {
@@ -125,6 +126,12 @@ export default function measure(state, action) {
     case TOGGLE_NOTE_TREMOLO: {
       const { noteIndex } = action.index;
       const note = Object.assign({}, state.notes[noteIndex], { tremolo: state.notes[noteIndex].tremolo ? false : true });
+      return replaceNote(state, note, noteIndex);
+    }
+
+    case TOGGLE_NOTE_VIBRATO: {
+      const { noteIndex } = action.index;
+      const note = Object.assign({}, state.notes[noteIndex], { vibrato: state.notes[noteIndex].vibrato ? false : true });
       return replaceNote(state, note, noteIndex);
     }
 
