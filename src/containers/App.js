@@ -54,7 +54,9 @@ class App extends Component {
 
   loadSoundfont = (instrument) => {
     Soundfont.loadBuffers(audioContext, instrument).then((buffers) => {
-      this.setState({ buffers });
+      this.setState({
+        buffers: Object.assign({}, this.state.buffers, { [instrument]: buffers })
+      });
     });
   };
 
@@ -63,13 +65,17 @@ class App extends Component {
 
     if(nonbuffers) {
       Soundfont.decodeArray(audioContext, JSON.parse(nonbuffers)).then((buffers) => {
-        this.setState({ buffers });
+        this.setState({
+          buffers: Object.assign({}, this.state.buffers, { [instrument]: buffers })
+        });
       });
     } else {
       Soundfont.loadNonBuffers(audioContext, instrument).then((ns) => {
         localStorage.setItem(instrument, JSON.stringify(ns));
         Soundfont.decodeArray(audioContext, ns).then((buffers) => {
-          this.setState({ buffers });
+          this.setState({
+            buffers: Object.assign({}, this.state.buffers, { [instrument]: buffers })
+          });
         });
       });
     }

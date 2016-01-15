@@ -55,7 +55,7 @@ class Playback extends Component {
           measure: measure + 1,
           noteIndex: 0
         };
-        playCurrentNote(track, newPlayingNote, this.props.buffers);
+        playCurrentNote(track, newPlayingNote, this.props.buffers[track.instrument]);
         if(isCurrent) {
           this.updateNote(newPlayingNote);
         }
@@ -67,7 +67,7 @@ class Playback extends Component {
           measure,
           noteIndex: noteIndex + 1
         };
-        playCurrentNote(track, newPlayingNote, this.props.buffers);
+        playCurrentNote(track, newPlayingNote, this.props.buffers[track.instrument]);
         if(isCurrent) {
           this.updateNote(newPlayingNote);
         }
@@ -87,7 +87,7 @@ class Playback extends Component {
 
     const playingNote = _.cloneDeep(this.props.playingNote);
     this.props.tracks.map((track) => {
-      playCurrentNote(track, playingNote, buffers);
+      playCurrentNote(track, playingNote, buffers[track.instrument]);
     });
 
     tracks.map((track, i) => {
