@@ -4,6 +4,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import { changeLayout, insertTrack, deleteTrack } from '../../actions/tracks';
+import { setPlayingNote } from '../../actions/playingNote';
+import { setCursor } from '../../actions/cursor';
 import { timeSignatureSelector } from '../../util/selectors';
 import InstrumentSelect from './InstrumentSelect';
 import TrackSelect from './TrackSelect';
@@ -11,14 +13,23 @@ import TrackSelect from './TrackSelect';
 class EditorArea extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
 
-  renderPlayStop() {
-    return this.props.isPlaying ?
-      <button onClick={this.props.handleStop}>Stop</button> :
-      <button onClick={this.props.handlePlay}>Play</button>;
-  };
-
   toggleLayout = () => {
     this.props.changeLayout(this.props.layout === 'page' ? 'linear' : 'page');
+  };
+
+  hanleStop = () => {
+    this.props.actions.setCursor({
+      measureIndex: this.props.playingNote.measure,
+      noteIndex: this.props.playingNote.noteIndex,
+      stringIndex: this.props.cursor.stringIndex
+    });
+    this.props.actions.setPlayingNote(null);
+  };
+
+  renderPlayStop() {
+    return this.props.playingNote ?
+      <button onClick={this.handleStop}>Stop</button> :
+      <button onClick={this.props.handlePlay}>Play</button>;
   };
 
   render() {
@@ -56,7 +67,8 @@ class EditorArea extends Component {
 function mapStateToProps(state) {
   return {
     layout: state.layout,
-    isPlaying: state.playingNote ? true : false,
+    playingNote: state.playingNote,
+    cursor: state.cursor,
     timeSignature: timeSignatureSelector(state)
   };
 }
@@ -65,7 +77,9 @@ function mapDispatchToProps(dispatch) {
   return {
     changeLayout: bindActionCreators(changeLayout, dispatch),
     insertTrack: bindActionCreators(insertTrack, dispatch),
-    deleteTrack: bindActionCreators(deleteTrack, dispatch)
+    deleteTrack: bindActionCreators(deleteTrack, dispatch),
+    setPlayingNote: bindActionCreators(setPlayingNote, dispatch),
+    setCursor: bindActionCreators(setCursor, dispatch)
   };
 }
 

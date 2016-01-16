@@ -268,7 +268,7 @@ class App extends Component {
     return (
       <div style={{ width: '100%', height: '100%' }}>
         { this.props.playingNote ? <Playback buffers={buffers} /> : null}
-        <EditorArea handlePlay={this.handlePlay} handleStop={this.handleStop} openModal={this.openModal} />
+        <EditorArea handlePlay={this.handlePlay} openModal={this.openModal} />
         <TabStaff />
         <TimeSignatureModal isOpen={openModal === 'timeSig'} closeModal={this.closeModal} />
         <TuningModal isOpen={openModal === 'tuning'} closeModal={this.closeModal} />
