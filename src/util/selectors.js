@@ -62,7 +62,7 @@ export const finalMeasureSelector = createSelector(
   ({ measure, measureIndex }, playingNote, cursor, tuning) => {
     let newPlayingNote, newCursor;
     if(playingNote) {
-      newPlayingNote = playingNote.measure === measureIndex ? playingNote : undefined;
+      newPlayingNote = playingNote.measureIndex === measureIndex ? playingNote : undefined;
     } else {
       newCursor = cursor.measureIndex === measureIndex ? cursor : undefined;
     }

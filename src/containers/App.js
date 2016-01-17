@@ -43,7 +43,8 @@ class App extends Component {
     const { playingNote } = nextProps;
 
     if(this.props.playingNote && playingNote) {
-      if(playingNote.noteIndex !== this.props.playingNote.noteIndex || playingNote.measure !== this.props.playingNote.measure) {
+      if(playingNote.noteIndex !== this.props.playingNote.noteIndex
+          || playingNote.measureIndex !== this.props.playingNote.measureIndex) {
         this.updateScrollPosition(nextProps.playingNote, nextProps.measures);
       }
     } else if(this.props.instrument !== nextProps.instrument) {
@@ -86,9 +87,9 @@ class App extends Component {
   };
 
   getXOfCurrentNote = (playingNote, measures) => {
-    const { measure, noteIndex } = playingNote;
+    const { measureIndex, noteIndex } = playingNote;
     const xOfMeasures = measures.reduce((acc, curr, i) => {
-      if(i >= measure) {
+      if(i >= measureIndex) {
         return acc;
       }
       return acc + curr.width;
@@ -98,7 +99,7 @@ class App extends Component {
   };
 
   getYOfCurrentNote = (playingNote, measures) => {
-    const position = measures[playingNote.measure];
+    const position = measures[playingNote.measureIndex];
     return (position.rowIndex) * (27 * this.props.tuning.length) + 50;
   };
 
@@ -122,7 +123,7 @@ class App extends Component {
 
   handleStop = () => {
     this.props.actions.setCursor({
-      measureIndex: this.props.playingNote.measure,
+      measureIndex: this.props.playingNote.measureIndex,
       noteIndex: this.props.playingNote.noteIndex,
       stringIndex: this.props.cursor.stringIndex
     });
@@ -137,7 +138,7 @@ class App extends Component {
     const { noteIndex, measureIndex } = this.props.cursor;
 
     this.props.actions.setPlayingNote({
-      measure: measureIndex,
+      measureIndex,
       noteIndex
     });
   };

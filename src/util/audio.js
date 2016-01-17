@@ -126,7 +126,7 @@ const playTremoloNote = (noteToPlay, replaySpeed, buffers, tuning) => {
 exports.playCurrentNote = (track, playingIndex, buffers) => {
   const { measures, tuning } = track;
 
-  let measure = measures[playingIndex.measure];
+  let measure = measures[playingIndex.measureIndex];
   const bpm = measure.bpm;
   let noteToPlay;
   if(measure.notes.length > 0) {

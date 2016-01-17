@@ -31,13 +31,13 @@ class Playback extends Component {
       startTimestamp = Date.now();
     }
 
-    const { measure, noteIndex } = playingNote;
+    const { measureIndex, noteIndex } = playingNote;
     const { measures } = track;
 
     const currentTimestamp = Date.now();
     const replayDiff = currentTimestamp - startTimestamp;
 
-    const measureToPlay = measures[measure];
+    const measureToPlay = measures[measureIndex];
     const bpm = measureToPlay.bpm;
 
     let replaySpeed;
@@ -48,11 +48,11 @@ class Playback extends Component {
     }
 
     if(replayDiff >= replaySpeed) {
-      if(measure === measures.length - 1 && noteIndex >= measures[measure].notes.length - 1) {
+      if(measureIndex === measures.length - 1 && noteIndex >= measures[measureIndex].notes.length - 1) {
         this.props.actions.setPlayingNote(null);
-      } else if(measure !== measures.length - 1 && noteIndex >= measures[measure].notes.length - 1) {
+      } else if(measureIndex !== measures.length - 1 && noteIndex >= measures[measureIndex].notes.length - 1) {
         const newPlayingNote = {
-          measure: measure + 1,
+          measureIndex: measureIndex + 1,
           noteIndex: 0
         };
         playCurrentNote(track, newPlayingNote, this.props.buffers[track.instrument]);
@@ -64,7 +64,7 @@ class Playback extends Component {
         });
       } else {
         const newPlayingNote = {
-          measure,
+          measureIndex,
           noteIndex: noteIndex + 1
         };
         playCurrentNote(track, newPlayingNote, this.props.buffers[track.instrument]);

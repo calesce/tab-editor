@@ -19,7 +19,7 @@ class EditorArea extends Component {
 
   hanleStop = () => {
     this.props.actions.setCursor({
-      measureIndex: this.props.playingNote.measure,
+      measureIndex: this.props.playingNote.measureIndex,
       noteIndex: this.props.playingNote.noteIndex,
       stringIndex: this.props.cursor.stringIndex
     });

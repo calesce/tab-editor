@@ -83,7 +83,7 @@ class Measure extends Component {
     let color = '#999999';
     let strokeWidth = 0.1;
     if(playingNote) {
-      if(measureIndex === playingNote.measure) {
+      if(measureIndex === playingNote.measureIndex) {
         color = '#267754';
         strokeWidth = 1;
       }
@@ -125,7 +125,7 @@ class Measure extends Component {
 
     let color = 'black';
     if(playingNote) {
-      if(playingNote.measure === measureIndex && playingNote.noteIndex === noteIndex && playingNote) {
+      if(playingNote.measureIndex === measureIndex && playingNote.noteIndex === noteIndex && playingNote) {
         color = '#f9423a';
       }
     }
