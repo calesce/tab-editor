@@ -17,8 +17,8 @@ import { finalMeasureSelector } from '../../util/selectors';
 
 class Measure extends Component {
   shouldComponentUpdate(nextProps) {
-    const playingNoteEqual = !shallowEqual(this.props.playingNote, nextProps.playingNote);
-    if(playingNoteEqual) {
+    const playingIndexEqual = !shallowEqual(this.props.playingIndex, nextProps.playingIndex);
+    if(playingIndexEqual) {
       return true;
     }
     const cursorEqual = !shallowEqual(this.props.cursor, nextProps.cursor);
@@ -78,12 +78,12 @@ class Measure extends Component {
   };
 
   renderBars = (x, measureWidth) => {
-    const { playingNote, isValid, measureIndex, tuning } = this.props;
+    const { playingIndex, isValid, measureIndex, tuning } = this.props;
 
     let color = '#999999';
     let strokeWidth = 0.1;
-    if(playingNote) {
-      if(measureIndex === playingNote.measureIndex) {
+    if(playingIndex) {
+      if(measureIndex === playingIndex.measureIndex) {
         color = '#267754';
         strokeWidth = 1;
       }
@@ -119,13 +119,13 @@ class Measure extends Component {
 
   renderNote = (note, measureIndex, noteIndex) => {
     const x = this.calcXForNote(noteIndex);
-    const { playingNote, tuning } = this.props;
+    const { playingIndex, tuning } = this.props;
     const strings = this.props.tuning.length;
     const stringOffset = (6 - strings);
 
     let color = 'black';
-    if(playingNote) {
-      if(playingNote.measureIndex === measureIndex && playingNote.noteIndex === noteIndex && playingNote) {
+    if(playingIndex) {
+      if(playingIndex.measureIndex === measureIndex && playingIndex.noteIndex === noteIndex && playingIndex) {
         color = '#f9423a';
       }
     }

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
 
-import * as Actions from '../actions/playingNote';
+import * as Actions from '../actions/playingIndex';
 import { playCurrentNote, getReplaySpeedForNote } from '../util/audio';
 
 class Playback extends Component {
@@ -26,12 +26,12 @@ class Playback extends Component {
     });
   }
 
-  loopThroughSong = (startTimestamp, playingNote, track, isCurrent, trackIndex) => {
+  loopThroughSong = (startTimestamp, playingIndex, track, isCurrent, trackIndex) => {
     if(!startTimestamp) {
       startTimestamp = Date.now();
     }
 
-    const { measureIndex, noteIndex } = playingNote;
+    const { measureIndex, noteIndex } = playingIndex;
     const { measures } = track;
 
     const currentTimestamp = Date.now();
@@ -49,35 +49,35 @@ class Playback extends Component {
 
     if(replayDiff >= replaySpeed) {
       if(measureIndex === measures.length - 1 && noteIndex >= measures[measureIndex].notes.length - 1) {
-        this.props.actions.setPlayingNote(null);
+        this.props.actions.setPlayingIndex(null);
       } else if(measureIndex !== measures.length - 1 && noteIndex >= measures[measureIndex].notes.length - 1) {
-        const newPlayingNote = {
+        const newPlayingIndex = {
           measureIndex: measureIndex + 1,
           noteIndex: 0
         };
-        playCurrentNote(track, newPlayingNote, this.props.buffers[track.instrument]);
+        playCurrentNote(track, newPlayingIndex, this.props.buffers[track.instrument]);
         if(isCurrent) {
-          this.updateNote(newPlayingNote);
+          this.updateNote(newPlayingIndex);
         }
         this.timers[trackIndex] = requestAnimationFrame(() => {
-          this.loopThroughSong(currentTimestamp, newPlayingNote, track, isCurrent, trackIndex);
+          this.loopThroughSong(currentTimestamp, newPlayingIndex, track, isCurrent, trackIndex);
         });
       } else {
-        const newPlayingNote = {
+        const newPlayingIndex = {
           measureIndex,
           noteIndex: noteIndex + 1
         };
-        playCurrentNote(track, newPlayingNote, this.props.buffers[track.instrument]);
+        playCurrentNote(track, newPlayingIndex, this.props.buffers[track.instrument]);
         if(isCurrent) {
-          this.updateNote(newPlayingNote);
+          this.updateNote(newPlayingIndex);
         }
         this.timers[trackIndex] = requestAnimationFrame(() => {
-          this.loopThroughSong(currentTimestamp, newPlayingNote, track, isCurrent, trackIndex);
+          this.loopThroughSong(currentTimestamp, newPlayingIndex, track, isCurrent, trackIndex);
         });
       }
     } else {
       this.timers[trackIndex] = requestAnimationFrame(() => {
-        this.loopThroughSong(startTimestamp, playingNote, track, isCurrent, trackIndex);
+        this.loopThroughSong(startTimestamp, playingIndex, track, isCurrent, trackIndex);
       });
     }
   };
@@ -85,21 +85,21 @@ class Playback extends Component {
   startPlayback = () => {
     const { buffers, tracks, currentTrackIndex } = this.props;
 
-    const playingNote = _.cloneDeep(this.props.playingNote);
+    const playingIndex = _.cloneDeep(this.props.playingIndex);
     this.props.tracks.map((track) => {
-      playCurrentNote(track, playingNote, buffers[track.instrument]);
+      playCurrentNote(track, playingIndex, buffers[track.instrument]);
     });
 
     tracks.map((track, i) => {
       this.timers[i] = requestAnimationFrame(() => {
-        this.loopThroughSong(null, playingNote, track, i === currentTrackIndex, i);
+        this.loopThroughSong(null, playingIndex, track, i === currentTrackIndex, i);
       });
     });
   };
 
-  updateNote = (playingNote) => {
+  updateNote = (playingIndex) => {
     _.defer(() => {
-      this.props.actions.setPlayingNote(playingNote);
+      this.props.actions.setPlayingIndex(playingIndex);
     });
   };
 
@@ -112,7 +112,7 @@ function mapStateToProps(state) {
   return {
     tracks: state.tracks,
     currentTrackIndex: state.currentTrackIndex,
-    playingNote: state.playingNote
+    playingIndex: state.playingIndex
   };
 }
 

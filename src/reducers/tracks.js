@@ -1,6 +1,6 @@
 import track from './track';
 import layout from './layout';
-import playingNote from './playingNote';
+import playingIndex from './playingIndex';
 import cursor from './cursor';
 import { prepareRows, prepareTrack } from '../util';
 import { COPY_NOTE, CUT_NOTE, CHANGE_LAYOUT, INSERT_TRACK,
@@ -29,7 +29,7 @@ const applyActionToEachTrack = (state, action) => {
     currentTrackIndex: state.currentTrackIndex,
     clipboard: state.clipboard,
     layout: layout(state.layout, action),
-    playingNote: playingNote(state.playingNote, action),
+    playingIndex: playingIndex(state.playingIndex, action),
     cursor: cursor(state.cursor, currentTrack.measures, currentTrack.tuning, action)
   };
 };
@@ -138,7 +138,7 @@ export default function tracks(state = {}, action) {
         currentTrackIndex: state.currentTrackIndex,
         clipboard: state.clipboard,
         layout: layout(state.layout, action),
-        playingNote: playingNote(state.playingNote, action),
+        playingIndex: playingIndex(state.playingIndex, action),
         cursor: cursor(state.cursor, currentTrack.measures, currentTrack.tuning, action)
       };
     }

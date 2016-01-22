@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import * as TracksActions from '../actions/tracks';
 import * as TrackActions from '../actions/track';
 import * as MeasureActions from '../actions/measure';
-import * as PlayingNoteActions from '../actions/playingNote';
+import * as PlayingIndexActions from '../actions/playingIndex';
 import * as CursorActions from '../actions/cursor';
 
 import Soundfont from 'soundfont-player';
@@ -18,7 +18,7 @@ import TuningModal from '../components/editor/TuningModal';
 import BpmModal from '../components/editor/BpmModal';
 import Playback from '../components/Playback';
 
-const Actions = Object.assign(TracksActions, TrackActions, MeasureActions, PlayingNoteActions, CursorActions);
+const Actions = Object.assign(TracksActions, TrackActions, MeasureActions, PlayingIndexActions, CursorActions);
 
 class App extends Component {
   constructor(props) {
@@ -40,12 +40,12 @@ class App extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { playingNote } = nextProps;
+    const { playingIndex } = nextProps;
 
-    if(this.props.playingNote && playingNote) {
-      if(playingNote.noteIndex !== this.props.playingNote.noteIndex
-          || playingNote.measureIndex !== this.props.playingNote.measureIndex) {
-        this.updateScrollPosition(nextProps.playingNote, nextProps.measures);
+    if(this.props.playingIndex && playingIndex) {
+      if(playingIndex.noteIndex !== this.props.playingIndex.noteIndex
+          || playingIndex.measureIndex !== this.props.playingIndex.measureIndex) {
+        this.updateScrollPosition(nextProps.playingIndex, nextProps.measures);
       }
     } else if(this.props.instrument !== nextProps.instrument) {
       this.loadSoundfont2(nextProps.instrument);
@@ -86,8 +86,8 @@ class App extends Component {
     this.props.actions.resize();
   };
 
-  getXOfCurrentNote = (playingNote, measures) => {
-    const { measureIndex, noteIndex } = playingNote;
+  getXOfCurrentNote = (playingIndex, measures) => {
+    const { measureIndex, noteIndex } = playingIndex;
     const xOfMeasures = measures.reduce((acc, curr, i) => {
       if(i >= measureIndex) {
         return acc;
@@ -98,21 +98,21 @@ class App extends Component {
     return xOfMeasures + 55 * noteIndex;
   };
 
-  getYOfCurrentNote = (playingNote, measures) => {
-    const position = measures[playingNote.measureIndex];
+  getYOfCurrentNote = (playingIndex, measures) => {
+    const position = measures[playingIndex.measureIndex];
     return (position.rowIndex) * (27 * this.props.tuning.length) + 50;
   };
 
-  updateScrollPosition = (playingNote, measures) => {
+  updateScrollPosition = (playingIndex, measures) => {
     if(this.props.layout === 'linear') {
-      const x = this.getXOfCurrentNote(playingNote, measures);
+      const x = this.getXOfCurrentNote(playingIndex, measures);
       const { scrollX, innerWidth } = window;
 
       if(x > innerWidth + scrollX - 200) {
         window.scroll(x - 200, 0);
       }
     } else {
-      const y = this.getYOfCurrentNote(playingNote, measures);
+      const y = this.getYOfCurrentNote(playingIndex, measures);
       const { innerHeight, scrollY } = window;
 
       if(y > innerHeight + scrollY - 270) {
@@ -123,21 +123,21 @@ class App extends Component {
 
   handleStop = () => {
     this.props.actions.setCursor({
-      measureIndex: this.props.playingNote.measureIndex,
-      noteIndex: this.props.playingNote.noteIndex,
+      measureIndex: this.props.playingIndex.measureIndex,
+      noteIndex: this.props.playingIndex.noteIndex,
       stringIndex: this.props.cursor.stringIndex
     });
-    this.props.actions.setPlayingNote(null);
+    this.props.actions.setPlayingIndex(null);
   };
 
   handlePlay = () => {
-    if(this.props.playingNote || !this.state.buffers) {
+    if(this.props.playingIndex || !this.state.buffers) {
       return;
     }
 
     const { noteIndex, measureIndex } = this.props.cursor;
 
-    this.props.actions.setPlayingNote({
+    this.props.actions.setPlayingIndex({
       measureIndex,
       noteIndex
     });
@@ -202,7 +202,7 @@ class App extends Component {
   };
 
   handleKeyPress = (event) => {
-    if(this.state.openModal || (this.props.playingNote && event.keyCode !== 32)) {
+    if(this.state.openModal || (this.props.playingIndex && event.keyCode !== 32)) {
       return;
     }
 
@@ -239,7 +239,7 @@ class App extends Component {
       return this.insertNote();
     } else if(event.keyCode === 32) { // spacebar
       event.preventDefault();
-      return this.props.playingNote ? this.handleStop() : this.handlePlay();
+      return this.props.playingIndex ? this.handleStop() : this.handlePlay();
     } else if(event.keyCode === 190) { // period
       this.props.actions.toggleNoteDotted(this.props.cursor);
     } else if(event.shiftKey && event.keyCode === 187) { // plus
@@ -268,7 +268,7 @@ class App extends Component {
 
     return (
       <div style={{ width: '100%', height: '100%' }}>
-        { this.props.playingNote ? <Playback buffers={buffers} /> : null}
+        { this.props.playingIndex ? <Playback buffers={buffers} /> : null}
         <EditorArea handlePlay={this.handlePlay} openModal={this.openModal} />
         <TabStaff />
         <TimeSignatureModal isOpen={openModal === 'timeSig'} closeModal={this.closeModal} />
@@ -284,7 +284,7 @@ function mapStateToProps(state) {
     measures: state.tracks[state.currentTrackIndex].measures,
     clipboard: state.clipboard,
     layout: state.layout,
-    playingNote: state.playingNote,
+    playingIndex: state.playingIndex,
     cursor: state.cursor,
     tuning: state.tracks[state.currentTrackIndex].tuning,
     instrument: state.tracks[state.currentTrackIndex].instrument

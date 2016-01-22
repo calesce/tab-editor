@@ -50,26 +50,26 @@ const measureSelector = (state, props) => {
   };
 };
 
-const playingNoteSelector = state => state.playingNote;
+const playingIndexSelector = state => state.playingIndex;
 const cursorSelector = state => state.cursor;
 const tuningSelector = state => state.tracks[state.currentTrackIndex].tuning;
 
 export const finalMeasureSelector = createSelector(
   measureSelector,
-  playingNoteSelector,
+  playingIndexSelector,
   cursorSelector,
   tuningSelector,
-  ({ measure, measureIndex }, playingNote, cursor, tuning) => {
-    let newPlayingNote, newCursor;
-    if(playingNote) {
-      newPlayingNote = playingNote.measureIndex === measureIndex ? playingNote : undefined;
+  ({ measure, measureIndex }, playingIndex, cursor, tuning) => {
+    let newplayingIndex, newCursor;
+    if(playingIndex) {
+      newplayingIndex = playingIndex.measureIndex === measureIndex ? playingIndex : undefined;
     } else {
       newCursor = cursor.measureIndex === measureIndex ? cursor : undefined;
     }
 
     return {
       measure,
-      playingNote: newPlayingNote,
+      playingIndex: newplayingIndex,
       cursor: newCursor,
       isValid: calcMeasureValidity(measure),
       tuning

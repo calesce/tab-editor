@@ -27,9 +27,9 @@ export const SELECT_TRACK = 'SELECT_TRACK';
 export const RESIZE = 'RESIZE';
 export const CHANGE_LAYOUT = 'CHANGE_LAYOUT';
 
-// playingNote
-export const SET_PLAYING_NOTE = 'SET_PLAYING_NOTE';
-export const ADVANCE_PLAYING_NOTE = 'ADVANCE_PLAYING_NOTE';
+// playingIndex
+export const SET_PLAYING_INDEX = 'SET_PLAYING_INDEX';
+export const ADVANCE_PLAYING_INDEX = 'ADVANCE_PLAYING_INDEX';
 
 // cursor
 export const SET_CURSOR = 'SET_CURSOR';
