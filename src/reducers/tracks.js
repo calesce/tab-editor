@@ -1,11 +1,11 @@
 import track from './track';
 import layout from './layout';
 import playingIndex from './playingIndex';
-import cursor from './cursor';
+import cursorReducer from './cursor';
 import { prepareRows, prepareTrack } from '../util';
 import { COPY_NOTE, CUT_NOTE, CHANGE_LAYOUT, INSERT_TRACK,
   DELETE_TRACK, SELECT_TRACK, INSERT_MEASURE, DELETE_MEASURE,
-  CHANGE_BPM, CHANGE_TIME_SIGNATURE } from '../actions/types';
+  CHANGE_BPM, CHANGE_TIME_SIGNATURE, SET_PLAYING_INDEX } from '../actions/types';
 
 const replaceTrack = (tracks, action, currentTrackIndex, layout = 'page') => {
   return tracks.map((t, index) => {
@@ -30,7 +30,7 @@ const applyActionToEachTrack = (state, action) => {
     clipboard: state.clipboard,
     layout: layout(state.layout, action),
     playingIndex: playingIndex(state.playingIndex, action),
-    cursor: cursor(state.cursor, currentTrack.measures, currentTrack.tuning, action)
+    cursor: cursorReducer(state.cursor, currentTrack.measures, currentTrack.tuning, action)
   };
 };
 
@@ -118,7 +118,7 @@ export default function tracks(state = {}, action) {
         ...state,
         tracks: replaceTrack(state.tracks, action, state.currentTrackIndex, state.layout),
         clipboard: action.note,
-        cursor: cursor(state.cursor, currentTrack.measures, currentTrack.tuning, action)
+        cursor: cursorReducer(state.cursor, currentTrack.measures, currentTrack.tuning, action)
       };
     }
 
@@ -130,16 +130,19 @@ export default function tracks(state = {}, action) {
         layout: newLayout
       };
 
+    case SET_PLAYING_INDEX:
+      return {
+        ...state,
+        playingIndex: playingIndex(state.playingIndex, action)
+      };
+
     default: {
       const currentTrack = state.tracks[state.currentTrackIndex];
 
       return {
+        ...state,
         tracks: replaceTrack(state.tracks, action, state.currentTrackIndex, state.layout),
-        currentTrackIndex: state.currentTrackIndex,
-        clipboard: state.clipboard,
-        layout: layout(state.layout, action),
-        playingIndex: playingIndex(state.playingIndex, action),
-        cursor: cursor(state.cursor, currentTrack.measures, currentTrack.tuning, action)
+        cursor: cursorReducer(state.cursor, currentTrack.measures, currentTrack.tuning, action)
       };
     }
   }
