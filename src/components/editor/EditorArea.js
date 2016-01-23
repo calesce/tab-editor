@@ -48,6 +48,8 @@ class EditorArea extends Component {
       background: 'tomato'
     };
 
+    console.log(layout);
+
     return (
       <div style={style}>
         { this.renderPlayStop() }
@@ -66,7 +68,7 @@ class EditorArea extends Component {
 
 function mapStateToProps(state) {
   return {
-    layout: state.layout,
+    layout: state.layout ? state.layout : 'page',
     playingIndex: state.playingIndex,
     cursor: state.cursor,
     timeSignature: timeSignatureSelector(state)
