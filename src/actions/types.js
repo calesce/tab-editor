@@ -11,6 +11,7 @@ export const DECREASE_NOTE_LENGTH = 'DECREASE_NOTE_LENGTH';
 export const COPY_NOTE = 'COPY_NOTE';
 export const CUT_NOTE = 'CUT_NOTE';
 export const PASTE_NOTE = 'PASTE_NOTE';
+export const ADD_REPEAT_END = 'ADD_REPEAT_END';
 
 //track
 export const REPLACE_SONG = 'REPLACE_SONG';

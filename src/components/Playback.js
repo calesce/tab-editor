@@ -57,7 +57,10 @@ class Playback extends Component {
         };
         playCurrentNote(track, newPlayingIndex, this.props.buffers[track.instrument]);
         if(isCurrent) {
-          this.updateNote(newPlayingIndex);
+          this.updateNote({
+            measureIndex: measureToPlay.measureIndex + 1,
+            noteIndex: 0
+          });
         }
         this.timers[trackIndex] = requestAnimationFrame(() => {
           this.loopThroughSong(currentTimestamp, newPlayingIndex, track, isCurrent, trackIndex);
@@ -69,7 +72,10 @@ class Playback extends Component {
         };
         playCurrentNote(track, newPlayingIndex, this.props.buffers[track.instrument]);
         if(isCurrent) {
-          this.updateNote(newPlayingIndex);
+          this.updateNote({
+            measureIndex: measureToPlay.measureIndex,
+            noteIndex: newPlayingIndex.noteIndex
+          });
         }
         this.timers[trackIndex] = requestAnimationFrame(() => {
           this.loopThroughSong(currentTimestamp, newPlayingIndex, track, isCurrent, trackIndex);
@@ -82,15 +88,52 @@ class Playback extends Component {
     }
   };
 
+  getRepeatingSection = (measures, repeatIndex) => {
+    return repeatIndex === -1 ? [] : measures.slice(0, repeatIndex + 1);
+  };
+
+  mapMeasureIndices = (measures) => {
+    return measures.map((measure, i) => {
+      return {
+        ...measure,
+        measureIndex: i
+      };
+    });
+  };
+
   startPlayback = () => {
     const { buffers, tracks, currentTrackIndex } = this.props;
 
+    const tracksWithMeasures = tracks.map((track) => {
+      return {
+        ...track,
+        measures: this.mapMeasureIndices(track.measures)
+      };
+    });
+
+    const repeatIndex = _.findIndex(tracksWithMeasures[0].measures, (measure) => measure.repeatEnd === true);
+
+    let finalTracks;
+    if(repeatIndex === -1) {
+      finalTracks = tracksWithMeasures;
+    } else {
+      finalTracks = tracksWithMeasures.map((track) => {
+        const { measures } = track;
+        const repeatSection = this.getRepeatingSection(measures, repeatIndex);
+        const newMeasures = measures.slice(0, repeatIndex + 1).concat(repeatSection).concat(measures.slice(repeatIndex + 1), measures.length);
+        return {
+          ...track,
+          measures: newMeasures
+        };
+      });
+    }
+
     const playingIndex = _.cloneDeep(this.props.playingIndex);
-    this.props.tracks.map((track) => {
+    finalTracks.map((track) => {
       playCurrentNote(track, playingIndex, buffers[track.instrument]);
     });
 
-    tracks.map((track, i) => {
+    finalTracks.map((track, i) => {
       this.timers[i] = requestAnimationFrame(() => {
         this.loopThroughSong(null, playingIndex, track, i === currentTrackIndex, i);
       });

@@ -20,8 +20,8 @@ export default class Bars extends Component {
       <g>
         { strings.map((_, i) => this.renderBar(i, color, strings.length, strokeWidth, measureWidth)) }
 
-        <rect y={startY} width={0.5} height={height} fill={color} stroke={color} strokeWidth={strokeWidth}></rect>
-        <rect x={measureWidth - 0.1} y={startY} width={0.5} height={height} fill={color} stroke={color} strokeWidth={strokeWidth}></rect>
+        <rect y={startY} width={0.5} height={height} fill={color} stroke={'#2d2d2d'} strokeWidth={strokeWidth}></rect>
+        <rect x={measureWidth - 0.1} y={startY} width={0.5} height={height} fill={'#2d2d2d'} stroke={color} strokeWidth={strokeWidth}></rect>
       </g>
     );
   }

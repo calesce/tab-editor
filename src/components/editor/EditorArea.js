@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { changeLayout, insertTrack, deleteTrack } from '../../actions/tracks';
 import { setPlayingIndex } from '../../actions/playingIndex';
 import { setCursor } from '../../actions/cursor';
+import { addRepeatEnd } from '../../actions/measure';
 import { timeSignatureSelector } from '../../util/selectors';
 import InstrumentSelect from './InstrumentSelect';
 import TrackSelect from './TrackSelect';
@@ -32,6 +33,10 @@ class EditorArea extends Component {
       <button onClick={this.props.handlePlay}>Play</button>;
   };
 
+  addRepeatEnd = () => {
+    this.props.addRepeatEnd(this.props.cursor);
+  };
+
   render() {
     const { openModal, timeSignature, layout } = this.props;
 
@@ -48,8 +53,6 @@ class EditorArea extends Component {
       background: 'tomato'
     };
 
-    console.log(layout);
-
     return (
       <div style={style}>
         { this.renderPlayStop() }
@@ -61,6 +64,7 @@ class EditorArea extends Component {
         <button onClick={this.props.insertTrack}>add track</button>
         <button onClick={this.props.deleteTrack}>remove track</button>
         <TrackSelect />
+        <button onClick={this.addRepeatEnd}>repeat</button>
       </div>
     );
   }
@@ -81,7 +85,8 @@ function mapDispatchToProps(dispatch) {
     insertTrack: bindActionCreators(insertTrack, dispatch),
     deleteTrack: bindActionCreators(deleteTrack, dispatch),
     setPlayingIndex: bindActionCreators(setPlayingIndex, dispatch),
-    setCursor: bindActionCreators(setCursor, dispatch)
+    setCursor: bindActionCreators(setCursor, dispatch),
+    addRepeatEnd: bindActionCreators(addRepeatEnd, dispatch)
   };
 }
 

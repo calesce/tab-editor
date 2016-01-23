@@ -5,7 +5,7 @@ import cursorReducer from './cursor';
 import { prepareRows, prepareTrack } from '../util';
 import { COPY_NOTE, CUT_NOTE, CHANGE_LAYOUT, INSERT_TRACK,
   DELETE_TRACK, SELECT_TRACK, INSERT_MEASURE, DELETE_MEASURE,
-  CHANGE_BPM, CHANGE_TIME_SIGNATURE, SET_PLAYING_INDEX } from '../actions/types';
+  CHANGE_BPM, CHANGE_TIME_SIGNATURE, SET_PLAYING_INDEX, ADD_REPEAT_END } from '../actions/types';
 
 const replaceTrack = (tracks, action, currentTrackIndex, layout = 'page') => {
   return tracks.map((t, index) => {

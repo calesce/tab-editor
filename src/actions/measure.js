@@ -90,3 +90,10 @@ export function decreaseNoteLength(index) {
     index
   };
 }
+
+export function addRepeatEnd(index) {
+  return {
+    type: types.ADD_REPEAT_END,
+    index
+  };
+}

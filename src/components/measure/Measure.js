@@ -12,6 +12,7 @@ import Clef from './Clef';
 import TimeSignature from './TimeSignature';
 import Cursor from './Cursor';
 import Bpm from './Bpm';
+import Repeat from './Repeat';
 import shallowEqual from 'react-pure-render/shallowEqual';
 import { finalMeasureSelector } from '../../util/selectors';
 
@@ -80,7 +81,7 @@ class Measure extends Component {
   renderBars = (x, measureWidth) => {
     const { playingIndex, isValid, measureIndex, tuning } = this.props;
 
-    let color = '#999999';
+    let color = '#2d2d2d';
     let strokeWidth = 0.1;
     if(playingIndex) {
       if(measureIndex === playingIndex.measureIndex) {
@@ -163,6 +164,17 @@ class Measure extends Component {
       null;
   };
 
+  renderRepeat = (measure) => {
+    if(!measure.repeatEnd) {
+      return null;
+    }
+
+    const strings = this.props.tuning.length;
+    const { width } = measure;
+
+    return <Repeat measureWidth={width} strings={strings} />;
+  };
+
   renderBpm = (measure) => {
     return measure.showBpm ? <Bpm bpm={measure.bpm} /> : null;
   };
@@ -193,6 +205,7 @@ class Measure extends Component {
         { this.renderCursor() }
         { this.renderBpm(measure) }
         { this.renderMeasureNumber(measureIndex) }
+        { this.renderRepeat(measure) }
       </svg>
     );
   }

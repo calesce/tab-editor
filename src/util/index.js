@@ -1,6 +1,6 @@
 const computeMeasureWidths = (track) => {
   return track.map((measure, index) => {
-    let width = 55 * measure.notes.length;
+    let width = 59 * measure.notes.length;
     let showBpm = false;
     if(measure.notes.length === 0) {
       width = 40;
