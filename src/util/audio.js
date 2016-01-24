@@ -95,34 +95,43 @@ const playNoteAtTime = (currentNote, playTime, duration, buffers, tuning) => {
   }
 };
 
-const playTremolo = (n, replaySpeed, buffers, tuning, noteToPlay) => {
+const playTremolo = (replaySpeed, buffers, tuning, noteToPlay) => {
   const currentTime = audioContext.currentTime;
+  const n = mapDurationToNote(noteToPlay.duration);
 
   _.times(n, (i) => {
     playNoteAtTime(noteToPlay, currentTime + (i * replaySpeed / (n * 1000)), replaySpeed / n, buffers, tuning);
   });
 };
 
-const playTremoloNote = (noteToPlay, replaySpeed, buffers, tuning) => {
-  switch(noteToPlay.duration) {
+const playTrill = (replaySpeed, buffers, tuning, noteToPlay) => {
+  const currentTime = audioContext.currentTime;
+  const n = mapDurationToNote(noteToPlay.duration);
+
+  _.times(n, (i) => {
+    if(i % 2 === 0) {
+      playNoteAtTime(noteToPlay, currentTime + (i * replaySpeed / (n * 1000)), replaySpeed / n, buffers, tuning);
+    } else {
+      const nextNote = Object.assign({}, noteToPlay, { fret: noteToPlay.fret.map((note) => note + 1) });
+      playNoteAtTime(nextNote, currentTime + (i * replaySpeed / (n * 1000)), replaySpeed / n, buffers, tuning);
+    }
+  });
+};
+
+const mapDurationToNote = (duration) => {
+  switch(duration) {
     case 's':
-      playTremolo(2, replaySpeed, buffers, tuning, noteToPlay);
-      break;
+      return 2;
     case 'e':
-      playTremolo(4, replaySpeed, buffers, tuning, noteToPlay);
-      break;
+      return 4;
     case 'q':
-      playTremolo(8, replaySpeed, buffers, tuning, noteToPlay);
-      break;
+      return 8;
     case 'h':
-      playTremolo(16, replaySpeed, buffers, tuning, noteToPlay);
-      break;
+      return 16;
     case 'w':
-      playTremolo(32, replaySpeed, buffers, tuning, noteToPlay);
-      break;
+      return 32;
     default:
-      playTremolo(1, replaySpeed, buffers, tuning, noteToPlay);
-      break;
+      return 1;
   }
 };
 
@@ -142,7 +151,9 @@ exports.playCurrentNote = (track, playingIndex, buffers) => {
   if(noteToPlay.fret[0] === 'rest') {
     playNoteAtTime('rest', audioContext.currentTime, replaySpeed, buffers, tuning);
   } else if(noteToPlay.tremolo) {
-    playTremoloNote(noteToPlay, replaySpeed, buffers, tuning);
+    playTremolo(replaySpeed, buffers, tuning, noteToPlay);
+  } else if(noteToPlay.trill) {
+    playTrill(replaySpeed, buffers, tuning, noteToPlay);
   } else {
     playNoteAtTime(noteToPlay, audioContext.currentTime, replaySpeed, buffers, tuning);
   }
