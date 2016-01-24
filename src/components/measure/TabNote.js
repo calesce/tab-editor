@@ -37,7 +37,7 @@ export default class TabNote extends Component {
   renderStem = () => {
     const { x, color, stringOffset } = this.props;
 
-    switch(this.props.duration) {
+    switch(this.props.note.duration) {
       case 'q':
         return this.renderQuarterStem(x + 1, color, stringOffset);
       case 'e':
@@ -100,8 +100,27 @@ export default class TabNote extends Component {
     );
   };
 
+  renderTrill = (trill, x, color) => {
+    if(!trill) {
+      return null;
+    }
+
+    return (
+      <svg x={x + 1.5} y={10}>
+        <text y={7} style={{ fontSize: 12 }}>tr</text>
+        <g transform='translate(11.0, 0.0)'>
+          <g transform='scale(8.00, 6.00)'>
+            <path fill={color}
+               d='M 1.864,0.316 C 1.88,0.292 1.9,0.28 1.928,0.28 c 0.044,0 0.08,0.036 0.08,0.08 0,0.016 -0.004,0.032 -0.012,0.044 C 1.872,0.592 1.748,0.776 1.624,0.964 1.608,0.988 1.584,1 1.556,1 1.532,1 1.512,0.992 1.496,0.972 L 1.104,0.496 0.792,0.964 C 0.776,0.988 0.752,1 0.724,1 0.7,1 0.68,0.992 0.664,0.972 L 0.268,0.496 C 0.228,0.56 0.184,0.62 0.144,0.684 0.128,0.708 0.108,0.72 0.08,0.72 0.036,0.72 0,0.684 0,0.64 0,0.624 0.004,0.608 0.012,0.596 0.136,0.408 0.26,0.224 0.384,0.036 0.4,0.012 0.424,0 0.452,0 0.476,0 0.496,0.008 0.512,0.028 L 0.904,0.504 1.216,0.036 C 1.232,0.012 1.256,0 1.284,0 1.308,0 1.328,0.008 1.344,0.028 L 1.74,0.504 C 1.78,0.44 1.824,0.38 1.864,0.316 Z' />
+          </g>
+        </g>
+      </svg>
+    );
+  };
+
   render() {
-    const { x, y, fret, color, dotted, tremolo, stringOffset, vibrato } = this.props;
+    const { x, y, fret, color, stringOffset, note } = this.props;
+    const { dotted, tremolo, vibrato, trill } = note;
 
     let width = 12;
     if(fret > 9) {
@@ -116,7 +135,7 @@ export default class TabNote extends Component {
       fontSize: 14
     };
 
-    const note = fret !== undefined ?
+    const tabNote = fret !== undefined ?
       <text onClick={this.onClick} x={x+2} y={y} fill={color} style={style}>{fret}</text> :
       null;
 
@@ -130,11 +149,12 @@ export default class TabNote extends Component {
       <g>
         {clickArea}
         {space}
-        {note}
+        {tabNote}
         {fret !== undefined ? this.renderStem() : null}
         {fret !== undefined ? this.renderDot(dotted, x, stringOffset, color) : null}
         {fret !== undefined ? this.renderTremolo(tremolo, x, stringOffset, color): null}
         {fret !== undefined ? this.renderVibrato(vibrato, x, color): null}
+        {fret !== undefined ? this.renderTrill(trill, x, stringOffset, color): null}
       </g>
     );
   }

@@ -144,9 +144,7 @@ class Measure extends Component {
       return (
         <g>
           <TabNote onClick={this.onClick.bind(this, noteIndex, string)}
-            key={i} duration={note.duration} x={x} y={y} color={color}
-            fret={fret} dotted={note.dotted} tremolo={note.tremolo}
-            stringOffset={stringOffset} vibrato={note.vibrato}
+            key={i} x={x} y={y} color={color} fret={fret} note={note} stringOffset={stringOffset}
           />
         </g>
       );

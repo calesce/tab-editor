@@ -250,6 +250,8 @@ class App extends Component {
       this.props.actions.toggleNoteTremolo(this.props.cursor);
     } else if(event.keyCode === 86) { // v
       this.props.actions.toggleNoteVibrato(this.props.cursor);
+    } else if(event.shiftKey && event.keyCode === 78) { // N
+      this.props.actions.toggleNoteTrill(this.props.cursor);
     } else {
       return this.navigateCursor(event);
     }
