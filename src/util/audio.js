@@ -5,8 +5,11 @@ const getSpeedFromBpm = (bpm) => {
   return 60000 / bpm;
 };
 
-exports.getReplaySpeedForNote = (note, bpm) => {
-  let noteLength = note.duration;
+exports.getReplaySpeedForNote = (notes, noteIndex, bpm) => {
+  if(notes.length === 0) {
+    return bpm * 4;
+  }
+  const noteLength = notes[noteIndex].duration;
 
   let replaySpeed = getSpeedFromBpm(bpm);
   if(noteLength === 'h') {
@@ -21,7 +24,7 @@ exports.getReplaySpeedForNote = (note, bpm) => {
     replaySpeed = replaySpeed / 8;
   }
 
-  if(note.dotted) {
+  if(notes[noteIndex].dotted) {
     replaySpeed = replaySpeed * 1.5;
   }
 
@@ -126,7 +129,7 @@ const playTremoloNote = (noteToPlay, replaySpeed, buffers, tuning) => {
 exports.playCurrentNote = (track, playingIndex, buffers) => {
   const { measures, tuning } = track;
 
-  let measure = measures[playingIndex.measureIndex];
+  const measure = measures[playingIndex.measureIndex];
   const bpm = measure.bpm;
   let noteToPlay;
   if(measure.notes.length > 0) {
@@ -135,7 +138,7 @@ exports.playCurrentNote = (track, playingIndex, buffers) => {
     noteToPlay = { duration: 'w', fret: ['rest'] };
   }
 
-  let replaySpeed = exports.getReplaySpeedForNote(noteToPlay, bpm);
+  const replaySpeed = exports.getReplaySpeedForNote(measure.notes, playingIndex.noteIndex, bpm);
 
   if(noteToPlay.fret[0] === 'rest') {
     playNoteAtTime('rest', audioContext.currentTime, replaySpeed, buffers, tuning);

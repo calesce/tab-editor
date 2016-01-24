@@ -26,7 +26,7 @@ class Playback extends Component {
     });
   }
 
-  loopThroughSong = (startTimestamp, playingIndex, track, isCurrent, trackIndex) => {
+  loopThroughSong = (startTimestamp, playingIndex, track, visibleTrackIndex, trackIndex) => {
     if(!startTimestamp) {
       startTimestamp = Date.now();
     }
@@ -42,48 +42,54 @@ class Playback extends Component {
 
     let replaySpeed;
     if(measureToPlay.notes.length > 0) {
-      replaySpeed = getReplaySpeedForNote(measureToPlay.notes[noteIndex], bpm);
+      replaySpeed = getReplaySpeedForNote(measureToPlay.notes, noteIndex, bpm);
     } else {
       replaySpeed = bpm * 4;
     }
 
     if(replayDiff >= replaySpeed) {
-      if(measureIndex === measures.length - 1 && noteIndex >= measures[measureIndex].notes.length - 1) {
-        this.props.actions.setPlayingIndex(null);
-      } else if(measureIndex !== measures.length - 1 && noteIndex >= measures[measureIndex].notes.length - 1) {
+      if(measureIndex !== measures.length - 1 && noteIndex >= measureToPlay.notes.length - 1) {
         const newPlayingIndex = {
           measureIndex: measureIndex + 1,
           noteIndex: 0
         };
         playCurrentNote(track, newPlayingIndex, this.props.buffers[track.instrument]);
-        if(isCurrent) {
-          this.updateNote({
-            measureIndex: measureToPlay.measureIndex + 1,
-            noteIndex: 0
-          });
-        }
         this.timers[trackIndex] = requestAnimationFrame(() => {
-          this.loopThroughSong(currentTimestamp, newPlayingIndex, track, isCurrent, trackIndex);
+          this.loopThroughSong(currentTimestamp, newPlayingIndex, track, visibleTrackIndex, trackIndex);
         });
-      } else {
+      } else if(noteIndex < measureToPlay.notes.length - 1){
         const newPlayingIndex = {
           measureIndex,
           noteIndex: noteIndex + 1
         };
         playCurrentNote(track, newPlayingIndex, this.props.buffers[track.instrument]);
-        if(isCurrent) {
-          this.updateNote({
-            measureIndex: measureToPlay.measureIndex,
-            noteIndex: newPlayingIndex.noteIndex
-          });
-        }
         this.timers[trackIndex] = requestAnimationFrame(() => {
-          this.loopThroughSong(currentTimestamp, newPlayingIndex, track, isCurrent, trackIndex);
+          this.loopThroughSong(currentTimestamp, newPlayingIndex, track, visibleTrackIndex, trackIndex);
         });
+      }
+
+      if(visibleTrackIndex === trackIndex) {
+        this.updateUI(measures, measureToPlay, noteIndex, measureIndex);
       }
     } else {
       this.timers[trackIndex] = requestAnimationFrame(() => {
-        this.loopThroughSong(startTimestamp, playingIndex, track, isCurrent, trackIndex);
+        this.loopThroughSong(startTimestamp, playingIndex, track, visibleTrackIndex, trackIndex);
+      });
+    }
+  };
+
+  updateUI = (measures, measure, noteIndex, playbackMeasureIndex) => {
+    if(measure.measureIndex === measures.length - 1 && noteIndex >= measure.notes.length - 1) {
+      this.props.actions.setPlayingIndex(null);
+    } else if(measure.measureIndex !== measures.length - 1 && noteIndex >= measure.notes.length - 1) {
+      this.updateNote({
+        measureIndex: measures[playbackMeasureIndex + 1].measureIndex,
+        noteIndex: 0
+      });
+    } else {
+      this.updateNote({
+        measureIndex: measure.measureIndex,
+        noteIndex: noteIndex + 1
       });
     }
   };
@@ -102,7 +108,7 @@ class Playback extends Component {
   };
 
   startPlayback = () => {
-    const { buffers, tracks, currentTrackIndex } = this.props;
+    const { buffers, tracks, currentTrackIndex, playingIndex } = this.props;
 
     const tracksWithMeasures = tracks.map((track) => {
       return {
@@ -128,14 +134,21 @@ class Playback extends Component {
       });
     }
 
-    const playingIndex = _.cloneDeep(this.props.playingIndex);
+    const newMeasureIndex = _.findIndex(finalTracks[currentTrackIndex].measures, (measure) =>
+      measure.measureIndex === playingIndex.measureIndex
+    );
+    const newPlayingIndex = {
+      measureIndex: newMeasureIndex,
+      noteIndex: playingIndex.noteIndex
+    };
+
     finalTracks.map((track) => {
-      playCurrentNote(track, playingIndex, buffers[track.instrument]);
+      playCurrentNote(track, newPlayingIndex, buffers[track.instrument]);
     });
 
     finalTracks.map((track, i) => {
       this.timers[i] = requestAnimationFrame(() => {
-        this.loopThroughSong(null, playingIndex, track, i === currentTrackIndex, i);
+        this.loopThroughSong(null, newPlayingIndex, track, currentTrackIndex, i);
       });
     });
   };
