@@ -130,7 +130,6 @@ exports.playCurrentNote = (track, playingIndex, buffers) => {
   const { measures, tuning } = track;
 
   const measure = measures[playingIndex.measureIndex];
-  const bpm = measure.bpm;
   let noteToPlay;
   if(measure.notes.length > 0) {
     noteToPlay = measure.notes[playingIndex.noteIndex];
@@ -138,7 +137,7 @@ exports.playCurrentNote = (track, playingIndex, buffers) => {
     noteToPlay = { duration: 'w', fret: ['rest'] };
   }
 
-  const replaySpeed = exports.getReplaySpeedForNote(measure.notes, playingIndex.noteIndex, bpm);
+  const replaySpeed = exports.getReplaySpeedForNote(measure.notes, playingIndex.noteIndex, measure.bpm);
 
   if(noteToPlay.fret[0] === 'rest') {
     playNoteAtTime('rest', audioContext.currentTime, replaySpeed, buffers, tuning);

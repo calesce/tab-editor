@@ -27,27 +27,14 @@ class Playback extends Component {
   }
 
   loopThroughSong = (startTimestamp, playingIndex, track, visibleTrackIndex, trackIndex) => {
-    if(!startTimestamp) {
-      startTimestamp = Date.now();
-    }
-
     const { measureIndex, noteIndex } = playingIndex;
     const { measures } = track;
+    const measureToPlay = measures[measureIndex];
 
     const currentTimestamp = Date.now();
-    const replayDiff = currentTimestamp - startTimestamp;
+    const replaySpeed = getReplaySpeedForNote(measureToPlay.notes, noteIndex, measureToPlay.bpm);
 
-    const measureToPlay = measures[measureIndex];
-    const bpm = measureToPlay.bpm;
-
-    let replaySpeed;
-    if(measureToPlay.notes.length > 0) {
-      replaySpeed = getReplaySpeedForNote(measureToPlay.notes, noteIndex, bpm);
-    } else {
-      replaySpeed = bpm * 4;
-    }
-
-    if(replayDiff >= replaySpeed) {
+    if(currentTimestamp - startTimestamp >= replaySpeed) {
       if(measureIndex !== measures.length - 1 && noteIndex >= measureToPlay.notes.length - 1) {
         const newPlayingIndex = {
           measureIndex: measureIndex + 1,
@@ -148,7 +135,7 @@ class Playback extends Component {
 
     finalTracks.map((track, i) => {
       this.timers[i] = requestAnimationFrame(() => {
-        this.loopThroughSong(null, newPlayingIndex, track, currentTrackIndex, i);
+        this.loopThroughSong(Date.now(), newPlayingIndex, track, currentTrackIndex, i);
       });
     });
   };
