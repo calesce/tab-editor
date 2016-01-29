@@ -79,9 +79,10 @@ class Measure extends Component {
   };
 
   renderBars = (x, measureWidth) => {
-    const { playingIndex, isValid, measureIndex, tuning } = this.props;
+    const { playingIndex, isValid, measureIndex, tuning, measureLength } = this.props;
 
-    let color = '#2d2d2d';
+    const lastMeasure = measureIndex === measureLength - 1;
+    let color = '#999999';
     let strokeWidth = 0.1;
     if(playingIndex) {
       if(measureIndex === playingIndex.measureIndex) {
@@ -93,7 +94,9 @@ class Measure extends Component {
       strokeWidth = 1;
     }
 
-    return <Bars measureWidth={measureWidth} color={color} strokeWidth={strokeWidth} strings={tuning} />;
+    return <Bars measureWidth={measureWidth} color={color}
+      strokeWidth={strokeWidth} strings={tuning} lastMeasure={lastMeasure}
+    />;
   };
 
   renderCursor = () => {
