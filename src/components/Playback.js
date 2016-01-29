@@ -5,6 +5,7 @@ import _ from 'lodash';
 
 import * as Actions from '../actions/playingIndex';
 import { playCurrentNote, getReplaySpeedForNote } from '../util/audio';
+import { expandedTracksSelector } from '../util/selectors';
 
 class Playback extends Component {
   constructor(props) {
@@ -35,12 +36,17 @@ class Playback extends Component {
     const replaySpeed = getReplaySpeedForNote(measureToPlay.notes, noteIndex, measureToPlay.bpm);
 
     if(currentTimestamp - startTimestamp >= replaySpeed) {
-      if(measureIndex !== measures.length - 1 && noteIndex >= measureToPlay.notes.length - 1) {
+      if(measureIndex === measures.length - 1 && noteIndex >= measureToPlay.notes.length - 1) {
+        this.props.actions.setPlayingIndex(null);
+      } else if(measureIndex !== measures.length - 1 && noteIndex >= measureToPlay.notes.length - 1) {
         const newPlayingIndex = {
           measureIndex: measureIndex + 1,
           noteIndex: 0
         };
         playCurrentNote(track, newPlayingIndex, this.props.buffers[track.instrument]);
+        if(visibleTrackIndex === trackIndex) {
+          this.updateUI(measures, measureToPlay, noteIndex, measureIndex);
+        }
         this.timers[trackIndex] = requestAnimationFrame(() => {
           this.loopThroughSong(currentTimestamp, newPlayingIndex, track, visibleTrackIndex, trackIndex);
         });
@@ -50,13 +56,12 @@ class Playback extends Component {
           noteIndex: noteIndex + 1
         };
         playCurrentNote(track, newPlayingIndex, this.props.buffers[track.instrument]);
+        if(visibleTrackIndex === trackIndex) {
+          this.updateUI(measures, measureToPlay, noteIndex, measureIndex);
+        }
         this.timers[trackIndex] = requestAnimationFrame(() => {
           this.loopThroughSong(currentTimestamp, newPlayingIndex, track, visibleTrackIndex, trackIndex);
         });
-      }
-
-      if(visibleTrackIndex === trackIndex) {
-        this.updateUI(measures, measureToPlay, noteIndex, measureIndex);
       }
     } else {
       this.timers[trackIndex] = requestAnimationFrame(() => {
@@ -66,9 +71,7 @@ class Playback extends Component {
   };
 
   updateUI = (measures, measure, noteIndex, playbackMeasureIndex) => {
-    if(measure.measureIndex === measures.length - 1 && noteIndex >= measure.notes.length - 1) {
-      this.props.actions.setPlayingIndex(null);
-    } else if(measure.measureIndex !== measures.length - 1 && noteIndex >= measure.notes.length - 1) {
+    if(measure.measureIndex !== measures.length - 1 && noteIndex >= measure.notes.length - 1) {
       this.updateNote({
         measureIndex: measures[playbackMeasureIndex + 1].measureIndex,
         noteIndex: 0
@@ -95,47 +98,15 @@ class Playback extends Component {
   };
 
   startPlayback = () => {
-    const { buffers, tracks, currentTrackIndex, playingIndex } = this.props;
+    const { buffers, tracks, currentTrackIndex, playingIndex, expandedTracks } = this.props;
 
-    const tracksWithMeasures = tracks.map((track) => {
-      return {
-        ...track,
-        measures: this.mapMeasureIndices(track.measures)
-      };
+    expandedTracks.forEach((track) => {
+      playCurrentNote(track, playingIndex, buffers[track.instrument]);
     });
 
-    const repeatIndex = _.findIndex(tracksWithMeasures[0].measures, (measure) => measure.repeatEnd === true);
-
-    let finalTracks;
-    if(repeatIndex === -1) {
-      finalTracks = tracksWithMeasures;
-    } else {
-      finalTracks = tracksWithMeasures.map((track) => {
-        const { measures } = track;
-        const repeatSection = this.getRepeatingSection(measures, repeatIndex);
-        const newMeasures = measures.slice(0, repeatIndex + 1).concat(repeatSection).concat(measures.slice(repeatIndex + 1), measures.length);
-        return {
-          ...track,
-          measures: newMeasures
-        };
-      });
-    }
-
-    const newMeasureIndex = _.findIndex(finalTracks[currentTrackIndex].measures, (measure) =>
-      measure.measureIndex === playingIndex.measureIndex
-    );
-    const newPlayingIndex = {
-      measureIndex: newMeasureIndex,
-      noteIndex: playingIndex.noteIndex
-    };
-
-    finalTracks.map((track) => {
-      playCurrentNote(track, newPlayingIndex, buffers[track.instrument]);
-    });
-
-    finalTracks.map((track, i) => {
+    expandedTracks.forEach((track, i) => {
       this.timers[i] = requestAnimationFrame(() => {
-        this.loopThroughSong(Date.now(), newPlayingIndex, track, currentTrackIndex, i);
+        this.loopThroughSong(Date.now(), playingIndex, track, currentTrackIndex, i);
       });
     });
   };
@@ -165,4 +136,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Playback);
+export default connect(expandedTracksSelector, mapDispatchToProps)(Playback);

@@ -79,3 +79,71 @@ export const finalMeasureSelector = createSelector(
     };
   }
 );
+
+const tracksSelector = state => state.tracks;
+const currentTrackIndexSelector = state => state.currentTrackIndex;
+
+const mapMeasureIndices = (measures) => {
+  return measures.map((measure, i) => {
+    return {
+      ...measure,
+      measureIndex: i
+    };
+  });
+};
+
+const getRepeatingSection = (measures, repeatIndex) => {
+  return repeatIndex === -1 ? [] : measures.slice(0, repeatIndex + 1);
+};
+
+const tracksWithMeasuresSelector = createSelector(
+  tracksSelector,
+  (tracks) => {
+    return tracks.map((track) => {
+      return {
+        ...track,
+        measures: mapMeasureIndices(track.measures)
+      };
+    });
+  }
+);
+
+export const expandedTracksSelector = createSelector(
+  tracksSelector,
+  tracksWithMeasuresSelector,
+  playingIndexSelector,
+  currentTrackIndexSelector,
+  (tracks, tracksWithMeasures, playingIndex, currentTrackIndex) => {
+    const repeatIndex = _.findIndex(tracksWithMeasures[0].measures, (measure) => measure.repeatEnd === true);
+
+    let expandedTracks;
+    if(repeatIndex === -1) {
+      expandedTracks = tracksWithMeasures;
+    } else {
+      expandedTracks = tracksWithMeasures.map((track) => {
+        const { measures } = track;
+        const repeatSection = getRepeatingSection(measures, repeatIndex);
+        const newMeasures = measures.slice(0, repeatIndex + 1).concat(repeatSection).concat(measures.slice(repeatIndex + 1), measures.length);
+        return {
+          ...track,
+          measures: newMeasures
+        };
+      });
+    }
+
+    const newMeasureIndex = _.findIndex(expandedTracks[currentTrackIndex].measures, (measure) =>
+      measure.measureIndex === playingIndex.measureIndex
+    );
+    const newPlayingIndex = {
+      measureIndex: newMeasureIndex,
+      noteIndex: playingIndex.noteIndex
+    };
+
+    return {
+      playingIndex: newPlayingIndex,
+      tracks,
+      currentTrackIndex,
+      expandedTracks
+    };
+  }
+);
