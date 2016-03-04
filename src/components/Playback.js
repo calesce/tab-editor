@@ -98,7 +98,7 @@ class Playback extends Component {
   };
 
   startPlayback = () => {
-    const { buffers, tracks, currentTrackIndex, playingIndex, expandedTracks } = this.props;
+    const { buffers, currentTrackIndex, playingIndex, expandedTracks } = this.props;
 
     expandedTracks.forEach((track) => {
       playCurrentNote(track, playingIndex, buffers[track.instrument]);
@@ -120,14 +120,6 @@ class Playback extends Component {
   render() {
     return <div style={{ display: 'none' }}></div>;
   }
-}
-
-function mapStateToProps(state) {
-  return {
-    tracks: state.tracks,
-    currentTrackIndex: state.currentTrackIndex,
-    playingIndex: state.playingIndex
-  };
 }
 
 function mapDispatchToProps(dispatch) {
