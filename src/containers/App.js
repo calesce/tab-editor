@@ -35,8 +35,7 @@ class App extends Component {
   }
 
   componentWillMount() {
-    this.loadSoundfont2(this.props.instrument);
-    // this.loadSoundfont(this.props.instrument);
+    this.loadSoundfont(this.props.instrument);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -48,8 +47,7 @@ class App extends Component {
         this.updateScrollPosition(nextProps.playingIndex, nextProps.measures);
       }
     } else if(this.props.instrument !== nextProps.instrument) {
-      this.loadSoundfont2(nextProps.instrument);
-      // this.loadSoundfont(nextProps.instrument);
+      this.loadSoundfont(nextProps.instrument);
     }
   }
 
