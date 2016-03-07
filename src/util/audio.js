@@ -44,7 +44,7 @@ const playVibrato = (source, startTime, endTime) => {
   lfo.stop(endTime);
 };
 
-const playWithBuffer = (startTime, buffer, duration, vibrato) => {
+exports.playWithBuffer = (buffer, duration, startTime = audioContext.currentTime, vibrato) => {
   let endTime = startTime + duration;
 
   let source = audioContext.createBufferSource();
@@ -91,7 +91,7 @@ const playNoteAtTime = (currentNote, playTime, duration, buffers, tuning) => {
     const openString = tuning[currentNote.string[i]];
     const noteToPlay = getIndexOfNote(openString) + currentNote.fret[i];
 
-    playWithBuffer(playTime, buffers[noteToPlay], duration / 1000, currentNote.vibrato);
+    exports.playWithBuffer(buffers[noteToPlay], duration / 1000, playTime, currentNote.vibrato);
   }
 };
 

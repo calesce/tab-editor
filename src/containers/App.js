@@ -17,6 +17,7 @@ import TimeSignatureModal from '../components/editor/TimeSignatureModal';
 import TuningModal from '../components/editor/TuningModal';
 import BpmModal from '../components/editor/BpmModal';
 import Playback from '../components/Playback';
+import Metronome from '../components/Metronome';
 
 const Actions = Object.assign(TracksActions, TrackActions, MeasureActions, PlayingIndexActions, CursorActions);
 
@@ -56,6 +57,10 @@ class App extends Component {
       this.setState({
         buffers: Object.assign({}, this.state.buffers, { [instrument]: buffers })
       });
+    });
+
+    Soundfont.loadBuffers(audioContext, 'woodblock').then((woodblockBuffers) => {
+      this.setState({ woodblockBuffers });
     });
   };
 
@@ -264,11 +269,12 @@ class App extends Component {
   };
 
   render() {
-    const { openModal, buffers } = this.state;
+    const { openModal, buffers, woodblockBuffers } = this.state;
 
     return (
       <div style={{ width: '100%', height: '100%' }}>
         { this.props.playingIndex ? <Playback buffers={buffers} /> : null}
+        { this.props.playingIndex && false ? <Metronome buffers={woodblockBuffers} /> : null}
         <EditorArea handlePlay={this.handlePlay} openModal={this.openModal} />
         <TabStaff />
         <TimeSignatureModal isOpen={openModal === 'timeSig'} closeModal={this.closeModal} />

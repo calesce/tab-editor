@@ -84,19 +84,6 @@ class Playback extends Component {
     }
   };
 
-  getRepeatingSection = (measures, repeatIndex) => {
-    return repeatIndex === -1 ? [] : measures.slice(0, repeatIndex + 1);
-  };
-
-  mapMeasureIndices = (measures) => {
-    return measures.map((measure, i) => {
-      return {
-        ...measure,
-        measureIndex: i
-      };
-    });
-  };
-
   startPlayback = () => {
     const { buffers, currentTrackIndex, playingIndex, expandedTracks } = this.props;
 
