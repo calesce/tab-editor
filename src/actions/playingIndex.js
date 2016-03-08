@@ -13,3 +13,9 @@ export function setPlayingIndex(index) {
     index
   };
 }
+
+export function toggleMetronome() {
+  return {
+    type: types.TOGGLE_METRONOME
+  };
+}

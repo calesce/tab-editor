@@ -32,6 +32,7 @@ export const CHANGE_LAYOUT = 'CHANGE_LAYOUT';
 // playingIndex
 export const SET_PLAYING_INDEX = 'SET_PLAYING_INDEX';
 export const ADVANCE_PLAYING_INDEX = 'ADVANCE_PLAYING_INDEX';
+export const TOGGLE_METRONOME = 'TOGGLE_METRONOME';
 
 // cursor
 export const SET_CURSOR = 'SET_CURSOR';

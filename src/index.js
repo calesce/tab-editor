@@ -14,7 +14,8 @@ const trackWithWidths = {
 const store = configureStore({
   tracks: [trackWithWidths],
   currentTrackIndex: 0,
-  clipboard: null
+  clipboard: null,
+  metronome: false
 });
 
 render(

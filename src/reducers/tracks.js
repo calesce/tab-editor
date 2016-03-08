@@ -5,7 +5,7 @@ import cursorReducer from './cursor';
 import { prepareRows, prepareTrack } from '../util';
 import { COPY_NOTE, CUT_NOTE, CHANGE_LAYOUT, INSERT_TRACK,
   DELETE_TRACK, SELECT_TRACK, INSERT_MEASURE, DELETE_MEASURE,
-  CHANGE_BPM, CHANGE_TIME_SIGNATURE, SET_PLAYING_INDEX, ADD_REPEAT_END } from '../actions/types';
+  CHANGE_BPM, CHANGE_TIME_SIGNATURE, SET_PLAYING_INDEX, TOGGLE_METRONOME } from '../actions/types';
 
 const replaceTrack = (tracks, action, currentTrackIndex, layout = 'page') => {
   return tracks.map((t, index) => {
@@ -25,9 +25,8 @@ const applyActionToEachTrack = (state, action) => {
   const newTracks = state.tracks.map((t) => prepareTrack(track(t, action), state.layout));
 
   return {
+    ...state,
     tracks: newTracks,
-    currentTrackIndex: state.currentTrackIndex,
-    clipboard: state.clipboard,
     layout: layout(state.layout, action),
     playingIndex: playingIndex(state.playingIndex, action),
     cursor: cursorReducer(state.cursor, currentTrack.measures, currentTrack.tuning, action)
@@ -87,6 +86,12 @@ export default function tracks(state = {}, action) {
         ...state,
         currentTrackIndex: action.index,
         cursor: defaultCursor
+      };
+
+    case TOGGLE_METRONOME:
+      return {
+        ...state,
+        metronome: !state.metronome
       };
 
     case INSERT_MEASURE: {

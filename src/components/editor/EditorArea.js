@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import { changeLayout, insertTrack, deleteTrack } from '../../actions/tracks';
-import { setPlayingIndex } from '../../actions/playingIndex';
+import { setPlayingIndex, toggleMetronome } from '../../actions/playingIndex';
 import { setCursor } from '../../actions/cursor';
 import { addRepeatEnd } from '../../actions/measure';
 import { timeSignatureSelector } from '../../util/selectors';
@@ -65,6 +65,7 @@ class EditorArea extends Component {
         <button onClick={this.props.deleteTrack}>remove track</button>
         <TrackSelect />
         <button onClick={this.addRepeatEnd}>repeat</button>
+        <button onClick={this.props.toggleMetronome}>{ this.props.metronome ? 'metronome on' : 'metronome off'}</button>
       </div>
     );
   }
@@ -75,7 +76,8 @@ function mapStateToProps(state) {
     layout: state.layout ? state.layout : 'page',
     playingIndex: state.playingIndex,
     cursor: state.cursor,
-    timeSignature: timeSignatureSelector(state)
+    timeSignature: timeSignatureSelector(state),
+    metronome: state.metronome
   };
 }
 
@@ -86,7 +88,8 @@ function mapDispatchToProps(dispatch) {
     deleteTrack: bindActionCreators(deleteTrack, dispatch),
     setPlayingIndex: bindActionCreators(setPlayingIndex, dispatch),
     setCursor: bindActionCreators(setCursor, dispatch),
-    addRepeatEnd: bindActionCreators(addRepeatEnd, dispatch)
+    addRepeatEnd: bindActionCreators(addRepeatEnd, dispatch),
+    toggleMetronome: bindActionCreators(toggleMetronome, dispatch)
   };
 }
 

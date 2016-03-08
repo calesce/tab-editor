@@ -274,7 +274,7 @@ class App extends Component {
     return (
       <div style={{ width: '100%', height: '100%' }}>
         { this.props.playingIndex ? <Playback buffers={buffers} /> : null}
-        { this.props.playingIndex && false ? <Metronome buffers={woodblockBuffers} /> : null}
+        { this.props.playingIndex && this.props.metronome ? <Metronome buffers={woodblockBuffers} /> : null}
         <EditorArea handlePlay={this.handlePlay} openModal={this.openModal} />
         <TabStaff />
         <TimeSignatureModal isOpen={openModal === 'timeSig'} closeModal={this.closeModal} />
@@ -293,7 +293,8 @@ function mapStateToProps(state) {
     playingIndex: state.playingIndex,
     cursor: state.cursor,
     tuning: state.tracks[state.currentTrackIndex].tuning,
-    instrument: state.tracks[state.currentTrackIndex].instrument
+    instrument: state.tracks[state.currentTrackIndex].instrument,
+    metronome: state.metronome
   };
 }
 
