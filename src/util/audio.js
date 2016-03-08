@@ -5,6 +5,10 @@ const getSpeedFromBpm = (bpm) => {
   return 60000 / bpm;
 };
 
+exports.getMetronomeSpeed = (bpm, denominator) => {
+  return getSpeedFromBpm(bpm) * 4 / denominator;
+};
+
 exports.getReplaySpeedForNote = (notes, noteIndex, bpm) => {
   if(notes.length === 0) {
     return bpm * 4;

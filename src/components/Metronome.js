@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { getReplaySpeedForNote, playWithBuffer } from '../util/audio';
+import { getMetronomeSpeed, playWithBuffer } from '../util/audio';
 import { expandedTracksSelector } from '../util/selectors';
 
 class Playback extends Component {
@@ -27,13 +27,14 @@ class Playback extends Component {
     const { measures } = track;
     const measureToPlay = measures[measureIndex];
 
+    const numerator = parseInt(measureToPlay.timeSignature.split('/')[0]) - 1;
+    const denominator = parseInt(measureToPlay.timeSignature.split('/')[1]);
+
     const currentTimestamp = Date.now();
-    const replaySpeed = getReplaySpeedForNote(measureToPlay.notes, noteIndex, measureToPlay.bpm);
+    const replaySpeed = getMetronomeSpeed(measureToPlay.bpm, denominator);
 
     if(currentTimestamp - startTimestamp >= replaySpeed) {
-      if(measureIndex === measures.length - 1 && noteIndex >= measureToPlay.notes.length - 1) {
-
-      } else if(measureIndex !== measures.length - 1 && noteIndex >= measureToPlay.notes.length - 1) {
+      if(measureIndex !== measures.length - 1 && noteIndex >= numerator) {
         const newPlayingIndex = {
           measureIndex: measureIndex + 1,
           noteIndex: 0
@@ -42,7 +43,7 @@ class Playback extends Component {
         this.timer = requestAnimationFrame(() => {
           this.loopThroughSong(currentTimestamp, newPlayingIndex, track);
         });
-      } else if(noteIndex < measureToPlay.notes.length - 1){
+      } else if(noteIndex < numerator){
         const newPlayingIndex = {
           measureIndex,
           noteIndex: noteIndex + 1
