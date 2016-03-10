@@ -154,8 +154,8 @@ class App extends Component {
   };
 
   navigateCursor = (event) => {
+    event.preventDefault();
     if(event.keyCode === 39) { // right arrow
-      event.preventDefault();
       const { measures } = this.props;
       const { measureIndex, noteIndex } = this.props.cursor;
       if(measureIndex === measures.length - 1 &&
@@ -165,7 +165,6 @@ class App extends Component {
       }
       this.props.actions.moveCursorRight();
     } else if(event.keyCode === 37) { // left arrow
-      event.preventDefault();
       this.props.actions.moveCursorLeft();
     } else if(event.keyCode === 38) { // up arrow
       this.props.actions.moveCursorUp();
