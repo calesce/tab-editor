@@ -18,7 +18,7 @@ class TabStaff extends Component {
   };
 
   calcHeight = (measures, tuning) => {
-    return 2 * (measures[measures.length - 1].rowIndex + 1) * (27 * tuning.length) + 50;
+    return 1.7 * (measures[measures.length - 1].rowIndex + 1) * (27 * tuning.length) + 40;
   };
 
   renderMeasureForRow = (_, measureIndex) => {

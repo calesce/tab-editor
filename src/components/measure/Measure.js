@@ -78,8 +78,8 @@ class Measure extends Component {
     });
   };
 
-  renderBars = (x, measureWidth) => {
-    const { playingIndex, isValid, measureIndex, tuning, measureLength } = this.props;
+  renderBars = (x, measureWidth, tuning) => {
+    const { playingIndex, isValid, measureIndex, measureLength } = this.props;
 
     const lastMeasure = measureIndex === measureLength - 1;
     let color = '#999999';
@@ -121,7 +121,7 @@ class Measure extends Component {
     return <Cursor x={x} y={y} fret={fret} />;
   };
 
-  renderNote = (note, measureIndex, noteIndex) => {
+  renderTabNote = (note, measureIndex, noteIndex) => {
     const x = this.calcXForNote(noteIndex);
     const { playingIndex, tuning } = this.props;
     const strings = this.props.tuning.length;
@@ -154,9 +154,38 @@ class Measure extends Component {
     });
   };
 
-  renderTimeSignature = (measureIndex, measure) => {
+  renderMusicNote = (note, measureIndex, noteIndex) => {
+    const x = this.calcXForNote(noteIndex);
+    const { playingIndex, tuning } = this.props;
+
+    let color = 'black';
+    if(playingIndex) {
+      if(playingIndex.measureIndex === measureIndex && playingIndex.noteIndex === noteIndex && playingIndex) {
+        color = '#f9423a';
+      }
+    }
+
+    const y = tuning.length * 6.5 + 6; // 45 for 6 strings
+    if(note.string[0] === 'rest') {
+      return <Rest onClick={this.onClick.bind(this, noteIndex, 0)} key={noteIndex} color={color} x={x} y={y} note={note} />;
+    }
+
+    return tuning.map((_, i) => {
+      const stringIndex = findIndex(note.string, (index) => index === i);
+      const string = stringIndex === -1 ? i : note.string[stringIndex];
+      const fret = stringIndex === -1 ? undefined : note.fret[stringIndex];
+      const y = 95 - (13 * i);
+      return (
+        <g>
+          <TabNote onClick={this.onClick.bind(this, noteIndex, string)}
+            key={i} x={x} y={y} color={color} fret={fret} note={note} />
+        </g>
+      );
+    });
+  };
+
+  renderTimeSignature = (measureIndex, measure, strings) => {
     const x = this.props.measure.indexOfRow === 0 ? 36 : 20;
-    const strings = this.props.tuning.length;
     const y = strings * 6 - 6; // y of top of time signature
     const { renderTimeSignature, timeSignature } = measure;
 
@@ -187,9 +216,9 @@ class Measure extends Component {
   renderTabMeasure = (measureIndex, measure, x) => {
     return (
       <g>
-        { this.renderBars(x, measure.width) }
+        { this.renderBars(x, measure.width, this.props.tuning) }
         {
-          measure.notes.map((note, noteIndex) => this.renderNote(note, measureIndex, noteIndex, x))
+          measure.notes.map((note, noteIndex) => this.renderTabNote(note, measureIndex, noteIndex, x))
         }
       </g>
     );
@@ -198,7 +227,7 @@ class Measure extends Component {
   renderMeasure = (measureIndex, measure, x) => {
     return (
       <g>
-        { this.renderBars(x, measure.width) }
+        { this.renderBars(x, measure.width, [0, 1, 2, 3, 4]) }
       </g>
     );
   };
@@ -207,18 +236,18 @@ class Measure extends Component {
     const { measure, measureIndex, tuning } = this.props;
 
     return (
-      <div style={{ height: tuning.length * 54, width: measure.width}}>
-        <svg y={tuning.length * 13.5} style={{ height: (tuning.length * 27), width: measure.width }}>
+      <div style={{ height: tuning.length * 50, width: measure.width}}>
+        <svg style={{ height: (tuning.length * 25), width: measure.width }}>
           { this.renderMeasure(measureIndex, measure, 0) }
           { measure.indexOfRow === 0 ? <Clef y={25} strings={tuning.length} /> : null }
-          { this.renderTimeSignature(measureIndex, measure) }
+          { this.renderTimeSignature(measureIndex, measure, 5) }
           { this.renderBpm(measure) }
           { this.renderRepeat(measure) }
         </svg>
-        <svg style={{ height: (tuning.length * 27), width: measure.width }}>
+        <svg style={{ height: (tuning.length * 25), width: measure.width }}>
           { this.renderTabMeasure(measureIndex, measure, 0) }
           { measure.indexOfRow === 0 ? <Clef y={25} strings={tuning.length} tab /> : null }
-          { this.renderTimeSignature(measureIndex, measure) }
+          { this.renderTimeSignature(measureIndex, measure, tuning.length) }
           { this.renderCursor() }
           { this.renderMeasureNumber(measureIndex) }
           { this.renderRepeat(measure) }
