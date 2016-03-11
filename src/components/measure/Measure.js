@@ -184,7 +184,7 @@ class Measure extends Component {
     return <text x={0} y={23} style={{ fontSize: 9, fill: 'tomato' }}>{measureIndex + 1}</text>;
   };
 
-  renderMeasure = (measureIndex, measure, x) => {
+  renderTabMeasure = (measureIndex, measure, x) => {
     return (
       <g>
         { this.renderBars(x, measure.width) }
@@ -195,19 +195,35 @@ class Measure extends Component {
     );
   };
 
+  renderMeasure = (measureIndex, measure, x) => {
+    return (
+      <g>
+        { this.renderBars(x, measure.width) }
+      </g>
+    );
+  };
+
   render() {
     const { measure, measureIndex, tuning } = this.props;
 
     return (
-      <svg style={{ height: (tuning.length * 27), width: measure.width }}>
-        { this.renderMeasure(measureIndex, measure, 0) }
-        { measure.indexOfRow === 0 ? <Clef y={25} strings={tuning.length} /> : null }
-        { this.renderTimeSignature(measureIndex, measure) }
-        { this.renderCursor() }
-        { this.renderBpm(measure) }
-        { this.renderMeasureNumber(measureIndex) }
-        { this.renderRepeat(measure) }
-      </svg>
+      <div style={{ height: tuning.length * 54, width: measure.width}}>
+        <svg y={tuning.length * 13.5} style={{ height: (tuning.length * 27), width: measure.width }}>
+          { this.renderMeasure(measureIndex, measure, 0) }
+          { measure.indexOfRow === 0 ? <Clef y={25} strings={tuning.length} /> : null }
+          { this.renderTimeSignature(measureIndex, measure) }
+          { this.renderBpm(measure) }
+          { this.renderRepeat(measure) }
+        </svg>
+        <svg style={{ height: (tuning.length * 27), width: measure.width }}>
+          { this.renderTabMeasure(measureIndex, measure, 0) }
+          { measure.indexOfRow === 0 ? <Clef y={25} strings={tuning.length} tab /> : null }
+          { this.renderTimeSignature(measureIndex, measure) }
+          { this.renderCursor() }
+          { this.renderMeasureNumber(measureIndex) }
+          { this.renderRepeat(measure) }
+        </svg>
+      </div>
     );
   }
 }
