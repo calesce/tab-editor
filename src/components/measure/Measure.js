@@ -236,8 +236,8 @@ class Measure extends Component {
     const { measure, measureIndex, tuning } = this.props;
 
     return (
-      <div style={{ height: tuning.length * 50, width: measure.width}}>
-        <svg style={{ height: (tuning.length * 25), width: measure.width }}>
+      <div style={{ height: tuning.length * 48, width: measure.width}}>
+        <svg style={{ height: (tuning.length * 20), width: measure.width, paddingTop: 15 }}>
           { this.renderMeasure(measureIndex, measure, 0) }
           { measure.indexOfRow === 0 ? <Clef y={25} strings={tuning.length} /> : null }
           { this.renderTimeSignature(measureIndex, measure, 5) }
