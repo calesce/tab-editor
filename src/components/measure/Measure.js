@@ -6,6 +6,7 @@ import { findIndex } from 'lodash';
 import * as Actions from '../../actions/cursor';
 
 import TabNote from './TabNote';
+import MusicNote from './MusicNote';
 import Bars from './Bars';
 import Rest from './Rest';
 import Clef from './Clef';
@@ -165,20 +166,18 @@ class Measure extends Component {
       }
     }
 
-    const y = tuning.length * 6.5 + 6; // 45 for 6 strings
+    const y = 5 * 6.5 + 6; // 45 for 6 strings
     if(note.string[0] === 'rest') {
       return <Rest onClick={this.onClick.bind(this, noteIndex, 0)} key={noteIndex} color={color} x={x} y={y} note={note} />;
     }
 
     return tuning.map((_, i) => {
       const stringIndex = findIndex(note.string, (index) => index === i);
-      const string = stringIndex === -1 ? i : note.string[stringIndex];
       const fret = stringIndex === -1 ? undefined : note.fret[stringIndex];
-      const y = 95 - (13 * i);
+      const y = 82 - (13 * i);
       return (
         <g>
-          <TabNote onClick={this.onClick.bind(this, noteIndex, string)}
-            key={i} x={x} y={y} color={color} fret={fret} note={note} />
+          <MusicNote key={i} x={x} y={y} color={color} fret={fret} note={note} />
         </g>
       );
     });
@@ -228,6 +227,9 @@ class Measure extends Component {
     return (
       <g>
         { this.renderBars(x, measure.width, [0, 1, 2, 3, 4]) }
+        {
+          measure.notes.map((note, noteIndex) => this.renderMusicNote(note, measureIndex, noteIndex, x))
+        }
       </g>
     );
   };
