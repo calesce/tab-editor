@@ -52,14 +52,13 @@ export default class MusicNote extends Component {
     );
   };
 
-  renderSixteenthStem = (x, color, stringOffset) => {
-    const y = 115 - (13 * stringOffset);
+  renderSixteenthNote = (x, y, color) => {
     return (
-      <g>
-        { this.renderQuarterStem(x, color, stringOffset) }
-        { this.renderEighthStem(x, color, stringOffset) }
-        <rect x={x + 5} y={y} height={2} width={20} fill={color}></rect>
-      </g>
+      <svg x={x - 8} y={y - 15} style={{ overflow: 'visible' }}>
+        <g transform='scale(0.4)'>
+          <path fill={color} d="M23.71961 87.85213c-5.58785-5.02026-2.53077-13.19751 6.69317-17.90321 3.07692-1.56973 5.34644-2.24914 9.40578-2.12895 2.46224.06314 5.29391 1.48242 5.29391 1.48242 0-18.05494-.06821-52.28016-.06821-69.15127 1.00028.00563 1.64015-.00648 3.04094-.00648 0 .99254-.01335 1.7062-.01335 2.58602 0 .85738.06034 1.41406.1432 1.95287.96866 6.29923 2.37919 8.7789 9.42205 16.56374 8.9072 9.84558 11.49436 15.77596 11.44145 23.65154-.04921 7.38807-6.54795 23.21243-8.02557 22.55589 2.05465-5.53599 4.82532-11.50844 5.56223-16.50593.90056-6.10733-1.58049-14.72667-5.57333-19.27425-3.28359-3.73981-10.84654-7.08467-12.90954-7.08467 0 0-.08757 36.37228-.08757 50.16231 0 2.37471-2.15126 6.40059-3.36307 7.84809-5.52631 6.60112-16.13366 9.58986-20.96209 5.25188z"/>
+        </g>
+      </svg>
     );
   };
 
@@ -75,7 +74,7 @@ export default class MusicNote extends Component {
       case 'e':
         return this.renderEighthNote(x + 1, y, color);
       case 's':
-        return this.renderSixteenthStem(x + 1, color, stringOffset);
+        return this.renderSixteenthNote(x + 1, y, color);
       default:
         return null;
     }
@@ -151,8 +150,7 @@ export default class MusicNote extends Component {
   };
 
   render() {
-    const { x, y, fret, color, stringOffset, note } = this.props;
-    const { dotted, tremolo, vibrato, trill } = note;
+    const { x, y, fret, color } = this.props;
 
     let width = 12;
     if(fret > 9) {
@@ -162,11 +160,7 @@ export default class MusicNote extends Component {
     //  use rotate(180 9 31) to flip quarter note
     return (
       <g>
-        {fret !== undefined ? this.renderNote(x, y, color) : null }
-        {fret !== undefined ? this.renderDot(dotted, x, stringOffset, color) : null}
-        {fret !== undefined ? this.renderTremolo(tremolo, x, stringOffset, color): null}
-        {fret !== undefined ? this.renderVibrato(vibrato, x, color): null}
-        {fret !== undefined ? this.renderTrill(trill, x, stringOffset, color): null}
+        { this.renderNote(x, y, color) }
       </g>
     );
   }

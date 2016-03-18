@@ -16,6 +16,7 @@ import Bpm from './Bpm';
 import Repeat from './Repeat';
 import shallowEqual from 'react-pure-render/shallowEqual';
 import { finalMeasureSelector } from '../../util/selectors';
+import { midis, getIndexOfNote } from '../../util/midiNotes';
 
 class Measure extends Component {
   shouldComponentUpdate(nextProps) {
@@ -174,12 +175,17 @@ class Measure extends Component {
     return tuning.map((_, i) => {
       const stringIndex = findIndex(note.string, (index) => index === i);
       const fret = stringIndex === -1 ? undefined : note.fret[stringIndex];
-      const y = 82 - (13 * i);
-      return (
+
+      const midiIndex = getIndexOfNote(tuning[i]) + fret;
+
+      // lol this is terrible, I'll figure out something better
+      const y = 248 - (3.6 * midiIndex);
+
+      return fret !== undefined ? (
         <g>
           <MusicNote key={i} x={x} y={y} color={color} fret={fret} note={note} />
         </g>
-      );
+      ) : null;
     });
   };
 
