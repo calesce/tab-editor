@@ -16,7 +16,7 @@ import Bpm from './Bpm';
 import Repeat from './Repeat';
 import shallowEqual from 'react-pure-render/shallowEqual';
 import { finalMeasureSelector } from '../../util/selectors';
-import { midis, getIndexOfNote } from '../../util/midiNotes';
+import { getIndexOfNote } from '../../util/midiNotes';
 
 class Measure extends Component {
   shouldComponentUpdate(nextProps) {
@@ -179,6 +179,7 @@ class Measure extends Component {
       const midiIndex = getIndexOfNote(tuning[i]) + fret;
 
       // lol this is terrible, I'll figure out something better
+      // eventually want something like "staffHeight - (halfDistanceBetweenBars * notePosition)"
       const y = 248 - (3.6 * midiIndex);
 
       return fret !== undefined ? (
