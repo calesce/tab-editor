@@ -4,7 +4,7 @@ import { render } from 'react-dom';
 import Root from './containers/Root';
 import configureStore from './util/configureStore';
 import { prepareRows, defaultBpm } from './util';
-import track from './song';
+import track from '../data/song';
 
 const trackWithWidths = {
   ...track,
