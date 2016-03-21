@@ -18,6 +18,8 @@ import shallowEqual from 'react-pure-render/shallowEqual';
 import { finalMeasureSelector } from '../../util/selectors';
 import { getIndexOfNote } from '../../util/midiNotes';
 
+const MEASURE_HEIGHT = 210;
+
 class Measure extends Component {
   shouldComponentUpdate(nextProps) {
     const playingIndexEqual = !shallowEqual(this.props.playingIndex, nextProps.playingIndex);
@@ -180,6 +182,8 @@ class Measure extends Component {
 
       // lol this is terrible, I'll figure out something better
       // eventually want something like "staffHeight - (halfDistanceBetweenBars * notePosition)"
+      // TODO accidentals should have the same midiIndex as naturals (A and A# on the same line, duh)
+      // also render accidentals pls
       const y = yOffset + 248 - (3.6 * midiIndex);
 
       return fret !== undefined ? (
@@ -245,13 +249,13 @@ class Measure extends Component {
 
     // TODO break music measure and tab measure into separate components
     return (
-      <div style={{ height: tuning.length * 55, width: measure.width }}>
-        <svg style={{ height: (tuning.length * 25), width: measure.width }}>
-          { this.renderMeasure(measureIndex, measure, 0, 20) }
-          { measure.indexOfRow === 0 ? <Clef y={20} strings={tuning.length} treble /> : null }
-          { this.renderTimeSignature(measureIndex, measure, 5, 20) }
-          { this.renderBpm(measure, 20) }
-          { this.renderRepeat(measure, 5, 20) }
+      <div style={{ height: MEASURE_HEIGHT + (tuning.length * 25), width: measure.width }}>
+        <svg style={{ height: MEASURE_HEIGHT, width: measure.width }}>
+          { this.renderMeasure(measureIndex, measure, 0, 65) }
+          { measure.indexOfRow === 0 ? <Clef y={65} strings={tuning.length} treble /> : null }
+          { this.renderTimeSignature(measureIndex, measure, 5, 65) }
+          { this.renderBpm(measure, 65) }
+          { this.renderRepeat(measure, 5, 65) }
         </svg>
         <svg style={{ height: (tuning.length * 25), width: measure.width }}>
           { this.renderTabMeasure(measureIndex, measure, 0, 0) }
