@@ -80,7 +80,7 @@ class Measure extends Component {
     });
   };
 
-  renderBars = (x, measureWidth, tuning) => {
+  renderBars = (x, y, measureWidth, tuning) => {
     const { playingIndex, isValid, measureIndex, measureLength } = this.props;
 
     const lastMeasure = measureIndex === measureLength - 1;
@@ -96,7 +96,7 @@ class Measure extends Component {
       strokeWidth = 1;
     }
 
-    return <Bars measureWidth={measureWidth} color={color}
+    return <Bars measureWidth={measureWidth} color={color} y={y}
       strokeWidth={strokeWidth} strings={tuning} lastMeasure={lastMeasure}
     />;
   };
@@ -156,7 +156,7 @@ class Measure extends Component {
     });
   };
 
-  renderMusicNote = (note, measureIndex, noteIndex) => {
+  renderMusicNote = (note, measureIndex, noteIndex, yOffset) => {
     const x = this.calcXForNote(noteIndex);
     const { playingIndex, tuning } = this.props;
 
@@ -167,7 +167,7 @@ class Measure extends Component {
       }
     }
 
-    const y = 5 * 6.5 + 6; // 45 for 6 strings
+    const y = 5 * 6.5 + 6 + yOffset; // 45 for 6 strings
     if(note.string[0] === 'rest') {
       return <Rest onClick={this.onClick.bind(this, noteIndex, 0)} key={noteIndex} color={color} x={x} y={y} note={note} />;
     }
@@ -180,7 +180,7 @@ class Measure extends Component {
 
       // lol this is terrible, I'll figure out something better
       // eventually want something like "staffHeight - (halfDistanceBetweenBars * notePosition)"
-      const y = 248 - (3.6 * midiIndex);
+      const y = yOffset + 248 - (3.6 * midiIndex);
 
       return fret !== undefined ? (
         <g>
@@ -190,9 +190,9 @@ class Measure extends Component {
     });
   };
 
-  renderTimeSignature = (measureIndex, measure, strings) => {
+  renderTimeSignature = (measureIndex, measure, strings, yOffset) => {
     const x = this.props.measure.indexOfRow === 0 ? 36 : 20;
-    const y = strings * 6 - 6; // y of top of time signature
+    const y = (strings * 6 - 6) + yOffset; // y of top of time signature
     const { renderTimeSignature, timeSignature } = measure;
 
     return renderTimeSignature ?
@@ -200,29 +200,28 @@ class Measure extends Component {
       null;
   };
 
-  renderRepeat = (measure) => {
+  renderRepeat = (measure, strings, y) => {
     if(!measure.repeatEnd) {
       return null;
     }
 
-    const strings = this.props.tuning.length;
     const { width } = measure;
 
-    return <Repeat measureWidth={width} strings={strings} />;
+    return <Repeat measureWidth={width} strings={strings} y={y} />;
   };
 
-  renderBpm = (measure) => {
-    return measure.showBpm ? <Bpm bpm={measure.bpm} /> : null;
+  renderBpm = (measure, y) => {
+    return measure.showBpm ? <Bpm y={y} bpm={measure.bpm} /> : null;
   };
 
-  renderMeasureNumber = (measureIndex) => {
-    return <text x={0} y={23} style={{ fontSize: 9, fill: 'tomato' }}>{measureIndex + 1}</text>;
+  renderMeasureNumber = (measureIndex, y) => {
+    return <text x={0} y={23 + y} style={{ fontSize: 9, fill: 'tomato' }}>{measureIndex + 1}</text>;
   };
 
-  renderTabMeasure = (measureIndex, measure, x) => {
+  renderTabMeasure = (measureIndex, measure, x, y) => {
     return (
       <g>
-        { this.renderBars(x, measure.width, this.props.tuning) }
+        { this.renderBars(x, y, measure.width, this.props.tuning) }
         {
           measure.notes.map((note, noteIndex) => this.renderTabNote(note, measureIndex, noteIndex, x))
         }
@@ -230,12 +229,12 @@ class Measure extends Component {
     );
   };
 
-  renderMeasure = (measureIndex, measure, x) => {
+  renderMeasure = (measureIndex, measure, x, y) => {
     return (
       <g>
-        { this.renderBars(x, measure.width, [0, 1, 2, 3, 4]) }
+        { this.renderBars(x, y, measure.width, [0, 1, 2, 3, 4]) }
         {
-          measure.notes.map((note, noteIndex) => this.renderMusicNote(note, measureIndex, noteIndex, x))
+          measure.notes.map((note, noteIndex) => this.renderMusicNote(note, measureIndex, noteIndex, y))
         }
       </g>
     );
@@ -244,22 +243,23 @@ class Measure extends Component {
   render() {
     const { measure, measureIndex, tuning } = this.props;
 
+    // TODO break music measure and tab measure into separate components
     return (
-      <div style={{ height: tuning.length * 48, width: measure.width}}>
-        <svg style={{ height: (tuning.length * 20), width: measure.width, paddingTop: 15 }}>
-          { this.renderMeasure(measureIndex, measure, 0) }
-          { measure.indexOfRow === 0 ? <Clef y={25} strings={tuning.length} /> : null }
-          { this.renderTimeSignature(measureIndex, measure, 5) }
-          { this.renderBpm(measure) }
-          { this.renderRepeat(measure) }
+      <div style={{ height: tuning.length * 55, width: measure.width }}>
+        <svg style={{ height: (tuning.length * 25), width: measure.width }}>
+          { this.renderMeasure(measureIndex, measure, 0, 20) }
+          { measure.indexOfRow === 0 ? <Clef y={20} strings={tuning.length} treble /> : null }
+          { this.renderTimeSignature(measureIndex, measure, 5, 20) }
+          { this.renderBpm(measure, 20) }
+          { this.renderRepeat(measure, 5, 20) }
         </svg>
         <svg style={{ height: (tuning.length * 25), width: measure.width }}>
-          { this.renderTabMeasure(measureIndex, measure, 0) }
+          { this.renderTabMeasure(measureIndex, measure, 0, 0) }
           { measure.indexOfRow === 0 ? <Clef y={25} strings={tuning.length} tab /> : null }
-          { this.renderTimeSignature(measureIndex, measure, tuning.length) }
+          { this.renderTimeSignature(measureIndex, measure, tuning.length, 0) }
           { this.renderCursor() }
-          { this.renderMeasureNumber(measureIndex) }
-          { this.renderRepeat(measure) }
+          { this.renderMeasureNumber(measureIndex, 0) }
+          { this.renderRepeat(measure, tuning.length, 0) }
         </svg>
       </div>
     );
