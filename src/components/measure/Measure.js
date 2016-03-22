@@ -16,7 +16,7 @@ import Bpm from './Bpm';
 import Repeat from './Repeat';
 import shallowEqual from 'react-pure-render/shallowEqual';
 import { finalMeasureSelector } from '../../util/selectors';
-import { getIndexOfNote } from '../../util/midiNotes';
+import { getIndexOfNote, getStaffPositionOfNote, midis } from '../../util/midiNotes';
 
 const MEASURE_HEIGHT = 210;
 
@@ -177,20 +177,24 @@ class Measure extends Component {
     return tuning.map((_, i) => {
       const stringIndex = findIndex(note.string, (index) => index === i);
       const fret = stringIndex === -1 ? undefined : note.fret[stringIndex];
+      if(fret === undefined) {
+        return null;
+      }
 
       const midiIndex = getIndexOfNote(tuning[i]) + fret;
+      const midiString = midis[midiIndex];
+      const staffPosition = getStaffPositionOfNote(midiString.replace('#', ''));
 
-      // lol this is terrible, I'll figure out something better
-      // eventually want something like "staffHeight - (halfDistanceBetweenBars * notePosition)"
-      // TODO accidentals should have the same midiIndex as naturals (A and A# on the same line, duh)
+      // ok this works ok for quarter notes, now we need all types of notes to be able to use the
+      // same y position
       // also render accidentals pls
-      const y = yOffset + 248 - (3.6 * midiIndex);
+      const y = yOffset + 249 - (6.5 * staffPosition);
 
-      return fret !== undefined ? (
+      return (
         <g>
           <MusicNote key={i} x={x} y={y} color={color} fret={fret} note={note} />
         </g>
-      ) : null;
+      );
     });
   };
 

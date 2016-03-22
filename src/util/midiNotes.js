@@ -13,8 +13,16 @@ exports.midis = [
   'c8', 'c#8', 'd8', 'd#8', 'e8', 'f8', 'f#8', 'g8', 'g#8', 'a8', 'a#8', 'b8'
 ];
 
+export function midisMinusSharps() {
+  return exports.midis.filter((midi) => midi.charAt(1) !== '#');
+}
+
 export function getIndexOfNote(midi) {
   return _.indexOf(exports.midis, midi);
+}
+
+export function getStaffPositionOfNote(midi) {
+  return _.indexOf(midisMinusSharps(), midi);
 }
 
 export function previousNote(midi) {
