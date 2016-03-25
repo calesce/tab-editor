@@ -23,7 +23,7 @@ export default class Bars extends Component {
       <g>
         { strings.map((_, i) => this.renderBar(i, startY, color, strings.length, strokeWidth, measureWidth)) }
 
-        <rect y={startY} width={0.5} height={height} fill={color} stroke={'#999999'} strokeWidth={strokeWidth}></rect>
+        <rect y={startY} width={0.5} height={height} fill={color} stroke={color} strokeWidth={strokeWidth}></rect>
         <rect x={x} y={startY} width={width} height={height} fill={'#999999'} stroke={color} strokeWidth={strokeWidth}></rect>
         { lastMeasure ?
             <rect x={measureWidth - 3.5} y={startY} width={.75} height={height} fill={'#999999'} stroke={color} strokeWidth={0.1}></rect> :

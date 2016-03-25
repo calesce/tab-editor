@@ -259,6 +259,7 @@ class Measure extends Component {
           { measure.indexOfRow === 0 ? <Clef y={65} strings={tuning.length} treble /> : null }
           { this.renderTimeSignature(measureIndex, measure, 5, 65) }
           { this.renderBpm(measure, 65) }
+          { this.renderMeasureNumber(measureIndex, 65) }
           { this.renderRepeat(measure, 5, 65) }
         </svg>
         <svg style={{ height: (tuning.length * 25), width: measure.width }}>
@@ -266,7 +267,6 @@ class Measure extends Component {
           { measure.indexOfRow === 0 ? <Clef y={25} strings={tuning.length} tab /> : null }
           { this.renderTimeSignature(measureIndex, measure, tuning.length, 0) }
           { this.renderCursor() }
-          { this.renderMeasureNumber(measureIndex, 0) }
           { this.renderRepeat(measure, tuning.length, 0) }
         </svg>
       </div>
