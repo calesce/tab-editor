@@ -99,3 +99,17 @@ export function defaultBpm(measures) {
     bpm: 120
   }));
 }
+
+export function calcXForNote(measure, noteIndex) {
+  let x = 0 + (noteIndex * 53 + 33);
+  if(measure.indexOfRow === 0) {
+    x += 8;
+  }
+  if(measure.renderTimeSignature) {
+    x += 30;
+  }
+  if(measure.notes.length === 0 && measure.indexOfRow !== 0) {
+    x -= measure.renderTimeSignature ? 0 : 25;
+  }
+  return x;
+}

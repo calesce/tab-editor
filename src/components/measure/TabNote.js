@@ -119,7 +119,7 @@ export default class TabNote extends Component {
   };
 
   render() {
-    const { x, y, fret, color, stringOffset, note } = this.props;
+    const { x, y, fret, color, stringOffset, note, displayOption } = this.props;
     const { dotted, tremolo, vibrato, trill } = note;
 
     let width = 12;
@@ -150,7 +150,7 @@ export default class TabNote extends Component {
         {clickArea}
         {space}
         {tabNote}
-        {fret !== undefined ? this.renderStem() : null}
+        {fret !== undefined && displayOption === 'tab' ? this.renderStem() : null}
         {fret !== undefined ? this.renderDot(dotted, x, stringOffset, color) : null}
         {fret !== undefined ? this.renderTremolo(tremolo, x, stringOffset, color): null}
         {fret !== undefined ? this.renderVibrato(vibrato, x, color): null}

@@ -1,19 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { findIndex } from 'lodash';
+import { calcXForNote } from '../../util';
 
-import * as Actions from '../../actions/cursor';
-
-import TabNote from './TabNote';
 import MusicNote from './MusicNote';
 import Bars from './Bars';
 import Rest from './Rest';
 import Clef from './Clef';
 import TimeSignature from './TimeSignature';
-import Cursor from './Cursor';
 import Bpm from './Bpm';
 import Repeat from './Repeat';
+import TabMeasure from './TabMeasure';
 import shallowEqual from 'react-pure-render/shallowEqual';
 import { finalMeasureSelector } from '../../util/selectors';
 import { getIndexOfNote, getStaffPositionOfNote, midis } from '../../util/midiNotes';
@@ -60,28 +57,6 @@ class Measure extends Component {
     return false;
   }
 
-  calcXForNote = (noteIndex) => {
-    let x = 0 + (noteIndex * 53 + 33);
-    if(this.props.measure.indexOfRow === 0) {
-      x += 8;
-    }
-    if(this.props.measure.renderTimeSignature) {
-      x += 30;
-    }
-    if(this.props.measure.notes.length === 0 && this.props.measure.indexOfRow !== 0) {
-      x -= this.props.measure.renderTimeSignature ? 0 : 25;
-    }
-    return x;
-  };
-
-  onClick = (noteIndex, stringIndex) => {
-    this.props.actions.setCursor({
-      noteIndex,
-      stringIndex,
-      measureIndex: this.props.measureIndex
-    });
-  };
-
   renderBars = (x, y, measureWidth, tuning) => {
     const { playingIndex, isValid, measureIndex, measureLength } = this.props;
 
@@ -103,63 +78,8 @@ class Measure extends Component {
     />;
   };
 
-  renderCursor = () => {
-    if(!this.props.cursor) {
-      return null;
-    }
-    const { noteIndex, stringIndex } = this.props.cursor;
-    const strings = this.props.tuning.length;
-    const stringOffset = (6 - strings);
-
-    const x = this.calcXForNote(noteIndex);
-    const y = 95 - (13 * (stringIndex + stringOffset));
-
-    let index = 0;
-    let fret = 0;
-
-    if(this.props.measure.notes.length > 0) {
-      index = findIndex(this.props.measure.notes[noteIndex].string, (s) => s === stringIndex);
-      fret = this.props.measure.notes[noteIndex].fret[index];
-    }
-
-    return <Cursor x={x} y={y} fret={fret} />;
-  };
-
-  renderTabNote = (note, measureIndex, noteIndex) => {
-    const x = this.calcXForNote(noteIndex);
-    const { playingIndex, tuning } = this.props;
-    const strings = this.props.tuning.length;
-    const stringOffset = (6 - strings);
-
-    let color = 'black';
-    if(playingIndex) {
-      if(playingIndex.measureIndex === measureIndex && playingIndex.noteIndex === noteIndex && playingIndex) {
-        color = '#f9423a';
-      }
-    }
-
-    const y = tuning.length * 6.5 + 6; // 45 for 6 strings
-    if(note.string[0] === 'rest') {
-      return <Rest onClick={this.onClick.bind(this, noteIndex, 0)} key={noteIndex} color={color} x={x} y={y} note={note} />;
-    }
-
-    return tuning.map((_, i) => {
-      const stringIndex = findIndex(note.string, (index) => index === i);
-      const string = stringIndex === -1 ? i : note.string[stringIndex];
-      const fret = stringIndex === -1 ? undefined : note.fret[stringIndex];
-      const y = 95 - (13 * (i + stringOffset));
-      return (
-        <g>
-          <TabNote onClick={this.onClick.bind(this, noteIndex, string)}
-            key={i} x={x} y={y} color={color} fret={fret} note={note} stringOffset={stringOffset}
-          />
-        </g>
-      );
-    });
-  };
-
   renderMusicNote = (note, measureIndex, noteIndex, yOffset) => {
-    const x = this.calcXForNote(noteIndex);
+    const x = calcXForNote(this.props.measure, noteIndex);
     const { playingIndex, tuning } = this.props;
 
     let color = 'black';
@@ -208,35 +128,6 @@ class Measure extends Component {
       null;
   };
 
-  renderRepeat = (measure, strings, y) => {
-    if(!measure.repeatEnd) {
-      return null;
-    }
-
-    const { width } = measure;
-
-    return <Repeat measureWidth={width} strings={strings} y={y} />;
-  };
-
-  renderBpm = (measure, y) => {
-    return measure.showBpm ? <Bpm y={y} bpm={measure.bpm} /> : null;
-  };
-
-  renderMeasureNumber = (measureIndex, y) => {
-    return <text x={0} y={23 + y} style={{ fontSize: 9, fill: 'tomato' }}>{measureIndex + 1}</text>;
-  };
-
-  renderTabMeasure = (measureIndex, measure, x, y) => {
-    return (
-      <g>
-        { this.renderBars(x, y, measure.width, this.props.tuning) }
-        {
-          measure.notes.map((note, noteIndex) => this.renderTabNote(note, measureIndex, noteIndex, x))
-        }
-      </g>
-    );
-  };
-
   renderMeasure = (measureIndex, measure, x, y) => {
     return (
       <g>
@@ -250,34 +141,23 @@ class Measure extends Component {
 
   render() {
     const { measure, measureIndex, tuning } = this.props;
+    const y = 65;
 
     // TODO break music measure and tab measure into separate components
     return (
       <div style={{ height: MEASURE_HEIGHT + (tuning.length * 25), width: measure.width }}>
-        <svg style={{ height: MEASURE_HEIGHT, width: measure.width }}>
-          { this.renderMeasure(measureIndex, measure, 0, 65) }
-          { measure.indexOfRow === 0 ? <Clef y={65} strings={tuning.length} treble /> : null }
-          { this.renderTimeSignature(measureIndex, measure, 5, 65) }
-          { this.renderBpm(measure, 65) }
-          { this.renderMeasureNumber(measureIndex, 65) }
-          { this.renderRepeat(measure, 5, 65) }
+        <svg style={{ height: MEASURE_HEIGHT, width: measure.width, overflow: 'visible' }}>
+          { this.renderMeasure(measureIndex, measure, 0, y) }
+          { measure.indexOfRow === 0 ? <Clef y={y} strings={tuning.length} treble /> : null }
+          { this.renderTimeSignature(measureIndex, measure, 5, y) }
+          { measure.showBpm ? <Bpm y={y} bpm={measure.bpm} />  : null }
+          <text x={0} y={23 + y} style={{ fontSize: 9, fill: 'tomato' }}>{measureIndex + 1}</text>
+          { measure.repeatEnd ? <Repeat measureWidth={measure.width} strings={5} y={y} /> : null }
         </svg>
-        <svg style={{ height: (tuning.length * 25), width: measure.width }}>
-          { this.renderTabMeasure(measureIndex, measure, 0, 0) }
-          { measure.indexOfRow === 0 ? <Clef y={25} strings={tuning.length} tab /> : null }
-          { this.renderTimeSignature(measureIndex, measure, tuning.length, 0) }
-          { this.renderCursor() }
-          { this.renderRepeat(measure, tuning.length, 0) }
-        </svg>
+        <TabMeasure {...this.props} stringCount={tuning.length} displayOption='both' />
       </div>
     );
   }
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(Actions, dispatch)
-  };
-}
-
-export default connect(finalMeasureSelector, mapDispatchToProps)(Measure);
+export default connect(finalMeasureSelector)(Measure);
