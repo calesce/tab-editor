@@ -116,9 +116,10 @@ class TabMeasure extends Component {
       <svg style={{ height: (stringCount * 25), width: measure.width }}>
         { this.renderBars(0, 0, measure.width, range(stringCount)) }
         {
-          measure.notes.map((note, noteIndex) => this.renderTabNote(note, measureIndex, noteIndex, 0, displayOption))
+          measure.notes.map((note, noteIndex) => this.renderTabNote(note, measureIndex, noteIndex, displayOption))
         }
         { (measure.showBpm && displayOption === 'tab') ? <Bpm y={0} bpm={measure.bpm} />  : null }
+        { displayOption === 'tab' ? <text x={0} y={23} style={{ fontSize: 9, fill: 'tomato' }}>{measureIndex + 1}</text> : null }
         { measure.indexOfRow === 0 ? <Clef y={25} strings={stringCount} tab /> : null }
         { this.renderTimeSignature(measureIndex, measure, stringCount, 0, displayOption) }
         { this.renderCursor() }
