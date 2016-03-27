@@ -227,16 +227,6 @@ class App extends Component {
     } else if(event.keyCode === 8) { // delete
       event.preventDefault();
       this.deleteNote();
-    } else if(event.keyCode === 69) { // e
-      return this.changeNoteLength('e');
-    } else if(event.keyCode === 83) { // s
-      return this.changeNoteLength('s');
-    } else if(event.keyCode === 81) { // q
-      return this.changeNoteLength('q');
-    } else if(event.keyCode === 87) { // w
-      return this.changeNoteLength('w');
-    } else if(event.keyCode === 72 && !event.ctrlKey) { // h
-      return this.changeNoteLength('h');
     } else if(event.keyCode === 73 && !event.metaKey) { // i
       return this.insertNote();
     } else if(event.keyCode === 32) { // spacebar
