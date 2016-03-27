@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { indexOf } from 'lodash';
 
 exports.midis = [
   'c-1', 'c#-1', 'd-1', 'd#-1', 'e-1', 'f-1', 'f#-1', 'g-1', 'g#-1', 'a-1', 'a#-1', 'b-1',
@@ -18,11 +18,11 @@ export function midisMinusSharps() {
 }
 
 export function getIndexOfNote(midi) {
-  return _.indexOf(exports.midis, midi);
+  return indexOf(exports.midis, midi);
 }
 
 export function getStaffPositionOfNote(midi) {
-  return _.indexOf(midisMinusSharps(), midi);
+  return indexOf(midisMinusSharps(), midi);
 }
 
 export function previousNote(midi) {

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Modal from 'react-modal';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import _ from 'lodash';
+import { cloneDeep } from 'lodash';
 
 import { changeTuning } from '../../actions/track';
 import { nextNote, previousNote } from '../../util/midiNotes';
@@ -12,7 +12,7 @@ class TuningModal extends Component {
     super(props);
 
     this.state = {
-      tuning: _.cloneDeep(this.props.tuning)
+      tuning: cloneDeep(this.props.tuning)
     };
   }
 

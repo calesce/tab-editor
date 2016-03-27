@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { flatten, findIndex, cloneDeep } from 'lodash';
 import {
   CHANGE_NOTE, DELETE_NOTE, CHANGE_NOTE_LENGTH, INSERT_NOTE, TOGGLE_NOTE_DOTTED,
   PASTE_NOTE, CUT_NOTE, TOGGLE_NOTE_TREMOLO, INCREASE_NOTE_LENGTH, DECREASE_NOTE_LENGTH,
@@ -6,7 +6,7 @@ import {
 } from '../actions/types';
 
 const replaceNote = (state, note, noteIndex) => {
-  const notes = _.flatten([state.notes.slice(0, noteIndex), note, state.notes.slice(noteIndex + 1, state.notes.length)]);
+  const notes = flatten([state.notes.slice(0, noteIndex), note, state.notes.slice(noteIndex + 1, state.notes.length)]);
   return Object.assign({}, state, { notes });
 };
 
@@ -26,17 +26,17 @@ const insertNote = (state, action) => {
     fret: ['rest'],
     string: ['rest']
   };
-  const notes = _.flatten([state.notes.slice(0, noteIndex + 1), note, state.notes.slice(noteIndex + 1, state.notes.length)]);
+  const notes = flatten([state.notes.slice(0, noteIndex + 1), note, state.notes.slice(noteIndex + 1, state.notes.length)]);
   return Object.assign({}, state, { notes });
 };
 
 const deleteNote = (state, action) => {
   const { noteIndex, stringIndex } = action.index;
   const note = state.notes[noteIndex];
-  const currentStringIndex = _.findIndex(note.string, (note) => note === stringIndex);
+  const currentStringIndex = findIndex(note.string, (note) => note === stringIndex);
 
   if(note.fret[0] === 'rest') {
-    const notes = _.flatten([state.notes.slice(0, noteIndex), state.notes.slice(noteIndex + 1, state.notes.length)]);
+    const notes = flatten([state.notes.slice(0, noteIndex), state.notes.slice(noteIndex + 1, state.notes.length)]);
     return Object.assign({}, state, { notes });
   } else if(currentStringIndex === -1) {
     return state;
@@ -179,7 +179,7 @@ export default function measure(state, action) {
           duration: 'q'
         };
       } else {
-        let currentStringIndex = _.findIndex(oldNote.string, (note) => note === stringIndex);
+        let currentStringIndex = findIndex(oldNote.string, (note) => note === stringIndex);
         if(oldNote.fret[0] === 'rest') {
           note = {
             ...oldNote,
@@ -194,7 +194,7 @@ export default function measure(state, action) {
           };
         } else {
           const oldFret = oldNote.fret[currentStringIndex];
-          note = _.cloneDeep(oldNote);
+          note = cloneDeep(oldNote);
           if(oldFret === 1) {
             note.fret[currentStringIndex] = action.fret + 10;
           } else if(oldFret === 2 && action.fret <= 5) {
@@ -210,13 +210,13 @@ export default function measure(state, action) {
 
     case PASTE_NOTE: {
       const { noteIndex } = action.index;
-      const notes = _.flatten([state.notes.slice(0, noteIndex + 1), action.note, state.notes.slice(noteIndex + 1, state.notes.length)]);
+      const notes = flatten([state.notes.slice(0, noteIndex + 1), action.note, state.notes.slice(noteIndex + 1, state.notes.length)]);
       return Object.assign({}, state, { notes });
     }
 
     case CUT_NOTE: {
       const { noteIndex } = action.index;
-      const notes = _.flatten([state.notes.slice(0, noteIndex), state.notes.slice(noteIndex + 1, state.notes.length)]);
+      const notes = flatten([state.notes.slice(0, noteIndex), state.notes.slice(noteIndex + 1, state.notes.length)]);
       return Object.assign({}, state, { notes });
     }
 

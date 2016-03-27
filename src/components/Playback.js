@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import _ from 'lodash';
+import { defer } from 'lodash';
 
 import * as Actions from '../actions/playingIndex';
 import { playCurrentNote, getReplaySpeedForNote } from '../util/audio';
@@ -99,7 +99,7 @@ class Playback extends Component {
   };
 
   updateNote = (playingIndex) => {
-    _.defer(() => {
+    defer(() => {
       this.props.actions.setPlayingIndex(playingIndex);
     });
   };

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Modal from 'react-modal';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import _ from 'lodash';
 
 import { changeBpm } from '../../actions/measure';
 
@@ -11,7 +10,7 @@ export default class TimeSignatureModal extends Component {
     super(props);
 
     this.state = {
-      bpm: props.measure.bpm ? _.cloneDeep(props.measure.bpm) : 120,
+      bpm: props.measure.bpm ? props.measure.bpm : 120,
       checked: false
     };
   }
