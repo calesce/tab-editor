@@ -19,6 +19,13 @@ import BpmModal from '../components/editor/BpmModal';
 import Playback from '../components/Playback';
 import Metronome from '../components/Metronome';
 
+// Fix for Safari, which can't play .ogg files
+if(!!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/)) {
+  Soundfont.nameToUrl = function(name) {
+    return `https://cdn.rawgit.com/gleitz/midi-js-Soundfonts/master/FluidR3_GM/${name}-mp3.js`;
+  };
+}
+
 const Actions = Object.assign(TracksActions, TrackActions, MeasureActions, PlayingIndexActions, CursorActions);
 
 class App extends Component {
