@@ -233,12 +233,13 @@ class App extends Component {
 
   render() {
     const { openModal, buffers, woodblockBuffers } = this.state;
+    const canPlay = buffers && woodblockBuffers ? true : false;
 
     return (
       <div style={{ width: '100%', height: '100%' }}>
         { this.props.playingIndex ? <Playback buffers={buffers} /> : null}
         { this.props.playingIndex && this.props.metronome ? <Metronome buffers={woodblockBuffers} /> : null}
-        <EditorArea handlePlay={this.handlePlay} openModal={this.openModal} />
+        <EditorArea canPlay={canPlay} handlePlay={this.handlePlay} openModal={this.openModal} />
         <TabStaff />
         <TimeSignatureModal isOpen={openModal === 'timeSig'} closeModal={this.closeModal} />
         <TuningModal isOpen={openModal === 'tuning'} closeModal={this.closeModal} />

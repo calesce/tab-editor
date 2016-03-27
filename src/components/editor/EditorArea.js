@@ -27,10 +27,14 @@ class EditorArea extends Component {
     this.props.setPlayingIndex(null);
   };
 
-  renderPlayStop() {
+  renderPlayButton = (canPlay) => {
+    return canPlay ? <button onClick={this.props.handlePlay}>Play</button> : <button disabled>Play</button>;
+  };
+
+  renderPlayStop(canPlay) {
     return this.props.playingIndex ?
       <button onClick={this.handleStop}>Stop</button> :
-      <button onClick={this.props.handlePlay}>Play</button>;
+      this.renderPlayButton(canPlay);
   };
 
   addRepeatEnd = () => {
@@ -38,7 +42,7 @@ class EditorArea extends Component {
   };
 
   render() {
-    const { openModal, timeSignature, layout } = this.props;
+    const { openModal, timeSignature, layout, canPlay } = this.props;
 
     const style = {
       position: 'fixed',
@@ -55,7 +59,7 @@ class EditorArea extends Component {
 
     return (
       <div style={style}>
-        { this.renderPlayStop() }
+        { this.renderPlayStop(canPlay) }
         <button onClick={openModal.bind(this, 'timeSig')}>{timeSignature}</button>
         <button onClick={this.toggleLayout}>{layout}</button>
         <button onClick={openModal.bind(this, 'tuning')}>tuning</button>
