@@ -70,17 +70,14 @@ class MusicMeasure extends Component {
       const midiIndex = getIndexOfNote(tuning[i]) + fret;
       const midiString = midis[midiIndex];
       const staffPosition = getStaffPositionOfNote(midiString.replace('#', ''));
+      const sharp = midiString.charAt(1) === '#';
 
       // ok this works ok for quarter notes, now we need all types of notes to be able to use the
       // same y position
       // also render accidentals pls
       const y = yOffset + 249 - (6.5 * staffPosition);
 
-      return (
-        <g>
-          <MusicNote key={i} x={x} y={y} color={color} fret={fret} note={note} />
-        </g>
-      );
+      return <MusicNote key={i} x={x} y={y} color={color} fret={fret} note={note} sharp={sharp} />;
     });
   };
 
