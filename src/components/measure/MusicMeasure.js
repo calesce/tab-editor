@@ -57,7 +57,7 @@ class MusicMeasure extends Component {
 
     const y = 5 * 6.5 + 6 + yOffset; // 45 for 6 strings
     if(note.string[0] === 'rest') {
-      return <Rest onClick={this.onClick.bind(this, noteIndex, 0)} key={noteIndex} color={color} x={x} y={y} note={note} />;
+      return <Rest key={noteIndex} color={color} x={x} y={y} note={note} />;
     }
 
     return tuning.map((_, i) => {

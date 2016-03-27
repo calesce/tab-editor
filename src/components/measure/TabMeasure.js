@@ -17,7 +17,7 @@ import { setCursor } from '../../actions/cursor';
 
 class TabMeasure extends Component {
   onClick = (noteIndex, stringIndex) => {
-    this.props.actions.setCursor({
+    this.props.setCursor({
       noteIndex,
       stringIndex,
       measureIndex: this.props.measureIndex
