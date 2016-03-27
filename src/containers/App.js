@@ -64,27 +64,6 @@ class App extends Component {
     });
   };
 
-  loadSoundfont2 = (instrument) => {
-    const nonbuffers = localStorage.getItem(instrument);
-
-    if(nonbuffers) {
-      Soundfont.decodeArray(audioContext, JSON.parse(nonbuffers)).then((buffers) => {
-        this.setState({
-          buffers: Object.assign({}, this.state.buffers, { [instrument]: buffers })
-        });
-      });
-    } else {
-      Soundfont.loadNonBuffers(audioContext, instrument).then((ns) => {
-        localStorage.setItem(instrument, JSON.stringify(ns));
-        Soundfont.decodeArray(audioContext, ns).then((buffers) => {
-          this.setState({
-            buffers: Object.assign({}, this.state.buffers, { [instrument]: buffers })
-          });
-        });
-      });
-    }
-  };
-
   handleResize = () => {
     this.props.actions.resize();
   };
@@ -173,14 +152,6 @@ class App extends Component {
     }
   };
 
-  editNote = (fret) => {
-    this.props.actions.changeNote(this.props.cursor, fret);
-  };
-
-  changeNoteLength = (duration) => {
-    this.props.actions.changeNoteLength(this.props.cursor, duration);
-  };
-
   deleteNote = () => {
     const { measureIndex } = this.props.cursor;
     let notes = this.props.measures[measureIndex].notes;
@@ -190,10 +161,6 @@ class App extends Component {
     } else if(notes.length === 0) {
       this.props.actions.deleteMeasure(measureIndex);
     }
-  };
-
-  insertNote = () => {
-    this.props.actions.insertNote(this.props.cursor);
   };
 
   pasteNote = () => {
@@ -221,14 +188,14 @@ class App extends Component {
     }
 
     if(event.keyCode <= 57 && event.keyCode >= 48 && !event.metaKey) {
-      return this.editNote(event.keyCode - 48);
+      return this.props.actions.changeNote(this.props.cursor, event.keyCode - 48);
     } else if(event.keyCode === 82 && !event.metaKey && !event.ctrlKey) {
       this.props.actions.changeNote(this.props.cursor, 'rest');
     } else if(event.keyCode === 8) { // delete
       event.preventDefault();
       this.deleteNote();
     } else if(event.keyCode === 73 && !event.metaKey) { // i
-      return this.insertNote();
+      return this.props.actions.insertNote(this.props.cursor);
     } else if(event.keyCode === 32) { // spacebar
       event.preventDefault();
       return this.props.playingIndex ? this.handleStop() : this.handlePlay();
