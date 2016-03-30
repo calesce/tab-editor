@@ -81,7 +81,7 @@ export default class MusicNote extends Component {
   };
 
   renderNote = (x, y, color) => {
-    switch(this.props.note.duration) {
+    switch(this.props.duration) {
       case 'q':
         return this.renderQuarterNote(x + 1, y, color);
       case 'h':
@@ -190,16 +190,34 @@ export default class MusicNote extends Component {
     );
   };
 
-  render() {
-    const { x, y, fret, color, sharp } = this.props;
+  renderLedgerLines = (x, direction, numLines) => {
+    if(direction === 'above') {
+      return Array.from({ length: numLines}).map((_, i) =>
+        <rect x={x - 2} y={90 - 13 * (i + 1)} width={20} height={0.5} fill='#999999'
+          strokeWidth={0.1}></rect>
+      );
+    } else {
+      return Array.from({ length: numLines}).map((_, i) =>
+        <rect key={i} x={x - 2} y={90 + 4 * 13 + 13 * (i + 1)} width={20} height={0.5} fill='#999999'
+          strokeWidth={0.1}></rect>
+      );
+    }
+  };
 
-    let width = 12;
-    if(fret > 9) {
-      width += 6;
+  render() {
+    const { x, y, color, sharp } = this.props;
+
+    let ledgerLinesAbove, ledgerLinesBelow;
+    if(y >= 125.5) {
+      ledgerLinesBelow = Math.round((y - 125.5) / 13 + 1) - 1;
+    } else if(y <= 60.5) {
+      ledgerLinesAbove = Math.round((60.5 - y) / 13 + 1) - 1;
     }
 
     return (
       <g>
+        { ledgerLinesBelow ? this.renderLedgerLines(x, 'below', ledgerLinesBelow) : null }
+        { ledgerLinesAbove ? this.renderLedgerLines(x, 'above', ledgerLinesAbove) : null }
         { this.renderNote(x, y, color) }
         { sharp ? this.renderSharp(x, y, color) : null }
       </g>

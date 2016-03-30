@@ -77,7 +77,7 @@ class MusicMeasure extends Component {
       // also render accidentals pls
       const y = yOffset + 249 - (6.5 * staffPosition);
 
-      return <MusicNote key={i} x={x} y={y} color={color} fret={fret} note={note} sharp={sharp} />;
+      return <MusicNote key={i} x={x} y={y} color={color} duration={note.duration} sharp={sharp} measureY={yOffset} />;
     });
   };
 
