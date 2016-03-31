@@ -60,7 +60,7 @@ class MusicMeasure extends Component {
       return <Rest key={noteIndex} color={color} x={x} y={y} note={note} />;
     }
 
-    return tuning.map((_, i) => {
+    const ys = tuning.map((_, i) => {
       const stringIndex = findIndex(note.string, (index) => index === i);
       const fret = stringIndex === -1 ? undefined : note.fret[stringIndex];
       if(fret === undefined) {
@@ -70,14 +70,32 @@ class MusicMeasure extends Component {
       const midiIndex = getIndexOfNote(tuning[i]) + fret;
       const midiString = midis[midiIndex];
       const staffPosition = getStaffPositionOfNote(midiString.replace('#', ''));
+      return yOffset + 249 - (6.5 * staffPosition);
+    });
+
+    return tuning.map((_, i) => {
+      const stringIndex = findIndex(note.string, (index) => index === i);
+      const fret = stringIndex === -1 ? undefined : note.fret[stringIndex];
+      if(fret === undefined) {
+        return null;
+      }
+
+      const midiIndex = getIndexOfNote(tuning[i]) + fret;
+      const midiString = midis[midiIndex];
       const sharp = midiString.charAt(1) === '#';
 
-      // ok this works ok for quarter notes, now we need all types of notes to be able to use the
-      // same y position
-      // also render accidentals pls
-      const y = yOffset + 249 - (6.5 * staffPosition);
+      const yToUse = ys[i];
 
-      return <MusicNote key={i} x={x} y={y} color={color} duration={note.duration} sharp={sharp} measureY={yOffset} />;
+      let flip = yToUse <= 93;
+      if(note.string.length > 1) {
+        const ysToUse = ys.filter(y => y);
+        const furthestFromMiddle = ysToUse.reduce((max, next) => {
+          return Math.abs(max - 93) > Math.abs(next - 93) ? max : next;
+        }, 93);
+        flip = furthestFromMiddle <= 93;
+      }
+
+      return <MusicNote key={i} x={x} y={yToUse} color={color} duration={note.duration} sharp={sharp} measureY={yOffset} flip={flip} />;
     });
   };
 

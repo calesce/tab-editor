@@ -5,7 +5,7 @@ export default class MusicNote extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
 
   renderQuarterNote = (x, y, color) => {
-    if(y <= 93) {
+    if(this.props.flip) {
       return (
         <svg x={x} y={y} style={{ overflow: 'visible' }}>
           <g transform='rotate(180 8 24)'>
@@ -25,7 +25,7 @@ export default class MusicNote extends Component {
   };
 
   renderHalfNote = (x, y, color) => {
-    if(y <= 93) {
+    if(this.props.flip) {
       return (
         <svg x={x} y={y} style={{ overflow: 'visible' }}>
           <g transform='rotate(180 8 23)'>
@@ -53,7 +53,7 @@ export default class MusicNote extends Component {
   };
 
   renderEighthNote = (x, y, color) => {
-    if(y <= 93) {
+    if(this.props.flip) {
       return (
         <svg x={x} y={y} style={{ overflow: 'visible' }}>
           <g transform='rotate(180 8 23)'>
@@ -193,7 +193,7 @@ export default class MusicNote extends Component {
   renderLedgerLines = (x, direction, numLines) => {
     if(direction === 'above') {
       return Array.from({ length: numLines}).map((_, i) =>
-        <rect x={x - 2} y={90 - 13 * (i + 1)} width={20} height={0.5} fill='#999999'
+        <rect key={i} x={x - 2} y={90 - 13 * (i + 1)} width={20} height={0.5} fill='#999999'
           strokeWidth={0.1}></rect>
       );
     } else {
