@@ -5,7 +5,7 @@ export default class Rest extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
 
   restClicked = () => {
-    this.props.onClick();
+    this.props.onClick(this.props.noteIndex, 0);
   };
 
   renderQuarterRest = (style, y) => {

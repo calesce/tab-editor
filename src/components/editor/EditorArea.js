@@ -31,7 +31,7 @@ class EditorArea extends Component {
     return canPlay ? <button onClick={this.props.handlePlay}>Play</button> : <button disabled>Play</button>;
   };
 
-  renderPlayStop(canPlay) {
+  renderPlayStop = (canPlay) => {
     return this.props.playingIndex ?
       <button onClick={this.handleStop}>Stop</button> :
       this.renderPlayButton(canPlay);

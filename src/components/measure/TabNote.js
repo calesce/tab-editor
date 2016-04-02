@@ -1,11 +1,19 @@
 import React, { Component } from 'react';
 import shouldPureComponentUpdate from 'react-pure-render/function';
 
+const style = {
+  MozUserSelect: 'none',
+  WebkitUserSelect: 'none',
+  msUserSelect: 'none',
+  cursor: 'crosshair',
+  fontSize: 14
+};
+
 export default class TabNote extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
 
   onClick = () => {
-    this.props.onClick();
+    this.props.onClick(this.props.noteIndex, this.props.stringIndex);
   };
 
   renderQuarterStem = (x, color, stringOffset) => {
@@ -37,7 +45,7 @@ export default class TabNote extends Component {
   renderStem = () => {
     const { x, color, stringOffset } = this.props;
 
-    switch(this.props.note.duration) {
+    switch(this.props.duration) {
       case 'q':
         return this.renderQuarterStem(x + 1, color, stringOffset);
       case 'e':
@@ -119,21 +127,12 @@ export default class TabNote extends Component {
   };
 
   render() {
-    const { x, y, fret, color, stringOffset, note, displayOption } = this.props;
-    const { dotted, tremolo, vibrato, trill } = note;
+    const { x, y, fret, color, stringOffset, displayOption, dotted, tremolo, vibrato, trill } = this.props;
 
     let width = 12;
     if(fret > 9) {
       width += 6;
     }
-
-    const style = {
-      MozUserSelect: 'none',
-      WebkitUserSelect: 'none',
-      msUserSelect: 'none',
-      cursor: 'crosshair',
-      fontSize: 14
-    };
 
     const tabNote = fret !== undefined ?
       <text onClick={this.onClick} x={x+2} y={y} fill={color} style={style}>{fret}</text> :
