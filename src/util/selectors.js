@@ -38,18 +38,23 @@ const calcMeasureValidity = (measure) => {
   return timeSig === notesTotal;
 };
 
-const measureSelector = (state, props) => {
+const currentMeasureSelector = state => state.tracks[state.currentTrackIndex].measures;
+const measureIndexSelector = (_, props) => props.measureIndex;
+
+const measureSelector = createSelector(
+  currentMeasureSelector, measureIndexSelector,
+  (measures, propsMeasureIndex) => {
   let measureIndex;
-  if(state.tracks[state.currentTrackIndex].measures.length - 1 < props.measureIndex) {
-    measureIndex = props.measureIndex - 1;
+  if(measures.length - 1 < propsMeasureIndex) {
+    measureIndex = propsMeasureIndex - 1;
   } else {
-    measureIndex = props.measureIndex;
+    measureIndex = propsMeasureIndex;
   }
   return {
-    measure: state.tracks[state.currentTrackIndex].measures[measureIndex],
+    measure: measures[measureIndex],
     measureIndex
   };
-};
+});
 
 const playingIndexSelector = state => state.playingIndex;
 const cursorSelector = state => state.cursor;
