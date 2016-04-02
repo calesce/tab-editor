@@ -3,7 +3,7 @@ import { findIndex } from 'lodash';
 import shouldPureComponentUpdate from 'react-pure-render/function';
 
 import { calcXForNote } from '../../util';
-import { getIndexOfNote, getStaffPositionOfNote, midis } from '../../util/midiNotes';
+import { getIndexOfNote, getStaffPositionOfNote, midiNotes } from '../../util/midiNotes';
 
 import MusicNote from './MusicNote';
 import Bars from './Bars';
@@ -12,6 +12,8 @@ import Clef from './Clef';
 import TimeSignature from './TimeSignature';
 import Bpm from './Bpm';
 import Repeat from './Repeat';
+
+const midis = midiNotes();
 
 class MusicMeasure extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;

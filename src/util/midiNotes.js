@@ -1,6 +1,6 @@
 import { indexOf } from 'lodash';
 
-exports.midis = [
+const midis = [
   'c-1', 'c#-1', 'd-1', 'd#-1', 'e-1', 'f-1', 'f#-1', 'g-1', 'g#-1', 'a-1', 'a#-1', 'b-1',
   'c0', 'c#0', 'd0', 'd#0', 'e0', 'f0', 'f#0', 'g0', 'g#0', 'a0', 'a#0', 'b0',
   'c1', 'c#1', 'd1', 'd#1', 'e1', 'f1', 'f#1', 'g1', 'g#1', 'a1', 'a#1', 'b1',
@@ -13,12 +13,16 @@ exports.midis = [
   'c8', 'c#8', 'd8', 'd#8', 'e8', 'f8', 'f#8', 'g8', 'g#8', 'a8', 'a#8', 'b8'
 ];
 
+export function midiNotes() {
+  return midis;
+}
+
 export function midisMinusSharps() {
-  return exports.midis.filter((midi) => midi.charAt(1) !== '#');
+  return midis.filter((midi) => midi.charAt(1) !== '#');
 }
 
 export function getIndexOfNote(midi) {
-  return indexOf(exports.midis, midi);
+  return indexOf(midis, midi);
 }
 
 export function getStaffPositionOfNote(midi) {
@@ -28,11 +32,11 @@ export function getStaffPositionOfNote(midi) {
 export function previousNote(midi) {
   let index = getIndexOfNote(midi);
 
-  return index === 0 ? midi : exports.midis[index - 1];
+  return index === 0 ? midi : midis[index - 1];
 }
 
 export function nextNote(midi) {
   let index = getIndexOfNote(midi);
 
-  return index >= exports.midis.length - 1 ? midi : exports.midis[index + 1];
+  return index >= midis.length - 1 ? midi : midis[index + 1];
 }

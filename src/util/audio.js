@@ -6,11 +6,11 @@ const getSpeedFromBpm = (bpm) => {
   return 60000 / bpm;
 };
 
-exports.getMetronomeSpeed = (bpm, denominator) => {
+export function getMetronomeSpeed (bpm, denominator) {
   return getSpeedFromBpm(bpm) * 4 / denominator;
-};
+}
 
-exports.getReplaySpeedForNote = (notes, noteIndex, bpm) => {
+export function getReplaySpeedForNote (notes, noteIndex, bpm) {
   if(notes.length === 0) {
     return bpm * 4;
   }
@@ -34,7 +34,7 @@ exports.getReplaySpeedForNote = (notes, noteIndex, bpm) => {
   }
 
   return replaySpeed;
-};
+}
 
 const playVibrato = (source, startTime, endTime) => {
   let freqGain = audioContext.createGain();
@@ -49,7 +49,7 @@ const playVibrato = (source, startTime, endTime) => {
   lfo.stop(endTime);
 };
 
-exports.playWithBuffer = (buffer, duration, startTime = audioContext.currentTime, vibrato) => {
+export function playWithBuffer (buffer, duration, startTime = audioContext.currentTime, vibrato) {
   let endTime = startTime + duration;
 
   let source = audioContext.createBufferSource();
@@ -64,7 +64,7 @@ exports.playWithBuffer = (buffer, duration, startTime = audioContext.currentTime
 
   source.start(startTime);
   source.stop(endTime);
-};
+}
 
 const play = (startTime, pitch, duration) => {
   let endTime = startTime + duration;
@@ -96,7 +96,7 @@ const playNoteAtTime = (currentNote, playTime, duration, buffers, tuning) => {
     const openString = tuning[currentNote.string[i]];
     const noteToPlay = getIndexOfNote(openString) + currentNote.fret[i];
 
-    exports.playWithBuffer(buffers[noteToPlay], duration / 1000, playTime, currentNote.vibrato);
+    playWithBuffer(buffers[noteToPlay], duration / 1000, playTime, currentNote.vibrato);
   }
 };
 
@@ -140,7 +140,7 @@ const mapDurationToNote = (duration) => {
   }
 };
 
-exports.playCurrentNote = (track, playingIndex, buffers) => {
+export function playCurrentNote (track, playingIndex, buffers) {
   const { measures, tuning } = track;
 
   const measure = measures[playingIndex.measureIndex];
@@ -151,7 +151,7 @@ exports.playCurrentNote = (track, playingIndex, buffers) => {
     noteToPlay = { duration: 'w', fret: ['rest'] };
   }
 
-  const replaySpeed = exports.getReplaySpeedForNote(measure.notes, playingIndex.noteIndex, measure.bpm);
+  const replaySpeed = getReplaySpeedForNote(measure.notes, playingIndex.noteIndex, measure.bpm);
 
   if(noteToPlay.fret[0] === 'rest') {
     playNoteAtTime('rest', audioContext.currentTime, replaySpeed, buffers, tuning);
@@ -162,4 +162,4 @@ exports.playCurrentNote = (track, playingIndex, buffers) => {
   } else {
     playNoteAtTime(noteToPlay, audioContext.currentTime, replaySpeed, buffers, tuning);
   }
-};
+}
