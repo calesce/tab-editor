@@ -11,6 +11,18 @@ import { timeSignatureSelector } from '../../util/selectors';
 import InstrumentSelect from './InstrumentSelect';
 import TrackSelect from './TrackSelect';
 
+class EditorButton extends Component {
+  shouldComponentUpdate = shouldPureComponentUpdate;
+
+  onClick = () => {
+    this.props.onClick(this.props.type);
+  };
+
+  render() {
+    return <button onClick={this.onClick}>{this.props.label}</button>;
+  }
+}
+
 class EditorArea extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
 
@@ -60,10 +72,10 @@ class EditorArea extends Component {
     return (
       <div style={style}>
         { this.renderPlayStop(canPlay) }
-        <button onClick={openModal.bind(this, 'timeSig')}>{timeSignature}</button>
+        <EditorButton onClick={openModal} type='timeSig' label={timeSignature} />
         <button onClick={this.toggleLayout}>{layout}</button>
-        <button onClick={openModal.bind(this, 'tuning')}>tuning</button>
-        <button onClick={openModal.bind(this, 'bpm')}>bpm</button>
+        <EditorButton onClick={openModal} type='tuning' label='tuning' />
+        <EditorButton onClick={openModal} type='bpm' label='bpm' />
         <InstrumentSelect />
         <button onClick={this.props.insertTrack}>add track</button>
         <button onClick={this.props.deleteTrack}>remove track</button>

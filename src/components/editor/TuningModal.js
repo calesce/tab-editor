@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import shouldPureComponentUpdate from 'react-pure-render/function';
 import Modal from 'react-modal';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -6,6 +7,18 @@ import { cloneDeep } from 'lodash';
 
 import { changeTuning } from '../../actions/track';
 import { nextNote, previousNote } from '../../util/midiNotes';
+
+class TuningButton extends Component {
+  shouldComponentUpdate = shouldPureComponentUpdate;
+
+  onClick = () => {
+    this.props.onClick(this.props.index);
+  };
+
+  render() {
+    return <button onClick={this.onClick}>{this.props.label}</button>;
+  }
+}
 
 class TuningModal extends Component {
   constructor(props) {
@@ -52,8 +65,8 @@ class TuningModal extends Component {
           return (
             <div key={i}>
               {string}
-              <button onClick={this.incrementString.bind(this, i)} >^</button>
-              <button onClick={this.decrementString.bind(this, i)} >v</button>
+              <TuningButton onClick={this.incrementString} index={i} label='^' />
+              <TuningButton onClick={this.decrementString} index={i} label='v' />
             </div>
           );
         })}
