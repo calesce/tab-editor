@@ -11,6 +11,19 @@ import { timeSignatureSelector } from '../../util/selectors';
 import InstrumentSelect from './InstrumentSelect';
 import TrackSelect from './TrackSelect';
 
+const style = {
+  position: 'fixed',
+  display: 'flex',
+  justifyContent: 'space-around',
+  alignItems: 'center',
+  top: 0,
+  left: 0,
+  height: 50,
+  zIndex: 99,
+  width: '100%',
+  background: 'tomato'
+};
+
 class EditorButton extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
 
@@ -55,19 +68,6 @@ class EditorArea extends Component {
 
   render() {
     const { openModal, timeSignature, layout, canPlay } = this.props;
-
-    const style = {
-      position: 'fixed',
-      display: 'flex',
-      justifyContent: 'space-around',
-      alignItems: 'center',
-      top: 0,
-      left: 0,
-      height: 50,
-      zIndex: 99,
-      width: '100%',
-      background: 'tomato'
-    };
 
     return (
       <div style={style}>

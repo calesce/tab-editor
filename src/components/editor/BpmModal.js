@@ -5,6 +5,21 @@ import { connect } from 'react-redux';
 
 import { changeBpm } from '../../actions/measure';
 
+const style = {
+  overlay: {
+    zIndex: 100
+  },
+  content: {
+    left: '40%',
+    height: '12%',
+    width: '15%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    padding: 10
+  }
+};
+
 export default class TimeSignatureModal extends Component {
   constructor(props) {
     super(props);
@@ -38,21 +53,6 @@ export default class TimeSignatureModal extends Component {
   };
 
   render() {
-    const style = {
-      overlay: {
-        zIndex: 100
-      },
-      content: {
-        left: '40%',
-        height: '12%',
-        width: '15%',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        padding: 10
-      }
-    };
-
     return (
       <Modal style={style} isOpen={this.props.isOpen} onRequestClose={this.onRequestClose}>
         <div style={{ bottom: '5%' }}>BPM</div>

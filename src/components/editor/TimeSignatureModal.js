@@ -7,6 +7,21 @@ import shouldPureComponentUpdate from 'react-pure-render/function';
 import { changeTimeSignature } from '../../actions/measure';
 import { timeSignatureSelector } from '../../util/selectors';
 
+const style = {
+  overlay: {
+    zIndex: 100
+  },
+  content: {
+    left: '40%',
+    height: '12%',
+    width: '15%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    padding: 10
+  }
+};
+
 export default class TimeSignatureModal extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
 
@@ -56,21 +71,6 @@ export default class TimeSignatureModal extends Component {
   };
 
   render() {
-    const style = {
-      overlay: {
-        zIndex: 100
-      },
-      content: {
-        left: '40%',
-        height: '12%',
-        width: '15%',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        padding: 10
-      }
-    };
-
     return (
       <Modal style={style} isOpen={this.props.isOpen} onRequestClose={this.onRequestClose}>
         <small style={{ bottom: '5%' }}>Time Signature:</small>

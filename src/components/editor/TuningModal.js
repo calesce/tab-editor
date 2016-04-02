@@ -8,6 +8,20 @@ import { cloneDeep } from 'lodash';
 import { changeTuning } from '../../actions/track';
 import { nextNote, previousNote } from '../../util/midiNotes';
 
+const style = {
+  overlay: {
+    zIndex: 100
+  },
+  content: {
+    left: '40%',
+    height: '50%',
+    width: '15%',
+    display: 'flex',
+    flexDirection: 'column',
+    padding: 10
+  }
+};
+
 class TuningButton extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
 
@@ -75,20 +89,6 @@ class TuningModal extends Component {
   };
 
   render() {
-    const style = {
-      overlay: {
-        zIndex: 100
-      },
-      content: {
-        left: '40%',
-        height: '50%',
-        width: '15%',
-        display: 'flex',
-        flexDirection: 'column',
-        padding: 10
-      }
-    };
-
     return (
       <Modal style={style} isOpen={this.props.isOpen} onRequestClose={this.onRequestClose}>
         <div>
