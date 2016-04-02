@@ -63,16 +63,16 @@ export const finalMeasureSelector = createSelector(
   tuningSelector,
   measureLengthSelector,
   ({ measure, measureIndex }, playingIndex, cursor, tuning, measureLength) => {
-    let newplayingIndex, newCursor;
+    let playingNoteIndex, newCursor;
     if(playingIndex) {
-      newplayingIndex = playingIndex.measureIndex === measureIndex ? playingIndex : undefined;
+      playingNoteIndex = playingIndex.measureIndex === measureIndex ? playingIndex.noteIndex : undefined;
     } else {
       newCursor = cursor.measureIndex === measureIndex ? cursor : undefined;
     }
 
     return {
       measure,
-      playingIndex: newplayingIndex,
+      playingNoteIndex,
       cursor: newCursor,
       isValid: calcMeasureValidity(measure),
       tuning,

@@ -57,16 +57,14 @@ class TabMeasure extends Component {
   };
 
   renderBars = (x, y, measureWidth, stringCount) => {
-    const { playingIndex, isValid, measureIndex, measureLength } = this.props;
+    const { playingNoteIndex, isValid, measureIndex, measureLength } = this.props;
 
     const lastMeasure = measureIndex === measureLength - 1;
     let color = '#999999';
     let strokeWidth = 0.1;
-    if(playingIndex) {
-      if(measureIndex === playingIndex.measureIndex) {
-        color = '#267754';
-        strokeWidth = 1;
-      }
+    if(playingNoteIndex !== undefined) {
+      color = '#267754';
+      strokeWidth = 1;
     } else if(!isValid) {
       color = 'red';
       strokeWidth = 1;
@@ -79,14 +77,12 @@ class TabMeasure extends Component {
 
   renderTabNote = (note, measureIndex, noteIndex, displayOption) => {
     const x = calcXForNote(this.props.measure, noteIndex);
-    const { playingIndex, stringCount } = this.props;
+    const { playingNoteIndex, stringCount } = this.props;
     const stringOffset = (6 - stringCount);
 
     let color = 'black';
-    if(playingIndex) {
-      if(playingIndex.measureIndex === measureIndex && playingIndex.noteIndex === noteIndex && playingIndex) {
-        color = '#f9423a';
-      }
+    if(playingNoteIndex === noteIndex) {
+      color = '#f9423a';
     }
 
     const y = stringCount * 6.5 + 6; // 45 for 6 strings

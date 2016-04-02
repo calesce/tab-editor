@@ -10,8 +10,8 @@ const MEASURE_HEIGHT = 210;
 
 class Measure extends Component {
   shouldComponentUpdate(nextProps) {
-    const playingIndexEqual = !shallowEqual(this.props.playingIndex, nextProps.playingIndex);
-    if(playingIndexEqual) {
+    const playingNoteIndexEqual = !shallowEqual(this.props.playingNoteIndex, nextProps.playingNoteIndex);
+    if(playingNoteIndexEqual) {
       return true;
     }
     const cursorEqual = !shallowEqual(this.props.cursor, nextProps.cursor);
@@ -49,11 +49,11 @@ class Measure extends Component {
   }
 
   render() {
-    const { cursor, playingIndex, measureLength, measureIndex, measure, tuning, isValid } = this.props;
+    const { cursor, playingNoteIndex, measureLength, measureIndex, measure, tuning, isValid } = this.props;
     return (
       <div style={{ height: MEASURE_HEIGHT + (tuning.length * 25), width: measure.width }}>
         <MusicMeasure {...this.props} measureHeight={MEASURE_HEIGHT} y={65} />
-        <TabMeasure measure={measure} cursor={cursor} playingIndex={playingIndex}
+        <TabMeasure measure={measure} cursor={cursor} playingNoteIndex={playingNoteIndex}
           measureIndex={measureIndex} measureLength={measureLength}
           isValid={isValid} stringCount={tuning.length} displayOption='both' />
       </div>

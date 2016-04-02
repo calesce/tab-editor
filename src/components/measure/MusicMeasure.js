@@ -24,16 +24,14 @@ class MusicMeasure extends Component {
   };
 
   renderBars = (x, y, measureWidth, tuning) => {
-    const { playingIndex, isValid, measureIndex, measureLength } = this.props;
+    const { playingNoteIndex, isValid, measureIndex, measureLength } = this.props;
 
     const lastMeasure = measureIndex === measureLength - 1;
     let color = '#999999';
     let strokeWidth = 0.1;
-    if(playingIndex) {
-      if(measureIndex === playingIndex.measureIndex) {
-        color = '#267754';
-        strokeWidth = 1;
-      }
+    if(playingNoteIndex !== undefined) {
+      color = '#267754';
+      strokeWidth = 1;
     } else if(!isValid) {
       color = 'red';
       strokeWidth = 1;
@@ -46,13 +44,11 @@ class MusicMeasure extends Component {
 
   renderMusicNote = (note, measureIndex, noteIndex, yOffset) => {
     const x = calcXForNote(this.props.measure, noteIndex);
-    const { playingIndex, tuning } = this.props;
+    const { playingNoteIndex, tuning } = this.props;
 
     let color = 'black';
-    if(playingIndex) {
-      if(playingIndex.measureIndex === measureIndex && playingIndex.noteIndex === noteIndex && playingIndex) {
-        color = '#f9423a';
-      }
+    if(playingNoteIndex === noteIndex) {
+      color = '#f9423a';
     }
 
     const y = 5 * 6.5 + 6 + yOffset; // 45 for 6 strings
