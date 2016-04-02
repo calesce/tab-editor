@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { findIndex, range } from 'lodash';
+import shouldPureComponentUpdate from 'react-pure-render/function';
+
 import { calcXForNote } from '../../util';
 import { cursorSelectorForMeasure } from '../../util/selectors';
 
@@ -17,6 +19,8 @@ import Repeat from './Repeat';
 import { setCursor } from '../../actions/cursor';
 
 class TabMeasure extends Component {
+  shouldComponentUpdate = shouldPureComponentUpdate;
+
   onClick = (noteIndex, stringIndex) => {
     this.props.setCursor({
       noteIndex,

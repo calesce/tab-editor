@@ -10,19 +10,12 @@ const MEASURE_HEIGHT = 210;
 
 class Measure extends Component {
   shouldComponentUpdate(nextProps) {
-    const playingNoteIndexEqual = !shallowEqual(this.props.playingNoteIndex, nextProps.playingNoteIndex);
-    if(playingNoteIndexEqual) {
+    if(this.props.playingNoteIndex !== nextProps.playingNoteIndex) {
       return true;
     }
-    const cursorEqual = !shallowEqual(this.props.cursor, nextProps.cursor);
-    if(cursorEqual) {
+    if(!shallowEqual(this.props.tuning, nextProps.tuning)) {
       return true;
     }
-    const tuningEqual = !shallowEqual(this.props.tuning, nextProps.tuning);
-    if(tuningEqual) {
-      return true;
-    }
-    const measureShallowEqual = !shallowEqual(this.props.measure, nextProps.measure);
 
     for(let i = 0; i < this.props.measure.notes.length; i++) {
       const oldNote = this.props.measure.notes[i];
@@ -41,7 +34,7 @@ class Measure extends Component {
         return true;
       }
     }
-
+    const measureShallowEqual = !shallowEqual(this.props.measure, nextProps.measure);
     if(measureShallowEqual) {
       return true;
     }

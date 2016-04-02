@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { findIndex } from 'lodash';
+import shouldPureComponentUpdate from 'react-pure-render/function';
 
 import { calcXForNote } from '../../util';
 import { getIndexOfNote, getStaffPositionOfNote, midis } from '../../util/midiNotes';
@@ -13,6 +14,8 @@ import Bpm from './Bpm';
 import Repeat from './Repeat';
 
 class MusicMeasure extends Component {
+  shouldComponentUpdate = shouldPureComponentUpdate;
+
   renderTimeSignature = (measureIndex, measure, strings, yOffset) => {
     const x = this.props.measure.indexOfRow === 0 ? 36 : 20;
     const y = (strings * 6 - 6) + yOffset; // y of top of time signature
