@@ -19,7 +19,7 @@ import BpmModal from '../components/editor/BpmModal';
 import Playback from '../components/Playback';
 import Metronome from '../components/Metronome';
 
-// Fix for Safari, which can't play .ogg files
+// Fix for Safari/Edge, which can't play .ogg files
 if(!!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/) || !!navigator.userAgent.match(/Edge\/\d+/)) {
   Soundfont.nameToUrl = function(name) {
     return `https://cdn.rawgit.com/gleitz/midi-js-Soundfonts/master/FluidR3_GM/${name}-mp3.js`;
@@ -120,16 +120,9 @@ class App extends Component {
   };
 
   handlePlay = () => {
-    if(this.props.playingIndex || !this.state.buffers) {
-      return;
+    if(!this.props.playingIndex && this.state.buffers) {
+      this.props.actions.setPlayingIndex(this.props.cursor);
     }
-
-    const { noteIndex, measureIndex } = this.props.cursor;
-
-    this.props.actions.setPlayingIndex({
-      measureIndex,
-      noteIndex
-    });
   };
 
   getCurrentNote = () => {
@@ -233,13 +226,12 @@ class App extends Component {
 
   render() {
     const { openModal, buffers, woodblockBuffers } = this.state;
-    const canPlay = buffers && woodblockBuffers ? true : false;
 
     return (
       <div style={{ width: '100%', height: '100%' }}>
         { this.props.playingIndex ? <Playback buffers={buffers} /> : null}
         { this.props.playingIndex && this.props.metronome ? <Metronome buffers={woodblockBuffers} /> : null}
-        <EditorArea canPlay={canPlay} handlePlay={this.handlePlay} openModal={this.openModal} />
+        <EditorArea canPlay={buffers && woodblockBuffers} handlePlay={this.handlePlay} openModal={this.openModal} />
         <TabStaff />
         <TimeSignatureModal isOpen={openModal === 'timeSig'} closeModal={this.closeModal} />
         <TuningModal isOpen={openModal === 'tuning'} closeModal={this.closeModal} />
