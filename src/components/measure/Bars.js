@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { range } from 'lodash';
 import shouldPureComponentUpdate from 'react-pure-render/function';
 
 export default class Bars extends Component {
@@ -14,15 +15,14 @@ export default class Bars extends Component {
   render() {
     const { measureWidth, color, strokeWidth, strings, lastMeasure, y } = this.props;
     const startY = 25 + y;
-    const height = 25 + (strings.length - 3) * 13 + 1;
+    const height = 25 + (strings - 3) * 13 + 1;
 
     const x = lastMeasure ? measureWidth - 1 : measureWidth - 0.5;
     const width = lastMeasure ? 1.0 : 0.5;
 
     return (
       <g>
-        { strings.map((_, i) => this.renderBar(i, startY, color, strings.length, strokeWidth, measureWidth)) }
-
+        { range(strings).map((_, i) => this.renderBar(i, startY, color, strings, strokeWidth, measureWidth)) }
         <rect y={startY} width={0.5} height={height} fill={color} stroke={color} strokeWidth={strokeWidth}></rect>
         <rect x={x} y={startY} width={width} height={height} fill={'#999999'} stroke={color} strokeWidth={strokeWidth}></rect>
         { lastMeasure ?

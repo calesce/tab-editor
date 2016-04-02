@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { findIndex, range } from 'lodash';
+import { findIndex } from 'lodash';
 import shouldPureComponentUpdate from 'react-pure-render/function';
 
 import { calcXForNote } from '../../util';
@@ -117,7 +117,7 @@ class TabMeasure extends Component {
 
     return (
       <svg style={{ height: (stringCount * 25), width: measure.width }}>
-        { this.renderBars(0, 0, measure.width, range(stringCount)) }
+        { this.renderBars(0, 0, measure.width, stringCount) }
         {
           measure.notes.map((note, noteIndex) => this.renderTabNote(note, measureIndex, noteIndex, displayOption))
         }

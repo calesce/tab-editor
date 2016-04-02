@@ -28,7 +28,7 @@ class MusicMeasure extends Component {
       null;
   };
 
-  renderBars = (x, y, measureWidth, tuning) => {
+  renderBars = (x, y, measureWidth, strings) => {
     const { playingNoteIndex, isValid, measureIndex, measureLength } = this.props;
 
     const lastMeasure = measureIndex === measureLength - 1;
@@ -43,7 +43,7 @@ class MusicMeasure extends Component {
     }
 
     return <Bars measureWidth={measureWidth} color={color} y={y}
-      strokeWidth={strokeWidth} strings={tuning} lastMeasure={lastMeasure}
+      strokeWidth={strokeWidth} strings={strings} lastMeasure={lastMeasure}
     />;
   };
 
@@ -105,7 +105,7 @@ class MusicMeasure extends Component {
 
     return (
       <svg style={{ height: measureHeight, width: measure.width, overflow: 'visible' }}>
-        { this.renderBars(0, y, measure.width, [0, 1, 2, 3, 4]) }
+        { this.renderBars(0, y, measure.width, 5) }
         {
           measure.notes.map((note, noteIndex) => this.renderMusicNote(note, measureIndex, noteIndex, y))
         }
