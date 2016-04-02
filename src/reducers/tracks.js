@@ -5,7 +5,9 @@ import cursorReducer from './cursor';
 import { prepareRows, prepareTrack } from '../util';
 import { COPY_NOTE, CUT_NOTE, CHANGE_LAYOUT, INSERT_TRACK,
   DELETE_TRACK, SELECT_TRACK, INSERT_MEASURE, DELETE_MEASURE,
-  CHANGE_BPM, CHANGE_TIME_SIGNATURE, SET_PLAYING_INDEX, TOGGLE_METRONOME } from '../actions/types';
+  CHANGE_BPM, CHANGE_TIME_SIGNATURE, SET_PLAYING_INDEX, TOGGLE_METRONOME,
+  SET_CURSOR, MOVE_CURSOR_LEFT, MOVE_CURSOR_RIGHT,
+  MOVE_CURSOR_UP, MOVE_CURSOR_DOWN } from '../actions/types';
 
 const replaceTrack = (tracks, action, currentTrackIndex, layout = 'page') => {
   return tracks.map((t, index) => {
@@ -141,6 +143,18 @@ export default function tracks(state = {}, action) {
         ...state,
         playingIndex: playingIndex(state.playingIndex, action)
       };
+
+    case SET_CURSOR:
+    case MOVE_CURSOR_LEFT:
+    case MOVE_CURSOR_RIGHT:
+    case MOVE_CURSOR_UP:
+    case MOVE_CURSOR_DOWN: {
+      const currentTrack = state.tracks[state.currentTrackIndex];
+      return {
+        ...state,
+        cursor: cursorReducer(state.cursor, currentTrack.measures, currentTrack.tuning, action)
+      };
+    }
 
     default: {
       const currentTrack = state.tracks[state.currentTrackIndex];
