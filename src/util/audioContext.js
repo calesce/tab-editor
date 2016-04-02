@@ -1,3 +1,5 @@
+/*eslint-disable no-undef */
+
 let audioContext;
 try {
   audioContext = new AudioContext();

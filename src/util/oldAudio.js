@@ -10,14 +10,14 @@ exports.handlePlay = () => {
 
   this.setState({
     isPlaying: true,
-    startTime: this.state.audioContext.currentTime + .005,
+    startTime: this.state.audioContext.currentTime + .005
   }, () => {
     this.changeNotes(0, 0);
     this.schedule();
   });
 };
 
-exports.schedule = () => {
+exports.schedule = (song) => {
   let currentTime = this.state.audioContext.currentTime - this.state.startTime;
 
   while(noteTime < currentTime + 0.200) {
@@ -36,7 +36,7 @@ exports.schedule = () => {
   requestId = requestAnimationFrame(this.schedule);
 };
 
-exports.advanceNote = (measure, noteIndex) => {
+exports.advanceNote = (measure, noteIndex, song) => {
   let tempo = 60.0;
   let secondsPerBeat = 60.0 / tempo;
   noteTime = noteTime + (0.5 * secondsPerBeat);

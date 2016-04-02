@@ -86,13 +86,14 @@ export default function cursor(state = initialState, measures, tuning, action) {
       }
       return Object.assign({}, state, { noteIndex: state.noteIndex + 1 });
 
-    case DELETE_NOTE:
+    case DELETE_NOTE: {
       const measure = measures[measureIndex];
       const note = measure.notes[noteIndex];
       if(note.fret[0] === 'rest' && noteIndex !== 0) {
         return getPrevNote(measures, state);
       }
       return state;
+    }
 
     case DELETE_MEASURE:
       return getPrevNote(measures, state);

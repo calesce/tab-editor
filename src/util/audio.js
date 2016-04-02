@@ -1,5 +1,6 @@
 import { getIndexOfNote } from './midiNotes';
 import audioContext from './audioContext';
+import { times } from 'lodash';
 
 const getSpeedFromBpm = (bpm) => {
   return 60000 / bpm;
@@ -103,7 +104,7 @@ const playTremolo = (replaySpeed, buffers, tuning, noteToPlay) => {
   const currentTime = audioContext.currentTime;
   const n = mapDurationToNote(noteToPlay.duration);
 
-  _.times(n, (i) => {
+  times(n, (i) => {
     playNoteAtTime(noteToPlay, currentTime + (i * replaySpeed / (n * 1000)), replaySpeed / n, buffers, tuning);
   });
 };
@@ -112,7 +113,7 @@ const playTrill = (replaySpeed, buffers, tuning, noteToPlay) => {
   const currentTime = audioContext.currentTime;
   const n = mapDurationToNote(noteToPlay.duration);
 
-  _.times(n, (i) => {
+  times(n, (i) => {
     if(i % 2 === 0) {
       playNoteAtTime(noteToPlay, currentTime + (i * replaySpeed / (n * 1000)), replaySpeed / n, buffers, tuning);
     } else {

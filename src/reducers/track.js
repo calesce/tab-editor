@@ -61,7 +61,7 @@ export default function track(state = {}, action) {
         measures: state.measures.filter((_, index) => index !== action.measureIndex)
       };
 
-    case INSERT_MEASURE:
+    case INSERT_MEASURE: {
       const lastMeasure = state.measures[state.measures.length - 1];
 
       return {
@@ -72,6 +72,7 @@ export default function track(state = {}, action) {
           notes: []
         })
       };
+    }
 
     case REPLACE_SONG:
       return action.track;
@@ -82,13 +83,14 @@ export default function track(state = {}, action) {
     case CHANGE_TUNING:
       return Object.assign({}, state, { tuning: action.tuning });
 
-    case CHANGE_BPM:
+    case CHANGE_BPM: {
       const newMeasures = action.all ? changeAllMeasures(state.measures, action.bpm)
                                    : changeMeasuresAfterCurrent(state.measures, action.bpm, action.index.measureIndex);
       return {
         ...state,
         measures: newMeasures
       };
+    }
 
     case CHANGE_TIME_SIGNATURE: {
       const { timeSignature, index } = action;

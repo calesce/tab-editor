@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import { findIndex } from 'lodash';
 
 export function timeSignatureSelector(state) {
   const measures = state.tracks[state.currentTrackIndex].measures;
@@ -114,7 +115,7 @@ export const expandedTracksSelector = createSelector(
   playingIndexSelector,
   currentTrackIndexSelector,
   (tracks, tracksWithMeasures, playingIndex, currentTrackIndex) => {
-    const repeatIndex = _.findIndex(tracksWithMeasures[0].measures, (measure) => measure.repeatEnd === true);
+    const repeatIndex = findIndex(tracksWithMeasures[0].measures, (measure) => measure.repeatEnd === true);
 
     let expandedTracks;
     if(repeatIndex === -1) {
@@ -131,7 +132,7 @@ export const expandedTracksSelector = createSelector(
       });
     }
 
-    const newMeasureIndex = _.findIndex(expandedTracks[currentTrackIndex].measures, (measure) =>
+    const newMeasureIndex = findIndex(expandedTracks[currentTrackIndex].measures, (measure) =>
       measure.measureIndex === playingIndex.measureIndex
     );
     const newPlayingIndex = {

@@ -127,13 +127,14 @@ export default function tracks(state = {}, action) {
       };
     }
 
-    case CHANGE_LAYOUT:
+    case CHANGE_LAYOUT: {
       const newLayout = layout(state.layout, action);
       return {
         ...state,
         tracks: replaceTrack(state.tracks, action, state.currentTrackIndex, newLayout),
         layout: newLayout
       };
+    }
 
     case SET_PLAYING_INDEX:
       return {
