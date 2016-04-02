@@ -49,11 +49,11 @@ class Measure extends Component {
   }
 
   render() {
-    const { cursor, playingNoteIndex, measureLength, measureIndex, measure, tuning, isValid } = this.props;
+    const { playingNoteIndex, measureLength, measureIndex, measure, tuning, isValid } = this.props;
     return (
       <div style={{ height: MEASURE_HEIGHT + (tuning.length * 25), width: measure.width }}>
         <MusicMeasure {...this.props} measureHeight={MEASURE_HEIGHT} y={65} />
-        <TabMeasure measure={measure} cursor={cursor} playingNoteIndex={playingNoteIndex}
+        <TabMeasure measure={measure} playingNoteIndex={playingNoteIndex}
           measureIndex={measureIndex} measureLength={measureLength}
           isValid={isValid} stringCount={tuning.length} displayOption='both' />
       </div>

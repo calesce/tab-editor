@@ -59,27 +59,31 @@ const measureLengthSelector = state => state.tracks[state.currentTrackIndex].mea
 export const finalMeasureSelector = createSelector(
   measureSelector,
   playingIndexSelector,
-  cursorSelector,
   tuningSelector,
   measureLengthSelector,
-  ({ measure, measureIndex }, playingIndex, cursor, tuning, measureLength) => {
-    let playingNoteIndex, newCursor;
+  ({ measure, measureIndex }, playingIndex, tuning, measureLength) => {
+    let playingNoteIndex;
     if(playingIndex) {
       playingNoteIndex = playingIndex.measureIndex === measureIndex ? playingIndex.noteIndex : undefined;
-    } else {
-      newCursor = cursor.measureIndex === measureIndex ? cursor : undefined;
     }
 
     return {
       measure,
       playingNoteIndex,
-      cursor: newCursor,
       isValid: calcMeasureValidity(measure),
       tuning,
       measureLength
     };
   }
 );
+
+export const cursorSelectorForMeasure = createSelector(
+  measureSelector,
+  cursorSelector,
+  playingIndexSelector,
+  ({ measureIndex }, cursor, playingIndex) => {
+    return !playingIndex && cursor.measureIndex === measureIndex ? { cursor }: { cursor: undefined };
+});
 
 const tracksSelector = state => state.tracks;
 const currentTrackIndexSelector = state => state.currentTrackIndex;

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { findIndex, range } from 'lodash';
 import { calcXForNote } from '../../util';
+import { cursorSelectorForMeasure } from '../../util/selectors';
 
 import TabNote from './TabNote';
 import Bars from './Bars';
@@ -131,4 +132,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(null, mapDispatchToProps)(TabMeasure);
+export default connect(cursorSelectorForMeasure, mapDispatchToProps)(TabMeasure);
