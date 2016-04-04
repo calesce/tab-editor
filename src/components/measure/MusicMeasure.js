@@ -56,50 +56,57 @@ class MusicMeasure extends Component {
               ...anote,
               renderSharp: anote.sharp ? anote.sharp : false
             };
+          } else if(anote === 'rest') {
+            return anote;
           }
 
-          let renderSharp, renderNatural;
           if(anote.sharp) {
-            renderNatural = false;
-            const noteBefore = notes[i - 1];
-
-            if(noteBefore.string[0] === 'rest') {
-              renderSharp = true;
-            } else {
-              noteBefore.notes.forEach((beforeNote) => {
-                const isSameMidi = beforeNote.midiString.replace('#', '') === anote.midiString.replace('#', '');
-                const isBeforeNoteSharp = beforeNote.midiString.charAt(1) === '#';
-                if(isSameMidi && !isBeforeNoteSharp) {
-                  renderSharp = true;
-                }
-              });
-            }
-          } else {
+            let renderSharp;
             Array.from({ length: i }, (_, index) => {
               const noteBefore = notes[index];
-              if(noteBefore.string[0] === 'rest') {
-                renderSharp = true;
-              } else {
-                noteBefore.notes.forEach((beforeNote) => {
+
+              noteBefore.notes.forEach((beforeNote) => {
+                if(beforeNote === 'rest') {
+                  if(renderSharp === undefined) {
+                    renderSharp = true;
+                  }
+                } else {
                   const isSameMidi = beforeNote.midiString.replace('#', '') === anote.midiString.replace('#', '');
                   const isBeforeNoteSharp = beforeNote.midiString.charAt(1) === '#';
-                  if(isSameMidi && isBeforeNoteSharp) {
-                    renderNatural = true;
-                  } else if(isSameMidi) {
-                    renderNatural = false;
+                  if(isSameMidi) {
+                    renderSharp = isBeforeNoteSharp ? false : true;
+                  } else {
+                    if(renderSharp === undefined) {
+                      renderSharp = true;
+                    }
                   }
-                });
-              }
+                }
+              });
             });
 
-            renderSharp = false;
-          }
+            return {
+              ...anote,
+              renderSharp
+            };
+          } else {
+            let renderNatural;
+            Array.from({ length: i }, (_, index) => {
+              const noteBefore = notes[index];
 
-          return {
-            ...anote,
-            renderSharp,
-            renderNatural
-          };
+              noteBefore.notes.forEach((beforeNote) => {
+                if(beforeNote !== 'rest') {
+                  if(beforeNote.midiString.replace('#', '') === anote.midiString.replace('#', '')) {
+                    renderNatural = beforeNote.midiString.charAt(1) === '#';
+                  }
+                }
+              });
+            });
+
+            return {
+              ...anote,
+              renderNatural
+            };
+          }
         })
       };
     });
