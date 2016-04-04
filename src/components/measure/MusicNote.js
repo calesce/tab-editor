@@ -205,7 +205,7 @@ export default class MusicNote extends Component {
   };
 
   render() {
-    const { x, y, color, sharp } = this.props;
+    const { x, y, color, sharp, natural } = this.props;
 
     let ledgerLinesAbove, ledgerLinesBelow;
     if(y >= 125.5) {
@@ -220,6 +220,7 @@ export default class MusicNote extends Component {
         { ledgerLinesAbove ? this.renderLedgerLines(x, 'above', ledgerLinesAbove) : null }
         { this.renderNote(x, y, color) }
         { sharp ? this.renderSharp(x, y, color) : null }
+        { natural ? this.renderNatural(x, y, color) : null }
       </g>
     );
   }
