@@ -31,7 +31,6 @@
     "eslint": "^2.5.1",
     "eslint-plugin-babel": "^3.1.0",
     "eslint-plugin-react": "^4.2.3",
-    "eslint-plugin-require-path-exists": "^1.1.5",
     "express": "^4.13.4",
     "json-loader": "^0.5.4",
     "react-pure-render": "^1.0.2",
