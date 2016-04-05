@@ -9,13 +9,14 @@ export default class Bars extends Component {
     const c = i === 0 || i === stringCount - 1 ? color : '#999999';
     const width = i === 0 || i === stringCount - 1 ? strokeWidth : '0.1';
 
-    return <rect key={i} y={y + i * 13} width={measureWidth} height={0.5} fill={c} stroke={c} strokeWidth={width}></rect>;
+    return <rect key={i} y={y + i * this.props.spaceBetweenBars} width={measureWidth} height={0.5}
+      fill={c} stroke={c} strokeWidth={width}></rect>;
   };
 
   render() {
-    const { measureWidth, color, strokeWidth, strings, lastMeasure, y } = this.props;
+    const { measureWidth, color, strokeWidth, strings, lastMeasure, y, spaceBetweenBars } = this.props;
     const startY = 25 + y;
-    const height = 25 + (strings - 3) * 13 + 1;
+    const height = 25 + (strings - 3) * spaceBetweenBars + 1;
 
     const x = lastMeasure ? measureWidth - 1 : measureWidth - 0.5;
     const width = lastMeasure ? 1.0 : 0.5;

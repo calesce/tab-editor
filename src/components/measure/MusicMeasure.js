@@ -136,7 +136,7 @@ class MusicMeasure extends Component {
       strokeWidth = 1;
     }
 
-    return <Bars measureWidth={measureWidth} color={color} y={y}
+    return <Bars measureWidth={measureWidth} color={color} y={y} spaceBetweenBars={13}
       strokeWidth={strokeWidth} strings={strings} lastMeasure={lastMeasure}
     />;
   };
