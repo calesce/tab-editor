@@ -10,7 +10,7 @@ const style = {
   flex: 1
 };
 
-class TabStaff extends Component {
+class Score extends Component {
   calcWidth = (measures) => {
     return measures.reduce((width, measure) => {
       return measure.width + width;
@@ -42,4 +42,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(TabStaff);
+export default connect(mapStateToProps)(Score);

@@ -11,7 +11,7 @@ import * as CursorActions from '../actions/cursor';
 import Soundfont from 'soundfont-player';
 import audioContext from '../util/audioContext';
 
-import TabStaff from '../components/TabStaff';
+import Score from '../components/Score';
 import EditorArea from '../components/editor/EditorArea';
 import TimeSignatureModal from '../components/editor/TimeSignatureModal';
 import TuningModal from '../components/editor/TuningModal';
@@ -232,7 +232,7 @@ class App extends Component {
         { this.props.playingIndex ? <Playback buffers={buffers} /> : null}
         { this.props.playingIndex && this.props.metronome ? <Metronome buffers={woodblockBuffers} /> : null}
         <EditorArea canPlay={buffers && woodblockBuffers} handlePlay={this.handlePlay} openModal={this.openModal} />
-        <TabStaff />
+        <Score />
         <TimeSignatureModal isOpen={openModal === 'timeSig'} closeModal={this.closeModal} />
         <TuningModal isOpen={openModal === 'tuning'} closeModal={this.closeModal} />
         <BpmModal isOpen={openModal === 'bpm'} closeModal={this.closeModal} />
