@@ -118,6 +118,35 @@ const tracksWithMeasuresSelector = createSelector(
   }
 );
 
+const measuresTuningLayoutSelector = state => (
+  {
+    measures: state.tracks[state.currentTrackIndex].measures,
+    tuning: state.tracks[state.currentTrackIndex].tuning,
+    layout: state.layout
+  }
+);
+
+const calcHeight = (measures, tuning) => {
+  return 1.7 * (measures[measures.length - 1].rowIndex + 1) * (27 * tuning.length) + 40;
+};
+
+const calcWidth = (measures) => {
+  return measures.reduce((width, measure) => {
+    return measure.width + width;
+  }, 20);
+};
+
+export const scoreSelector = createSelector(
+  measuresTuningLayoutSelector,
+  ({ measures, tuning, layout }) => {
+    return {
+      measures,
+      height: layout === 'linear' ? '100% - 10' : calcHeight(measures, tuning),
+      width: layout === 'linear' ? calcWidth(measures) : window.innerWidth - 10
+    };
+  }
+);
+
 export const expandedTracksSelector = createSelector(
   tracksSelector,
   tracksWithMeasuresSelector,
