@@ -4,41 +4,13 @@ import { connect } from 'react-redux';
 import MusicMeasure from './MusicMeasure';
 import TabMeasure from './TabMeasure';
 import shallowEqual from 'react-pure-render/shallowEqual';
-import { finalMeasureSelector } from '../../util/selectors';
+import { makeFinalMeasureSelector } from '../../util/selectors';
 
 const MEASURE_HEIGHT = 210;
 
 class Measure extends Component {
   shouldComponentUpdate(nextProps) {
-    if(this.props.playingNoteIndex !== nextProps.playingNoteIndex) {
-      return true;
-    }
-    if(!shallowEqual(this.props.tuning, nextProps.tuning)) {
-      return true;
-    }
-
-    for(let i = 0; i < this.props.measure.notes.length; i++) {
-      const oldNote = this.props.measure.notes[i];
-      const newNote = nextProps.measure.notes[i];
-
-      if(!newNote) {
-        return true;
-      }
-      if(oldNote.duration !== newNote.duration) {
-        return true;
-      }
-      if(!shallowEqual(oldNote.string, newNote.string)) {
-        return true;
-      }
-      if(!shallowEqual(oldNote.fret, newNote.fret)) {
-        return true;
-      }
-    }
-    const measureShallowEqual = !shallowEqual(this.props.measure, nextProps.measure);
-    if(measureShallowEqual) {
-      return true;
-    }
-    return false;
+    return !shallowEqual(nextProps, this.state);
   }
 
   render() {
@@ -54,4 +26,12 @@ class Measure extends Component {
   }
 }
 
-export default connect(finalMeasureSelector)(Measure);
+const makeMapStateToProps = () => {
+  const measureSelector = makeFinalMeasureSelector();
+  const mapStateToProps = (state, props) => {
+    return measureSelector(state, props);
+  };
+  return mapStateToProps;
+};
+
+export default connect(makeMapStateToProps)(Measure);

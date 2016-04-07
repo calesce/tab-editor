@@ -82,6 +82,10 @@ export const finalMeasureSelector = createSelector(
   }
 );
 
+export const makeFinalMeasureSelector = () => {
+  return finalMeasureSelector;
+};
+
 export const cursorSelectorForMeasure = createSelector(
   measureSelector,
   cursorSelector,
