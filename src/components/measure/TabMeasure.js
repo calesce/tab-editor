@@ -113,10 +113,10 @@ class TabMeasure extends Component {
   };
 
   render() {
-    const { stringCount, measure, measureIndex, displayOption } = this.props;
+    const { stringCount, measure, measureIndex, displayOption, y } = this.props;
 
     return (
-      <svg style={{ height: (stringCount * 25), width: measure.width }}>
+      <svg y={y} style={{ height: (stringCount * 25), width: measure.width }}>
         { this.renderBars(0, 0, measure.width, stringCount) }
         {
           measure.notes.map((note, noteIndex) => this.renderTabNote(note, measureIndex, noteIndex, displayOption))
