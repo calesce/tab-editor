@@ -14,6 +14,15 @@ import Repeat from './Repeat';
 
 const midis = midiNotes();
 
+const measureNumberStyle = {
+  MozUserSelect: 'none',
+  WebkitUserSelect: 'none',
+  msUserSelect: 'none',
+  cursor: 'default',
+  fontSize: 9,
+  fill: 'tomato'
+};
+
 class MusicMeasure extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
 
@@ -177,7 +186,7 @@ class MusicMeasure extends Component {
         { measure.indexOfRow === 0 ? <Clef y={y} strings={5} treble /> : null }
         { this.renderTimeSignature(measureIndex, measure, 5, y, measure.indexOfRow) }
         { measure.showBpm ? <Bpm y={y} bpm={measure.bpm} />  : null }
-        <text x={0} y={23 + y} style={{ fontSize: 9, fill: 'tomato' }}>{measureIndex + 1}</text>
+        <text x={0} y={23 + y} style={measureNumberStyle}>{measureIndex + 1}</text>
         { measure.repeatEnd ? <Repeat measureWidth={measure.width} strings={5} y={y} /> : null }
       </svg>
     );

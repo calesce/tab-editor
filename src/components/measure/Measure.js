@@ -44,7 +44,7 @@ class Measure extends Component {
   render() {
     const { playingNoteIndex, measureLength, measureIndex, measure, tuning, isValid } = this.props;
     return (
-      <svg style={{ height: MEASURE_HEIGHT + (tuning.length * 25), width: measure.width }}>
+      <svg style={{ height: MEASURE_HEIGHT + (tuning.length * 20), width: measure.width }}>
         <MusicMeasure {...this.props} measureHeight={MEASURE_HEIGHT} y={65} />
         <TabMeasure measure={measure} playingNoteIndex={playingNoteIndex}
           measureIndex={measureIndex} measureLength={measureLength}

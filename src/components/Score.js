@@ -4,10 +4,13 @@ import { scoreSelector } from '../util/selectors';
 import shouldPureComponentUpdate from 'react-pure-render/function';
 
 import Measure from './measure/Measure';
+import SelectBox from './SelectBox';
+
+const SVG_TOP = 50;
 
 const style = {
-  padding: 5,
-  paddingTop: 60,
+  top: 0,
+  marginLeft: 5,
   display: 'flex',
   flexWrap: 'wrap',
   flex: 1
@@ -26,60 +29,49 @@ class Score extends Component {
   }
 
   onMouseDown = (e) => {
-    const rect = this.page.getBoundingClientRect();
-    const x = e.pageX - rect.left;
-    const y = e.pageY; //- rect.top;
+    e.preventDefault();
 
-    this.setState({
-      dragStart: { x, y }
-    });
+    const x = e.pageX;
+    const y = e.pageY - SVG_TOP;
+
+    this.setState({ dragStart: { x, y }, x, y });
   };
 
   onMouseUp = () => {
     this.setState({
       dragStart: undefined,
-      dragEnd: undefined
+      x: undefined,
+      y: undefined,
+      dragWidth: undefined,
+      dragHeight: undefined
     });
   };
 
   onMouseMove = (e) => {
     if(this.state.dragStart) {
-      const rect = this.page.getBoundingClientRect();
-      const x = e.pageX - rect.left;
-      const y = e.pageY; //- rect.top;
+      e.preventDefault();
+
+      const x = e.pageX + 5;
+      const y = e.pageY - SVG_TOP;
 
       this.setState({
-        dragEnd: { x, y }
+        x: Math.min(this.state.dragStart.x, x),
+        y: Math.min(this.state.dragStart.y, y),
+        dragWidth: Math.abs(this.state.dragStart.x - x),
+        dragHeight: Math.abs(this.state.dragStart.y - y)
       });
     }
   }
 
   render() {
     const { height, width, measures } = this.props;
-    const { dragStart, dragEnd } = this.state;
-
-    // console.log(this.state);
-    let x, y, dragWidth, dragHeight;
-    if(dragStart && dragEnd) {
-      x = Math.min(dragStart.x, dragEnd.x);
-      y = Math.min(dragStart.y, dragEnd.y);
-      dragWidth = Math.abs(dragStart.x - dragEnd.x);
-      dragHeight = Math.abs(dragStart.y - dragEnd.y);
-    }
+    const { x, y, dragWidth, dragHeight } = this.state;
 
     return (
       <div style={{ ...style, height, width }}
-        onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp} onMouseMove={this.onMouseMove}
-        ref={(ref) => this.page = ref}>
-        <svg>
-          { dragStart && dragEnd ?
-          <rect fill='black' stroke='black'
-            x={x} y={y} width={dragWidth} height={dragHeight} />
-            : null
-          }
-
-          </svg>
+        onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp} onMouseMove={this.onMouseMove}>
         { measures.map((_, i) => <Measure key={i} measureIndex={i} />) }
+        <SelectBox height={height} width={width} x={x} y={y} dragWidth={dragWidth} dragHeight={dragHeight} />
       </div>
     );
   }

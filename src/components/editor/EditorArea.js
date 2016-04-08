@@ -12,7 +12,6 @@ import InstrumentSelect from './InstrumentSelect';
 import TrackSelect from './TrackSelect';
 
 const style = {
-  position: 'fixed',
   display: 'flex',
   justifyContent: 'space-around',
   alignItems: 'center',

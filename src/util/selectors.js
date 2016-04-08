@@ -127,7 +127,7 @@ const measuresTuningLayoutSelector = state => (
 );
 
 const calcHeight = (measures, tuning) => {
-  return 1.7 * (measures[measures.length - 1].rowIndex + 1) * (27 * tuning.length) + 40;
+  return (measures[measures.length - 1].rowIndex + 1) * (210 + 20 * tuning.length);
 };
 
 const calcWidth = (measures) => {
