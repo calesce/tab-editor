@@ -34,16 +34,33 @@ class Score extends Component {
     const x = e.pageX;
     const y = e.pageY - SVG_TOP;
 
-    this.setState({ dragStart: { x, y }, x, y });
+    this.setState({
+      dragStart: { x, y },
+      x,
+      y,
+      selectedRows: undefined,
+      xStart: undefined,
+      xEnd: undefined
+    });
   };
 
   onMouseUp = () => {
+    // TODO call action creator to define the select range
+    const { x, y, dragHeight, dragWidth } = this.state;
+
+    const startRow = Math.floor(y / this.props.rowHeight);
+    const endRow = Math.floor((y + dragHeight) / this.props.rowHeight);
+    const selectedRows = Array.from({ length: endRow - startRow + 1 }, (_, k) => k + startRow);
+
     this.setState({
       dragStart: undefined,
       x: undefined,
       y: undefined,
       dragWidth: undefined,
-      dragHeight: undefined
+      dragHeight: undefined,
+      selectedRows,
+      xStart: x,
+      xEnd: x + dragWidth
     });
   };
 
@@ -65,12 +82,12 @@ class Score extends Component {
 
   render() {
     const { height, width, measures } = this.props;
-    const { x, y, dragWidth, dragHeight } = this.state;
+    const { x, y, dragWidth, dragHeight, selectedRows, xStart, xEnd } = this.state;
 
     return (
       <div style={{ ...style, height, width }}
         onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp} onMouseMove={this.onMouseMove}>
-        { measures.map((_, i) => <Measure key={i} measureIndex={i} />) }
+        { measures.map((_, i) => <Measure key={i} measureIndex={i} xStart={xStart} xEnd={xEnd} selectedRows={selectedRows} />) }
         <SelectBox height={height} width={width} x={x} y={y} dragWidth={dragWidth} dragHeight={dragHeight} />
       </div>
     );

@@ -43,7 +43,8 @@ const trackWithRows = (track) => {
       return [{
         ...measure,
         rowIndex: index,
-        indexOfRow: 0
+        indexOfRow: 0,
+        xOfMeasure: 0
       }];
     }
 
@@ -65,7 +66,8 @@ const trackWithRows = (track) => {
     return newTrack.concat({
       ...measure,
       rowIndex: newRowIndex,
-      indexOfRow
+      indexOfRow,
+      xOfMeasure: currentRowWidth
     });
   }, []);
 };
