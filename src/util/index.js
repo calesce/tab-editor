@@ -67,7 +67,7 @@ const trackWithRows = (track) => {
       ...measure,
       rowIndex: newRowIndex,
       indexOfRow,
-      xOfMeasure: currentRowWidth
+      xOfMeasure: indexOfRow === 0 ? indexOfRow : currentRowWidth
     });
   }, []);
 };
