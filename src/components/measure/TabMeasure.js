@@ -4,7 +4,6 @@ import { bindActionCreators } from 'redux';
 import { findIndex } from 'lodash';
 import shouldPureComponentUpdate from 'react-pure-render/function';
 
-import { calcXForNote } from '../../util';
 import { cursorSelectorForMeasure } from '../../util/selectors';
 
 import TabNote from './TabNote';
@@ -30,25 +29,25 @@ class TabMeasure extends Component {
   };
 
   renderCursor = () => {
-    if(!this.props.cursor) {
+    const { cursor, stringCount, measure } = this.props;
+
+    if(!cursor) {
       return null;
     }
-    const { noteIndex, stringIndex } = this.props.cursor;
-    const strings = this.props.stringCount;
-    const stringOffset = (6 - strings);
+    const { noteIndex, stringIndex } = cursor;
+    const stringOffset = (6 - stringCount);
 
-    const x = calcXForNote(this.props.measure, noteIndex);
     const y = 95 - (13 * (stringIndex + stringOffset));
 
     let index = 0;
     let fret = 0;
 
-    if(this.props.measure.notes.length > 0) {
-      index = findIndex(this.props.measure.notes[noteIndex].string, (s) => s === stringIndex);
-      fret = this.props.measure.notes[noteIndex].fret[index];
+    if(measure.notes.length > 0) {
+      index = findIndex(measure.notes[noteIndex].string, (s) => s === stringIndex);
+      fret = measure.notes[noteIndex].fret[index];
     }
 
-    return <Cursor x={x} y={y} fret={fret} />;
+    return <Cursor x={measure.notes[noteIndex].x} y={y} fret={fret} />;
   };
 
   renderTimeSignature = (measureIndex, measure, strings, yOffset, displayOption) => {
@@ -81,7 +80,6 @@ class TabMeasure extends Component {
   };
 
   renderTabNote = (note, measureIndex, noteIndex, displayOption) => {
-    const x = calcXForNote(this.props.measure, noteIndex);
     const { playingNoteIndex, stringCount } = this.props;
     const stringOffset = (6 - stringCount);
 
@@ -92,7 +90,7 @@ class TabMeasure extends Component {
 
     const y = stringCount * 6.5 + 6; // 45 for 6 strings
     if(note.string[0] === 'rest') {
-      return <Rest onClick={this.onClick} key={noteIndex} noteIndex={noteIndex} color={color} x={x} y={y} note={note} />;
+      return <Rest onClick={this.onClick} key={noteIndex} noteIndex={noteIndex} color={color} x={note.x} y={y} note={note} />;
     }
 
     return [0, 1, 2, 3, 4, 5].map((_, i) => {
@@ -102,7 +100,7 @@ class TabMeasure extends Component {
       const y = 95 - (13 * (i + stringOffset));
       return (
         <g>
-          <TabNote onClick={this.onClick} key={i} x={x} y={y} color={color}
+          <TabNote onClick={this.onClick} key={i} x={note.x} y={y} color={color}
             fret={fret} stringOffset={stringOffset} displayOption={displayOption} dotted={note.dotted}
             tremolo={note.tremolo} vibrato={note.vibrato} trill={note.trill} duration={note.duration}
             stringIndex={string} noteIndex={noteIndex}

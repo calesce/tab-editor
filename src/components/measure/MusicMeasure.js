@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import shouldPureComponentUpdate from 'react-pure-render/function';
 
-import { calcXForNote } from '../../util';
 import { getIndexOfNote, getStaffPositionOfNote, midiNotes } from '../../util/midiNotes';
 
 import MusicNote from './MusicNote';
@@ -31,7 +30,6 @@ class MusicMeasure extends Component {
       return {
         ...note,
         color: this.props.playingNoteIndex === noteIndex ? '#f9423a' : 'black',
-        x: calcXForNote(this.props.measure, noteIndex),
         y: 5 * 6.5 + 6 + this.props.y,
         notes: this.annotateNote(note)
       };
