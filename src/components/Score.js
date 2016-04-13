@@ -48,9 +48,12 @@ class Score extends Component {
     // TODO call action creator to define the select range
     const { x, y, dragHeight, dragWidth } = this.state;
 
-    const startRow = Math.floor(y / this.props.rowHeight);
-    const endRow = Math.floor((y + dragHeight) / this.props.rowHeight);
-    const selectedRows = Array.from({ length: endRow - startRow + 1 }, (_, k) => k + startRow);
+    let startRow, endRow, selectedRows;
+    if(dragWidth > 5 && dragHeight > 5) {
+      startRow = Math.floor(y / this.props.rowHeight);
+      endRow = Math.floor((y + dragHeight) / this.props.rowHeight);
+      selectedRows = Array.from({ length: endRow - startRow + 1 }, (_, k) => k + startRow);
+    }
 
     this.setState({
       dragStart: undefined,
