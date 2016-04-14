@@ -126,10 +126,34 @@ class App extends Component {
   };
 
   getCurrentNote = () => {
-    const { measures } = this.props;
+    const { measures, selectRange } = this.props;
     const { measureIndex, noteIndex } = this.props.cursor;
 
-    return measures[measureIndex].notes[noteIndex];
+    if(selectRange) {
+      return measures.reduce((accum, measure, i) => {
+        if(selectRange[i]) {
+          const range = selectRange[i];
+          const notes = measure.notes.map((note, i) => {
+            if(range.indexOf(i) !== 1) {
+              return note;
+            }
+            return undefined;
+          });
+          const newNotes = notes.filter(note => note);
+          accum.push({
+            ...measure,
+            notes: newNotes
+          });
+          return accum;
+        } else if(selectRange === 'all') {
+          accum.push(measure);
+          return accum;
+        }
+        return accum;
+      }, []);
+    } else {
+      return measures[measureIndex].notes[noteIndex];
+    }
   };
 
   navigateCursor = (event) => {
@@ -248,6 +272,7 @@ function mapStateToProps(state) {
     layout: state.layout,
     playingIndex: state.playingIndex,
     cursor: state.cursor,
+    selectRange: state.selectRange,
     tuning: state.tracks[state.currentTrackIndex].tuning,
     instrument: state.tracks[state.currentTrackIndex].instrument,
     metronome: state.metronome
