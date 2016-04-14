@@ -80,7 +80,7 @@ export const finalMeasureSelector = createSelector(
       isValid: calcMeasureValidity(measure),
       tuning,
       measureLength,
-      selectRange: selectRange ? selectRange[measureIndex] : undefined 
+      selectRange: selectRange ? selectRange[measureIndex] : undefined
     };
   }
 );
@@ -89,8 +89,9 @@ export const cursorSelectorForMeasure = createSelector(
   measureSelector,
   cursorSelector,
   playingIndexSelector,
-  ({ measureIndex }, cursor, playingIndex) => {
-    return !playingIndex && cursor.measureIndex === measureIndex ? { cursor }: { cursor: undefined };
+  selectRangeSelector,
+  ({ measureIndex }, cursor, playingIndex, selectRange) => {
+    return (!playingIndex && cursor.measureIndex === measureIndex && !selectRange) ? { cursor }: { cursor: undefined };
 });
 
 const tracksSelector = state => state.tracks;
