@@ -122,7 +122,12 @@ class Score extends Component {
       obj[i] = measureRange;
       return measureRange ? Object.assign({}, accum, obj) : accum;
     }, {});
-    this.props.setSelectRange(selectRange);
+
+    if(Object.keys(selectRange).length > 0) {
+      this.props.setSelectRange(selectRange);
+    } else {
+      this.props.setSelectRange(undefined);
+    }
 
     this.setState({
       dragStart: undefined,
