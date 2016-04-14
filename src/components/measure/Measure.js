@@ -13,7 +13,7 @@ class Measure extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
 
   render() {
-    const { playingNoteIndex, measureLength, measureIndex, measure, tuning, isValid, selected } = this.props;
+    const { playingNoteIndex, measureLength, measureIndex, measure, tuning, isValid, selectRange } = this.props;
 
     return (
       <svg style={{ height: MEASURE_HEIGHT + (tuning.length * 20), width: measure.width }}>
@@ -21,7 +21,7 @@ class Measure extends Component {
         <TabMeasure measure={measure} playingNoteIndex={playingNoteIndex} measureIndex={measureIndex}
           measureLength={measureLength} isValid={isValid} stringCount={tuning.length} displayOption='both'
           y={MEASURE_HEIGHT} />
-        <MeasureSelectBox measureWidth={measure.width} selected={selected} height={MEASURE_HEIGHT + (tuning.length * 20)}/>
+        <MeasureSelectBox measure={measure} selected={selectRange} height={MEASURE_HEIGHT + (tuning.length * 20)}/>
       </svg>
     );
   }

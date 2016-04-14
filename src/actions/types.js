@@ -34,12 +34,13 @@ export const SET_PLAYING_INDEX = 'SET_PLAYING_INDEX';
 export const ADVANCE_PLAYING_INDEX = 'ADVANCE_PLAYING_INDEX';
 export const TOGGLE_METRONOME = 'TOGGLE_METRONOME';
 
-// cursor
+// cursor / select box
 export const SET_CURSOR = 'SET_CURSOR';
 export const MOVE_CURSOR_LEFT = 'MOVE_CURSOR_LEFT';
 export const MOVE_CURSOR_RIGHT = 'MOVE_CURSOR_RIGHT';
 export const MOVE_CURSOR_UP= 'MOVE_CURSOR_UP';
 export const MOVE_CURSOR_DOWN = 'MOVE_CURSOR_DOWN';
+export const SET_SELECT_RANGE = 'SET_SELECT_RANGE';
 
 // instrument
 export const SET_INSTRUMENT = 'SET_INSTRUMENT';

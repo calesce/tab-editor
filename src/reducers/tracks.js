@@ -7,7 +7,7 @@ import { COPY_NOTE, CUT_NOTE, CHANGE_LAYOUT, INSERT_TRACK,
   DELETE_TRACK, SELECT_TRACK, INSERT_MEASURE, DELETE_MEASURE,
   CHANGE_BPM, CHANGE_TIME_SIGNATURE, SET_PLAYING_INDEX, TOGGLE_METRONOME,
   SET_CURSOR, MOVE_CURSOR_LEFT, MOVE_CURSOR_RIGHT,
-  MOVE_CURSOR_UP, MOVE_CURSOR_DOWN } from '../actions/types';
+  MOVE_CURSOR_UP, MOVE_CURSOR_DOWN, SET_SELECT_RANGE } from '../actions/types';
 
 const replaceTrack = (tracks, action, currentTrackIndex, layout = 'page') => {
   return tracks.map((t, index) => {
@@ -153,6 +153,13 @@ export default function tracks(state = {}, action) {
       return {
         ...state,
         cursor: cursorReducer(state.cursor, currentTrack.measures, currentTrack.tuning, action)
+      };
+    }
+
+    case SET_SELECT_RANGE: {
+      return {
+        ...state,
+        selectRange: action.range
       };
     }
 

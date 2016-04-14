@@ -60,13 +60,15 @@ const playingIndexSelector = state => state.playingIndex;
 const cursorSelector = state => state.cursor;
 const tuningSelector = state => state.tracks[state.currentTrackIndex].tuning;
 const measureLengthSelector = state => state.tracks[state.currentTrackIndex].measures.length;
+const selectRangeSelector = state => state.selectRange;
 
 export const finalMeasureSelector = createSelector(
   measureSelector,
   playingIndexSelector,
   tuningSelector,
   measureLengthSelector,
-  ({ measure, measureIndex }, playingIndex, tuning, measureLength) => {
+  selectRangeSelector,
+  ({ measure, measureIndex }, playingIndex, tuning, measureLength, selectRange) => {
     let playingNoteIndex;
     if(playingIndex) {
       playingNoteIndex = playingIndex.measureIndex === measureIndex ? playingIndex.noteIndex : undefined;
@@ -77,7 +79,8 @@ export const finalMeasureSelector = createSelector(
       playingNoteIndex,
       isValid: calcMeasureValidity(measure),
       tuning,
-      measureLength
+      measureLength,
+      selectRange: selectRange ? selectRange[measureIndex] : undefined 
     };
   }
 );

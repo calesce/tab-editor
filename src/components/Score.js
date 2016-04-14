@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { scoreSelector } from '../util/selectors';
 import shouldPureComponentUpdate from 'react-pure-render/function';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+
+import { setSelectRange } from '../actions/cursor';
+import { scoreSelector } from '../util/selectors';
 
 import Measure from './measure/Measure';
 import SelectBox from './SelectBox';
 
 const SVG_TOP = 50;
+const NOTE_WIDTH = 10;
+// Give some room for user error when selecting a range of notes
+const SELECT_ERROR = 3;
 
 const style = {
   top: 0,
@@ -28,25 +34,24 @@ class Score extends Component {
     };
   }
 
+  getNoteRangeForMeasure = (measure, xStart, xEnd) => {
+    const notes = measure.notes.map((note, i) => {
+      const noteX = note.x + measure.xOfMeasure;
+      return noteX + SELECT_ERROR - NOTE_WIDTH > xStart && noteX - SELECT_ERROR < xEnd ? i : null;
+    });
+    return notes.filter(note => note !== null);
+  };
+
   getSelectedRangeForSingleRow = (measure, xStart, xEnd) => {
     if(xStart > measure.xOfMeasure && xEnd < measure.xOfMeasure + measure.width) {
-      return {
-        start: xStart - measure.xOfMeasure,
-        width: xEnd - xStart
-      };
+      return this.getNoteRangeForMeasure(measure, xStart, xEnd);
     } else if((xStart < measure.xOfMeasure && xEnd > measure.xOfMeasure) ||
        (xStart > measure.xOfMeasure && xStart < measure.xOfMeasure + measure.width)) {
 
       if(measure.xOfMeasure < xStart) {
-        return {
-          start: xStart - measure.xOfMeasure,
-          width: measure.width
-        };
+        return this.getNoteRangeForMeasure(measure, xStart, measure.xOfMeasure + measure.width);
       } else if(xEnd < measure.xOfMeasure + measure.width) {
-        return {
-          start: 0,
-          width: xEnd - measure.xOfMeasure
-        };
+        return this.getNoteRangeForMeasure(measure, measure.xOfMeasure, xEnd);
       } else {
         return 'all';
       }
@@ -69,10 +74,7 @@ class Score extends Component {
     } else if(selectedRowIndex === 0) {
       if(measure.xOfMeasure + measure.width > xStart) {
         if(measure.xOfMeasure < xStart) { // starting measure, need note index
-          return {
-            start: xStart - measure.xOfMeasure,
-            width: measure.xOfMeasure + measure.width
-          };
+          return this.getNoteRangeForMeasure(measure, xStart, measure.xOfMeasure + measure.width);
         } else {
           return 'all';
         }
@@ -80,10 +82,7 @@ class Score extends Component {
     } else if(selectedRowIndex === selectedRows.length - 1) {
       if(xEnd > measure.xOfMeasure) {
         if(xEnd < measure.xOfMeasure + measure.width) { // last measure
-          return {
-            start: 0,
-            width: xEnd - measure.xOfMeasure
-          };
+          return this.getNoteRangeForMeasure(measure, measure.xOfMeasure, xEnd);
         } else {
           return 'all';
         }
@@ -108,7 +107,6 @@ class Score extends Component {
   };
 
   onMouseUp = () => {
-    // TODO call action creator to define the select range
     const { x, y, dragHeight, dragWidth } = this.state;
 
     let selectedRows;
@@ -118,15 +116,20 @@ class Score extends Component {
       selectedRows = Array.from({ length: endRow - startRow + 1 }, (_, k) => k + startRow);
     }
 
-    const selectRanges = this.props.measures.map(measure => this.getSelectedRange(measure, x, x + dragWidth, selectedRows));
+    const selectRange = this.props.measures.reduce((accum, measure, i) => {
+      const measureRange = this.getSelectedRange(measure, x, x + dragWidth, selectedRows);
+      const obj = {};
+      obj[i] = measureRange;
+      return measureRange ? Object.assign({}, accum, obj) : accum;
+    }, {});
+    this.props.setSelectRange(selectRange);
 
     this.setState({
       dragStart: undefined,
       x: undefined,
       y: undefined,
       dragWidth: undefined,
-      dragHeight: undefined,
-      selectRanges
+      dragHeight: undefined
     });
   };
 
@@ -159,4 +162,11 @@ class Score extends Component {
     );
   }
 }
-export default connect(scoreSelector)(Score);
+
+function mapDispatchToProps(dispatch) {
+  return {
+    setSelectRange: bindActionCreators(setSelectRange, dispatch)
+  };
+}
+
+export default connect(scoreSelector, mapDispatchToProps)(Score);
