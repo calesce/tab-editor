@@ -10,6 +10,7 @@ import * as CursorActions from '../actions/cursor';
 
 import Soundfont from 'soundfont-player';
 import audioContext from '../util/audioContext';
+import { getNextNote } from '../util/cursor';
 
 import Score from '../components/Score';
 import EditorArea from '../components/editor/EditorArea';
@@ -130,22 +131,27 @@ class App extends Component {
     const { measureIndex, noteIndex } = this.props.cursor;
 
     if(selectRange) {
+      if(Object.keys(selectRange).length === 1) {
+        const measureIndex = Object.keys(selectRange)[0];
+        const measure = measures[measureIndex];
+        const notes = measure.notes.filter((_, i) => {
+          if(selectRange[measureIndex].indexOf(i) !== -1) {
+            return true;
+          }
+          return false;
+        });
+        return { notes };
+      }
+
       return measures.reduce((accum, measure, i) => {
-        if(selectRange[i]) {
+        if(Array.isArray(selectRange[i])) {
           const range = selectRange[i];
-          const notes = measure.notes.map((note, i) => {
-            if(range.indexOf(i) !== 1) {
-              return note;
-            }
-            return undefined;
+          const notes = measure.notes.filter((_, j) => {
+            return range.indexOf(j) !== -1;
           });
-          const newNotes = notes.filter(note => note);
-          accum.push({
-            ...measure,
-            notes: newNotes
-          });
+          accum.push({ ...measure, notes });
           return accum;
-        } else if(selectRange === 'all') {
+        } else if(selectRange[i] === 'all') {
           accum.push(measure);
           return accum;
         }
@@ -188,9 +194,34 @@ class App extends Component {
   };
 
   pasteNote = () => {
-    if(this.props.clipboard) {
-      event.preventDefault();
-      this.props.actions.pasteNote(this.props.cursor, this.props.clipboard);
+    const { cursor, clipboard, actions, measures } = this.props;
+
+    if(!clipboard) {
+      return;
+    }
+    event.preventDefault();
+
+    actions.pasteNote(cursor, clipboard);
+    if(clipboard.notes) {
+      actions.setCursor({
+        ...cursor,
+        noteIndex: cursor.noteIndex + clipboard.notes.length
+      });
+    } else if(!Array.isArray(clipboard)) {
+      if(cursor.noteIndex === measures[cursor.measureIndex].notes.length - 1) {
+        actions.setCursor({
+          ...cursor,
+          noteIndex: cursor.noteIndex + 1
+        });
+      } else {
+        actions.setCursor(getNextNote(measures, cursor));
+      }
+    } else {
+      actions.setCursor({
+        ...cursor,
+        measureIndex: cursor.measureIndex + clipboard.length,
+        noteIndex: 0
+      });
     }
   };
 

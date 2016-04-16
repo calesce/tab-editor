@@ -67,11 +67,11 @@ export function toggleNoteVibrato(index) {
   };
 }
 
-export function pasteNote(index, note) {
+export function pasteNote(index, clipboard) {
   return {
     type: types.PASTE_NOTE,
     index,
-    note
+    clipboard
   };
 }
 

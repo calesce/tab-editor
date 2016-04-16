@@ -118,6 +118,12 @@ class Score extends Component {
 
     const selectRange = this.props.measures.reduce((accum, measure, i) => {
       const measureRange = this.getSelectedRange(measure, x, x + dragWidth, selectedRows);
+      if(Array.isArray(measureRange)) {
+        if(measureRange.length === 0) {
+          return accum;
+        }
+      }
+
       const obj = {};
       obj[i] = measureRange;
       return measureRange ? Object.assign({}, accum, obj) : accum;

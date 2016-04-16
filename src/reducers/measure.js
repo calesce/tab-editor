@@ -210,8 +210,15 @@ export default function measure(state, action) {
 
     case PASTE_NOTE: {
       const { noteIndex } = action.index;
-      const notes = flatten([state.notes.slice(0, noteIndex + 1), action.note, state.notes.slice(noteIndex + 1, state.notes.length)]);
-      return Object.assign({}, state, { notes });
+      if(action.clipboard.notes) {
+        const notes = flatten([state.notes.slice(0, noteIndex + 1), action.clipboard.notes, state.notes.slice(noteIndex + 1, state.notes.length)]);
+        return Object.assign({}, state, { notes });
+      } else if(!Array.isArray(action.clipboard)) {
+        const notes = flatten([state.notes.slice(0, noteIndex + 1), action.clipboard, state.notes.slice(noteIndex + 1, state.notes.length)]);
+        return Object.assign({}, state, { notes });
+      }
+
+      return state;
     }
 
     case CUT_NOTE: {

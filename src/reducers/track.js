@@ -1,5 +1,5 @@
 import { DELETE_MEASURE, INSERT_MEASURE, REPLACE_SONG, CHANGE_TUNING,
-  CHANGE_BPM, SET_INSTRUMENT, CHANGE_TIME_SIGNATURE } from '../actions/types';
+  CHANGE_BPM, SET_INSTRUMENT, CHANGE_TIME_SIGNATURE, PASTE_NOTE } from '../actions/types';
 import measure from './measure';
 
 const replaceMeasure = (state, action) => {
@@ -100,6 +100,23 @@ export default function track(state = {}, action) {
         ...state,
         measures: newMeasures
       };
+    }
+
+    case PASTE_NOTE: {
+      const { index, clipboard } = action;
+
+      if(Array.isArray(clipboard)) {
+        const measures = state.measures.slice(0, index.measureIndex + 1).concat(clipboard).concat(state.measures.slice(index.measureIndex + 1, state.measures.length));
+        return {
+          ...state,
+          measures
+        };
+      } else {
+        return {
+          ...state,
+          measures: replaceMeasure(state.measures, action)
+        };
+      }
     }
 
     default:

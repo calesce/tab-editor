@@ -41,13 +41,15 @@ class TabMeasure extends Component {
 
     let index = 0;
     let fret = 0;
+    let x = 10;
 
     if(measure.notes.length > 0) {
       index = findIndex(measure.notes[noteIndex].string, (s) => s === stringIndex);
       fret = measure.notes[noteIndex].fret[index];
+      x = measure.notes[noteIndex] ? measure.notes[noteIndex].x : 10;
     }
 
-    return <Cursor x={measure.notes[noteIndex].x} y={y} fret={fret} />;
+    return <Cursor x={x} y={y} fret={fret} />;
   };
 
   renderTimeSignature = (measureIndex, measure, strings, yOffset, displayOption) => {
