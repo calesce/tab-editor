@@ -2,21 +2,18 @@ import track from './track';
 import layout from './layout';
 import playingIndex from './playingIndex';
 import cursorReducer from './cursor';
-import { prepareRows, prepareTrack } from '../util';
+import { prepareTrack } from '../util';
 import { COPY_NOTE, CUT_NOTE, CHANGE_LAYOUT, INSERT_TRACK,
   DELETE_TRACK, SELECT_TRACK, INSERT_MEASURE, DELETE_MEASURE,
   CHANGE_BPM, CHANGE_TIME_SIGNATURE, SET_PLAYING_INDEX, TOGGLE_METRONOME,
   SET_CURSOR, MOVE_CURSOR_LEFT, MOVE_CURSOR_RIGHT,
-  MOVE_CURSOR_UP, MOVE_CURSOR_DOWN } from '../actions/types';
+  MOVE_CURSOR_UP, MOVE_CURSOR_DOWN, SET_SELECT_RANGE } from '../actions/types';
 
 const replaceTrack = (tracks, action, currentTrackIndex, layout = 'page') => {
   return tracks.map((t, index) => {
     if(index === currentTrackIndex) {
       const newTrack = track(t, action);
-      return {
-        ...newTrack,
-        measures: prepareRows(newTrack.measures, layout)
-      };
+      return prepareTrack(newTrack, layout);
     }
     return t;
   });
@@ -115,17 +112,14 @@ export default function tracks(state = {}, action) {
     case COPY_NOTE:
       return {
         ...state,
-        clipboard: action.note
+        clipboard: action.selection
       };
 
     case CUT_NOTE: {
-      const currentTrack = state.tracks[state.currentTrackIndex];
-
       return {
         ...state,
-        tracks: replaceTrack(state.tracks, action, state.currentTrackIndex, state.layout),
-        clipboard: action.note,
-        cursor: cursorReducer(state.cursor, currentTrack.measures, currentTrack.tuning, action)
+        clipboard: action.selection,
+        tracks: replaceTrack(state.tracks, action, state.currentTrackIndex, state.layout)
       };
     }
 
@@ -153,6 +147,13 @@ export default function tracks(state = {}, action) {
       return {
         ...state,
         cursor: cursorReducer(state.cursor, currentTrack.measures, currentTrack.tuning, action)
+      };
+    }
+
+    case SET_SELECT_RANGE: {
+      return {
+        ...state,
+        selectRange: action.range
       };
     }
 

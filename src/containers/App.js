@@ -7,9 +7,11 @@ import * as TrackActions from '../actions/track';
 import * as MeasureActions from '../actions/measure';
 import * as PlayingIndexActions from '../actions/playingIndex';
 import * as CursorActions from '../actions/cursor';
+import * as CopyPasteActions from '../actions/cutCopyPaste';
 
 import Soundfont from 'soundfont-player';
 import audioContext from '../util/audioContext';
+import { getNextNote } from '../util/cursor';
 
 import Score from '../components/Score';
 import EditorArea from '../components/editor/EditorArea';
@@ -26,7 +28,9 @@ if(!!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/) || !!navigator.userAg
   };
 }
 
-const Actions = Object.assign(TracksActions, TrackActions, MeasureActions, PlayingIndexActions, CursorActions);
+const Actions = Object.assign(TracksActions, TrackActions, MeasureActions, PlayingIndexActions, CursorActions, CopyPasteActions);
+
+const style = { width: '100%', height: '100%' };
 
 class App extends Component {
   constructor(props) {
@@ -125,11 +129,40 @@ class App extends Component {
     }
   };
 
-  getCurrentNote = () => {
+  getCurrentNote = (cursor, selectRange) => {
     const { measures } = this.props;
-    const { measureIndex, noteIndex } = this.props.cursor;
+    const { measureIndex, noteIndex } = cursor;
 
-    return measures[measureIndex].notes[noteIndex];
+    if(selectRange) {
+      if(Object.keys(selectRange).length === 1) {
+        const measureIndex = Object.keys(selectRange)[0];
+        const measure = measures[measureIndex];
+        const notes = measure.notes.filter((_, i) => {
+          if(selectRange[measureIndex].indexOf(i) !== -1) {
+            return true;
+          }
+          return false;
+        });
+        return { notes };
+      }
+
+      return measures.reduce((accum, measure, i) => {
+        if(Array.isArray(selectRange[i])) {
+          const range = selectRange[i];
+          const notes = measure.notes.filter((_, j) => {
+            return range.indexOf(j) !== -1;
+          });
+          accum.push({ ...measure, notes });
+          return accum;
+        } else if(selectRange[i] === 'all') {
+          accum.push(measure);
+          return accum;
+        }
+        return accum;
+      }, []);
+    } else {
+      return measures[measureIndex].notes[noteIndex];
+    }
   };
 
   navigateCursor = (event) => {
@@ -164,9 +197,58 @@ class App extends Component {
   };
 
   pasteNote = () => {
-    if(this.props.clipboard) {
-      event.preventDefault();
-      this.props.actions.pasteNote(this.props.cursor, this.props.clipboard);
+    const { cursor, clipboard, actions, measures } = this.props;
+
+    if(!clipboard) {
+      return;
+    }
+    event.preventDefault();
+
+    actions.pasteNote(cursor, clipboard);
+    if(clipboard.notes) {
+      actions.setCursor({
+        ...cursor,
+        noteIndex: cursor.noteIndex + clipboard.notes.length
+      });
+    } else if(!Array.isArray(clipboard)) {
+      if(cursor.noteIndex === measures[cursor.measureIndex].notes.length - 1) {
+        actions.setCursor({
+          ...cursor,
+          noteIndex: cursor.noteIndex + 1
+        });
+      } else {
+        actions.setCursor(getNextNote(measures, cursor));
+      }
+    } else {
+      actions.setCursor({
+        ...cursor,
+        measureIndex: cursor.measureIndex + clipboard.length,
+        noteIndex: 0
+      });
+    }
+  };
+
+  cutNote = () => {
+    const { selectRange, cursor, actions } = this.props;
+
+    if(selectRange) {
+      const measureIndex = parseInt(Object.keys(selectRange)[0]);
+      const noteIndex = Object.keys(selectRange).length > 1 ? 0 : selectRange[measureIndex][0];
+      const newCursor = {
+        ...cursor,
+        noteIndex: noteIndex === 0 ? 0 : noteIndex - 1,
+        measureIndex
+      };
+      actions.setCursor(newCursor);
+      actions.setSelectRange(undefined);
+      actions.cutNote(newCursor, this.getCurrentNote(cursor, selectRange), selectRange);
+    } else {
+      const newCursor = {
+        ...cursor,
+        noteIndex: cursor.noteIndex === 0 ? 0 : cursor.noteIndex - 1
+      };
+      actions.setCursor(newCursor);
+      actions.cutNote(cursor, this.getCurrentNote(cursor, selectRange), selectRange);
     }
   };
 
@@ -177,14 +259,14 @@ class App extends Component {
 
     if((event.metaKey || event.ctrlKey) && event.keyCode === 67) { // cmd/ctrl+c
       event.preventDefault();
-      return this.props.actions.copyNote(this.getCurrentNote());
+      return this.props.actions.copyNote(this.getCurrentNote(this.props.cursor, this.props.selectRange));
     }
     if((event.metaKey || event.ctrlKey) && event.keyCode === 86) { // cmd/ctrl+v
       return this.pasteNote();
     }
     if((event.metaKey || event.ctrlKey) && event.keyCode === 88) { // cmd/ctrl+x
       event.preventDefault();
-      this.props.actions.cutNote(this.props.cursor, this.getCurrentNote());
+      return this.cutNote();
     }
 
     if(event.keyCode <= 57 && event.keyCode >= 48 && !event.metaKey) {
@@ -228,7 +310,7 @@ class App extends Component {
     const { openModal, buffers, woodblockBuffers } = this.state;
 
     return (
-      <div style={{ width: '100%', height: '100%' }}>
+      <div style={style}>
         { this.props.playingIndex ? <Playback buffers={buffers} /> : null}
         { this.props.playingIndex && this.props.metronome ? <Metronome buffers={woodblockBuffers} /> : null}
         <EditorArea canPlay={buffers && woodblockBuffers} handlePlay={this.handlePlay} openModal={this.openModal} />
@@ -248,6 +330,7 @@ function mapStateToProps(state) {
     layout: state.layout,
     playingIndex: state.playingIndex,
     cursor: state.cursor,
+    selectRange: state.selectRange,
     tuning: state.tracks[state.currentTrackIndex].tuning,
     instrument: state.tracks[state.currentTrackIndex].instrument,
     metronome: state.metronome

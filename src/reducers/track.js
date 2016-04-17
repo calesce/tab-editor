@@ -1,5 +1,5 @@
 import { DELETE_MEASURE, INSERT_MEASURE, REPLACE_SONG, CHANGE_TUNING,
-  CHANGE_BPM, SET_INSTRUMENT, CHANGE_TIME_SIGNATURE } from '../actions/types';
+  CHANGE_BPM, SET_INSTRUMENT, CHANGE_TIME_SIGNATURE, PASTE_NOTE, CUT_NOTE } from '../actions/types';
 import measure from './measure';
 
 const replaceMeasure = (state, action) => {
@@ -100,6 +100,68 @@ export default function track(state = {}, action) {
         ...state,
         measures: newMeasures
       };
+    }
+
+    case PASTE_NOTE: {
+      const { index, clipboard } = action;
+
+      if(Array.isArray(clipboard)) {
+        const measures = state.measures.slice(0, index.measureIndex + 1).concat(clipboard).concat(state.measures.slice(index.measureIndex + 1, state.measures.length));
+        return {
+          ...state,
+          measures
+        };
+      } else {
+        return {
+          ...state,
+          measures: replaceMeasure(state.measures, action)
+        };
+      }
+    }
+
+    case CUT_NOTE: {
+      const { selection, range } = action;
+
+      if(!selection) {
+        return {
+          ...state,
+          measures: state.measures.filter((_, index) => index !== action.index.measureIndex)
+        };
+      } else if(Array.isArray(selection)) {
+        const mappedMeasures = state.measures.map((measure, i) => {
+          if(range[i]) {
+            if(range[i] !== 'all') {
+              const notes = measure.notes.filter((_, j) => {
+                return range[i].indexOf(j) === -1;
+              });
+              return {
+                ...measure,
+                notes
+              };
+            }
+          }
+          return measure;
+        });
+
+        const filteredMeasures = mappedMeasures.filter((measure, i) => {
+          if(range[i]) {
+            if(range[i] === 'all') {
+              return false;
+            }
+          }
+          return measure.notes.length;
+        });
+
+        return {
+          ...state,
+          measures: filteredMeasures
+        };
+      } else {
+        return {
+          ...state,
+          measures: replaceMeasure(state.measures, action)
+        };
+      }
     }
 
     default:

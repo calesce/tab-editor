@@ -210,14 +210,32 @@ export default function measure(state, action) {
 
     case PASTE_NOTE: {
       const { noteIndex } = action.index;
-      const notes = flatten([state.notes.slice(0, noteIndex + 1), action.note, state.notes.slice(noteIndex + 1, state.notes.length)]);
-      return Object.assign({}, state, { notes });
+      if(action.clipboard.notes) {
+        const notes = flatten([state.notes.slice(0, noteIndex + 1), action.clipboard.notes, state.notes.slice(noteIndex + 1, state.notes.length)]);
+        return Object.assign({}, state, { notes });
+      } else if(!Array.isArray(action.clipboard)) {
+        const notes = flatten([state.notes.slice(0, noteIndex + 1), action.clipboard, state.notes.slice(noteIndex + 1, state.notes.length)]);
+        return Object.assign({}, state, { notes });
+      }
+
+      return state;
     }
 
     case CUT_NOTE: {
       const { noteIndex } = action.index;
-      const notes = flatten([state.notes.slice(0, noteIndex), state.notes.slice(noteIndex + 1, state.notes.length)]);
-      return Object.assign({}, state, { notes });
+
+      if(action.selection.notes) {
+        const measureIndex = Object.keys(action.range)[0];
+        const notes = state.notes.filter((_, i) => {
+          return action.range[measureIndex].indexOf(i) === -1;
+        });
+        return Object.assign({}, state, { notes });
+      } else if(!Array.isArray(action.selection)) {
+        const notes = flatten([state.notes.slice(0, noteIndex), state.notes.slice(noteIndex + 1, state.notes.length)]);
+        return Object.assign({}, state, { notes });
+      }
+
+      return state;
     }
 
     case ADD_REPEAT_END: {

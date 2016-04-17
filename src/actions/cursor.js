@@ -30,3 +30,10 @@ export function moveCursorDown() {
     type: types.MOVE_CURSOR_DOWN
   };
 }
+
+export function setSelectRange(range) {
+  return {
+    type: types.SET_SELECT_RANGE,
+    range
+  };
+}

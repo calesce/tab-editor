@@ -46,7 +46,7 @@ const measureSelector = createSelector(
   (measures, propsMeasureIndex) => {
   let measureIndex;
   if(measures.length - 1 < propsMeasureIndex) {
-    measureIndex = propsMeasureIndex - 1;
+    measureIndex = measures.length - 1;
   } else {
     measureIndex = propsMeasureIndex;
   }
@@ -60,13 +60,15 @@ const playingIndexSelector = state => state.playingIndex;
 const cursorSelector = state => state.cursor;
 const tuningSelector = state => state.tracks[state.currentTrackIndex].tuning;
 const measureLengthSelector = state => state.tracks[state.currentTrackIndex].measures.length;
+const selectRangeSelector = state => state.selectRange;
 
 export const finalMeasureSelector = createSelector(
   measureSelector,
   playingIndexSelector,
   tuningSelector,
   measureLengthSelector,
-  ({ measure, measureIndex }, playingIndex, tuning, measureLength) => {
+  selectRangeSelector,
+  ({ measure, measureIndex }, playingIndex, tuning, measureLength, selectRange) => {
     let playingNoteIndex;
     if(playingIndex) {
       playingNoteIndex = playingIndex.measureIndex === measureIndex ? playingIndex.noteIndex : undefined;
@@ -77,21 +79,19 @@ export const finalMeasureSelector = createSelector(
       playingNoteIndex,
       isValid: calcMeasureValidity(measure),
       tuning,
-      measureLength
+      measureLength,
+      selectRange: selectRange ? selectRange[measureIndex] : undefined
     };
   }
 );
-
-export const makeFinalMeasureSelector = () => {
-  return finalMeasureSelector;
-};
 
 export const cursorSelectorForMeasure = createSelector(
   measureSelector,
   cursorSelector,
   playingIndexSelector,
-  ({ measureIndex }, cursor, playingIndex) => {
-    return !playingIndex && cursor.measureIndex === measureIndex ? { cursor }: { cursor: undefined };
+  selectRangeSelector,
+  ({ measureIndex }, cursor, playingIndex, selectRange) => {
+    return (!playingIndex && cursor.measureIndex === measureIndex && !selectRange) ? { cursor }: { cursor: undefined };
 });
 
 const tracksSelector = state => state.tracks;
@@ -131,7 +131,7 @@ const measuresTuningLayoutSelector = state => (
 );
 
 const calcHeight = (measures, tuning) => {
-  return 1.7 * (measures[measures.length - 1].rowIndex + 1) * (27 * tuning.length) + 40;
+  return (measures[measures.length - 1].rowIndex + 1) * (210 + 20 * tuning.length);
 };
 
 const calcWidth = (measures) => {
@@ -145,6 +145,7 @@ export const scoreSelector = createSelector(
   ({ measures, tuning, layout }) => {
     return {
       measures,
+      rowHeight: 20 * tuning.length + 210,
       height: layout === 'linear' ? '100% - 10' : calcHeight(measures, tuning),
       width: layout === 'linear' ? calcWidth(measures) : window.innerWidth - 10
     };

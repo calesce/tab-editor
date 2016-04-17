@@ -67,14 +67,6 @@ export function toggleNoteVibrato(index) {
   };
 }
 
-export function pasteNote(index, note) {
-  return {
-    type: types.PASTE_NOTE,
-    index,
-    note
-  };
-}
-
 export function changeBpm(index, bpm, all) {
   return {
     type: types.CHANGE_BPM,

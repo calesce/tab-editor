@@ -10,6 +10,13 @@ const computeMeasureWidths = (track) => {
       showBpm = true;
     }
 
+    const notes = measure.notes.map((note, i) => {
+      return {
+        ...note,
+        x: calcXForNote(measure, i)
+      };
+    });
+
     let prevMeasure = track[index-1];
     if(prevMeasure && prevMeasure.timeSignature === measure.timeSignature) {
       if(prevMeasure.bpm !== measure.bpm) {
@@ -20,7 +27,8 @@ const computeMeasureWidths = (track) => {
         ...measure,
         width,
         renderTimeSignature: false,
-        showBpm
+        showBpm,
+        notes
       };
     }
     width += 30;
@@ -28,11 +36,14 @@ const computeMeasureWidths = (track) => {
       width += 20;
     }
 
+
+
     return {
       ...measure,
       width,
       renderTimeSignature: true,
-      showBpm
+      showBpm,
+      notes
     };
   });
 };
@@ -43,7 +54,8 @@ const trackWithRows = (track) => {
       return [{
         ...measure,
         rowIndex: index,
-        indexOfRow: 0
+        indexOfRow: 0,
+        xOfMeasure: 0
       }];
     }
 
@@ -65,7 +77,8 @@ const trackWithRows = (track) => {
     return newTrack.concat({
       ...measure,
       rowIndex: newRowIndex,
-      indexOfRow
+      indexOfRow,
+      xOfMeasure: indexOfRow === 0 ? indexOfRow : currentRowWidth
     });
   }, []);
 };
