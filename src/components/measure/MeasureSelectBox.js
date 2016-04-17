@@ -6,23 +6,31 @@ export default class SelectBox extends Component {
 
   render() {
     const { height, selected, measure } = this.props;
-    let x, width;
+    const { notes, width } = measure;
+
+    if(!selected) {
+      return null;
+    }
+
+    let x, boxWidth;
     if(selected === 'all') {
       x = 0;
-      width = measure.width;
-    } else if(selected) {
+      boxWidth = width;
+    } else {
       if(selected.length > 0) {
-        x = selected[0] === 0 ? 0 : measure.notes[selected[0]].x - 20;
-        if(selected[selected.length - 1] === measure.notes.length - 1) {
-          width = measure.width;
+        if(selected[0] === 0) {
+          x = 0;
         } else {
-          width = measure.notes[selected[selected.length - 1]].x + 20;
+          x = notes[selected[0]].x - 15;
+        }
+        if(selected[selected.length - 1] === notes.length - 1) {
+          boxWidth = width;
+        } else {
+          boxWidth = notes[selected[selected.length - 1] + 1].x - x - 15;
         }
       }
     }
 
-    return selected ?
-      <rect fill='blue' fillOpacity={0.2} x={x} y={0} width={width} height={height} /> :
-      null;
+    return <rect fill='blue' fillOpacity={0.2} x={x} y={0} width={boxWidth} height={height} />;
   }
 }
