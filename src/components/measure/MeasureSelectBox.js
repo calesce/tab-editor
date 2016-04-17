@@ -11,7 +11,7 @@ export default class SelectBox extends Component {
       x = 0;
       width = measure.width;
     } else if(selected) {
-      if(selected.length > 0){
+      if(selected.length > 0) {
         x = selected[0] === 0 ? 0 : measure.notes[selected[0]].x - 20;
         if(selected[selected.length - 1] === measure.notes.length - 1) {
           width = measure.width;

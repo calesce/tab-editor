@@ -1,6 +1,5 @@
 import { SET_CURSOR, MOVE_CURSOR_LEFT, MOVE_CURSOR_RIGHT,
-MOVE_CURSOR_UP, MOVE_CURSOR_DOWN, DELETE_NOTE, DELETE_MEASURE,
-CUT_NOTE, INSERT_NOTE } from '../actions/types';
+MOVE_CURSOR_UP, MOVE_CURSOR_DOWN, DELETE_NOTE, DELETE_MEASURE, INSERT_NOTE } from '../actions/types';
 
 import { getNextNote, getPrevNote, getUpperString, getLowerString } from '../util/cursor';
 
@@ -47,12 +46,6 @@ export default function cursor(state = initialState, measures, tuning, action) {
     }
 
     case DELETE_MEASURE:
-      return getPrevNote(measures, state);
-
-    case CUT_NOTE:
-      if(measures[state.measureIndex].notes <= 1 || state.noteIndex === 0) {
-        return state;
-      }
       return getPrevNote(measures, state);
 
     default:

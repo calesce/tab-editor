@@ -115,17 +115,14 @@ export default function tracks(state = {}, action) {
     case COPY_NOTE:
       return {
         ...state,
-        clipboard: action.note
+        clipboard: action.selection
       };
 
     case CUT_NOTE: {
-      const currentTrack = state.tracks[state.currentTrackIndex];
-
       return {
         ...state,
-        tracks: replaceTrack(state.tracks, action, state.currentTrackIndex, state.layout),
-        clipboard: action.note,
-        cursor: cursorReducer(state.cursor, currentTrack.measures, currentTrack.tuning, action)
+        clipboard: action.selection,
+        tracks: replaceTrack(state.tracks, action, state.currentTrackIndex, state.layout)
       };
     }
 

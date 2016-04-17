@@ -34,18 +34,3 @@ export function setInstrument(instrument) {
     instrument
   };
 }
-
-export function copyNote(note) {
-  return {
-    type: types.COPY_NOTE,
-    note
-  };
-}
-
-export function cutNote(index, note) {
-  return {
-    type: types.CUT_NOTE,
-    index,
-    note
-  };
-}

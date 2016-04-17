@@ -7,6 +7,7 @@ import * as TrackActions from '../actions/track';
 import * as MeasureActions from '../actions/measure';
 import * as PlayingIndexActions from '../actions/playingIndex';
 import * as CursorActions from '../actions/cursor';
+import * as CopyPasteActions from '../actions/cutCopyPaste';
 
 import Soundfont from 'soundfont-player';
 import audioContext from '../util/audioContext';
@@ -27,7 +28,7 @@ if(!!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/) || !!navigator.userAg
   };
 }
 
-const Actions = Object.assign(TracksActions, TrackActions, MeasureActions, PlayingIndexActions, CursorActions);
+const Actions = Object.assign(TracksActions, TrackActions, MeasureActions, PlayingIndexActions, CursorActions, CopyPasteActions);
 
 class App extends Component {
   constructor(props) {
@@ -126,9 +127,9 @@ class App extends Component {
     }
   };
 
-  getCurrentNote = () => {
-    const { measures, selectRange } = this.props;
-    const { measureIndex, noteIndex } = this.props.cursor;
+  getCurrentNote = (cursor, selectRange) => {
+    const { measures } = this.props;
+    const { measureIndex, noteIndex } = cursor;
 
     if(selectRange) {
       if(Object.keys(selectRange).length === 1) {
@@ -225,6 +226,30 @@ class App extends Component {
     }
   };
 
+  cutNote = () => {
+    const { selectRange, cursor, actions } = this.props;
+
+    if(selectRange) {
+      const measureIndex = parseInt(Object.keys(selectRange)[0]);
+      const noteIndex = selectRange[measureIndex][0];
+      const newCursor = {
+        ...cursor,
+        noteIndex: noteIndex === 0 ? 0 : noteIndex - 1,
+        measureIndex
+      };
+      actions.setCursor(newCursor);
+      actions.setSelectRange(undefined);
+      actions.cutNote(newCursor, this.getCurrentNote(cursor, selectRange), selectRange);
+    } else {
+      const newCursor = {
+        ...cursor,
+        noteIndex: cursor.noteIndex === 0 ? 0 : cursor.noteIndex - 1
+      };
+      actions.setCursor(newCursor);
+      actions.cutNote(cursor, this.getCurrentNote(cursor, selectRange), selectRange);
+    }
+  };
+
   handleKeyPress = (event) => {
     if(this.state.openModal || (this.props.playingIndex && event.keyCode !== 32)) {
       return;
@@ -232,14 +257,14 @@ class App extends Component {
 
     if((event.metaKey || event.ctrlKey) && event.keyCode === 67) { // cmd/ctrl+c
       event.preventDefault();
-      return this.props.actions.copyNote(this.getCurrentNote());
+      return this.props.actions.copyNote(this.getCurrentNote(this.props.cursor, this.props.selectRange));
     }
     if((event.metaKey || event.ctrlKey) && event.keyCode === 86) { // cmd/ctrl+v
       return this.pasteNote();
     }
     if((event.metaKey || event.ctrlKey) && event.keyCode === 88) { // cmd/ctrl+x
       event.preventDefault();
-      this.props.actions.cutNote(this.props.cursor, this.getCurrentNote());
+      return this.cutNote();
     }
 
     if(event.keyCode <= 57 && event.keyCode >= 48 && !event.metaKey) {

@@ -223,8 +223,19 @@ export default function measure(state, action) {
 
     case CUT_NOTE: {
       const { noteIndex } = action.index;
-      const notes = flatten([state.notes.slice(0, noteIndex), state.notes.slice(noteIndex + 1, state.notes.length)]);
-      return Object.assign({}, state, { notes });
+
+      if(action.selection.notes) {
+        const measureIndex = Object.keys(action.range)[0];
+        const notes = state.notes.filter((_, i) => {
+          return action.range[measureIndex].indexOf(i) === -1;
+        });
+        return Object.assign({}, state, { notes });
+      } else if(!Array.isArray(action.selection)) {
+        const notes = flatten([state.notes.slice(0, noteIndex), state.notes.slice(noteIndex + 1, state.notes.length)]);
+        return Object.assign({}, state, { notes });
+      }
+
+      return state;
     }
 
     case ADD_REPEAT_END: {
