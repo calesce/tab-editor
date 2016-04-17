@@ -7,29 +7,16 @@ import { selectTrack } from '../../actions/tracks';
 export default class TrackSelect extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      track: props.currentTrackIndex
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      track: nextProps.currentTrackIndex
-    });
   }
 
   onChange = (e) => {
-    this.setState({
-      track: e.target.value
-    }, () => {
-      this.props.selectTrack(parseInt(e.target.value));
-    });
+    const track = e.target.value;
+    this.props.selectTrack(parseInt(track));
   };
 
   render() {
     return (
-      <select onChange={this.onChange} value={this.state.track}>
+      <select onChange={this.onChange} value={this.props.currentTrackIndex}>
         { this.props.tracks.map((_, track) => {
           return <option key={track} value={track}>{`track ${track + 1}`}</option>;
         })}
