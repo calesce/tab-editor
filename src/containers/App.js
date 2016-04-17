@@ -30,6 +30,8 @@ if(!!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/) || !!navigator.userAg
 
 const Actions = Object.assign(TracksActions, TrackActions, MeasureActions, PlayingIndexActions, CursorActions, CopyPasteActions);
 
+const style = { width: '100%', height: '100%' };
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -308,7 +310,7 @@ class App extends Component {
     const { openModal, buffers, woodblockBuffers } = this.state;
 
     return (
-      <div style={{ width: '100%', height: '100%' }}>
+      <div style={style}>
         { this.props.playingIndex ? <Playback buffers={buffers} /> : null}
         { this.props.playingIndex && this.props.metronome ? <Metronome buffers={woodblockBuffers} /> : null}
         <EditorArea canPlay={buffers && woodblockBuffers} handlePlay={this.handlePlay} openModal={this.openModal} />

@@ -180,4 +180,16 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(scoreSelector, mapDispatchToProps)(Score);
+const makeScoreSelector = () => {
+  return scoreSelector;
+};
+
+const makeMapStateToProps = () => {
+  const newScoreSelector = makeScoreSelector();
+  const mapStateToProps = (state, props) => {
+    return newScoreSelector(state, props);
+  };
+  return mapStateToProps;
+};
+
+export default connect(makeMapStateToProps, mapDispatchToProps)(Score);
