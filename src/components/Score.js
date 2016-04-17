@@ -11,7 +11,7 @@ import SelectBox from './SelectBox';
 
 const SVG_TOP = 50;
 // Give some room for user error when selecting a range of notes
-const SELECT_ERROR = 7;
+const SELECT_ERROR = 6;
 
 const style = {
   top: 0,
@@ -36,7 +36,7 @@ class Score extends Component {
   getNoteRangeForMeasure = (measure, xStart, xEnd) => {
     const notes = measure.notes.map((note, i) => {
       const noteX = note.x + measure.xOfMeasure;
-      return noteX + SELECT_ERROR > xStart && noteX - SELECT_ERROR < xEnd ? i : null;
+      return noteX + SELECT_ERROR > xStart && noteX + SELECT_ERROR < xEnd ? i : null;
     });
     return notes.filter(note => note !== null);
   };
@@ -147,7 +147,7 @@ class Score extends Component {
     if(this.state.dragStart) {
       e.preventDefault();
 
-      const x = e.pageX + 5;
+      const x = e.pageX;
       const y = e.pageY - SVG_TOP;
 
       this.setState({
