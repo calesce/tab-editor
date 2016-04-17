@@ -27,4 +27,16 @@ class Measure extends Component {
   }
 }
 
-export default connect(finalMeasureSelector)(Measure);
+const makeMeasureSelector = () => {
+  return finalMeasureSelector;
+};
+
+const makeMapStateToProps = () => {
+  const measureSelector = makeMeasureSelector();
+  const mapStateToProps = (state, props) => {
+    return measureSelector(state, props);
+  };
+  return mapStateToProps;
+};
+
+export default connect(makeMapStateToProps)(Measure);

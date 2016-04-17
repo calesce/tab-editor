@@ -2,7 +2,7 @@ import track from './track';
 import layout from './layout';
 import playingIndex from './playingIndex';
 import cursorReducer from './cursor';
-import { prepareRows, prepareTrack } from '../util';
+import { prepareTrack } from '../util';
 import { COPY_NOTE, CUT_NOTE, CHANGE_LAYOUT, INSERT_TRACK,
   DELETE_TRACK, SELECT_TRACK, INSERT_MEASURE, DELETE_MEASURE,
   CHANGE_BPM, CHANGE_TIME_SIGNATURE, SET_PLAYING_INDEX, TOGGLE_METRONOME,
@@ -13,10 +13,7 @@ const replaceTrack = (tracks, action, currentTrackIndex, layout = 'page') => {
   return tracks.map((t, index) => {
     if(index === currentTrackIndex) {
       const newTrack = track(t, action);
-      return {
-        ...newTrack,
-        measures: prepareRows(newTrack.measures, layout)
-      };
+      return prepareTrack(newTrack, layout);
     }
     return t;
   });

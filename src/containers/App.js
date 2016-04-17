@@ -233,7 +233,7 @@ class App extends Component {
 
     if(selectRange) {
       const measureIndex = parseInt(Object.keys(selectRange)[0]);
-      const noteIndex = selectRange[measureIndex][0];
+      const noteIndex = Object.keys(selectRange).length > 1 ? 0 : selectRange[measureIndex][0];
       const newCursor = {
         ...cursor,
         noteIndex: noteIndex === 0 ? 0 : noteIndex - 1,

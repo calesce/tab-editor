@@ -46,7 +46,7 @@ const measureSelector = createSelector(
   (measures, propsMeasureIndex) => {
   let measureIndex;
   if(measures.length - 1 < propsMeasureIndex) {
-    measureIndex = propsMeasureIndex - 1;
+    measureIndex = measures.length - 1;
   } else {
     measureIndex = propsMeasureIndex;
   }
