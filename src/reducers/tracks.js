@@ -13,7 +13,7 @@ const replaceTrack = (tracks, action, currentTrackIndex, layout = 'page') => {
   return tracks.map((t, index) => {
     if(index === currentTrackIndex) {
       const newTrack = track(t, action);
-      return prepareTrack(newTrack, layout);
+      return prepareTrack(newTrack, layout, { width: window.innerWidth - 10 });
     }
     return t;
   });
@@ -21,7 +21,7 @@ const replaceTrack = (tracks, action, currentTrackIndex, layout = 'page') => {
 
 const applyActionToEachTrack = (state, action) => {
   const currentTrack = state.tracks[state.currentTrackIndex];
-  const newTracks = state.tracks.map((t) => prepareTrack(track(t, action), state.layout));
+  const newTracks = state.tracks.map((t) => prepareTrack(track(t, action), state.layout, { width: window.innerWidth - 10 }));
 
   return {
     ...state,

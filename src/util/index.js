@@ -48,7 +48,7 @@ const computeMeasureWidths = (track) => {
   });
 };
 
-const trackWithRows = (track) => {
+const trackWithRows = (track, scoreBox) => {
   return track.reduce((newTrack, measure, index) => {
     if(index === 0) {
       return [{
@@ -69,7 +69,7 @@ const trackWithRows = (track) => {
 
     let newRowIndex = currentRow;
     let indexOfRow;
-    if(currentRowWidth + measure.width >= window.innerWidth - 9) {
+    if(currentRowWidth + measure.width >= scoreBox.width) {
       newRowIndex = currentRow + 1;
       indexOfRow = 0;
     }
@@ -93,16 +93,16 @@ const linearTrack = (track) => {
   });
 };
 
-export function prepareRows(measures, layout) {
+export function prepareRows(measures, layout, scoreBox) {
   return layout === 'page' ?
-    trackWithRows(computeMeasureWidths(measures)) :
+    trackWithRows(computeMeasureWidths(measures), scoreBox) :
     linearTrack(computeMeasureWidths(measures));
 }
 
-export function prepareTrack(track, layout) {
+export function prepareTrack(track, layout, scoreBox) {
   return {
     ...track,
-    measures: prepareRows(track.measures, layout)
+    measures: prepareRows(track.measures, layout, scoreBox)
   };
 }
 
