@@ -5,7 +5,7 @@ import { defer } from 'lodash';
 
 import * as Actions from '../actions/playingIndex';
 import { playCurrentNote, getReplaySpeedForNote } from '../util/audio';
-import { expandedTracksSelector } from '../util/selectors';
+import { expandedTracksSelector } from '../util/trackSelectors';
 
 class Playback extends Component {
   constructor(props) {

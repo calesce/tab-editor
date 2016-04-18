@@ -1,5 +1,4 @@
 import { createSelector } from 'reselect';
-import { findIndex } from 'lodash';
 
 export function timeSignatureSelector(state) {
   const measures = state.tracks[state.currentTrackIndex].measures;
@@ -56,11 +55,11 @@ const measureSelector = createSelector(
   };
 });
 
-const playingIndexSelector = state => state.playingIndex;
+export const playingIndexSelector = state => state.playingIndex;
 const cursorSelector = state => state.cursor;
 const tuningSelector = state => state.tracks[state.currentTrackIndex].tuning;
 const measureLengthSelector = state => state.tracks[state.currentTrackIndex].measures.length;
-const selectRangeSelector = state => state.selectRange;
+export const selectRangeSelector = state => state.selectRange;
 
 export const finalMeasureSelector = createSelector(
   measureSelector,
@@ -94,34 +93,6 @@ export const cursorSelectorForMeasure = createSelector(
     return (!playingIndex && cursor.measureIndex === measureIndex && !selectRange) ? { cursor }: { cursor: undefined };
 });
 
-const tracksSelector = state => state.tracks;
-const currentTrackIndexSelector = state => state.currentTrackIndex;
-
-const mapMeasureIndices = (measures) => {
-  return measures.map((measure, i) => {
-    return {
-      ...measure,
-      measureIndex: i
-    };
-  });
-};
-
-const getRepeatingSection = (measures, repeatIndex) => {
-  return repeatIndex === -1 ? [] : measures.slice(0, repeatIndex + 1);
-};
-
-const tracksWithMeasuresSelector = createSelector(
-  tracksSelector,
-  (tracks) => {
-    return tracks.map((track) => {
-      return {
-        ...track,
-        measures: mapMeasureIndices(track.measures)
-      };
-    });
-  }
-);
-
 const measuresTuningLayoutSelector = state => (
   {
     measures: state.tracks[state.currentTrackIndex].measures,
@@ -148,46 +119,6 @@ export const scoreSelector = createSelector(
       rowHeight: 20 * tuning.length + 210,
       height: layout === 'linear' ? '100% - 10' : calcHeight(measures, tuning),
       width: layout === 'linear' ? calcWidth(measures) : window.innerWidth - 10
-    };
-  }
-);
-
-export const expandedTracksSelector = createSelector(
-  tracksSelector,
-  tracksWithMeasuresSelector,
-  playingIndexSelector,
-  currentTrackIndexSelector,
-  (tracks, tracksWithMeasures, playingIndex, currentTrackIndex) => {
-    const repeatIndex = findIndex(tracksWithMeasures[0].measures, (measure) => measure.repeatEnd === true);
-
-    let expandedTracks;
-    if(repeatIndex === -1) {
-      expandedTracks = tracksWithMeasures;
-    } else {
-      expandedTracks = tracksWithMeasures.map((track) => {
-        const { measures } = track;
-        const repeatSection = getRepeatingSection(measures, repeatIndex);
-        const newMeasures = measures.slice(0, repeatIndex + 1).concat(repeatSection).concat(measures.slice(repeatIndex + 1), measures.length);
-        return {
-          ...track,
-          measures: newMeasures
-        };
-      });
-    }
-
-    const newMeasureIndex = findIndex(expandedTracks[currentTrackIndex].measures, (measure) =>
-      measure.measureIndex === playingIndex.measureIndex
-    );
-    const newPlayingIndex = {
-      measureIndex: newMeasureIndex,
-      noteIndex: playingIndex.noteIndex
-    };
-
-    return {
-      playingIndex: newPlayingIndex,
-      tracks,
-      currentTrackIndex,
-      expandedTracks
     };
   }
 );

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { getMetronomeSpeed, playWithBuffer } from '../util/audio';
-import { expandedTracksSelector } from '../util/selectors';
+import { expandedTracksSelector } from '../util/trackSelectors';
 
 class Playback extends Component {
   constructor(props) {
