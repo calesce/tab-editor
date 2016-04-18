@@ -196,7 +196,7 @@ class App extends Component {
     }
   };
 
-  pasteNote = () => {
+  pasteNote = (event) => {
     const { cursor, clipboard, actions, measures } = this.props;
 
     if(!clipboard) {
@@ -262,7 +262,7 @@ class App extends Component {
       return this.props.actions.copyNote(this.getCurrentNote(this.props.cursor, this.props.selectRange));
     }
     if((event.metaKey || event.ctrlKey) && event.keyCode === 86) { // cmd/ctrl+v
-      return this.pasteNote();
+      return this.pasteNote(event);
     }
     if((event.metaKey || event.ctrlKey) && event.keyCode === 88) { // cmd/ctrl+x
       event.preventDefault();
