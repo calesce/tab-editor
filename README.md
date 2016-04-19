@@ -1,17 +1,17 @@
-Tab Editor
+Guitar Tab Editor
 =====================
 
 ### Try it Out
 [calesce.github.io/tab-editor](https://calesce.github.io/tab-editor)
 
 ### Note
-This is *very* much a work-in-progress and largely incomplete. I haven't come up with a good design for the actual editor just yet, hence the unstyled/ugly ```<buttons>``` and ```<selects>```. However, there are a lot of keyboard shortcuts I've built in, so check them out in [```handleKeyPress()```](https://github.com/calesce/tab-editor/blob/master/src/containers/App.js#L204). I plan on adding a keyboard shortcuts modal (by hitting ```?```, like on Github or other sites) to help with this.
+This is a work-in-progress and in active development, so expect frequent changes.
 
-This uses the Web Audio API for playback. Thanks to [soundfont-player](https://github.com/danigb/soundfont-player) for making some standard MIDI soundfonts available as Web Audio Buffer nodes.
+This uses the Web Audio API for playback. Thanks to [soundfont-player](https://github.com/danigb/soundfont-player) for making some standard MIDI soundfonts available as Web Audio Buffer nodes. The soundfonts will sound much better on Chrome/Firefox than Safari/Edge (because the former support .ogg, and for the latter I fall back to .mp3).
 
 ### Development
 
-Running the app is fairly straightforward with Node:
+Running the app is fairly straightforward with Node.js:
 
 ```
 npm install
