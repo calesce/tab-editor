@@ -1,5 +1,5 @@
-import { SET_CURSOR, MOVE_CURSOR_LEFT, MOVE_CURSOR_RIGHT,
-MOVE_CURSOR_UP, MOVE_CURSOR_DOWN, DELETE_NOTE, DELETE_MEASURE, INSERT_NOTE } from '../actions/types';
+import { SET_CURSOR, MOVE_CURSOR_LEFT, MOVE_CURSOR_RIGHT, MOVE_CURSOR_UP, MOVE_CURSOR_DOWN,
+DELETE_NOTE, DELETE_MEASURE, INSERT_NOTE, SET_SELECT_RANGE } from '../actions/types';
 
 import { getNextNote, getPrevNote, getUpperString, getLowerString } from '../util/cursor';
 
@@ -9,7 +9,7 @@ const initialState = {
   stringIndex: 0
 };
 
-export default function cursor(state = initialState, measures, tuning, action) {
+export default function cursor(state = initialState, action, measures, tuning) {
   const { noteIndex, measureIndex } = state;
 
   switch(action.type) {
@@ -47,6 +47,26 @@ export default function cursor(state = initialState, measures, tuning, action) {
 
     case DELETE_MEASURE:
       return getPrevNote(measures, state);
+
+    case SET_SELECT_RANGE:
+      if(action.range) {
+        const measureIndex = parseInt(Object.keys(action.range)[0]);
+        if(action.range[measureIndex] === 'all') {
+          return {
+            ...state,
+            measureIndex,
+            noteIndex: 0
+          };
+        } else {
+          return {
+            ...state,
+            measureIndex,
+            noteIndex: action.range[measureIndex][0]
+          };
+        }
+      }
+
+      return state;
 
     default:
       return state;

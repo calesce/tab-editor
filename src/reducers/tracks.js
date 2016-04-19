@@ -28,7 +28,7 @@ const applyActionToEachTrack = (state, action) => {
     tracks: newTracks,
     layout: layout(state.layout, action),
     playingIndex: playingIndex(state.playingIndex, action),
-    cursor: cursorReducer(state.cursor, currentTrack.measures, currentTrack.tuning, action)
+    cursor: cursorReducer(state.cursor, action, currentTrack.measures, currentTrack.tuning)
   };
 };
 
@@ -146,14 +146,15 @@ export default function tracks(state = {}, action) {
       const currentTrack = state.tracks[state.currentTrackIndex];
       return {
         ...state,
-        cursor: cursorReducer(state.cursor, currentTrack.measures, currentTrack.tuning, action)
+        cursor: cursorReducer(state.cursor, action, currentTrack.measures, currentTrack.tuning)
       };
     }
 
     case SET_SELECT_RANGE: {
       return {
         ...state,
-        selectRange: action.range
+        selectRange: action.range,
+        cursor: cursorReducer(state.cursor, action)
       };
     }
 
@@ -163,7 +164,7 @@ export default function tracks(state = {}, action) {
       return {
         ...state,
         tracks: replaceTrack(state.tracks, action, state.currentTrackIndex, state.layout),
-        cursor: cursorReducer(state.cursor, currentTrack.measures, currentTrack.tuning, action)
+        cursor: cursorReducer(state.cursor, action, currentTrack.measures, currentTrack.tuning)
       };
     }
   }
