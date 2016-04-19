@@ -5,6 +5,31 @@ import { playingIndexSelector, selectRangeSelector } from './selectors';
 const tracksSelector = state => state.tracks;
 const currentTrackIndexSelector = state => state.currentTrackIndex;
 
+const getRepeatingSection = (measures, repeatIndex) => {
+  return repeatIndex === -1 ? [] : measures.slice(0, repeatIndex + 1);
+};
+
+const mapMeasureIndices = (measures) => {
+  return measures.map((measure, i) => {
+    return {
+      ...measure,
+      measureIndex: i
+    };
+  });
+};
+
+const tracksWithMeasuresSelector = createSelector(
+  tracksSelector,
+  (tracks) => {
+    return tracks.map((track) => {
+      return {
+        ...track,
+        measures: mapMeasureIndices(track.measures)
+      };
+    });
+  }
+);
+
 const expandedTracksFromMeasures = (tracks, repeatIndex) => {
   if(repeatIndex === -1) {
     return tracks;
@@ -20,39 +45,23 @@ const expandedTracksFromMeasures = (tracks, repeatIndex) => {
   });
 };
 
-const getRepeatingSection = (measures, repeatIndex) => {
-  return repeatIndex === -1 ? [] : measures.slice(0, repeatIndex + 1);
-};
-
-const tracksWithMeasuresSelector = createSelector(
-  tracksSelector,
-  (tracks) => {
-    return tracks.map((track) => {
-      return {
-        ...track,
-        measures: mapMeasureIndices(track.measures)
-      };
+const getSectionOfTrack = (selection, tracks, currentTrackIndex) => {
+  return tracks.map((track, trackIndex) => {
+    return track.measures.filter(measure => {
+      if(selection[measure.measureIndex]) {
+        return true;
+      }
+      return false;
     });
-  }
-);
-
-const mapMeasureIndices = (measures) => {
-  return measures.map((measure, i) => {
-    return {
-      ...measure,
-      measureIndex: i
-    };
   });
 };
 
 export const expandedTracksSelector = createSelector(
-  tracksSelector,
   tracksWithMeasuresSelector,
   playingIndexSelector,
   currentTrackIndexSelector,
   selectRangeSelector,
-  (tracks, tracksWithMeasures, playingIndex, currentTrackIndex, selectRange) => {
-
+  (tracksWithMeasures, playingIndex, currentTrackIndex, selectRange) => {
     const repeatIndex = findIndex(tracksWithMeasures[0].measures, (measure) => measure.repeatEnd === true);
     const expandedTracks = expandedTracksFromMeasures(tracksWithMeasures, repeatIndex);
 
@@ -64,12 +73,13 @@ export const expandedTracksSelector = createSelector(
       noteIndex: playingIndex.noteIndex
     };
 
+    const slicedTracks = selectRange ? getSectionOfTrack(selectRange, expandedTracks, currentTrackIndex) : undefined;
+
     return {
       playingIndex: newPlayingIndex,
-      tracks,
       currentTrackIndex,
       expandedTracks,
-      selectRange
+      slicedTracks
     };
   }
 );
