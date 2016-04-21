@@ -117,7 +117,7 @@ export const scoreSelector = createSelector(
     return {
       measures,
       rowHeight: 20 * tuning.length + 210,
-      height: layout === 'linear' ? '100% - 10' : calcHeight(measures, tuning),
+      height: layout === 'linear' ? '99%' : calcHeight(measures, tuning),
       width: layout === 'linear' ? calcWidth(measures) : window.innerWidth - 10
     };
   }
