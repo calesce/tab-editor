@@ -59,7 +59,11 @@ class App extends Component {
         this.updateScrollPosition(nextProps.playingIndex, nextProps.measures);
       }
     } else if(this.props.instrument !== nextProps.instrument) {
-      this.loadSoundfont(nextProps.instrument);
+      this.setState({
+        buffers: undefined
+      }, () => {
+        this.loadSoundfont(nextProps.instrument);
+      });
     }
   }
 
@@ -70,9 +74,11 @@ class App extends Component {
       });
     });
 
-    Soundfont.loadBuffers(audioContext, 'woodblock').then((woodblockBuffers) => {
-      this.setState({ woodblockBuffers });
-    });
+    if(!this.state.woodblockBuffers) {
+      Soundfont.loadBuffers(audioContext, 'woodblock').then((woodblockBuffers) => {
+        this.setState({ woodblockBuffers });
+      });
+    }
   };
 
   handleResize = () => {
