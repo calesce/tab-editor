@@ -32,3 +32,10 @@ export function changeLayout(layout) {
     layout
   };
 }
+
+export function replaceSong(tracks) {
+  return {
+    type: types.REPLACE_SONG,
+    tracks
+  };
+}

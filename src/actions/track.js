@@ -14,13 +14,6 @@ export function insertMeasure(index) {
   };
 }
 
-export function replaceSong(song) {
-  return {
-    type: types.REPLACE_SONG,
-    song
-  };
-}
-
 export function changeTuning(tuning) {
   return {
     type: types.CHANGE_TUNING,

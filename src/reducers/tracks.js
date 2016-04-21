@@ -6,7 +6,7 @@ import { prepareTrack } from '../util';
 import { COPY_NOTE, CUT_NOTE, CHANGE_LAYOUT, INSERT_TRACK,
   DELETE_TRACK, SELECT_TRACK, INSERT_MEASURE, DELETE_MEASURE,
   CHANGE_BPM, CHANGE_TIME_SIGNATURE, SET_PLAYING_INDEX, TOGGLE_METRONOME,
-  SET_CURSOR, MOVE_CURSOR_LEFT, MOVE_CURSOR_RIGHT,
+  SET_CURSOR, MOVE_CURSOR_LEFT, MOVE_CURSOR_RIGHT, REPLACE_SONG,
   MOVE_CURSOR_UP, MOVE_CURSOR_DOWN, SET_SELECT_RANGE } from '../actions/types';
 
 const replaceTrack = (tracks, action, currentTrackIndex, layout = 'page') => {
@@ -107,6 +107,13 @@ export default function tracks(state = {}, action) {
 
     case CHANGE_TIME_SIGNATURE: {
       return applyActionToEachTrack(state, action);
+    }
+
+    case REPLACE_SONG: {
+      return {
+        ...state,
+        tracks: action.tracks
+      };
     }
 
     case COPY_NOTE:
