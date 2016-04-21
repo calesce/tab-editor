@@ -38,7 +38,8 @@ class Score extends Component {
       const noteX = note.x + measure.xOfMeasure;
       return noteX + SELECT_ERROR > xStart && noteX + SELECT_ERROR < xEnd ? i : null;
     });
-    return notes.filter(note => note !== null);
+    const filteredNotes = notes.filter(note => note !== null);
+    return filteredNotes.length === notes.length ? 'all' : filteredNotes;
   };
 
   getSelectedRangeForSingleRow = (measure, xStart, xEnd) => {

@@ -235,11 +235,21 @@ class App extends Component {
   };
 
   cutNote = () => {
-    const { selectRange, cursor, actions } = this.props;
+    const { selectRange, cursor, actions, measures } = this.props;
 
     if(selectRange) {
-      const measureIndex = parseInt(Object.keys(selectRange)[0]);
+      const firstMeasureIndex = parseInt(Object.keys(selectRange)[0]);
+
+      let measureIndex = firstMeasureIndex;
+      if(selectRange[firstMeasureIndex] === 'all') {
+        const lastMeasure = Object.keys(selectRange)[Object.keys(selectRange).length - 1];
+        if(parseInt(lastMeasure) === measures.length - 1) {
+          measureIndex = firstMeasureIndex - 1;
+        }
+      }
+
       const noteIndex = Object.keys(selectRange).length > 1 ? 0 : selectRange[measureIndex][0];
+
       const newCursor = {
         ...cursor,
         noteIndex: noteIndex === 0 ? 0 : noteIndex - 1,
