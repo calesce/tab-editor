@@ -35,15 +35,20 @@ class TabMeasure extends Component {
       return null;
     }
     const { noteIndex, stringIndex } = cursor;
-    const stringOffset = (6 - stringCount);
-
-    const y = 95 - (13 * (stringIndex + stringOffset));
+    const y = 95 - (13 * (stringIndex + (6 - stringCount)));
 
     let index = 0;
     let fret = 0;
     let x = 10;
 
-    if(measure.notes.length > 0) {
+    if(!measure.notes[noteIndex]) {
+      if(measure.indexOfRow === 0) {
+        x += 8;
+      }
+      if(measure.renderTimeSignature) {
+        x += 30;
+      }
+    } else if(measure.notes.length > 0) {
       index = findIndex(measure.notes[noteIndex].string, (s) => s === stringIndex);
       fret = measure.notes[noteIndex].fret[index];
       x = measure.notes[noteIndex] ? measure.notes[noteIndex].x : 10;
