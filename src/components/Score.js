@@ -27,22 +27,29 @@ class Score extends Component {
   constructor(props) {
     super(props);
 
+    this.getNoteRangeForMeasure = this.getNoteRangeForMeasure.bind(this);
+    this.getSelectedRangeForSingleRow = this.getSelectedRangeForSingleRow.bind(this);
+    this.getSelectedRange = this.getSelectedRange.bind(this);
+    this.onMouseDown = this.onMouseDown.bind(this);
+    this.onMouseUp = this.onMouseUp.bind(this);
+    this.onMouseMove = this.onMouseMove.bind(this);
+
     this.state = {
       dragStart: undefined,
       dragEnd: undefined
     };
   }
 
-  getNoteRangeForMeasure = (measure, xStart, xEnd) => {
+  getNoteRangeForMeasure(measure, xStart, xEnd) {
     const notes = measure.notes.map((note, i) => {
       const noteX = note.x + measure.xOfMeasure;
       return noteX + SELECT_ERROR > xStart && noteX + SELECT_ERROR < xEnd ? i : null;
     });
     const filteredNotes = notes.filter(note => note !== null);
     return filteredNotes.length === notes.length ? 'all' : filteredNotes;
-  };
+  }
 
-  getSelectedRangeForSingleRow = (measure, xStart, xEnd) => {
+  getSelectedRangeForSingleRow(measure, xStart, xEnd) {
     if(xStart > measure.xOfMeasure && xEnd < measure.xOfMeasure + measure.width) {
       return this.getNoteRangeForMeasure(measure, xStart, xEnd);
     } else if((xStart < measure.xOfMeasure && xEnd > measure.xOfMeasure) ||
@@ -58,9 +65,9 @@ class Score extends Component {
     } else {
       return undefined;
     }
-  };
+  }
 
-  getSelectedRange = (measure, xStart, xEnd, selectedRows) => {
+  getSelectedRange(measure, xStart, xEnd, selectedRows) {
     if(!selectedRows) {
       return undefined;
     }
@@ -90,9 +97,9 @@ class Score extends Component {
     } else {
       return 'all';
     }
-  };
+  }
 
-  onMouseDown = (e) => {
+  onMouseDown(e) {
     e.preventDefault();
 
     const x = e.pageX;
@@ -104,9 +111,9 @@ class Score extends Component {
       y,
       selectedRanges: undefined
     });
-  };
+  }
 
-  onMouseUp = () => {
+  onMouseUp() {
     const { x, y, dragHeight, dragWidth } = this.state;
 
     let selectedRows;
@@ -142,9 +149,9 @@ class Score extends Component {
       dragWidth: undefined,
       dragHeight: undefined
     });
-  };
+  }
 
-  onMouseMove = (e) => {
+  onMouseMove(e) {
     if(this.state.dragStart) {
       e.preventDefault();
 

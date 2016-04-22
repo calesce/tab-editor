@@ -7,10 +7,15 @@ import { setInstrument } from '../../actions/track';
 import instruments from 'soundfont-player/instruments.json';
 
 export default class InstrumentSelect extends Component {
-  onChange = (e) => {
+  constructor() {
+    super();
+    this.onChange = this.onChange.bind(this);
+  }
+
+  onChange(e) {
     const instrument = e.target.value;
     this.props.setInstrument(instrument);
-  };
+  }
 
   render() {
     return (

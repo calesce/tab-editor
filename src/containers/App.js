@@ -36,6 +36,22 @@ class App extends Component {
   constructor(props) {
     super(props);
 
+    this.loadSoundfont = this.loadSoundfont.bind(this);
+    this.handleResize = this.handleResize.bind(this);
+    this.getXOfCurrentNote = this.getXOfCurrentNote.bind(this);
+    this.getYOfCurrentNote = this.getYOfCurrentNote.bind(this);
+    this.updateScrollPosition = this.updateScrollPosition.bind(this);
+    this.handleStop = this.handleStop.bind(this);
+    this.handlePlay = this.handlePlay.bind(this);
+    this.getCurrentNote = this.getCurrentNote.bind(this);
+    this.navigateCursor = this.navigateCursor.bind(this);
+    this.deleteNote = this.deleteNote.bind(this);
+    this.pasteNote = this.pasteNote.bind(this);
+    this.cutNote = this.cutNote.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
+    this.openModal = this.openModal.bind(this);
+    this.closeModal = this.closeModal.bind(this);
+
     if (typeof window !== 'undefined') {
       window.addEventListener('keydown', this.handleKeyPress);
       window.addEventListener('resize', this.handleResize);
@@ -67,7 +83,7 @@ class App extends Component {
     }
   }
 
-  loadSoundfont = (instrument) => {
+  loadSoundfont(instrument) {
     Soundfont.loadBuffers(audioContext, instrument).then((buffers) => {
       this.setState({
         buffers: Object.assign({}, this.state.buffers, { [instrument]: buffers })
@@ -79,13 +95,13 @@ class App extends Component {
         this.setState({ woodblockBuffers });
       });
     }
-  };
+  }
 
-  handleResize = () => {
+  handleResize() {
     this.props.actions.resize();
-  };
+  }
 
-  getXOfCurrentNote = (playingIndex, measures) => {
+  getXOfCurrentNote(playingIndex, measures) {
     const { measureIndex, noteIndex } = playingIndex;
     const xOfMeasures = measures.reduce((acc, curr, i) => {
       if(i >= measureIndex) {
@@ -95,14 +111,14 @@ class App extends Component {
     }, 0);
 
     return xOfMeasures + 55 * noteIndex;
-  };
+  }
 
-  getYOfCurrentNote = (playingIndex, measures) => {
+  getYOfCurrentNote(playingIndex, measures) {
     const position = measures[playingIndex.measureIndex];
     return (position.rowIndex) * (27 * this.props.tuning.length) + 50;
-  };
+  }
 
-  updateScrollPosition = (playingIndex, measures) => {
+  updateScrollPosition(playingIndex, measures) {
     if(this.props.layout === 'linear') {
       const x = this.getXOfCurrentNote(playingIndex, measures);
       const { scrollX, innerWidth } = window;
@@ -118,24 +134,24 @@ class App extends Component {
         window.scroll(0, y - 100);
       }
     }
-  };
+  }
 
-  handleStop = () => {
+  handleStop() {
     this.props.actions.setCursor({
       measureIndex: this.props.playingIndex.measureIndex,
       noteIndex: this.props.playingIndex.noteIndex,
       stringIndex: this.props.cursor.stringIndex
     });
     this.props.actions.setPlayingIndex(null);
-  };
+  }
 
-  handlePlay = () => {
+  handlePlay() {
     if(!this.props.playingIndex && this.state.buffers) {
       this.props.actions.setPlayingIndex(this.props.cursor);
     }
-  };
+  }
 
-  getCurrentNote = (cursor, selectRange) => {
+  getCurrentNote(cursor, selectRange) {
     const { measures } = this.props;
     const { measureIndex, noteIndex } = cursor;
 
@@ -169,9 +185,9 @@ class App extends Component {
     } else {
       return measures[measureIndex].notes[noteIndex];
     }
-  };
+  }
 
-  navigateCursor = (event) => {
+  navigateCursor(event) {
     event.preventDefault();
     if(event.keyCode === 39) { // right arrow
       const { measures } = this.props;
@@ -189,9 +205,9 @@ class App extends Component {
     } else if(event.keyCode === 40) { // down arrow
       this.props.actions.moveCursorDown();
     }
-  };
+  }
 
-  deleteNote = () => {
+  deleteNote() {
     const { measureIndex } = this.props.cursor;
     let notes = this.props.measures[measureIndex].notes;
 
@@ -200,9 +216,9 @@ class App extends Component {
     } else if(notes.length === 0) {
       this.props.actions.deleteMeasure(measureIndex);
     }
-  };
+  }
 
-  pasteNote = (event) => {
+  pasteNote(event) {
     const { cursor, clipboard, actions, measures } = this.props;
 
     if(!clipboard) {
@@ -232,9 +248,9 @@ class App extends Component {
         noteIndex: 0
       });
     }
-  };
+  }
 
-  cutNote = () => {
+  cutNote() {
     const { selectRange, cursor, actions, measures } = this.props;
 
     if(selectRange) {
@@ -266,9 +282,9 @@ class App extends Component {
       actions.setCursor(newCursor);
       actions.cutNote(cursor, this.getCurrentNote(cursor, selectRange), selectRange);
     }
-  };
+  }
 
-  handleKeyPress = (event) => {
+  handleKeyPress(event) {
     if(this.state.openModal || (this.props.playingIndex && event.keyCode !== 32)) {
       return;
     }
@@ -312,15 +328,15 @@ class App extends Component {
     } else if(event.keyCode >= 37 && event.keyCode <= 40) {
       return this.navigateCursor(event);
     }
-  };
+  }
 
-  openModal = (openModal) => {
+  openModal(openModal) {
     this.setState({ openModal });
-  };
+  }
 
-  closeModal = () => {
+  closeModal() {
     this.setState({ openModal: null });
-  };
+  }
 
   render() {
     const { openModal, buffers, woodblockBuffers } = this.state;

@@ -4,11 +4,23 @@ import shouldPureComponentUpdate from 'react-pure-render/function';
 export default class Rest extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
 
-  restClicked = () => {
-    this.props.onClick(this.props.noteIndex, 0);
-  };
+  constructor() {
+    super();
 
-  renderQuarterRest = (style, y) => {
+    this.restClicked = this.restClicked.bind(this);
+    this.renderQuarterRest = this.renderQuarterRest.bind(this);
+    this.renderEighthRest = this.renderEighthRest.bind(this);
+    this.renderSixteenthRest = this.renderSixteenthRest.bind(this);
+    this.renderHalfRest = this.renderHalfRest.bind(this);
+    this.renderWholeRest = this.renderWholeRest.bind(this);
+    this.renderDot = this.renderDot.bind(this);
+  }
+
+  restClicked() {
+    this.props.onClick(this.props.noteIndex, 0);
+  }
+
+  renderQuarterRest(style, y) {
     return (
       <svg onClick={this.restClicked} style={style} width='20.53' height='26.7' x={this.props.x} y={y}>
         <path
@@ -19,9 +31,9 @@ export default class Rest extends Component {
       { this.renderDot(14, y - 30) }
       </svg>
     );
-  };
+  }
 
-  renderEighthRest = (style, y) => {
+  renderEighthRest(style, y) {
     return (
       <svg onClick={this.restClicked} style={style} width='20.03' height='17.67' x={this.props.x} y={y}>
         <g transform='translate(-482.02112,-143.61753)'>
@@ -36,9 +48,9 @@ export default class Rest extends Component {
         { this.renderDot(14, y - 30) }
       </svg>
     );
-  };
+  }
 
-  renderSixteenthRest = (style, y) => {
+  renderSixteenthRest(style, y) {
     return (
       <svg onClick={this.restClicked} style={style} width='20.66' height='26.65' x={this.props.x} y={y}>
         <g transform='translate(-481.99253,-144.99198)'>
@@ -53,9 +65,9 @@ export default class Rest extends Component {
         { this.renderDot(15, y - 30) }
       </svg>
     );
-  };
+  }
 
-  renderHalfRest = (style, y) => {
+  renderHalfRest(style, y) {
     return (
       <svg onClick={this.restClicked} style={style} width='30' height='62' x={this.props.x - 9} y={y - 5}>
         <g>
@@ -65,9 +77,9 @@ export default class Rest extends Component {
         { this.renderDot(27, y - 25) }
       </svg>
     );
-  };
+  }
 
-  renderWholeRest = (style, y) => {
+  renderWholeRest(style, y) {
     return (
       <svg onClick={this.restClicked} style={style} width='30' height='62' x={this.props.x - 9} y={y - 12.5}>
         <g transform='matrix(1,0,0,-1,0,42.987635)'>
@@ -77,9 +89,9 @@ export default class Rest extends Component {
         { this.renderDot(27, y - 24) }
       </svg>
     );
-  };
+  }
 
-  renderDot = (x, y) => {
+  renderDot(x, y) {
     if(!this.props.note.dotted) {
       return null;
     }
@@ -87,7 +99,7 @@ export default class Rest extends Component {
     return (
       <circle cx={x} cy={y} r={1.5} fill={this.props.color} stroke={this.props.color} />
     );
-  };
+  }
 
   render() {
     const style = {

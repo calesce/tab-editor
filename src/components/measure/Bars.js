@@ -5,13 +5,19 @@ import shouldPureComponentUpdate from 'react-pure-render/function';
 export default class Bars extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
 
-  renderBar = (i, y, color, stringCount, strokeWidth, measureWidth) => {
+  constructor() {
+    super();
+
+    this.renderBar = this.renderBar.bind(this);
+  }
+
+  renderBar(i, y, color, stringCount, strokeWidth, measureWidth) {
     const c = i === 0 || i === stringCount - 1 ? color : '#999999';
     const width = i === 0 || i === stringCount - 1 ? strokeWidth : '0.1';
 
     return <rect key={i} y={y + i * this.props.spaceBetweenBars} width={measureWidth} height={0.5}
       fill={c} stroke={c} strokeWidth={width}></rect>;
-  };
+  }
 
   render() {
     const { measureWidth, color, strokeWidth, strings, lastMeasure, y, spaceBetweenBars } = this.props;

@@ -5,14 +5,15 @@ import { connect } from 'react-redux';
 import { selectTrack } from '../../actions/tracks';
 
 export default class TrackSelect extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
+    this.onChange = this.onChange.bind(this);
   }
 
-  onChange = (e) => {
+  onChange(e) {
     const track = e.target.value;
     this.props.selectTrack(parseInt(track));
-  };
+  }
 
   render() {
     return (

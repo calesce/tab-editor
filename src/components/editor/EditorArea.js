@@ -27,10 +27,14 @@ const hiddenStyle = { display: 'none' };
 
 class EditorButton extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
+  constructor() {
+    super();
+    this.onClick = this.onClick.bind(this);
+  }
 
-  onClick = () => {
+  onClick() {
     this.props.onClick(this.props.type);
-  };
+  }
 
   render() {
     return <button onClick={this.onClick}>{this.props.label}</button>;
@@ -40,56 +44,70 @@ class EditorButton extends Component {
 class EditorArea extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
 
-  toggleLayout = () => {
-    this.props.changeLayout(this.props.layout === 'page' ? 'linear' : 'page');
-  };
+  constructor() {
+    super();
 
-  handleStop = () => {
+    this.toggleLayout = this.toggleLayout.bind(this);
+    this.handleStop = this.handleStop.bind(this);
+    this.renderPlayButton = this.renderPlayButton.bind(this);
+    this.renderPlayStop = this.renderPlayStop.bind(this);
+    this.addRepeatEnd = this.addRepeatEnd.bind(this);
+    this.inputRef = this.inputRef.bind(this);
+    this.importClicked = this.importClicked.bind(this);
+    this.onImport = this.onImport.bind(this);
+    this.onFileRead = this.onFileRead.bind(this);
+  }
+
+  toggleLayout() {
+    this.props.changeLayout(this.props.layout === 'page' ? 'linear' : 'page');
+  }
+
+  handleStop() {
     this.props.setCursor({
       measureIndex: this.props.playingIndex.measureIndex,
       noteIndex: this.props.playingIndex.noteIndex,
       stringIndex: this.props.cursor.stringIndex
     });
     this.props.setPlayingIndex(null);
-  };
+  }
 
-  renderPlayButton = (canPlay) => {
+  renderPlayButton(canPlay) {
     return canPlay ? <button onClick={this.props.handlePlay}>Play</button> : <button disabled>Play</button>;
-  };
+  }
 
-  renderPlayStop = (canPlay) => {
+  renderPlayStop(canPlay) {
     return this.props.playingIndex ?
       <button onClick={this.handleStop}>Stop</button> :
       this.renderPlayButton(canPlay);
-  };
+  }
 
-  addRepeatEnd = () => {
+  addRepeatEnd() {
     this.props.addRepeatEnd(this.props.cursor);
-  };
+  }
 
-  inputRef = input => {
+  inputRef(input) {
     this._input = input;
-  };
+  }
 
-  importClicked = () => {
+  importClicked() {
     this._input.click();
-  };
+  }
 
-  onImport = (e) => {
+  onImport(e) {
     const file = e.target.files[0];
     const reader = new  FileReader();
     reader.onload = this.onFileRead;
     reader.readAsText(file);
-  };
+  }
 
-  onFileRead = (e) => {
+  onFileRead(e) {
     try {
       const tracks = JSON.parse(e.target.result);
       this.props.replaceSong(tracks);
     } catch(ex) {
       // TODO show an error dialog
     }
-  };
+  }
 
   render() {
     const { openModal, timeSignature, layout, canPlay, tracks } = this.props;

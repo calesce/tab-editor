@@ -10,6 +10,12 @@ import { expandedTracksSelector } from '../util/trackSelectors';
 class Playback extends Component {
   constructor(props) {
     super(props);
+
+    this.loopThroughSong = this.loopThroughSong.bind(this);
+    this.updateUI = this.updateUI.bind(this);
+    this.startPlayback = this.startPlayback.bind(this);
+    this.updateNote = this.updateNote.bind(this);
+
     this.timers = [];
   }
 
@@ -27,7 +33,7 @@ class Playback extends Component {
     });
   }
 
-  loopThroughSong = (startTimestamp, playingIndex, track, visibleTrackIndex, trackIndex) => {
+  loopThroughSong(startTimestamp, playingIndex, track, visibleTrackIndex, trackIndex) {
     const { measureIndex, noteIndex } = playingIndex;
     const { measures } = track;
     const measureToPlay = measures[measureIndex];
@@ -68,9 +74,9 @@ class Playback extends Component {
         this.loopThroughSong(startTimestamp, playingIndex, track, visibleTrackIndex, trackIndex);
       });
     }
-  };
+  }
 
-  updateUI = (measures, measure, noteIndex, playbackMeasureIndex) => {
+  updateUI(measures, measure, noteIndex, playbackMeasureIndex) {
     if(measure.measureIndex !== measures.length - 1 && noteIndex >= measure.notes.length - 1) {
       this.updateNote({
         measureIndex: measures[playbackMeasureIndex + 1].measureIndex,
@@ -82,9 +88,9 @@ class Playback extends Component {
         noteIndex: noteIndex + 1
       });
     }
-  };
+  }
 
-  startPlayback = () => {
+  startPlayback() {
     const { buffers, currentTrackIndex, playingIndex, expandedTracks } = this.props;
 
     expandedTracks.forEach((track) => {
@@ -96,13 +102,13 @@ class Playback extends Component {
         this.loopThroughSong(Date.now(), playingIndex, track, currentTrackIndex, i);
       });
     });
-  };
+  }
 
-  updateNote = (playingIndex) => {
+  updateNote(playingIndex) {
     defer(() => {
       this.props.actions.setPlayingIndex(playingIndex);
     });
-  };
+  }
 
   render() {
     return <div style={{ display: 'none' }}></div>;

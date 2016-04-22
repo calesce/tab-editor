@@ -25,7 +25,18 @@ const measureNumberStyle = {
 class MusicMeasure extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
 
-  annotateNotes = (notes) => {
+  constructor() {
+    super();
+
+    this.annotateNotes = this.annotateNotes.bind(this);
+    this.annotateNote = this.annotateNote.bind(this);
+    this.determineAccidentals = this.determineAccidentals.bind(this);
+    this.renderTimeSignature = this.renderTimeSignature.bind(this);
+    this.renderBars = this.renderBars.bind(this);
+    this.renderMusicNote = this.renderMusicNote.bind(this);
+  }
+
+  annotateNotes(notes) {
     return notes.map((note, noteIndex) => {
       return {
         ...note,
@@ -34,9 +45,9 @@ class MusicMeasure extends Component {
         notes: this.annotateNote(note)
       };
     });
-  };
+  }
 
-  annotateNote = (note) => {
+  annotateNote(note) {
     if(note.string[0] === 'rest') {
       return ['rest'];
     }
@@ -51,9 +62,9 @@ class MusicMeasure extends Component {
         midiString
       };
     });
-  };
+  }
 
-  determineAccidentals = (notes) => {
+  determineAccidentals(notes) {
     return notes.map((note, i) => {
       return {
         ...note,
@@ -117,9 +128,9 @@ class MusicMeasure extends Component {
         })
       };
     });
-  };
+  }
 
-  renderTimeSignature = (measureIndex, measure, strings, yOffset, indexOfRow) => {
+  renderTimeSignature(measureIndex, measure, strings, yOffset, indexOfRow) {
     const x = indexOfRow === 0 ? 36 : 20;
     const y = (strings * 6 - 6) + yOffset; // y of top of time signature
     const { renderTimeSignature, timeSignature } = measure;
@@ -127,9 +138,9 @@ class MusicMeasure extends Component {
     return renderTimeSignature ?
       <TimeSignature x={x} y={y} strings={strings} numerator={timeSignature[0]} denominator={timeSignature.slice(2, 4)} /> :
       null;
-  };
+  }
 
-  renderBars = (x, y, measureWidth, strings) => {
+  renderBars(x, y, measureWidth, strings) {
     const { playingNoteIndex, isValid, measureIndex, measureLength } = this.props;
 
     const lastMeasure = measureIndex === measureLength - 1;
@@ -146,9 +157,9 @@ class MusicMeasure extends Component {
     return <Bars measureWidth={measureWidth} color={color} y={y} spaceBetweenBars={13}
       strokeWidth={strokeWidth} strings={strings} lastMeasure={lastMeasure}
     />;
-  };
+  }
 
-  renderMusicNote = (note, measureIndex, noteIndex, yOffset) => {
+  renderMusicNote(note, measureIndex, noteIndex, yOffset) {
     if(note.string[0] === 'rest') {
       return <Rest key={noteIndex} color={note.color} x={note.x} y={note.y} note={note} />;
     }
@@ -167,7 +178,7 @@ class MusicMeasure extends Component {
       return <MusicNote key={i} x={note.x} y={yToUse} color={note.color} duration={note.duration}
         sharp={note.notes[i].renderSharp} natural={note.notes[i].renderNatural} measureY={yOffset} flip={flip} />;
     });
-  };
+  }
 
   render() {
     const { measure, measureIndex, measureHeight, y } = this.props;

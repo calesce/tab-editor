@@ -7,6 +7,10 @@ import { expandedTracksSelector } from '../util/trackSelectors';
 class Playback extends Component {
   constructor(props) {
     super(props);
+
+    this.loopThroughSong = this.loopThroughSong.bind(this);
+    this.startPlayback = this.startPlayback.bind(this);
+
     this.timer = null;
   }
 
@@ -22,7 +26,7 @@ class Playback extends Component {
     cancelAnimationFrame(this.timer);
   }
 
-  loopThroughSong = (startTimestamp, playingIndex, track) => {
+  loopThroughSong(startTimestamp, playingIndex, track) {
     const { measureIndex, noteIndex } = playingIndex;
     const { measures } = track;
     const measureToPlay = measures[measureIndex];
@@ -58,9 +62,9 @@ class Playback extends Component {
         this.loopThroughSong(startTimestamp, playingIndex, track);
       });
     }
-  };
+  }
 
-  startPlayback = () => {
+  startPlayback() {
     const { playingIndex, expandedTracks, buffers } = this.props;
 
     playWithBuffer(buffers[60], 0.1);
@@ -68,7 +72,7 @@ class Playback extends Component {
     this.timer = requestAnimationFrame(() => {
       this.loopThroughSong(Date.now(), playingIndex, expandedTracks[0]);
     });
-  };
+  }
 
   render() {
     return <div style={{ display: 'none' }}></div>;

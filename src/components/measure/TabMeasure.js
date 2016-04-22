@@ -20,15 +20,25 @@ import { setCursor } from '../../actions/cursor';
 class TabMeasure extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
 
-  onClick = (noteIndex, stringIndex) => {
+  constructor() {
+    super();
+
+    this.onClick = this.onClick.bind(this);
+    this.renderCursor = this.renderCursor.bind(this);
+    this.renderTimeSignature = this.renderTimeSignature.bind(this);
+    this.renderBars = this.renderBars.bind(this);
+    this.renderTabNote = this.renderTabNote.bind(this);
+  }
+
+  onClick(noteIndex, stringIndex) {
     this.props.setCursor({
       noteIndex,
       stringIndex,
       measureIndex: this.props.measureIndex
     });
-  };
+  }
 
-  renderCursor = () => {
+  renderCursor() {
     const { cursor, stringCount, measure } = this.props;
 
     if(!cursor) {
@@ -55,9 +65,9 @@ class TabMeasure extends Component {
     }
 
     return <Cursor x={x} y={y} fret={fret} />;
-  };
+  }
 
-  renderTimeSignature = (measureIndex, measure, strings, yOffset, displayOption) => {
+  renderTimeSignature(measureIndex, measure, strings, yOffset, displayOption) {
     const x = this.props.measure.indexOfRow === 0 ? 36 : 20;
     const y = (strings * 6 - 6) + yOffset; // y of top of time signature
     const { renderTimeSignature, timeSignature } = measure;
@@ -65,9 +75,9 @@ class TabMeasure extends Component {
     return renderTimeSignature && displayOption === 'tab' ?
       <TimeSignature x={x} y={y} strings={strings} numerator={timeSignature[0]} denominator={timeSignature.slice(2, 4)} /> :
       null;
-  };
+  }
 
-  renderBars = (x, y, measureWidth, stringCount) => {
+  renderBars(x, y, measureWidth, stringCount) {
     const { playingNoteIndex, isValid, measureIndex, measureLength } = this.props;
 
     const lastMeasure = measureIndex === measureLength - 1;
@@ -84,9 +94,9 @@ class TabMeasure extends Component {
     return <Bars measureWidth={measureWidth} color={color} y={y} spaceBetweenBars={13}
       strokeWidth={strokeWidth} strings={stringCount} lastMeasure={lastMeasure}
     />;
-  };
+  }
 
-  renderTabNote = (note, measureIndex, noteIndex, displayOption) => {
+  renderTabNote(note, measureIndex, noteIndex, displayOption) {
     const { playingNoteIndex, stringCount } = this.props;
     const stringOffset = (6 - stringCount);
 
@@ -115,7 +125,7 @@ class TabMeasure extends Component {
         </g>
       );
     });
-  };
+  }
 
   render() {
     const { stringCount, measure, measureIndex, displayOption, y } = this.props;

@@ -12,16 +12,30 @@ const style = {
 export default class TabNote extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
 
-  onClick = () => {
-    this.props.onClick(this.props.noteIndex, this.props.stringIndex);
-  };
+  constructor() {
+    super();
 
-  renderQuarterStem = (x, color, stringOffset) => {
+    this.onClick = this.onClick.bind(this);
+    this.renderQuarterStem = this.renderQuarterStem.bind(this);
+    this.renderEighthStem = this.renderEighthStem.bind(this);
+    this.renderSixteenthStem = this.renderSixteenthStem.bind(this);
+    this.renderStem = this.renderStem.bind(this);
+    this.renderDot = this.renderDot.bind(this);
+    this.renderTremolo = this.renderTremolo.bind(this);
+    this.renderVibrato = this.renderVibrato.bind(this);
+    this.renderTrill = this.renderTrill.bind(this);
+  }
+
+  onClick() {
+    this.props.onClick(this.props.noteIndex, this.props.stringIndex);
+  }
+
+  renderQuarterStem(x, color, stringOffset) {
     const y = 97 - (13 * stringOffset);
     return <rect x={x + 5} y={y} height={25} width={1} fill={color}></rect>;
-  };
+  }
 
-  renderEighthStem = (x, color, stringOffset) => {
+  renderEighthStem(x, color, stringOffset) {
     const y = 121 - (13 * stringOffset);
     return (
       <g>
@@ -29,9 +43,9 @@ export default class TabNote extends Component {
         <rect x={x + 5} y={y} height={2} width={20} fill={color}></rect>
       </g>
     );
-  };
+  }
 
-  renderSixteenthStem = (x, color, stringOffset) => {
+  renderSixteenthStem(x, color, stringOffset) {
     const y = 115 - (13 * stringOffset);
     return (
       <g>
@@ -40,9 +54,9 @@ export default class TabNote extends Component {
         <rect x={x + 5} y={y} height={2} width={20} fill={color}></rect>
       </g>
     );
-  };
+  }
 
-  renderStem = () => {
+  renderStem() {
     const { x, color, stringOffset } = this.props;
 
     switch(this.props.duration) {
@@ -55,9 +69,9 @@ export default class TabNote extends Component {
       default:
         return null;
     }
-  };
+  }
 
-  renderDot = (dotted, x, stringOffset, color) => {
+  renderDot(dotted, x, stringOffset, color) {
     if(!dotted) {
       return null;
     }
@@ -68,9 +82,9 @@ export default class TabNote extends Component {
         <circle cx={6.5} cy={10} r={1.5} fill={color} stroke={color} />
       </svg>
     );
-  };
+  }
 
-  renderTremolo = (tremolo, x, stringOffset, color) => {
+  renderTremolo(tremolo, x, stringOffset, color) {
     if(!tremolo) {
       return null;
     }
@@ -85,9 +99,9 @@ export default class TabNote extends Component {
         </g>
       </svg>
     );
-  };
+  }
 
-  renderVibrato = (vibrato, x, color) => {
+  renderVibrato(vibrato, x, color) {
     if(!vibrato) {
       return null;
     }
@@ -106,9 +120,9 @@ export default class TabNote extends Component {
         </g>
       </svg>
     );
-  };
+  }
 
-  renderTrill = (trill, x, color) => {
+  renderTrill(trill, x, color) {
     if(!trill) {
       return null;
     }
@@ -124,7 +138,7 @@ export default class TabNote extends Component {
         </g>
       </svg>
     );
-  };
+  }
 
   render() {
     const { x, y, fret, color, stringOffset, displayOption, dotted, tremolo, vibrato, trill } = this.props;

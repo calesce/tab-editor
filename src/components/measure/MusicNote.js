@@ -4,7 +4,26 @@ import shouldPureComponentUpdate from 'react-pure-render/function';
 export default class MusicNote extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
 
-  renderQuarterNote = (x, y, color) => {
+  constructor() {
+    super();
+
+    this.renderQuarterNote = this.renderQuarterNote.bind(this);
+    this.renderHalfNote = this.renderHalfNote.bind(this);
+    this.renderWholeNote = this.renderWholeNote.bind(this);
+    this.renderEighthNote = this.renderEighthNote.bind(this);
+    this.renderSixteenthNote = this.renderSixteenthNote.bind(this);
+    this.renderNote = this.renderNote.bind(this);
+    this.renderDot = this.renderDot.bind(this);
+    this.renderTremolo = this.renderTremolo.bind(this);
+    this.renderVibrato = this.renderVibrato.bind(this);
+    this.renderTrill = this.renderTrill.bind(this);
+    this.renderSharp = this.renderSharp.bind(this);
+    this.renderNatural = this.renderNatural.bind(this);
+    this.renderFlat = this.renderFlat.bind(this);
+    this.renderLedgerLines = this.renderLedgerLines.bind(this);
+  }
+
+  renderQuarterNote(x, y, color) {
     if(this.props.flip) {
       return (
         <svg x={x} y={y} style={{ overflow: 'visible' }}>
@@ -22,9 +41,9 @@ export default class MusicNote extends Component {
         <path strokeWidth='1.2' stroke={color} d='M 13.35547,24.05645 L 13.35547,-13.16888' />
       </svg>
     );
-  };
+  }
 
-  renderHalfNote = (x, y, color) => {
+  renderHalfNote(x, y, color) {
     if(this.props.flip) {
       return (
         <svg x={x} y={y} style={{ overflow: 'visible' }}>
@@ -42,17 +61,17 @@ export default class MusicNote extends Component {
         <path stroke={color} strokeWidth='1.2' d='M 13.42547,24.05645 L 13.42547,-13.16888' />
       </svg>
     );
-  };
+  }
 
-  renderWholeNote = (x, y, color) => {
+  renderWholeNote(x, y, color) {
     return (
       <svg x={x} y={y} style={{ overflow: 'visible' }}>
         <path fill={color} d='M10.640336 27.872464c-2.7472-.14536-4.893984-2.583936-5.755408-5.105648-.521904-1.480064-.235248-3.700416 1.503456-4.11616 2.519056-.42784 4.609376 1.712016 5.780912 3.759792.83456 1.518832 1.295952 3.91064-.268832 5.114592-.371536.249168-.820672.349104-1.260128.347424zm4.3764-8.645264c-3.09512-1.87984-7.00488-2.026272-10.394128-.97424C2.47568 19.0036.020304 20.600368 0 23.1992c-.001488 2.546336 2.368 4.1348 4.464784 4.891344 3.319504 1.08584 7.149552.990352 10.248832-.74064 1.754368-.933376 3.309328-2.866144 2.782048-5.008416-.289936-1.377552-1.3452-2.40832-2.478928-3.114288z'/>
       </svg>
     );
-  };
+  }
 
-  renderEighthNote = (x, y, color) => {
+  renderEighthNote(x, y, color) {
     if(this.props.flip) {
       return (
         <svg x={x} y={y} style={{ overflow: 'visible' }}>
@@ -68,9 +87,9 @@ export default class MusicNote extends Component {
         <path fill={color} d='M1.8598 28.92607c-2.79392-2.51014-1.26538-6.59876 3.3466-8.9516C6.74485 19.1896 7.8796 18.8499 9.90928 18.91c1.23112.03155 2.64696.7412 2.64696.7412 0-9.0275-.0341-26.1401-.0341-34.57565.50013.00282.82007-.00324 1.52046-.00324 0 .49628-.00668.8531-.00668 1.293 0 .4287.03017.70705.0716.97646.48433 3.1496 1.1896 4.38945 4.71103 8.28187 4.4536 4.9228 5.74718 7.88798 5.72072 11.82577-.0246 3.69404-3.27397 11.60622-4.01278 11.27795 1.0273-2.768 2.41264-5.75422 2.7811-8.25296.45027-3.0537-.79025-7.36336-2.78667-9.63715-1.6418-1.8699-5.42327-3.54233-6.45477-3.54233 0 0-.0438 18.18614-.0438 25.08115 0 1.18736-1.07562 3.2003-1.68152 3.92405C9.57768 29.60068 4.274 31.09505 1.8598 28.92606z'/>
       </svg>
     );
-  };
+  }
 
-  renderSixteenthNote = (x, y, color) => {
+  renderSixteenthNote(x, y, color) {
     return (
       <svg x={x - 8} y={y - 15} style={{ overflow: 'visible' }}>
         <g transform='scale(0.4)'>
@@ -78,9 +97,9 @@ export default class MusicNote extends Component {
         </g>
       </svg>
     );
-  };
+  }
 
-  renderNote = (x, y, color) => {
+  renderNote(x, y, color) {
     switch(this.props.duration) {
       case 'q':
         return this.renderQuarterNote(x + 1, y, color);
@@ -95,9 +114,9 @@ export default class MusicNote extends Component {
       default:
         return null;
     }
-  };
+  }
 
-  renderDot = (dotted, x, stringOffset, color) => {
+  renderDot(dotted, x, stringOffset, color) {
     if(!dotted) {
       return null;
     }
@@ -108,9 +127,9 @@ export default class MusicNote extends Component {
         <circle cx={6.5} cy={10} r={1.5} fill={color} stroke={color} />
       </svg>
     );
-  };
+  }
 
-  renderTremolo = (tremolo, x, stringOffset, color) => {
+  renderTremolo(tremolo, x, stringOffset, color) {
     if(!tremolo) {
       return null;
     }
@@ -125,9 +144,9 @@ export default class MusicNote extends Component {
         </g>
       </svg>
     );
-  };
+  }
 
-  renderVibrato = (vibrato, x, color) => {
+  renderVibrato(vibrato, x, color) {
     if(!vibrato) {
       return null;
     }
@@ -146,9 +165,9 @@ export default class MusicNote extends Component {
         </g>
       </svg>
     );
-  };
+  }
 
-  renderTrill = (trill, x, color) => {
+  renderTrill(trill, x, color) {
     if(!trill) {
       return null;
     }
@@ -164,33 +183,33 @@ export default class MusicNote extends Component {
         </g>
       </svg>
     );
-  };
+  }
 
-  renderSharp = (x, y, color) => {
+  renderSharp(x, y, color) {
     return (
       <svg x={x} y={y} style={{ overflow: 'visible' }}>
         <path fill={color} d='M-4.094 25.154V20.45l2-.552v4.68l-2 .576zm3.938-1.138l-1.375.394v-4.68l1.374-.384v-1.944l-1.375.384v-4.782h-.564v4.927l-2 .576v-4.65h-.53v4.827L-6 19.068v1.948l1.375-.384v4.67L-6 25.687v1.94l1.375-.384v4.755h.53v-4.925l2-.55v4.626h.564v-4.8l1.374-.385v-1.947z'/>
       </svg>
     );
-  };
+  }
 
-  renderNatural = (x, y, color) => {
+  renderNatural(x, y, color) {
     return (
       <svg x={x} y={y} style={{ overflow: 'visible' }}>
         <path fill={color} d='M-.78706 34.76956l-.9055.32338v-7.4067L-6.9 29.9506V10.738l.8733-.388v7.53618l5.2394-2.3936v19.2763zm-.9055-10.35v-5.175L-6.026 21.1531v5.175l4.33366-1.909z'/>
       </svg>
     );
-  };
+  }
 
-  renderFlat = (x, y, color) => {
+  renderFlat(x, y, color) {
     return (
       <svg x={x} y={y} style={{ overflow: 'visible' }}>
         <path fill={color} d='M-2.315 22.59c0 .747-.28 1.463-1.05 2.424-.814 1.018-1.5 1.6-2.403 2.286v-4.462c.205-.518.508-.938.91-1.26.4-.322.806-.483 1.217-.483.677 0 1.108.385 1.293 1.152.02.062.032.177.032.343zm-.098-3.12c-.56 0-1.13.155-1.71.465-.58.31-1.128.724-1.645 1.24v-9.453H-6.5v16.192c0 .457.125.686.374.686.145 0 .324-.12.592-.28.758-.453 1.23-.756 1.744-1.075.586-.364 1.246-.79 2.118-1.62.602-.605 1.038-1.215 1.308-1.83.27-.614.404-1.222.404-1.826 0-.896-.238-1.532-.713-1.907-.54-.395-1.12-.593-1.74-.593z'/>
       </svg>
     );
-  };
+  }
 
-  renderLedgerLines = (x, direction, numLines) => {
+  renderLedgerLines(x, direction, numLines) {
     if(direction === 'above') {
       return Array.from({ length: numLines}).map((_, i) =>
         <rect key={i} x={x - 2} y={90 - 13 * (i + 1)} width={20} height={0.5} fill='#999999'
@@ -202,7 +221,7 @@ export default class MusicNote extends Component {
           strokeWidth={0.1}></rect>
       );
     }
-  };
+  }
 
   render() {
     const { x, y, color, sharp, natural } = this.props;

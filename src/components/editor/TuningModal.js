@@ -25,9 +25,14 @@ const style = {
 class TuningButton extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
 
-  onClick = () => {
+  constructor() {
+    super();
+    this.onClick = this.onClick.bind(this);
+  }
+
+  onClick() {
     this.props.onClick(this.props.index);
-  };
+  }
 
   render() {
     return <button onClick={this.onClick}>{this.props.label}</button>;
@@ -38,41 +43,48 @@ class TuningModal extends Component {
   constructor(props) {
     super(props);
 
+    this.onRequestClose = this.onRequestClose.bind(this);
+    this.incrementAllStrings = this.incrementAllStrings.bind(this);
+    this.decrementAllStrings = this.decrementAllStrings.bind(this);
+    this.incrementString = this.incrementString.bind(this);
+    this.decrementString = this.decrementString.bind(this);
+    this.renderTuningEditor = this.renderTuningEditor.bind(this);
+
     this.state = {
       tuning: cloneDeep(this.props.tuning)
     };
   }
 
-  onRequestClose = () => {
+  onRequestClose() {
     this.props.changeTuning(this.state.tuning);
     this.props.closeModal();
-  };
+  }
 
-  incrementAllStrings = () => {
+  incrementAllStrings() {
     this.setState({
       tuning: this.state.tuning.map(nextNote)
     });
-  };
+  }
 
-  decrementAllStrings = () => {
+  decrementAllStrings() {
     this.setState({
       tuning: this.state.tuning.map(previousNote)
     });
-  };
+  }
 
-  incrementString = (index) => {
+  incrementString(index) {
     this.setState({
       tuning: this.state.tuning.map((string, i) => i === index ? nextNote(string) : string)
     });
-  };
+  }
 
-  decrementString = (index) => {
+  decrementString(index) {
     this.setState({
       tuning: this.state.tuning.map((string, i) => i === index ? previousNote(string) : string)
     });
-  };
+  }
 
-  renderTuningEditor = () => {
+  renderTuningEditor() {
     return (
       <div style={{ flex: '1', display: 'flex', flexDirection: 'column-reverse', justifyContent: 'space-around' }}>
         {this.state.tuning.map((string, i) => {
@@ -86,7 +98,7 @@ class TuningModal extends Component {
         })}
       </div>
     );
-  };
+  }
 
   render() {
     return (

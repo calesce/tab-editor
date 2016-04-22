@@ -28,21 +28,26 @@ export default class TimeSignatureModal extends Component {
   constructor(props) {
     super(props);
 
+    this.onRequestClose = this.onRequestClose.bind(this);
+    this.renderNumerator = this.renderNumerator.bind(this);
+    this.renderDenominator = this.renderDenominator.bind(this);
+    this.checkboxChanged = this.checkboxChanged.bind(this);
+
     this.state = {
       checked: false
     };
   }
 
-  onRequestClose = () => {
+  onRequestClose() {
     let timeSignature = `${this.refs.numerator.value}/${this.refs.denominator.value}`;
     if(timeSignature !== this.props.timeSignature) {
       this.props.changeTimeSignature({ measureIndex: this.props.measureIndex }, timeSignature, this.state.checked);
     }
 
     this.props.closeModal();
-  };
+  }
 
-  renderNumerator = (numerator) => {
+  renderNumerator(numerator) {
     let options = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((number) => {
       return <option key={number} value={number}>{number}</option>;
     });
@@ -52,9 +57,9 @@ export default class TimeSignatureModal extends Component {
         {options}
       </select>
     );
-  };
+  }
 
-  renderDenominator = (denominator) => {
+  renderDenominator(denominator) {
     let options = [1, 2, 4, 8, 16, 32].map((number) => {
       return <option key={number} value={number}>{number}</option>;
     });
@@ -64,11 +69,11 @@ export default class TimeSignatureModal extends Component {
         {options}
       </select>
     );
-  };
+  }
 
-  checkboxChanged = () => {
+  checkboxChanged() {
     this.setState({ checked: !this.state.checked });
-  };
+  }
 
   render() {
     return (

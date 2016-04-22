@@ -24,6 +24,10 @@ export default class TimeSignatureModal extends Component {
   constructor(props) {
     super(props);
 
+    this.onRequestClose = this.onRequestClose.bind(this);
+    this.onChange = this.onChange.bind(this);
+    this.checkboxChanged = this.checkboxChanged.bind(this);
+
     this.state = {
       bpm: props.measure.bpm ? props.measure.bpm : 120,
       checked: false
@@ -36,21 +40,21 @@ export default class TimeSignatureModal extends Component {
     });
   }
 
-  onRequestClose = () => {
+  onRequestClose() {
     this.props.changeBpm(this.props.cursor, this.state.bpm, this.state.checked);
 
     this.props.closeModal();
-  };
+  }
 
-  onChange = (e) => {
+  onChange(e) {
     this.setState({
       bpm: e.target.value
     });
-  };
+  }
 
-  checkboxChanged = () => {
+  checkboxChanged() {
     this.setState({ checked: !this.state.checked });
-  };
+  }
 
   render() {
     return (
