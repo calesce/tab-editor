@@ -1,5 +1,6 @@
 import React from 'react';
 import { render } from 'react-dom';
+import { AppContainer } from 'react-hot-loader';
 
 import Root from './containers/Root';
 import configureStore from './util/configureStore';
@@ -18,7 +19,11 @@ const store = configureStore({
   metronome: false
 });
 
-render(
-  <Root store={store} />,
-  document.getElementById('root')
-);
+const rootElement = document.getElementById('root');
+render(<AppContainer component={Root} props={{ store }} />, rootElement);
+
+if(module.hot) {
+  module.hot.accept('./containers/Root', () => {
+    render(<AppContainer component={require('./containers/Root').default} props={{ store }} />, rootElement);
+  });
+}
