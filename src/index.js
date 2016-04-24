@@ -4,12 +4,12 @@ import { AppContainer } from 'react-hot-loader';
 
 import Root from './containers/Root';
 import configureStore from './util/configureStore';
-import { prepareRows, defaultBpm } from './util';
+import { prepareRows, replaceBpm } from './util';
 import track from '../data/song';
 
 const trackWithWidths = {
   ...track,
-  measures: prepareRows(defaultBpm(track.measures), 'linear', { width: window.innerWidth - 10 })
+  measures: prepareRows(replaceBpm(track.measures), 'linear', { width: window.innerWidth - 10 })
 };
 
 const store = configureStore({
