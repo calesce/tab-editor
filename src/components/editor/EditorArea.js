@@ -8,6 +8,8 @@ import { setPlayingIndex, toggleMetronome } from '../../actions/playingIndex';
 import { setCursor } from '../../actions/cursor';
 import { addRepeatEnd } from '../../actions/measure';
 import { timeSignatureSelector } from '../../util/selectors';
+import { importMusicXml } from '../../util/musicXml';
+
 import InstrumentSelect from './InstrumentSelect';
 import TrackSelect from './TrackSelect';
 
@@ -95,18 +97,14 @@ class EditorArea extends Component {
 
   onImport(e) {
     const file = e.target.files[0];
-    const reader = new  FileReader();
+    const reader = new FileReader();
     reader.onload = this.onFileRead;
     reader.readAsText(file);
   }
 
   onFileRead(e) {
-    try {
-      const tracks = JSON.parse(e.target.result);
-      this.props.replaceSong(tracks);
-    } catch(ex) {
-      // TODO show an error dialog
-    }
+    const tracks = importMusicXml(e.target.result);
+    this.props.replaceSong(tracks);
   }
 
   render() {
@@ -129,7 +127,7 @@ class EditorArea extends Component {
         <button onClick={this.props.toggleMetronome}>{ this.props.metronome ? 'metronome on' : 'metronome off'}</button>
         <button><a download='song' href={url}>export</a></button>
         <input ref={this.inputRef} type='file' style={hiddenStyle} onChange={this.onImport} />
-        <button onClick={this.importClicked}>import</button>
+        <button onClick={this.importClicked}>import MusicXML</button>
       </div>
     );
   }
