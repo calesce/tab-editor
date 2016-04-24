@@ -44,7 +44,9 @@ const getTimeSignatureForMeasure = (measures, measure, index) => {
 const getNotesForMeasure = notes => {
   return notes.reduce((finalNotes, note) => {
     const duration = note.childNamed('type').val.substring(0, 1);
+    const dotted = note.childNamed('dot') ? true : false;
     const isChord = note.childNamed('chord') ? true : false;
+
     const fret = parseInt(note.childNamed('notations').childNamed('technical').childNamed('fret').val);
     const string = 6 - parseInt(note.childNamed('notations').childNamed('technical').childNamed('string').val);
 
@@ -56,7 +58,8 @@ const getNotesForMeasure = notes => {
       return finalNotes.slice(0, finalNotes.length - 1).concat({
         duration,
         fret: frets,
-        string: strings
+        string: strings,
+        dotted
       });
     }
 
@@ -66,7 +69,8 @@ const getNotesForMeasure = notes => {
     return finalNotes.concat({
       duration,
       fret: frets,
-      string: strings
+      string: strings,
+      dotted
     });
   }, []);
 };
