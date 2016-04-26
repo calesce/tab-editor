@@ -48,6 +48,7 @@ class App extends Component {
     this.deleteNote = this.deleteNote.bind(this);
     this.pasteNote = this.pasteNote.bind(this);
     this.cutNote = this.cutNote.bind(this);
+    this.selectAllNotes = this.selectAllNotes.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
@@ -284,6 +285,11 @@ class App extends Component {
     }
   }
 
+  selectAllNotes() {
+    const selection = this.props.measures.map(_ => 'all');
+    this.props.actions.setSelectRange(selection);
+  }
+
   handleKeyPress(event) {
     if(this.state.openModal || (this.props.playingIndex && event.keyCode !== 32)) {
       return;
@@ -299,6 +305,10 @@ class App extends Component {
     if((event.metaKey || event.ctrlKey) && event.keyCode === 88) { // cmd/ctrl+x
       event.preventDefault();
       return this.cutNote();
+    }
+    if((event.metaKey || event.ctrlKey) && event.keyCode === 65) { // cmd/ctrl+a
+      event.preventDefault();
+      return this.selectAllNotes();
     }
 
     if(event.keyCode <= 57 && event.keyCode >= 48 && !event.metaKey) {
