@@ -71,10 +71,7 @@ export default class TabNote extends Component {
     }
   }
 
-  renderDot(dotted, x, stringOffset, color) {
-    if(!dotted) {
-      return null;
-    }
+  renderDot(x, stringOffset, color) {
     const y = 119 - (13 * stringOffset);
 
     return (
@@ -84,10 +81,7 @@ export default class TabNote extends Component {
     );
   }
 
-  renderTremolo(tremolo, x, stringOffset, color) {
-    if(!tremolo) {
-      return null;
-    }
+  renderTremolo(x, stringOffset, color) {
     const y = 100 - (13 * stringOffset);
 
     return (
@@ -101,11 +95,7 @@ export default class TabNote extends Component {
     );
   }
 
-  renderVibrato(vibrato, x, color) {
-    if(!vibrato) {
-      return null;
-    }
-
+  renderVibrato(x, color) {
     return (
       <svg x={x + 1.5} y={10}>
         <g transform='scale(8.00, 6.00)'>
@@ -122,11 +112,7 @@ export default class TabNote extends Component {
     );
   }
 
-  renderTrill(trill, x, color) {
-    if(!trill) {
-      return null;
-    }
-
+  renderTrill(x, color) {
     return (
       <svg x={x + 1.5} y={10}>
         <text y={7} style={{ fontSize: 12 }}>tr</text>
@@ -164,10 +150,10 @@ export default class TabNote extends Component {
         {space}
         {tabNote}
         {fret !== undefined && displayOption === 'tab' ? this.renderStem() : null}
-        {fret !== undefined ? this.renderDot(dotted, x, stringOffset, color) : null}
-        {fret !== undefined ? this.renderTremolo(tremolo, x, stringOffset, color): null}
-        {fret !== undefined ? this.renderVibrato(vibrato, x, color): null}
-        {fret !== undefined ? this.renderTrill(trill, x, stringOffset, color): null}
+        {dotted ? this.renderDot(x, stringOffset, color) : null}
+        {tremolo && displayOption === 'tab' ? this.renderTremolo(x, stringOffset, color): null}
+        {vibrato && displayOption === 'tab' ? this.renderVibrato(x, color): null}
+        {trill && displayOption === 'tab' ? this.renderTrill(x, stringOffset, color): null}
       </g>
     );
   }

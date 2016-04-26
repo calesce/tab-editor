@@ -175,8 +175,9 @@ class MusicMeasure extends Component {
         flip = furthestFromMiddle <= 93;
       }
 
-      return <MusicNote key={i} x={note.x} y={yToUse} color={note.color} duration={note.duration}
-        sharp={note.notes[i].renderSharp} natural={note.notes[i].renderNatural} measureY={yOffset} flip={flip} />;
+      return <MusicNote key={i} x={note.x} y={yToUse} color={note.color} duration={note.duration} dotted={note.dotted}
+        sharp={note.notes[i].renderSharp} natural={note.notes[i].renderNatural} measureY={yOffset} flip={flip}
+        tremolo={note.tremolo} vibrato={note.vibrato} trill={note.trill} />;
     });
   }
 
