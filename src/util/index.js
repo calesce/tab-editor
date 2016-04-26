@@ -10,13 +10,6 @@ const computeMeasureWidths = (track) => {
       showBpm = true;
     }
 
-    const notes = measure.notes.map((note, i) => {
-      return {
-        ...note,
-        x: calcXForNote(measure, i)
-      };
-    });
-
     let prevMeasure = track[index-1];
     if(prevMeasure && prevMeasure.timeSignature === measure.timeSignature) {
       if(prevMeasure.bpm !== measure.bpm) {
@@ -27,8 +20,7 @@ const computeMeasureWidths = (track) => {
         ...measure,
         width,
         renderTimeSignature: false,
-        showBpm,
-        notes
+        showBpm
       };
     }
     width += 30;
@@ -36,16 +28,23 @@ const computeMeasureWidths = (track) => {
       width += 20;
     }
 
-
-
     return {
       ...measure,
       width,
       renderTimeSignature: true,
-      showBpm,
-      notes
+      showBpm
     };
   });
+};
+
+const measuresWithXCoords = (track) => {
+  return track.map(measure => ({
+      ...measure,
+      notes: measure.notes.map((note, i) => ({
+        ...note,
+        x: calcXForNote(measure, i)
+      }))
+  }));
 };
 
 const trackWithRows = (track, scoreBox) => {
@@ -95,8 +94,8 @@ const linearTrack = (track) => {
 
 export function prepareRows(measures, layout, scoreBox) {
   return layout === 'page' ?
-    trackWithRows(computeMeasureWidths(measures), scoreBox) :
-    linearTrack(computeMeasureWidths(measures));
+    measuresWithXCoords(trackWithRows(computeMeasureWidths(measures), scoreBox)) :
+    measuresWithXCoords(linearTrack(computeMeasureWidths(measures)));
 }
 
 export function prepareTrack(track, layout, scoreBox) {

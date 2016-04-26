@@ -110,10 +110,11 @@ export default function tracks(state = {}, action) {
     }
 
     case REPLACE_SONG: {
-      const tracks = action.tracks.map(track => prepareTrack(track, state.layout, { width: window.innerWidth - 10 }) );
+      const tracks = action.tracks.map(track => prepareTrack(track, state.layout, { width: window.innerWidth - 10 }));
 
       return {
         ...state,
+        currentTrackIndex: 0,
         tracks,
         cursor: defaultCursor
       };
