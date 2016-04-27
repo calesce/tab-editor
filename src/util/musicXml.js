@@ -41,14 +41,14 @@ const getTimeSignatureForMeasure = (measures, measure, index) => {
   return measures[index - 1].timeSignature ? measures[index - 1].timeSignature : '6/8';
 };
 
-const getNotesForMeasure = notes => {
+const getNotesForMeasure = (notes, stringCount) => {
   return notes.reduce((finalNotes, note) => {
     const duration = note.childNamed('type').val.substring(0, 1);
     const dotted = note.childNamed('dot') ? true : false;
     const isChord = note.childNamed('chord') ? true : false;
 
     const fret = parseInt(note.childNamed('notations').childNamed('technical').childNamed('fret').val);
-    const string = 6 - parseInt(note.childNamed('notations').childNamed('technical').childNamed('string').val);
+    const string = stringCount - parseInt(note.childNamed('notations').childNamed('technical').childNamed('string').val);
 
     let frets, strings;
     if(isChord) {
@@ -75,11 +75,11 @@ const getNotesForMeasure = notes => {
   }, []);
 };
 
-const measuresFromMusicXml = (measures) => {
+const measuresFromMusicXml = (measures, stringCount) => {
   return measures.reduce((finalMeasures, measure, i) => {
     const bpm = getBpmForMeasure(finalMeasures, measure, i);
     const timeSignature = getTimeSignatureForMeasure(finalMeasures, measure, i);
-    const notes = getNotesForMeasure(measure.childrenNamed('note'));
+    const notes = getNotesForMeasure(measure.childrenNamed('note'), stringCount);
 
    return finalMeasures.concat({
      bpm,
@@ -99,7 +99,7 @@ export function importMusicXml(xmlString) {
   return parts.reduce((finalParts, part, i) => {
     const instrument = instruments[i];
     const tuning = getTuning(part, maker);
-    const measures = measuresFromMusicXml(part.childrenNamed('measure'));
+    const measures = measuresFromMusicXml(part.childrenNamed('measure'), tuning.length);
 
     return finalParts.concat({
       instrument,
