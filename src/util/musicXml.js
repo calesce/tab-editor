@@ -47,6 +47,14 @@ const getNotesForMeasure = (notes, stringCount) => {
     const dotted = note.childNamed('dot') ? true : false;
     const isChord = note.childNamed('chord') ? true : false;
 
+    if(note.childNamed('rest')) {
+      return finalNotes.concat({
+        duration,
+        dotted,
+        string: ['rest'],
+        fret: ['rest']
+      });
+    }
     const fret = parseInt(note.childNamed('notations').childNamed('technical').childNamed('fret').val);
     const string = stringCount - parseInt(note.childNamed('notations').childNamed('technical').childNamed('string').val);
 
