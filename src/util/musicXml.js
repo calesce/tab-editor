@@ -41,9 +41,19 @@ const getTimeSignatureForMeasure = (measures, measure, index) => {
   return measures[index - 1].timeSignature ? measures[index - 1].timeSignature : '6/8';
 };
 
+const durationFromType = type => {
+  const typeChar = type.substring(0, 1);
+  if(typeChar === '1') {
+    return 's';
+  } else if(typeChar === '3') {
+    return 't';
+  }
+  return typeChar;
+};
+
 const getNotesForMeasure = (notes, stringCount) => {
   return notes.reduce((finalNotes, note) => {
-    const duration = note.childNamed('type').val.substring(0, 1);
+    const duration = durationFromType(note.childNamed('type').val);
     const dotted = note.childNamed('dot') ? true : false;
     const isChord = note.childNamed('chord') ? true : false;
 
