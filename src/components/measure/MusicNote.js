@@ -12,6 +12,7 @@ export default class MusicNote extends Component {
     this.renderWholeNote = this.renderWholeNote.bind(this);
     this.renderEighthNote = this.renderEighthNote.bind(this);
     this.renderSixteenthNote = this.renderSixteenthNote.bind(this);
+    this.renderThirtySecondNote = this.renderThirtySecondNote.bind(this);
     this.renderNote = this.renderNote.bind(this);
     this.renderDot = this.renderDot.bind(this);
     this.renderTremolo = this.renderTremolo.bind(this);
@@ -99,6 +100,16 @@ export default class MusicNote extends Component {
     );
   }
 
+  renderThirtySecondNote(x, y, color) {
+    return (
+      <svg x={x - 8} y={y - 15} style={{ overflow: 'visible' }}>
+        <g transform='scale(0.4)'>
+          <path fill={color} d='M23.71961 87.85213c-5.58785-5.02026-2.53077-13.19751 6.69317-17.90321 3.07692-1.56973 5.34644-2.24914 9.40578-2.12895 2.46224.06314 5.29391 1.48242 5.29391 1.48242 0-18.05494-.06821-52.28016-.06821-69.15127 1.00028.00563 1.64015-.00648 3.04094-.00648 0 .99254-.01335 1.7062-.01335 2.58602 0 .85738.06034 1.41406.1432 1.95287.96866 6.29923 2.37919 8.7789 9.42205 16.56374 8.9072 9.84558 11.49436 15.77596 11.44145 23.65154-.04921 7.38807-6.54795 23.21243-8.02557 22.55589 2.05465-5.53599 4.82532-11.50844 5.56223-16.50593.90056-6.10733-1.58049-14.72667-5.57333-19.27425-3.28359-3.73981-10.84654-7.08467-12.90954-7.08467 0 0-.08757 36.37228-.08757 50.16231 0 2.37471-2.15126 6.40059-3.36307 7.84809-5.52631 6.60112-16.13366 9.58986-20.96209 5.25188z'/>
+        </g>
+      </svg>
+    );
+  }
+
   renderNote(x, y, color) {
     switch(this.props.duration) {
       case 'q':
@@ -111,6 +122,8 @@ export default class MusicNote extends Component {
         return this.renderEighthNote(x + 1, y, color);
       case 's':
         return this.renderSixteenthNote(x + 1, y, color);
+      case 't':
+        return this.renderThirtySecondNote(x + 1, y, color);
       default:
         return null;
     }
