@@ -12,6 +12,7 @@ import * as CopyPasteActions from '../actions/cutCopyPaste';
 import Soundfont from 'soundfont-player';
 import audioContext from '../util/audioContext';
 import { getNextNote, cursorAfterCutting } from '../util/cursor';
+import { updateScrollPosition } from '../util/updateScroll.js';
 
 import Score from '../components/Score';
 import EditorArea from '../components/editor/EditorArea';
@@ -38,9 +39,6 @@ class App extends Component {
 
     this.loadSoundfont = this.loadSoundfont.bind(this);
     this.handleResize = this.handleResize.bind(this);
-    this.getXOfCurrentNote = this.getXOfCurrentNote.bind(this);
-    this.getYOfCurrentNote = this.getYOfCurrentNote.bind(this);
-    this.updateScrollPosition = this.updateScrollPosition.bind(this);
     this.handleStop = this.handleStop.bind(this);
     this.handlePlay = this.handlePlay.bind(this);
     this.getCurrentNote = this.getCurrentNote.bind(this);
@@ -73,7 +71,7 @@ class App extends Component {
     if(this.props.playingIndex && playingIndex) {
       if(playingIndex.noteIndex !== this.props.playingIndex.noteIndex
           || playingIndex.measureIndex !== this.props.playingIndex.measureIndex) {
-        this.updateScrollPosition(nextProps.playingIndex, nextProps.measures);
+        updateScrollPosition(nextProps.playingIndex, nextProps.measures, nextProps.layout, nextProps.tuning.length);
       }
     } else if(this.props.instrument !== nextProps.instrument) {
       this.setState({
@@ -100,41 +98,6 @@ class App extends Component {
 
   handleResize() {
     this.props.actions.resize();
-  }
-
-  getXOfCurrentNote(playingIndex, measures) {
-    const { measureIndex, noteIndex } = playingIndex;
-    const xOfMeasures = measures.reduce((acc, curr, i) => {
-      if(i >= measureIndex) {
-        return acc;
-      }
-      return acc + curr.width;
-    }, 0);
-
-    return xOfMeasures + 55 * noteIndex;
-  }
-
-  getYOfCurrentNote(playingIndex, measures) {
-    const position = measures[playingIndex.measureIndex];
-    return (position.rowIndex) * (27 * this.props.tuning.length) + 50;
-  }
-
-  updateScrollPosition(playingIndex, measures) {
-    if(this.props.layout === 'linear') {
-      const x = this.getXOfCurrentNote(playingIndex, measures);
-      const { scrollX, innerWidth } = window;
-
-      if(x > innerWidth + scrollX - 200) {
-        window.scroll(x - 200, 0);
-      }
-    } else {
-      const y = this.getYOfCurrentNote(playingIndex, measures);
-      const { innerHeight, scrollY } = window;
-
-      if(y > innerHeight + scrollY - 270) {
-        window.scroll(0, y - 100);
-      }
-    }
   }
 
   handleStop() {
