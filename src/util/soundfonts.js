@@ -10,9 +10,23 @@ if(!!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/) || !!navigator.userAg
 
 let bufferCache = {};
 
-export function loadSoundfont(instrument, cb) {
-  Soundfont.loadBuffers(audioContext, instrument).then((buffers) => {
-    bufferCache[instrument] = buffers;
-    cb(bufferCache);
+export function loadSoundfonts(instruments) {
+  const promises = instruments.map(instrument => {
+    return loadSoundfont(instrument, bufferCache);
   });
+
+  return Promise.all(promises)
+    .then(instrumentBuffers => {
+      instrumentBuffers.forEach((buffer, i) => {
+        bufferCache[instruments[i]] = buffer;
+      });
+      return bufferCache;
+    });
 }
+
+const loadSoundfont = (instrument, cache) => {
+  if(cache[instrument]) {
+    return new Promise(resolve => resolve(cache[instrument]));
+  }
+  return Soundfont.loadBuffers(audioContext, instrument);
+};

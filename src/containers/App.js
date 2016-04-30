@@ -11,7 +11,7 @@ import * as CopyPasteActions from '../actions/cutCopyPaste';
 
 import { cursorAfterCutting, cursorAfterPasting, getNotesFromSelection } from '../util/cursor';
 import { updateScrollPosition } from '../util/updateScroll';
-import { loadSoundfont } from '../util/soundfonts';
+import { loadSoundfonts } from '../util/soundfonts';
 
 import Score from '../components/Score';
 import EditorArea from '../components/editor/EditorArea';
@@ -52,11 +52,8 @@ class App extends Component {
   }
 
   componentWillMount() {
-    loadSoundfont(this.props.instrument, buffers => {
-      this.setState({ buffers });
-
-      loadSoundfont('woodblock', woodblockBuffers => { this.setState({ buffers: woodblockBuffers }); });
-    });
+    loadSoundfonts([this.props.instrument, 'woodblock'])
+      .then(buffers => this.setState({ buffers }));
   }
 
   componentWillReceiveProps(nextProps) {
@@ -71,7 +68,8 @@ class App extends Component {
       this.setState({
         buffers: undefined
       }, () => {
-        loadSoundfont(this.props.instrument, buffers => { this.setState({ buffers }); });
+        loadSoundfonts(this.props.instrument)
+          .then(buffers => this.setState({ buffers }));
       });
     }
   }
