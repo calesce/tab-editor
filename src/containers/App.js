@@ -9,7 +9,7 @@ import * as PlayingIndexActions from '../actions/playingIndex';
 import * as CursorActions from '../actions/cursor';
 import * as CopyPasteActions from '../actions/cutCopyPaste';
 
-import { cursorAfterCutting, cursorAfterPasting, getCurrentNote } from '../util/cursor';
+import { cursorAfterCutting, cursorAfterPasting, getNotesFromSelection } from '../util/cursor';
 import { updateScrollPosition } from '../util/updateScroll';
 import { loadSoundfont } from '../util/soundfonts';
 
@@ -147,14 +147,14 @@ class App extends Component {
       const newCursor = cursorAfterCutting(measures, selectRange, cursor);
       actions.setCursor(newCursor);
       actions.setSelectRange(undefined);
-      actions.cutNote(newCursor, getCurrentNote(measures, cursor, selectRange), selectRange);
+      actions.cutNote(newCursor, getNotesFromSelection(measures, cursor, selectRange), selectRange);
     } else {
       const newCursor = {
         ...cursor,
         noteIndex: cursor.noteIndex === 0 ? 0 : cursor.noteIndex - 1
       };
       actions.setCursor(newCursor);
-      actions.cutNote(cursor, getCurrentNote(measures, cursor, selectRange), selectRange);
+      actions.cutNote(cursor, getNotesFromSelection(measures, cursor, selectRange), selectRange);
     }
   }
 
@@ -170,7 +170,7 @@ class App extends Component {
 
     if((event.metaKey || event.ctrlKey) && event.keyCode === 67) { // cmd/ctrl+c
       event.preventDefault();
-      return this.props.actions.copyNote(getCurrentNote(this.props.measures, this.props.cursor, this.props.selectRange));
+      return this.props.actions.copyNote(getNotesFromSelection(this.props.measures, this.props.cursor, this.props.selectRange));
     }
     if((event.metaKey || event.ctrlKey) && event.keyCode === 86) { // cmd/ctrl+v
       return this.pasteNote(event);

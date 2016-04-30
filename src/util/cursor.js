@@ -99,7 +99,7 @@ export const cursorAfterPasting = (measures, clipboard, oldCursor) => {
   }
 };
 
-export const getCurrentNote = (measures, cursor, selectRange) => {
+export const getNotesFromSelection = (measures, cursor, selectRange) => {
   const { measureIndex, noteIndex } = cursor;
 
   if(selectRange) {
@@ -132,4 +132,4 @@ export const getCurrentNote = (measures, cursor, selectRange) => {
   } else {
     return measures[measureIndex].notes[noteIndex];
   }
-}
+};
