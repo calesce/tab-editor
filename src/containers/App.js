@@ -11,7 +11,7 @@ import * as CopyPasteActions from '../actions/cutCopyPaste';
 
 import Soundfont from 'soundfont-player';
 import audioContext from '../util/audioContext';
-import { getNextNote } from '../util/cursor';
+import { getNextNote, cursorAfterCutting } from '../util/cursor';
 
 import Score from '../components/Score';
 import EditorArea from '../components/editor/EditorArea';
@@ -157,7 +157,7 @@ class App extends Component {
     const { measureIndex, noteIndex } = cursor;
 
     if(selectRange) {
-      if(Object.keys(selectRange).length === 1) {
+      if(Object.keys(selectRange).length === 1 && selectRange[Object.keys(selectRange)[0]] !== 'all') {
         const measureIndex = Object.keys(selectRange)[0];
         const measure = measures[measureIndex];
         const notes = measure.notes.filter((_, i) => {
@@ -255,23 +255,7 @@ class App extends Component {
     const { selectRange, cursor, actions, measures } = this.props;
 
     if(selectRange) {
-      const firstMeasureIndex = parseInt(Object.keys(selectRange)[0]);
-
-      let measureIndex = firstMeasureIndex;
-      if(selectRange[firstMeasureIndex] === 'all') {
-        const lastMeasure = Object.keys(selectRange)[Object.keys(selectRange).length - 1];
-        if(parseInt(lastMeasure) === measures.length - 1) {
-          measureIndex = firstMeasureIndex - 1;
-        }
-      }
-
-      const noteIndex = Object.keys(selectRange).length > 1 ? 0 : selectRange[measureIndex][0];
-
-      const newCursor = {
-        ...cursor,
-        noteIndex: noteIndex === 0 ? 0 : noteIndex - 1,
-        measureIndex
-      };
+      const newCursor = cursorAfterCutting(measures, selectRange, cursor);
       actions.setCursor(newCursor);
       actions.setSelectRange(undefined);
       actions.cutNote(newCursor, this.getCurrentNote(cursor, selectRange), selectRange);
