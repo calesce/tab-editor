@@ -9,10 +9,9 @@ import * as PlayingIndexActions from '../actions/playingIndex';
 import * as CursorActions from '../actions/cursor';
 import * as CopyPasteActions from '../actions/cutCopyPaste';
 
-import Soundfont from 'soundfont-player';
-import audioContext from '../util/audioContext';
 import { getNextNote, cursorAfterCutting } from '../util/cursor';
-import { updateScrollPosition } from '../util/updateScroll.js';
+import { updateScrollPosition } from '../util/updateScroll';
+import { loadSoundfont } from '../util/soundfonts';
 
 import Score from '../components/Score';
 import EditorArea from '../components/editor/EditorArea';
@@ -22,13 +21,6 @@ import BpmModal from '../components/editor/BpmModal';
 import Playback from '../components/Playback';
 import Metronome from '../components/Metronome';
 
-// Fix for Safari/Edge, which can't play .ogg files
-if(!!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/) || !!navigator.userAgent.match(/Edge\/\d+/)) {
-  Soundfont.nameToUrl = function(name) {
-    return `https://cdn.rawgit.com/gleitz/midi-js-Soundfonts/master/FluidR3_GM/${name}-mp3.js`;
-  };
-}
-
 const Actions = Object.assign(TracksActions, TrackActions, MeasureActions, PlayingIndexActions, CursorActions, CopyPasteActions);
 
 const style = { width: '100%', height: '100%' };
@@ -37,7 +29,6 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    this.loadSoundfont = this.loadSoundfont.bind(this);
     this.handleResize = this.handleResize.bind(this);
     this.handleStop = this.handleStop.bind(this);
     this.handlePlay = this.handlePlay.bind(this);
@@ -62,7 +53,11 @@ class App extends Component {
   }
 
   componentWillMount() {
-    this.loadSoundfont(this.props.instrument);
+    loadSoundfont(this.props.instrument, buffers => {
+      this.setState({ buffers });
+
+      loadSoundfont('woodblock', woodblockBuffers => { this.setState({ buffers: woodblockBuffers }); });
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -77,21 +72,7 @@ class App extends Component {
       this.setState({
         buffers: undefined
       }, () => {
-        this.loadSoundfont(nextProps.instrument);
-      });
-    }
-  }
-
-  loadSoundfont(instrument) {
-    Soundfont.loadBuffers(audioContext, instrument).then((buffers) => {
-      this.setState({
-        buffers: Object.assign({}, this.state.buffers, { [instrument]: buffers })
-      });
-    });
-
-    if(!this.state.woodblockBuffers) {
-      Soundfont.loadBuffers(audioContext, 'woodblock').then((woodblockBuffers) => {
-        this.setState({ woodblockBuffers });
+        loadSoundfont(this.props.instrument, buffers => { this.setState({ buffers }); });
       });
     }
   }
@@ -111,7 +92,9 @@ class App extends Component {
 
   handlePlay() {
     if(!this.props.playingIndex && this.state.buffers) {
-      this.props.actions.setPlayingIndex(this.props.cursor);
+      if(!this.props.metronome || this.state.buffers.woodblock) {
+        this.props.actions.setPlayingIndex(this.props.cursor);
+      }
     }
   }
 
@@ -296,13 +279,13 @@ class App extends Component {
   }
 
   render() {
-    const { openModal, buffers, woodblockBuffers } = this.state;
+    const { openModal, buffers } = this.state;
 
     return (
       <div style={style}>
         { this.props.playingIndex ? <Playback buffers={buffers} /> : null}
-        { this.props.playingIndex && this.props.metronome ? <Metronome buffers={woodblockBuffers} /> : null}
-        <EditorArea canPlay={buffers && woodblockBuffers} handlePlay={this.handlePlay} openModal={this.openModal} />
+        { this.props.playingIndex && this.props.metronome ? <Metronome buffers={buffers.woodblock} /> : null}
+        <EditorArea canPlay={buffers && (!this.props.metronome || this.state.buffers.woodblock)} handlePlay={this.handlePlay} openModal={this.openModal} />
         <Score />
         <TimeSignatureModal isOpen={openModal === 'timeSig'} closeModal={this.closeModal} />
         <TuningModal isOpen={openModal === 'tuning'} closeModal={this.closeModal} />
