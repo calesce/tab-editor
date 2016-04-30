@@ -122,3 +122,30 @@ export const scoreSelector = createSelector(
     };
   }
 );
+
+const instrumentListSelector = state => {
+  return state.tracks.map(track => track.instrument);
+};
+
+export const makeAppSelector = () => {
+  return createSelector(
+    state => ({
+      measures: state.tracks[state.currentTrackIndex].measures,
+      clipboard: state.clipboard,
+      layout: state.layout,
+      playingIndex: state.playingIndex,
+      cursor: state.cursor,
+      selectRange: state.selectRange,
+      tuning: state.tracks[state.currentTrackIndex].tuning,
+      currentTrackIndex: state.currentTrackIndex,
+      metronome: state.metronome
+    }),
+    instrumentListSelector,
+    (appState, instruments) => {
+      return {
+        ...appState,
+        instruments
+      };
+    }
+  );
+};

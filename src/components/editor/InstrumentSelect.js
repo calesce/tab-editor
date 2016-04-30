@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import shouldPureComponentUpdate from 'react-pure-render/function';
 
 import { setInstrument } from '../../actions/track';
 
@@ -12,6 +13,8 @@ export default class InstrumentSelect extends Component {
     this.onChange = this.onChange.bind(this);
   }
 
+  shouldComponentUpdate = shouldPureComponentUpdate;
+
   onChange(e) {
     const instrument = e.target.value;
     this.props.setInstrument(instrument);
@@ -19,7 +22,7 @@ export default class InstrumentSelect extends Component {
 
   render() {
     return (
-      <select onChange={this.onChange} defaultValue={this.props.instrument}>
+      <select onChange={this.onChange} value={this.props.instrument}>
         { instruments.map((instrument) => {
           return <option key={instrument} value={instrument}>{instrument}</option>;
         })}

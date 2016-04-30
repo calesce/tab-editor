@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import shallowEqual from 'react-pure-render/shallowEqual';
 
 import * as TracksActions from '../actions/tracks';
 import * as TrackActions from '../actions/track';
@@ -12,6 +13,7 @@ import * as CopyPasteActions from '../actions/cutCopyPaste';
 import { cursorAfterCutting, cursorAfterPasting, getNotesFromSelection } from '../util/cursor';
 import { updateScrollPosition } from '../util/updateScroll';
 import { loadSoundfonts } from '../util/soundfonts';
+import { makeAppSelector } from '../util/selectors';
 
 import Score from '../components/Score';
 import EditorArea from '../components/editor/EditorArea';
@@ -52,7 +54,7 @@ class App extends Component {
   }
 
   componentWillMount() {
-    loadSoundfonts([this.props.instrument, 'woodblock'])
+    loadSoundfonts([...this.props.instruments, 'woodblock'])
       .then(buffers => this.setState({ buffers }));
   }
 
@@ -64,11 +66,11 @@ class App extends Component {
           || playingIndex.measureIndex !== this.props.playingIndex.measureIndex) {
         updateScrollPosition(nextProps.playingIndex, nextProps.measures, nextProps.layout, nextProps.tuning.length);
       }
-    } else if(this.props.instrument !== nextProps.instrument) {
+    } else if(!shallowEqual(this.props.instruments, nextProps.instruments)) {
       this.setState({
         buffers: undefined
       }, () => {
-        loadSoundfonts(this.props.instrument)
+        loadSoundfonts(this.props.instruments)
           .then(buffers => this.setState({ buffers }));
       });
     }
@@ -236,19 +238,13 @@ class App extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    measures: state.tracks[state.currentTrackIndex].measures,
-    clipboard: state.clipboard,
-    layout: state.layout,
-    playingIndex: state.playingIndex,
-    cursor: state.cursor,
-    selectRange: state.selectRange,
-    tuning: state.tracks[state.currentTrackIndex].tuning,
-    instrument: state.tracks[state.currentTrackIndex].instrument,
-    metronome: state.metronome
+const makeMapStateToProps = () => {
+  const appSelector = makeAppSelector();
+  const mapStateToProps = (state, props) => {
+    return appSelector(state, props);
   };
-}
+  return mapStateToProps;
+};
 
 function mapDispatchToProps(dispatch) {
   return {
@@ -256,4 +252,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(makeMapStateToProps, mapDispatchToProps)(App);
