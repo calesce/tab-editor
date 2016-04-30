@@ -9,7 +9,7 @@ import * as PlayingIndexActions from '../actions/playingIndex';
 import * as CursorActions from '../actions/cursor';
 import * as CopyPasteActions from '../actions/cutCopyPaste';
 
-import { getNextNote, cursorAfterCutting } from '../util/cursor';
+import { cursorAfterCutting, cursorAfterPasting, getCurrentNote } from '../util/cursor';
 import { updateScrollPosition } from '../util/updateScroll';
 import { loadSoundfont } from '../util/soundfonts';
 
@@ -32,7 +32,6 @@ class App extends Component {
     this.handleResize = this.handleResize.bind(this);
     this.handleStop = this.handleStop.bind(this);
     this.handlePlay = this.handlePlay.bind(this);
-    this.getCurrentNote = this.getCurrentNote.bind(this);
     this.navigateCursor = this.navigateCursor.bind(this);
     this.deleteNote = this.deleteNote.bind(this);
     this.pasteNote = this.pasteNote.bind(this);
@@ -98,42 +97,6 @@ class App extends Component {
     }
   }
 
-  getCurrentNote(cursor, selectRange) {
-    const { measures } = this.props;
-    const { measureIndex, noteIndex } = cursor;
-
-    if(selectRange) {
-      if(Object.keys(selectRange).length === 1 && selectRange[Object.keys(selectRange)[0]] !== 'all') {
-        const measureIndex = Object.keys(selectRange)[0];
-        const measure = measures[measureIndex];
-        const notes = measure.notes.filter((_, i) => {
-          if(selectRange[measureIndex].indexOf(i) !== -1) {
-            return true;
-          }
-          return false;
-        });
-        return { notes };
-      }
-
-      return measures.reduce((accum, measure, i) => {
-        if(Array.isArray(selectRange[i])) {
-          const range = selectRange[i];
-          const notes = measure.notes.filter((_, j) => {
-            return range.indexOf(j) !== -1;
-          });
-          accum.push({ ...measure, notes });
-          return accum;
-        } else if(selectRange[i] === 'all') {
-          accum.push(measure);
-          return accum;
-        }
-        return accum;
-      }, []);
-    } else {
-      return measures[measureIndex].notes[noteIndex];
-    }
-  }
-
   navigateCursor(event) {
     event.preventDefault();
     if(event.keyCode === 39) { // right arrow
@@ -174,27 +137,7 @@ class App extends Component {
     event.preventDefault();
 
     actions.pasteNote(cursor, clipboard);
-    if(clipboard.notes) {
-      actions.setCursor({
-        ...cursor,
-        noteIndex: cursor.noteIndex + clipboard.notes.length
-      });
-    } else if(!Array.isArray(clipboard)) {
-      if(cursor.noteIndex === measures[cursor.measureIndex].notes.length - 1) {
-        actions.setCursor({
-          ...cursor,
-          noteIndex: cursor.noteIndex + 1
-        });
-      } else {
-        actions.setCursor(getNextNote(measures, cursor));
-      }
-    } else {
-      actions.setCursor({
-        ...cursor,
-        measureIndex: cursor.measureIndex + clipboard.length,
-        noteIndex: 0
-      });
-    }
+    actions.setCursor(cursorAfterPasting(measures, clipboard, cursor));
   }
 
   cutNote() {
@@ -204,14 +147,14 @@ class App extends Component {
       const newCursor = cursorAfterCutting(measures, selectRange, cursor);
       actions.setCursor(newCursor);
       actions.setSelectRange(undefined);
-      actions.cutNote(newCursor, this.getCurrentNote(cursor, selectRange), selectRange);
+      actions.cutNote(newCursor, getCurrentNote(measures, cursor, selectRange), selectRange);
     } else {
       const newCursor = {
         ...cursor,
         noteIndex: cursor.noteIndex === 0 ? 0 : cursor.noteIndex - 1
       };
       actions.setCursor(newCursor);
-      actions.cutNote(cursor, this.getCurrentNote(cursor, selectRange), selectRange);
+      actions.cutNote(cursor, getCurrentNote(measures, cursor, selectRange), selectRange);
     }
   }
 
@@ -227,7 +170,7 @@ class App extends Component {
 
     if((event.metaKey || event.ctrlKey) && event.keyCode === 67) { // cmd/ctrl+c
       event.preventDefault();
-      return this.props.actions.copyNote(this.getCurrentNote(this.props.cursor, this.props.selectRange));
+      return this.props.actions.copyNote(getCurrentNote(this.props.measures, this.props.cursor, this.props.selectRange));
     }
     if((event.metaKey || event.ctrlKey) && event.keyCode === 86) { // cmd/ctrl+v
       return this.pasteNote(event);

@@ -74,3 +74,62 @@ export const cursorAfterCutting = (measures, selectRange, oldCursor) => {
     measureIndex
   };
 };
+
+export const cursorAfterPasting = (measures, clipboard, oldCursor) => {
+  if(clipboard.notes) {
+    return {
+      ...oldCursor,
+      noteIndex: oldCursor.noteIndex + clipboard.notes.length
+    };
+  } else if(!Array.isArray(clipboard)) {
+    if(oldCursor.noteIndex === measures[oldCursor.measureIndex].notes.length - 1) {
+      return{
+        ...oldCursor,
+        noteIndex: oldCursor.noteIndex + 1
+      };
+    } else {
+      return getNextNote(measures, oldCursor);
+    }
+  } else {
+    return{
+      ...oldCursor,
+      measureIndex: oldCursor.measureIndex + clipboard.length,
+      noteIndex: 0
+    };
+  }
+};
+
+export const getCurrentNote = (measures, cursor, selectRange) => {
+  const { measureIndex, noteIndex } = cursor;
+
+  if(selectRange) {
+    if(Object.keys(selectRange).length === 1 && selectRange[Object.keys(selectRange)[0]] !== 'all') {
+      const measureIndex = Object.keys(selectRange)[0];
+      const measure = measures[measureIndex];
+      const notes = measure.notes.filter((_, i) => {
+        if(selectRange[measureIndex].indexOf(i) !== -1) {
+          return true;
+        }
+        return false;
+      });
+      return { notes };
+    }
+
+    return measures.reduce((accum, measure, i) => {
+      if(Array.isArray(selectRange[i])) {
+        const range = selectRange[i];
+        const notes = measure.notes.filter((_, j) => {
+          return range.indexOf(j) !== -1;
+        });
+        accum.push({ ...measure, notes });
+        return accum;
+      } else if(selectRange[i] === 'all') {
+        accum.push(measure);
+        return accum;
+      }
+      return accum;
+    }, []);
+  } else {
+    return measures[measureIndex].notes[noteIndex];
+  }
+}
