@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { setPlayingIndex } from '../actions/playingIndex';
-import { playCurrentNoteAtTime, getBpmForNote } from '../util/audio';
+import { playCurrentNoteAtTime} from '../util/audio';
+import { getBpmForNote } from '../util/audioMath';
 import { expandedTracksSelector } from '../util/trackSelectors';
 import audioContext from '../util/audioContext';
 
@@ -50,19 +51,19 @@ class Playback extends Component {
           noteIndex: playingIndex.noteIndex
         });
       }
-      playingIndex = this.advanceNote(playingIndex, track);
+      playingIndex = this.advanceNote(playingIndex, track, this);
     }
     this.requestIds[trackIndex] = requestAnimationFrame(() => {
       this.schedule(track, playingIndex, visibleTrackIndex, trackIndex);
     });
   }
 
-  advanceNote(playingIndex, track) {
+  advanceNote(playingIndex, track, context) {
     const { measureIndex, noteIndex } = playingIndex;
 
     const measure = track.measures[measureIndex];
     const replaySpeed = getBpmForNote(measure.notes, noteIndex, measure.bpm);
-    this.noteTime = this.noteTime + (60.0 / replaySpeed);
+    context.noteTime = context.noteTime + (60.0 / replaySpeed);
 
     const lastMeasure = track.measures.length - 1;
     const lastNote = track.measures[measureIndex].notes.length - 1;
