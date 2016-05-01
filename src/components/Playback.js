@@ -37,9 +37,7 @@ class Playback extends Component {
   }
 
   schedule(track, playingIndex, visibleTrackIndex, trackIndex) {
-    const currentTime = audioContext.currentTime - this.startTime;
-
-    while(this.noteTime < currentTime + 0.200) {
+    while(this.noteTime < audioContext.currentTime - this.startTime + 0.200) {
       if(playingIndex === false) {
         return this.props.setPlayingIndex(null);
       }

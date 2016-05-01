@@ -5,11 +5,6 @@ import { times } from 'lodash';
 const getSpeedFromBpm = (bpm) => {
   return 60000 / bpm;
 };
-
-export function getMetronomeSpeed(bpm, denominator) {
-  return getSpeedFromBpm(bpm) * 4 / denominator;
-}
-
 export function getReplaySpeedForNote(notes, noteIndex, bpm) {
   if(notes.length === 0) {
     return bpm * 4;
