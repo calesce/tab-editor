@@ -16,8 +16,6 @@ class Playback extends Component {
     this.advanceNote = this.advanceNote.bind(this);
     this.startPlayback = this.startPlayback.bind(this);
     this.updateNote = this.updateNote.bind(this);
-
-    this.requestIds = [];
   }
 
   shouldComponentUpdate() {
@@ -32,35 +30,34 @@ class Playback extends Component {
 
   componentWillUnmount() {
     cancelAnimationFrame(this.requestId);
-    this.requestIds.map(requestId => {
-      cancelAnimationFrame(requestId);
-    });
   }
 
-  schedule(track, playingIndex, visibleTrackIndex, trackIndex) {
+  schedule(tracks, playingIndex, visibleTrackIndex) {
     while(this.noteTime < audioContext.currentTime - this.startTime + 0.200) {
       if(playingIndex === false) {
         return this.props.setPlayingIndex(null);
       }
       const contextPlayTime = this.noteTime + this.startTime;
 
+      const track = tracks[playingIndex.trackIndex];
       playCurrentNoteAtTime(track, playingIndex, this.props.buffers[track.instrument], contextPlayTime);
-      if(trackIndex === visibleTrackIndex) {
-        this.updateNote({
-          measureIndex: track.measures[playingIndex.measureIndex].measureIndex,
-          noteIndex: playingIndex.noteIndex
-        });
-      }
-      playingIndex = this.advanceNote(playingIndex, track, this);
+      playingIndex = this.advanceNote(playingIndex, tracks, playingIndex.trackIndex === visibleTrackIndex, this);
     }
-    this.requestIds[trackIndex] = requestAnimationFrame(() => {
-      this.schedule(track, playingIndex, visibleTrackIndex, trackIndex);
+    this.requestId = requestAnimationFrame(() => {
+      this.schedule(tracks, playingIndex, visibleTrackIndex);
     });
   }
 
-  advanceNote(playingIndex, track, context) {
-    const { measureIndex, noteIndex } = playingIndex;
+  advanceNote(playingIndex, tracks, updateUI, context) {
+    const { trackIndex, measureIndex, noteIndex } = playingIndex;
+    if(updateUI) {
+      context.updateNote({
+        measureIndex: tracks[trackIndex].measures[measureIndex].measureIndex,
+        noteIndex: playingIndex.noteIndex
+      });
+    }
 
+    const track = tracks[trackIndex];
     const measure = track.measures[measureIndex];
     const replaySpeed = getBpmForNote(measure.notes, noteIndex, measure.bpm);
     context.noteTime = context.noteTime + (60.0 / replaySpeed);
@@ -72,6 +69,7 @@ class Playback extends Component {
       return false;
     } else if(measureIndex !== lastMeasure && noteIndex === lastNote) {
       return {
+        ...playingIndex,
         measureIndex: measureIndex + 1,
         noteIndex: 0
       };
@@ -85,11 +83,8 @@ class Playback extends Component {
 
   startPlayback() {
     const { currentTrackIndex, playingIndex, expandedTracks } = this.props;
-
-    expandedTracks.forEach((track, i) => {
-      this.requestIds[i] = requestAnimationFrame(() => {
-        this.schedule(track, playingIndex, currentTrackIndex, i);
-      });
+    this.requestId = requestAnimationFrame(() => {
+      this.schedule(expandedTracks, { ...playingIndex, trackIndex: 0 }, currentTrackIndex);
     });
   }
 
