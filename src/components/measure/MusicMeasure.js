@@ -136,7 +136,8 @@ class MusicMeasure extends Component {
     const { renderTimeSignature, timeSignature } = measure;
 
     return renderTimeSignature ?
-      <TimeSignature x={x} y={y} strings={strings} numerator={timeSignature[0]} denominator={timeSignature.slice(2, 4)} /> :
+      <TimeSignature x={x} y={y} strings={strings} beats={timeSignature.beats}
+        beatType={timeSignature.beatType} /> :
       null;
   }
 

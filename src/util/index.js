@@ -1,3 +1,5 @@
+import shallowEqual from 'react-pure-render/shallowEqual';
+
 const computeMeasureWidths = (track) => {
   return track.map((measure, index) => {
     let width = 59 * measure.notes.length;
@@ -11,7 +13,7 @@ const computeMeasureWidths = (track) => {
     }
 
     let prevMeasure = track[index-1];
-    if(prevMeasure && prevMeasure.timeSignature === measure.timeSignature) {
+    if(prevMeasure && shallowEqual(prevMeasure.timeSignature, measure.timeSignature)) {
       if(prevMeasure.bpm !== measure.bpm) {
         showBpm = true;
       }

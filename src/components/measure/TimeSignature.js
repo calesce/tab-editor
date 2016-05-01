@@ -31,7 +31,7 @@ export default class TimeSignature extends Component {
     );
   };
 
-  renderNumberedTimeSignature = (numerator, denominator) => {
+  renderNumberedTimeSignature = (beats, beatType) => {
     const { strings, y } = this.props;
     const fontSize = strings * 3 + 8; // the more strings, the larger the font
     const baseY = 60 / strings + (2 * strings) + 1; // i don't know, this kinda works
@@ -39,24 +39,24 @@ export default class TimeSignature extends Component {
     return (
       <svg x={this.props.x} y={y}>
         <text x={0} y={baseY} fill='#000000' fontFamily='Georgia' fontWeight={900} fontSize={fontSize}>
-          {numerator}
+          {beats}
         </text>
         <text x={0} y={baseY + strings * 5} fill='#000000' fontFamily='Georgia' fontWeight={900} fontSize={fontSize}>
-          {denominator}
+          {beatType}
         </text>
       </svg>
     );
   };
 
   render() {
-    const { numerator, denominator } = this.props;
+    const { beats, beatType } = this.props;
 
-    if(numerator === '4' && denominator === '4') {
+    if(beats === 4 && beatType === 4) {
       return this.renderCommonTimeSignature();
-    } else if(numerator === '2' && denominator === '4') {
+    } else if(beats === 2 && beatType === 4) {
       return this.renderCutTimeSignature();
     } else {
-      return this.renderNumberedTimeSignature(this.props.numerator, this.props.denominator);
+      return this.renderNumberedTimeSignature(beats, beatType);
     }
   }
 }

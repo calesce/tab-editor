@@ -112,10 +112,12 @@ class EditorArea extends Component {
     const blob = new Blob([JSON.stringify(tracks)], { type: 'application/json' });
     const url  = window.URL.createObjectURL(blob);
 
+    const timeSignatureLabel = `${timeSignature.beats}/${timeSignature.beatType}`;
+
     return (
       <div style={style}>
         { this.renderPlayStop(canPlay) }
-        <EditorButton onClick={openModal} type='timeSig' label={timeSignature} />
+        <EditorButton onClick={openModal} type='timeSig' label={timeSignatureLabel} />
         <button onClick={this.toggleLayout}>{layout}</button>
         <EditorButton onClick={openModal} type='tuning' label='tuning' />
         <EditorButton onClick={openModal} type='bpm' label='bpm' />

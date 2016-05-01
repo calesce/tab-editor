@@ -21,7 +21,7 @@ const style = {
   }
 };
 
-export default class TimeSignatureModal extends Component {
+export default class BpmModal extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
 
   constructor(props) {
@@ -82,4 +82,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TimeSignatureModal);
+export default connect(mapStateToProps, mapDispatchToProps)(BpmModal);

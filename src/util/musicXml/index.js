@@ -35,13 +35,14 @@ const getTimeSignatureForMeasure = (measures, measure, index) => {
   if(attributes) {
     const time = attributes.childNamed('time');
     if(time) {
-      const beats = time.childNamed('beats').val;
-      const beatType = time.childNamed('beat-type').val;
-      return `${beats}/${beatType}`;
+      return {
+        beats: time.childNamed('beats').val,
+        beatType: time.childNamed('beat-type').val
+      };
     }
   }
 
-  return measures[index - 1].timeSignature ? measures[index - 1].timeSignature : '6/8';
+  return measures[index - 1].timeSignature ? measures[index - 1].timeSignature : { beats: 4, beatType: 4 };
 };
 
 const durationFromType = type => {

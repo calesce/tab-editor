@@ -45,16 +45,14 @@ class Playback extends Component {
 
   advanceNote({ measureIndex, noteIndex }, track) {
     const measure = track.measures[measureIndex];
-    const numerator = parseInt(measure.timeSignature.split('/')[0]) - 1;
-
     this.noteTime = this.noteTime + (60.0 / measure.bpm);
 
-    if(measureIndex !== track.measures.length - 1 && noteIndex >= numerator) {
+    if(measureIndex !== track.measures.length - 1 && noteIndex >= measure.timeSignature.beats) {
       return {
         measureIndex: measureIndex + 1,
         noteIndex: 0
       };
-    } else if(noteIndex < numerator) {
+    } else if(noteIndex < measure.timeSignature.beats) {
       return {
         measureIndex,
         noteIndex: noteIndex + 1

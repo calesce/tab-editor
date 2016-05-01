@@ -3,7 +3,10 @@ module.exports = {
   tuning: [ 'e2', 'a2', 'd3', 'g3', 'b3', 'e4' ],
   measures: [
   {
-    timeSignature: '4/4',
+    timeSignature: {
+      beats: 4,
+      beatType: 4
+    },
     notes: [
       {
         string: [1],
@@ -28,7 +31,10 @@ module.exports = {
     ]
   },
   {
-    timeSignature: '4/4',
+    timeSignature: {
+      beats: 4,
+      beatType: 4
+    },
     notes: [
       {
         string: [1, 2],
@@ -48,7 +54,10 @@ module.exports = {
     ]
   },
   {
-    timeSignature: '4/4',
+    timeSignature: {
+      beats: 4,
+      beatType: 4
+    },
     notes: [
       {
         string: [1],
@@ -73,7 +82,10 @@ module.exports = {
     ]
   },
   {
-    timeSignature: '4/4',
+    timeSignature: {
+      beats: 4,
+      beatType: 4
+    },
     notes: [
       {
         string: [1],
@@ -93,7 +105,10 @@ module.exports = {
     ]
   },
   {
-    timeSignature: '4/4',
+    timeSignature: {
+      beats: 4,
+      beatType: 4
+    },
     notes: [
       {
         string: [1],
@@ -118,7 +133,10 @@ module.exports = {
     ]
   },
   {
-    timeSignature: '4/4',
+    timeSignature: {
+      beats: 4,
+      beatType: 4
+    },
     notes: [
       {
         string: [1, 2],
@@ -138,7 +156,10 @@ module.exports = {
     ]
   },
   {
-    timeSignature: '4/4',
+    timeSignature: {
+      beats: 4,
+      beatType: 4
+    },
     notes: [
       {
         string: [1],
@@ -163,7 +184,10 @@ module.exports = {
     ]
   },
   {
-    timeSignature: '4/4',
+    timeSignature: {
+      beats: 4,
+      beatType: 4
+    },
     notes: [
       {
         string: [1],
@@ -183,7 +207,10 @@ module.exports = {
     ]
   },
   {
-    timeSignature: '4/4',
+    timeSignature: {
+      beats: 4,
+      beatType: 4
+    },
     notes: [
       {
         string: [1],
@@ -208,7 +235,10 @@ module.exports = {
     ]
   },
   {
-    timeSignature: '4/4',
+    timeSignature: {
+      beats: 4,
+      beatType: 4
+    },
     notes: [
       {
         string: [1, 2],
@@ -228,7 +258,10 @@ module.exports = {
     ]
   },
   {
-    timeSignature: '4/4',
+    timeSignature: {
+      beats: 4,
+      beatType: 4
+    },
     notes: [
       {
         string: [1],
@@ -253,7 +286,10 @@ module.exports = {
     ]
   },
   {
-    timeSignature: '4/4',
+    timeSignature: {
+      beats: 4,
+      beatType: 4
+    },
     notes: [
       {
         string: [1],
@@ -273,7 +309,10 @@ module.exports = {
     ]
   },
   {
-    timeSignature: '4/4',
+    timeSignature: {
+      beats: 4,
+      beatType: 4
+    },
     notes: [
       {
         string: [1],
@@ -298,7 +337,10 @@ module.exports = {
     ]
   },
   {
-    timeSignature: '4/4',
+    timeSignature: {
+      beats: 4,
+      beatType: 4
+    },
     notes: [
       {
         string: [1, 2],
@@ -318,7 +360,10 @@ module.exports = {
     ]
   },
   {
-    timeSignature: '4/4',
+    timeSignature: {
+      beats: 4,
+      beatType: 4
+    },
     notes: [
       {
         string: [1],
@@ -343,7 +388,10 @@ module.exports = {
     ]
   },
   {
-    timeSignature: '4/4',
+    timeSignature: {
+      beats: 4,
+      beatType: 4
+    },
     notes: [
       {
         string: [1],

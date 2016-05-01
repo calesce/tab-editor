@@ -39,7 +39,10 @@ export default class TimeSignatureModal extends Component {
   }
 
   onRequestClose() {
-    let timeSignature = `${this.refs.numerator.value}/${this.refs.denominator.value}`;
+    const timeSignature = {
+      beats: this.refs.beats.value,
+      beatType: this.refs.beatType.value
+    };
     if(timeSignature !== this.props.timeSignature) {
       this.props.changeTimeSignature({ measureIndex: this.props.measureIndex }, timeSignature, this.state.checked);
     }
@@ -47,25 +50,25 @@ export default class TimeSignatureModal extends Component {
     this.props.closeModal();
   }
 
-  renderNumerator(numerator) {
+  renderNumerator(beats) {
     let options = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((number) => {
       return <option key={number} value={number}>{number}</option>;
     });
 
     return (
-      <select defaultValue={parseInt(numerator)} ref='numerator' style={{ width: '90%' }}>
+      <select defaultValue={beats} ref='beats' style={{ width: '90%' }}>
         {options}
       </select>
     );
   }
 
-  renderDenominator(denominator) {
-    let options = [1, 2, 4, 8, 16, 32].map((number) => {
+  renderDenominator(beatType) {
+    const options = [1, 2, 4, 8, 16, 32].map((number) => {
       return <option key={number} value={number}>{number}</option>;
     });
 
     return (
-      <select defaultValue={parseInt(denominator)} ref='denominator' style={{ width: '90%' }}>
+      <select defaultValue={beatType} ref='beatType' style={{ width: '90%' }}>
         {options}
       </select>
     );
@@ -79,8 +82,8 @@ export default class TimeSignatureModal extends Component {
     return (
       <Modal style={style} isOpen={this.props.isOpen} onRequestClose={this.onRequestClose}>
         <small style={{ bottom: '5%' }}>Time Signature:</small>
-        {this.renderNumerator(this.props.timeSignature[0])}
-        {this.renderDenominator(this.props.timeSignature[2])}
+        {this.renderNumerator(this.props.timeSignature.beats)}
+        {this.renderDenominator(this.props.timeSignature.beatType)}
         <span>
           <input type='checkbox' value={this.state.checked} onChange={this.checkboxChanged}/>
           <small>All Measures</small>
