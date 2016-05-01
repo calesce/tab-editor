@@ -22,6 +22,7 @@ export function playWithBuffer(buffer, duration, startTime = audioContext.curren
   let source = audioContext.createBufferSource();
   source.buffer = buffer;
   let gainNode = audioContext.createGain();
+  gainNode.gain.setTargetAtTime(0, endTime, 0.015); // remove clicking noise between notes
   gainNode.connect(audioContext.destination);
   source.connect(gainNode);
 
@@ -30,7 +31,7 @@ export function playWithBuffer(buffer, duration, startTime = audioContext.curren
   }
 
   source.start(startTime);
-  source.stop(endTime);
+  source.stop(endTime + 0.016);
 }
 
 const play = (startTime, pitch, duration) => {
