@@ -1,10 +1,13 @@
 import xmldoc from 'xmldoc';
+import { instrumentNameMappings } from './instrumentNames';
 
 const instrumentsFromMusicXml = partList => {
   return partList.children.map(part => {
-    // TODO handle instruments better, defaulting to acoustic guitar
+    if(part.childNamed('midi-instrument')) {
+      const midiProgram = part.childNamed('midi-instrument').childNamed('midi-program');
+      return instrumentNameMappings[parseInt(midiProgram.val)];
+    }
     return 'acoustic_guitar_steel';
-    //return part.childNamed('score-instrument').children[0].val.replace('Steel String Guitar', 'acoustic_guitar_steel');
   });
 };
 
@@ -99,12 +102,12 @@ const measuresFromMusicXml = (measures, stringCount) => {
     const timeSignature = getTimeSignatureForMeasure(finalMeasures, measure, i);
     const notes = getNotesForMeasure(measure.childrenNamed('note'), stringCount);
 
-   return finalMeasures.concat({
-     bpm,
-     timeSignature,
-     notes
-   });
- }, []);
+    return finalMeasures.concat({
+      bpm,
+      timeSignature,
+      notes
+    });
+  }, []);
 };
 
 export function importMusicXml(xmlString) {
