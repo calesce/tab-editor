@@ -6,11 +6,11 @@ const getSpeedFromBpm = (bpm) => {
   return 60000 / bpm;
 };
 
-export function getMetronomeSpeed (bpm, denominator) {
+export function getMetronomeSpeed(bpm, denominator) {
   return getSpeedFromBpm(bpm) * 4 / denominator;
 }
 
-export function getReplaySpeedForNote (notes, noteIndex, bpm) {
+export function getReplaySpeedForNote(notes, noteIndex, bpm) {
   if(notes.length === 0) {
     return bpm * 4;
   }
@@ -36,6 +36,32 @@ export function getReplaySpeedForNote (notes, noteIndex, bpm) {
   return replaySpeed;
 }
 
+export function getBpmForNote(notes, noteIndex, bpm) {
+  if(notes.length === 0) {
+    return bpm * 4;
+  }
+  const noteLength = notes[noteIndex].duration;
+
+  let replaySpeed = bpm;
+  if(noteLength === 'h') {
+    replaySpeed = replaySpeed / 2;
+  } else if(noteLength === 'w') {
+    replaySpeed = replaySpeed / 4;
+  } else if(noteLength === 'e') {
+    replaySpeed = replaySpeed * 2;
+  } else if(noteLength === 's') {
+    replaySpeed = replaySpeed * 4;
+  } else if(noteLength === 't') {
+    replaySpeed = replaySpeed * 8;
+  }
+
+  if(notes[noteIndex].dotted) {
+    replaySpeed = replaySpeed / 1.5;
+  }
+
+  return replaySpeed;
+}
+
 const playVibrato = (source, startTime, endTime) => {
   let freqGain = audioContext.createGain();
   let lfo = audioContext.createOscillator();
@@ -49,7 +75,7 @@ const playVibrato = (source, startTime, endTime) => {
   lfo.stop(endTime);
 };
 
-export function playWithBuffer (buffer, duration, startTime = audioContext.currentTime, vibrato) {
+export function playWithBuffer(buffer, duration, startTime = audioContext.currentTime, vibrato) {
   let endTime = startTime + duration;
 
   let source = audioContext.createBufferSource();
@@ -140,7 +166,7 @@ const mapDurationToNote = (duration) => {
   }
 };
 
-export function playCurrentNote (track, playingIndex, buffers) {
+export function playCurrentNoteAtTime(track, playingIndex, buffers, time) {
   const { measures, tuning } = track;
 
   const measure = measures[playingIndex.measureIndex];
@@ -154,12 +180,12 @@ export function playCurrentNote (track, playingIndex, buffers) {
   const replaySpeed = getReplaySpeedForNote(measure.notes, playingIndex.noteIndex, measure.bpm);
 
   if(noteToPlay.fret[0] === 'rest') {
-    playNoteAtTime('rest', audioContext.currentTime, replaySpeed, buffers, tuning);
+    playNoteAtTime('rest', time || audioContext.currentTime, replaySpeed, buffers, tuning);
   } else if(noteToPlay.tremolo) {
     playTremolo(replaySpeed, buffers, tuning, noteToPlay);
   } else if(noteToPlay.trill) {
     playTrill(replaySpeed, buffers, tuning, noteToPlay);
   } else {
-    playNoteAtTime(noteToPlay, audioContext.currentTime, replaySpeed, buffers, tuning);
+    playNoteAtTime(noteToPlay, time || audioContext.currentTime, replaySpeed, buffers, tuning);
   }
 }

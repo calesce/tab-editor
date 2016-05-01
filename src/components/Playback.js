@@ -1,22 +1,22 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { defer } from 'lodash';
 
-import * as Actions from '../actions/playingIndex';
-import { playCurrentNote, getReplaySpeedForNote } from '../util/audio';
+import { setPlayingIndex } from '../actions/playingIndex';
+import { playCurrentNoteAtTime, getBpmForNote } from '../util/audio';
 import { expandedTracksSelector } from '../util/trackSelectors';
+import audioContext from '../util/audioContext';
 
 class Playback extends Component {
   constructor(props) {
     super(props);
 
-    this.loopThroughSong = this.loopThroughSong.bind(this);
-    this.updateUI = this.updateUI.bind(this);
+    this.schedule = this.schedule.bind(this);
+    this.advanceNote = this.advanceNote.bind(this);
     this.startPlayback = this.startPlayback.bind(this);
     this.updateNote = this.updateNote.bind(this);
 
-    this.timers = [];
+    this.requestIds = [];
   }
 
   shouldComponentUpdate() {
@@ -24,90 +24,78 @@ class Playback extends Component {
   }
 
   componentWillMount() {
+    this.startTime = audioContext.currentTime + .005;
+    this.noteTime = 0.0;
     this.startPlayback();
   }
 
   componentWillUnmount() {
-    this.timers.map((timer) => {
-      cancelAnimationFrame(timer);
+    cancelAnimationFrame(this.requestId);
+    this.requestIds.map(requestId => {
+      cancelAnimationFrame(requestId);
     });
   }
 
-  loopThroughSong(startTimestamp, playingIndex, track, visibleTrackIndex, trackIndex) {
-    const { measureIndex, noteIndex } = playingIndex;
-    const { measures } = track;
-    const measureToPlay = measures[measureIndex];
+  schedule(track, playingIndex, visibleTrackIndex, trackIndex) {
+    const currentTime = audioContext.currentTime - this.startTime;
 
-    const currentTimestamp = Date.now();
-    const replaySpeed = getReplaySpeedForNote(measureToPlay.notes, noteIndex, measureToPlay.bpm);
+    while(this.noteTime < currentTime + 0.200) {
+      if(playingIndex === false) {
+        return this.props.setPlayingIndex(null);
+      }
+      const contextPlayTime = this.noteTime + this.startTime;
 
-    if(currentTimestamp - startTimestamp >= replaySpeed) {
-      if(measureIndex === measures.length - 1 && noteIndex >= measureToPlay.notes.length - 1) {
-        this.props.actions.setPlayingIndex(null);
-      } else if(measureIndex !== measures.length - 1 && noteIndex >= measureToPlay.notes.length - 1) {
-        const newPlayingIndex = {
-          measureIndex: measureIndex + 1,
-          noteIndex: 0
-        };
-        playCurrentNote(track, newPlayingIndex, this.props.buffers[track.instrument]);
-        if(visibleTrackIndex === trackIndex) {
-          this.updateUI(measures, measureToPlay, noteIndex, measureIndex);
-        }
-        this.timers[trackIndex] = requestAnimationFrame(() => {
-          this.loopThroughSong(currentTimestamp, newPlayingIndex, track, visibleTrackIndex, trackIndex);
-        });
-      } else if(noteIndex < measureToPlay.notes.length - 1){
-        const newPlayingIndex = {
-          measureIndex,
-          noteIndex: noteIndex + 1
-        };
-        playCurrentNote(track, newPlayingIndex, this.props.buffers[track.instrument]);
-        if(visibleTrackIndex === trackIndex) {
-          this.updateUI(measures, measureToPlay, noteIndex, measureIndex);
-        }
-        this.timers[trackIndex] = requestAnimationFrame(() => {
-          this.loopThroughSong(currentTimestamp, newPlayingIndex, track, visibleTrackIndex, trackIndex);
+      playCurrentNoteAtTime(track, playingIndex, this.props.buffers[track.instrument], contextPlayTime);
+      if(trackIndex === visibleTrackIndex) {
+        this.updateNote({
+          measureIndex: track.measures[playingIndex.measureIndex].measureIndex,
+          noteIndex: playingIndex.noteIndex
         });
       }
-    } else {
-      this.timers[trackIndex] = requestAnimationFrame(() => {
-        this.loopThroughSong(startTimestamp, playingIndex, track, visibleTrackIndex, trackIndex);
-      });
+      playingIndex = this.advanceNote(playingIndex, track);
     }
+    this.requestIds[trackIndex] = requestAnimationFrame(() => {
+      this.schedule(track, playingIndex, visibleTrackIndex, trackIndex);
+    });
   }
 
-  updateUI(measures, measure, noteIndex, playbackMeasureIndex) {
-    if(measure.measureIndex !== measures.length - 1 && noteIndex >= measure.notes.length - 1) {
-      this.updateNote({
-        measureIndex: measures[playbackMeasureIndex + 1].measureIndex,
+  advanceNote(playingIndex, track) {
+    const { measureIndex, noteIndex } = playingIndex;
+
+    const measure = track.measures[measureIndex];
+    const replaySpeed = getBpmForNote(measure.notes, noteIndex, measure.bpm);
+    this.noteTime = this.noteTime + (60.0 / replaySpeed);
+
+    const lastMeasure = track.measures.length - 1;
+    const lastNote = track.measures[measureIndex].notes.length - 1;
+
+    if(measureIndex === lastMeasure && noteIndex === lastNote) {
+      return false;
+    } else if(measureIndex !== lastMeasure && noteIndex === lastNote) {
+      return {
+        measureIndex: measureIndex + 1,
         noteIndex: 0
-      });
+      };
     } else {
-      this.updateNote({
-        measureIndex: measure.measureIndex,
+      return {
+        ...playingIndex,
         noteIndex: noteIndex + 1
-      });
+      };
     }
   }
 
   startPlayback() {
-    const { buffers, currentTrackIndex, playingIndex, expandedTracks } = this.props;
-
-    expandedTracks.forEach((track) => {
-      playCurrentNote(track, playingIndex, buffers[track.instrument]);
-    });
+    const { currentTrackIndex, playingIndex, expandedTracks } = this.props;
 
     expandedTracks.forEach((track, i) => {
-      this.timers[i] = requestAnimationFrame(() => {
-        this.loopThroughSong(Date.now(), playingIndex, track, currentTrackIndex, i);
+      this.requestIds[i] = requestAnimationFrame(() => {
+        this.schedule(track, playingIndex, currentTrackIndex, i);
       });
     });
   }
 
   updateNote(playingIndex) {
-    defer(() => {
-      this.props.actions.setPlayingIndex(playingIndex);
-    });
+    this.props.setPlayingIndex(playingIndex);
   }
 
   render() {
@@ -117,7 +105,7 @@ class Playback extends Component {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(Actions, dispatch)
+    setPlayingIndex: bindActionCreators(setPlayingIndex, dispatch)
   };
 }
 
