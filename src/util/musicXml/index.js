@@ -5,7 +5,7 @@ const instrumentsFromMusicXml = partList => {
   return partList.children.map(part => {
     if(part.childNamed('midi-instrument')) {
       const midiProgram = part.childNamed('midi-instrument').childNamed('midi-program');
-      return instrumentNameMappings[parseInt(midiProgram.val)];
+      return instrumentNameMappings[parseInt(midiProgram.val) - 1];
     }
     return 'acoustic_guitar_steel';
   });
