@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import shouldPureComponentUpdate from 'react-pure-render/function';
 import Modal from 'react-modal';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -21,6 +22,8 @@ const style = {
 };
 
 export default class TimeSignatureModal extends Component {
+  shouldComponentUpdate = shouldPureComponentUpdate;
+
   constructor(props) {
     super(props);
 
@@ -35,21 +38,16 @@ export default class TimeSignatureModal extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({
-      bpm: nextProps.measure.bpm
-    });
+    this.setState({ bpm: nextProps.measure.bpm });
   }
 
   onRequestClose() {
     this.props.changeBpm(this.props.cursor, this.state.bpm, this.state.checked);
-
     this.props.closeModal();
   }
 
   onChange(e) {
-    this.setState({
-      bpm: e.target.value
-    });
+    this.setState({ bpm: e.target.value });
   }
 
   checkboxChanged() {
