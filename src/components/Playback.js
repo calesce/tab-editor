@@ -144,10 +144,6 @@ class Playback extends Component {
       return accum;
     }, {});
 
-    if(measureIndex === 4) {
-      console.log(measures);
-    }
-
     return Object.keys(scheduledMeasure).sort().map(timeSlot => {
       return scheduledMeasure[timeSlot];
     });

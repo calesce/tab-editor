@@ -11,9 +11,10 @@ const durations = {
   t: 32
 };
 
-export const getPercentageOfNote = (duration, timeSignature) => {
+export const getPercentageOfNote = (duration, timeSignature, dotted) => {
   const numBeats = timeSignature.beatType / durations[duration];
-  return numBeats / timeSignature.beats;
+  const percentage = numBeats / timeSignature.beats;
+  return dotted ? percentage * 1.5 : percentage;
 };
 
 export const getBpmOfPercentage = (percentage, timeSignature) => {
@@ -51,13 +52,8 @@ export const getReplaySpeedForNote = (note, bpm) => {
 };
 
 export const getBpmForNote1 = (note, bpm) => {
-  let replaySpeed = bpm * (note / 4);
-
-  if(note.dotted) {
-    replaySpeed = replaySpeed / 1.5;
-  }
-
-  return replaySpeed;
+  const replaySpeed = bpm * (note / 4);
+  return note.dotted ? replaySpeed / 1.5 : replaySpeed;
 };
 
 export const getBpmForNote = (note, bpm) => {
