@@ -91,7 +91,21 @@ const playTrill = (replaySpeed, buffers, tuning, noteToPlay) => {
   });
 };
 
-export function playCurrentNoteAtTime(track, playingIndex, buffers, time) {
+export function playCurrentNoteAtTime(note, time, buffers) {
+  const replaySpeed = getReplaySpeedForNote(note, note.bpm);
+
+  if(note.fret[0] === 'rest') {
+    playNoteAtTime('rest', time || audioContext.currentTime, replaySpeed, buffers, note.tuning);
+  } else if(note.tremolo) {
+    playTremolo(replaySpeed, buffers, note.tuning, note);
+  } else if(note.trill) {
+    playTrill(replaySpeed, buffers, note.tuning, note);
+  } else {
+    playNoteAtTime(note, time || audioContext.currentTime, replaySpeed, buffers, note.tuning);
+  }
+}
+
+export function playCurrentNoteOfTrackAtTime(track, playingIndex, buffers, time) {
   const { measures, tuning } = track;
 
   const measure = measures[playingIndex.measureIndex];

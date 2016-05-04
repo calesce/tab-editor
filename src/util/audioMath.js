@@ -2,52 +2,79 @@ const getSpeedFromBpm = (bpm) => {
   return 60000 / bpm;
 };
 
-export const getReplaySpeedForNote = (notes, noteIndex, bpm) => {
-  if(notes.length === 0) {
-    return bpm * 4;
-  }
-  const noteLength = notes[noteIndex].duration;
+const durations = {
+  w: 1,
+  h: 2,
+  q: 4,
+  e: 8,
+  s: 16,
+  t: 32
+};
 
-  let replaySpeed = getSpeedFromBpm(bpm);
-  if(noteLength === 'h') {
-    replaySpeed = replaySpeed * 2;
-  } else if(noteLength === 'w') {
-    replaySpeed = replaySpeed * 4;
-  } else if(noteLength === 'e') {
-    replaySpeed = replaySpeed / 2;
-  } else if(noteLength === 's') {
-    replaySpeed = replaySpeed / 4;
-  } else if(noteLength === 't') {
-    replaySpeed = replaySpeed / 8;
+export const getPercentageOfNote = (duration, timeSignature) => {
+  const numBeats = timeSignature.beatType / durations[duration];
+  return numBeats / timeSignature.beats;
+};
+
+export const getBpmOfPercentage = (percentage, timeSignature) => {
+  const numBeats = timeSignature.beats * percentage;
+  return timeSignature.beatType / numBeats;
+};
+
+export const getReplaySpeedForNote = (note, bpm) => {
+  let replaySpeed;
+  switch(note.duration) {
+    case 'w':
+      replaySpeed = getSpeedFromBpm(bpm) * 4;
+      break;
+    case 'h':
+      replaySpeed = getSpeedFromBpm(bpm) * 2;
+      break;
+    case 'q':
+      replaySpeed = getSpeedFromBpm(bpm);
+      break;
+    case 'e':
+      replaySpeed = getSpeedFromBpm(bpm) / 2;
+      break;
+    case 's':
+      replaySpeed = getSpeedFromBpm(bpm) / 4;
+      break;
+    default:
+      replaySpeed = getSpeedFromBpm(bpm) / 8;
   }
 
-  if(notes[noteIndex].dotted) {
-    replaySpeed = replaySpeed * 1.5;
+  if(note.dotted) {
+    replaySpeed = getSpeedFromBpm(bpm) * 1.5;
   }
 
   return replaySpeed;
 };
 
-export const getBpmForNote =(notes, noteIndex, bpm) => {
-  if(notes.length === 0) {
-    return bpm * 4;
-  }
-  const noteLength = notes[noteIndex].duration;
+export const getBpmForNote1 = (note, bpm) => {
+  let replaySpeed = bpm * (note / 4);
 
+  if(note.dotted) {
+    replaySpeed = replaySpeed / 1.5;
+  }
+
+  return replaySpeed;
+};
+
+export const getBpmForNote = (note, bpm) => {
   let replaySpeed = bpm;
-  if(noteLength === 'h') {
-    replaySpeed = replaySpeed / 2;
-  } else if(noteLength === 'w') {
-    replaySpeed = replaySpeed / 4;
-  } else if(noteLength === 'e') {
-    replaySpeed = replaySpeed * 2;
-  } else if(noteLength === 's') {
-    replaySpeed = replaySpeed * 4;
-  } else if(noteLength === 't') {
-    replaySpeed = replaySpeed * 8;
+  if(note.duration === 'h') {
+    replaySpeed = bpm / 2;
+  } else if(note.duration === 'w') {
+    replaySpeed = bpm / 4;
+  } else if(note.duration === 'e') {
+    replaySpeed = bpm * 2;
+  } else if(note.duration === 's') {
+    replaySpeed = bpm * 4;
+  } else if(note.duration === 't') {
+    replaySpeed = bpm * 8;
   }
 
-  if(notes[noteIndex].dotted) {
+  if(note.dotted) {
     replaySpeed = replaySpeed / 1.5;
   }
 
