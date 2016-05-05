@@ -128,28 +128,18 @@ export default class TabNote extends Component {
 
   render() {
     const { x, y, fret, color, stringOffset, displayOption, dotted, tremolo, vibrato, trill } = this.props;
-
-    let width = 12;
-    if(fret > 9) {
-      width += 6;
-    }
-
-    const tabNote = fret !== undefined ?
-      <text onClick={this.onClick} x={x+2} y={y} fill={color} style={style}>{fret}</text> :
-      null;
-
-    const space = fret !== undefined ?
-      <rect x={x} y={y-7} height={5.5} width={width} fill='#ffffff' stroke='#ffffff'></rect> :
-      null;
-
     const clickArea = <rect onClick={this.onClick} x={x-14} y={y-11} height={15} width={45} opacity={0}></rect>;
+    if(!fret) {
+      return clickArea;
+    }
+    const width = fret > 9 ? 18 : 12;
 
     return (
       <g>
         {clickArea}
-        {space}
-        {tabNote}
-        {fret !== undefined && displayOption === 'tab' ? this.renderStem() : null}
+        <rect x={x} y={y-7} height={5.5} width={width} fill='#ffffff' stroke='#ffffff'></rect>
+        <text onClick={this.onClick} x={x+2} y={y} fill={color} style={style}>{fret}</text>
+        {displayOption === 'tab' ? this.renderStem() : null}
         {dotted ? this.renderDot(x, stringOffset, color) : null}
         {tremolo && displayOption === 'tab' ? this.renderTremolo(x, stringOffset, color): null}
         {vibrato && displayOption === 'tab' ? this.renderVibrato(x, color): null}
