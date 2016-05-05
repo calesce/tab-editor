@@ -129,7 +129,7 @@ export default class TabNote extends Component {
   render() {
     const { x, y, fret, color, stringOffset, displayOption, dotted, tremolo, vibrato, trill } = this.props;
     const clickArea = <rect onClick={this.onClick} x={x-14} y={y-11} height={15} width={45} opacity={0}></rect>;
-    if(!fret) {
+    if(fret === undefined) {
       return clickArea;
     }
     const width = fret > 9 ? 18 : 12;

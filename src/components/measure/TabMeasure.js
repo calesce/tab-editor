@@ -25,7 +25,6 @@ class TabMeasure extends Component {
 
     this.onClick = this.onClick.bind(this);
     this.renderCursor = this.renderCursor.bind(this);
-    this.renderTimeSignature = this.renderTimeSignature.bind(this);
     this.renderBars = this.renderBars.bind(this);
     this.renderTabNote = this.renderTabNote.bind(this);
   }
@@ -65,17 +64,6 @@ class TabMeasure extends Component {
     }
 
     return <Cursor x={x} y={y} fret={fret} />;
-  }
-
-  renderTimeSignature(measureIndex, measure, strings, yOffset, displayOption) {
-    const x = this.props.measure.indexOfRow === 0 ? 36 : 20;
-    const y = (strings * 6 - 6) + yOffset; // y of top of time signature
-    const { renderTimeSignature, timeSignature } = measure;
-
-    return renderTimeSignature && displayOption === 'tab' ?
-      <TimeSignature x={x} y={y} strings={strings} beats={timeSignature.beats}
-        beatType={timeSignature.beatType} /> :
-      null;
   }
 
   renderBars(x, y, measureWidth, stringCount) {
@@ -140,7 +128,7 @@ class TabMeasure extends Component {
         { (measure.showBpm && displayOption === 'tab') ? <Bpm y={0} bpm={measure.bpm} />  : null }
         { displayOption === 'tab' ? <text x={0} y={23} style={{ fontSize: 9, fill: 'tomato' }}>{measureIndex + 1}</text> : null }
         { measure.indexOfRow === 0 ? <Clef y={25} strings={stringCount} tab /> : null }
-        { this.renderTimeSignature(measureIndex, measure, stringCount, 0, displayOption) }
+        <TimeSignature yOffset={0} strings={stringCount} measure={measure} displayOption={displayOption} />
         { this.renderCursor() }
         { measure.repeatEnd ? <Repeat measureWidth={measure.width} strings={stringCount} y={0} /> : null }
       </svg>

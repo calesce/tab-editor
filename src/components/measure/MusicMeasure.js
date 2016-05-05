@@ -31,7 +31,6 @@ class MusicMeasure extends Component {
     this.annotateNotes = this.annotateNotes.bind(this);
     this.annotateNote = this.annotateNote.bind(this);
     this.determineAccidentals = this.determineAccidentals.bind(this);
-    this.renderTimeSignature = this.renderTimeSignature.bind(this);
     this.renderBars = this.renderBars.bind(this);
     this.renderMusicNote = this.renderMusicNote.bind(this);
   }
@@ -130,17 +129,6 @@ class MusicMeasure extends Component {
     });
   }
 
-  renderTimeSignature(measureIndex, measure, strings, yOffset, indexOfRow) {
-    const x = indexOfRow === 0 ? 36 : 20;
-    const y = (strings * 6 - 6) + yOffset; // y of top of time signature
-    const { renderTimeSignature, timeSignature } = measure;
-
-    return renderTimeSignature ?
-      <TimeSignature x={x} y={y} strings={strings} beats={timeSignature.beats}
-        beatType={timeSignature.beatType} /> :
-      null;
-  }
-
   renderBars(x, y, measureWidth, strings) {
     const { playingNoteIndex, isValid, measureIndex, measureLength } = this.props;
 
@@ -195,7 +183,7 @@ class MusicMeasure extends Component {
           notes.map((note, noteIndex) => this.renderMusicNote(note, measureIndex, noteIndex, y))
         }
         { measure.indexOfRow === 0 ? <Clef y={y} strings={5} treble /> : null }
-        { this.renderTimeSignature(measureIndex, measure, 5, y, measure.indexOfRow) }
+        <TimeSignature yOffset={y} strings={5} measure={measure} />
         { measure.showBpm ? <Bpm y={y} bpm={measure.bpm} />  : null }
         <text x={0} y={23 + y} style={measureNumberStyle}>{measureIndex + 1}</text>
         { measure.repeatEnd ? <Repeat measureWidth={measure.width} strings={5} y={y} /> : null }
