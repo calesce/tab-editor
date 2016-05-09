@@ -51,30 +51,12 @@ export const getReplaySpeedForNote = (note, bpm) => {
   return replaySpeed;
 };
 
-export const getBpmForNote1 = (note, bpm) => {
+export const getBpmForNote = (note, bpm, dotted) => {
+  if(typeof note === 'string') {
+    note = durations[note];
+  }
   const replaySpeed = bpm * (note / 4);
-  return note.dotted ? replaySpeed / 1.5 : replaySpeed;
-};
-
-export const getBpmForNote = (note, bpm) => {
-  let replaySpeed = bpm;
-  if(note.duration === 'h') {
-    replaySpeed = bpm / 2;
-  } else if(note.duration === 'w') {
-    replaySpeed = bpm / 4;
-  } else if(note.duration === 'e') {
-    replaySpeed = bpm * 2;
-  } else if(note.duration === 's') {
-    replaySpeed = bpm * 4;
-  } else if(note.duration === 't') {
-    replaySpeed = bpm * 8;
-  }
-
-  if(note.dotted) {
-    replaySpeed = replaySpeed / 1.5;
-  }
-
-  return replaySpeed;
+  return dotted ? replaySpeed / 1.5 : replaySpeed;
 };
 
 export const mapDurationToNote = (duration) => {

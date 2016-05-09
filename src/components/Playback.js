@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 
 import { setPlayingIndex } from '../actions/playingIndex';
 import { playCurrentNoteAtTime} from '../util/audio';
-import { getBpmForNote, getBpmForNote1, getPercentageOfNote, getBpmOfPercentage } from '../util/audioMath';
+import { getBpmForNote, getPercentageOfNote, getBpmOfPercentage } from '../util/audioMath';
 import { expandedTracksSelector } from '../util/trackSelectors';
 import audioContext from '../util/audioContext';
 
@@ -70,11 +70,11 @@ class Playback extends Component {
 
     let replaySpeed;
     if(noteIndex === lastNote) {
-      replaySpeed = getBpmForNote(note, note.bpm);
+      replaySpeed = getBpmForNote(note.duration, note.bpm, note.dotted);
     } else {
-      const nextPosition = noteIndex === lastNote ? 1.0 : measure[noteIndex + 1][0].position;
+      const nextPosition = measure[noteIndex + 1][0].position;
       const positionDiff = nextPosition - note.position;
-      replaySpeed = getBpmForNote1(getBpmOfPercentage(positionDiff, note.timeSignature), note.bpm);
+      replaySpeed = getBpmForNote(getBpmOfPercentage(positionDiff, note.timeSignature), note.bpm, note.dotted);
     }
 
     this.noteTime = this.noteTime + (60.0 / replaySpeed);
