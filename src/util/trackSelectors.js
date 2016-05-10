@@ -37,7 +37,7 @@ const expandedTracksFromMeasures = (tracks, repeatIndex) => {
   return tracks.map((track) => {
     const { measures } = track;
     const repeatSection = getRepeatingSection(measures, repeatIndex);
-    const newMeasures = measures.slice(0, repeatIndex + 1).concat(repeatSection).concat(measures.slice(repeatIndex + 1), measures.length);
+    const newMeasures = measures.slice(0, repeatIndex + 1).concat(repeatSection).concat(measures.slice(repeatIndex + 1, measures.length));
     return {
       ...track,
       measures: newMeasures

@@ -58,7 +58,7 @@ class Playback extends Component {
     measure[noteIndex].forEach(note => {
       if(note.trackIndex === visibleTrackIndex) {
         this.updateNote({
-          measureIndex,
+          measureIndex: note.originalMeasureIndex,
           noteIndex: note.originalNoteIndex
         });
       }
@@ -89,9 +89,8 @@ class Playback extends Component {
     const nextPosition = Math.min(...measure[noteIndex + 1].map(note => note.position));
     const positionDiff = nextPosition - measure[noteIndex][0].position;
 
-    const speeds = measure[noteIndex].map(note => getBpmForNote(getDurationFromPercentage(positionDiff, note.timeSignature), note.bpm, false));
-    const speed = Math.max(...speeds);
-    return speed;
+    const speeds = measure[noteIndex].map(note => getBpmForNote(getDurationFromPercentage(positionDiff, note.timeSignature), note.bpm));
+    return Math.max(...speeds);
   }
 
   createScheduleForMeasure(tracks, measureIndex) {
@@ -103,6 +102,7 @@ class Playback extends Component {
 
         const noteToUse = {
           ...note,
+          originalMeasureIndex: measure.measureIndex,
           originalNoteIndex: noteIndex,
           instrument: track.instrument,
           tuning: track.tuning,
