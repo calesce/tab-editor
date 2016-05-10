@@ -1,7 +1,7 @@
 import { getIndexOfNote } from './midiNotes';
 import audioContext from './audioContext';
 import { times } from 'lodash';
-import { mapDurationToNote, getReplaySpeedForNote } from './audioMath';
+import { numberOfTremoloNotesForDuration, getReplaySpeedForNote } from './audioMath';
 
 const playVibrato = (source, startTime, endTime) => {
   let freqGain = audioContext.createGain();
@@ -70,7 +70,7 @@ const playNoteAtTime = (currentNote, playTime, duration, buffers, tuning) => {
 
 const playTremolo = (replaySpeed, buffers, tuning, noteToPlay) => {
   const currentTime = audioContext.currentTime;
-  const n = mapDurationToNote(noteToPlay.duration);
+  const n = numberOfTremoloNotesForDuration(noteToPlay.duration);
 
   times(n, (i) => {
     playNoteAtTime(noteToPlay, currentTime + (i * replaySpeed / (n * 1000)), replaySpeed / n, buffers, tuning);
@@ -79,7 +79,7 @@ const playTremolo = (replaySpeed, buffers, tuning, noteToPlay) => {
 
 const playTrill = (replaySpeed, buffers, tuning, noteToPlay) => {
   const currentTime = audioContext.currentTime;
-  const n = mapDurationToNote(noteToPlay.duration);
+  const n = numberOfTremoloNotesForDuration(noteToPlay.duration);
 
   times(n, (i) => {
     if(i % 2 === 0) {
@@ -92,7 +92,7 @@ const playTrill = (replaySpeed, buffers, tuning, noteToPlay) => {
 };
 
 export function playCurrentNoteAtTime(note, time, buffers) {
-  const replaySpeed = getReplaySpeedForNote(note, note.bpm);
+  const replaySpeed = getReplaySpeedForNote(note.duration, note.bpm, note.dotted);
 
   if(note.fret[0] === 'rest') {
     playNoteAtTime('rest', time || audioContext.currentTime, replaySpeed, buffers, note.tuning);
@@ -116,7 +116,7 @@ export function playCurrentNoteOfTrackAtTime(track, playingIndex, buffers, time)
     noteToPlay = { duration: 'w', fret: ['rest'] };
   }
 
-  const replaySpeed = getReplaySpeedForNote(measure.notes, playingIndex.noteIndex, measure.bpm);
+  const replaySpeed = getReplaySpeedForNote(noteToPlay.duration, noteToPlay.bpm, noteToPlay.dotted);
 
   if(noteToPlay.fret[0] === 'rest') {
     playNoteAtTime('rest', time || audioContext.currentTime, replaySpeed, buffers, tuning);

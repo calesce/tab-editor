@@ -1,6 +1,4 @@
-const getSpeedFromBpm = (bpm) => {
-  return 60000 / bpm;
-};
+import { orderBy } from 'lodash';
 
 const durations = {
   w: 1,
@@ -17,38 +15,15 @@ export const getPercentageOfNote = (duration, timeSignature, dotted) => {
   return dotted ? percentage * 1.5 : percentage;
 };
 
-export const getBpmOfPercentage = (percentage, timeSignature) => {
+export const getDurationFromPercentage = (percentage, timeSignature) => {
   const numBeats = timeSignature.beats * percentage;
   return timeSignature.beatType / numBeats;
 };
 
-export const getReplaySpeedForNote = (note, bpm) => {
-  let replaySpeed;
-  switch(note.duration) {
-    case 'w':
-      replaySpeed = getSpeedFromBpm(bpm) * 4;
-      break;
-    case 'h':
-      replaySpeed = getSpeedFromBpm(bpm) * 2;
-      break;
-    case 'q':
-      replaySpeed = getSpeedFromBpm(bpm);
-      break;
-    case 'e':
-      replaySpeed = getSpeedFromBpm(bpm) / 2;
-      break;
-    case 's':
-      replaySpeed = getSpeedFromBpm(bpm) / 4;
-      break;
-    default:
-      replaySpeed = getSpeedFromBpm(bpm) / 8;
-  }
-
-  if(note.dotted) {
-    replaySpeed = getSpeedFromBpm(bpm) * 1.5;
-  }
-
-  return replaySpeed;
+export const getReplaySpeedForNote = (duration, bpm, dotted) => {
+  const sortedDurations = orderBy(Object.keys(durations), d => durations[d], 'desc');
+  const replaySpeed = (60000 / bpm) * Math.pow(2, sortedDurations.indexOf(duration) - 3);
+  return dotted ? replaySpeed * 1.5 : replaySpeed;
 };
 
 export const getBpmForNote = (note, bpm, dotted) => {
@@ -59,19 +34,8 @@ export const getBpmForNote = (note, bpm, dotted) => {
   return dotted ? replaySpeed / 1.5 : replaySpeed;
 };
 
-export const mapDurationToNote = (duration) => {
-  switch(duration) {
-    case 's':
-      return 2;
-    case 'e':
-      return 4;
-    case 'q':
-      return 8;
-    case 'h':
-      return 16;
-    case 'w':
-      return 32;
-    default:
-      return 1;
-  }
+export const numberOfTremoloNotesForDuration = (duration) => {
+  const sortedDurations = orderBy(Object.keys(durations), d => durations[d]);
+  const index = sortedDurations.indexOf(duration);
+  return durations[sortedDurations[sortedDurations.length - 1 - index]];
 };
