@@ -53,7 +53,7 @@ class Playback extends Component {
 
   advanceNote({ measureIndex, noteIndex }, measures, visibleTrackIndex) {
     const measure = measures[measureIndex];
-    const lastNote = measures[measureIndex].length - 1;
+    const lastNoteIndex = measures[measureIndex].length - 1;
 
     measure[noteIndex].forEach(note => {
       if(note.trackIndex === visibleTrackIndex) {
@@ -64,11 +64,11 @@ class Playback extends Component {
       }
     });
 
-    this.noteTime = this.noteTime + (60.0 / this.getReplaySpeed(measure, noteIndex, lastNote));
+    this.noteTime = this.noteTime + (60.0 / this.getReplaySpeed(measure, noteIndex, lastNoteIndex));
 
-    if(measureIndex === measures.length - 1 && noteIndex === lastNote) {
+    if(measureIndex === measures.length - 1 && noteIndex === lastNoteIndex) {
       return false;
-    } else if(measureIndex !== measures.length - 1 && noteIndex === lastNote) {
+    } else if(measureIndex !== measures.length - 1 && noteIndex === lastNoteIndex) {
       return {
         measureIndex: measureIndex + 1,
         noteIndex: 0
