@@ -49,8 +49,8 @@ const measuresWithXCoords = (track) => {
   }));
 };
 
-const trackWithRows = (track, scoreBox) => {
-  return track.reduce((newTrack, measure, index) => {
+const trackWithRows = (measures, scoreBox) => {
+  return measures.reduce((newMeasures, measure, index) => {
     if(index === 0) {
       return [{
         ...measure,
@@ -60,8 +60,8 @@ const trackWithRows = (track, scoreBox) => {
       }];
     }
 
-    const currentRow = newTrack[index - 1].rowIndex;
-    const currentRowWidth = newTrack.slice(0, index).reduce((accum, next) => {
+    const currentRow = newMeasures[index - 1].rowIndex;
+    const currentRowWidth = newMeasures.slice(0, index).reduce((accum, next) => {
       if(next.rowIndex === currentRow) {
         return accum + next.width;
       }
@@ -75,7 +75,7 @@ const trackWithRows = (track, scoreBox) => {
       indexOfRow = 0;
     }
 
-    return newTrack.concat({
+    return newMeasures.concat({
       ...measure,
       rowIndex: newRowIndex,
       indexOfRow,
