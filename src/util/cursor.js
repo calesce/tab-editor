@@ -57,7 +57,7 @@ export const cursorAfterCutting = (measures, selectRange, oldCursor) => {
   if(selectRange[firstMeasureIndex] === 'all') {
     const lastMeasure = Object.keys(selectRange)[Object.keys(selectRange).length - 1];
     if(parseInt(lastMeasure) === measures.length - 1) {
-      measureIndex = firstMeasureIndex - 1;
+      measureIndex = firstMeasureIndex === 0 ? 0 : firstMeasureIndex - 1;
     }
     if(Object.keys(selectRange).length === 1) {
       noteIndex = 0;

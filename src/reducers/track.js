@@ -152,6 +152,15 @@ export default function track(state = {}, action) {
           return measure.notes.length;
         });
 
+        if(filteredMeasures.length === 0) {
+          return {
+            ...state,
+            measures: [{
+              ...mappedMeasures[0],
+              notes: []
+            }]
+          };
+        }
         return {
           ...state,
           measures: filteredMeasures
