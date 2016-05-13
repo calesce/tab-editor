@@ -67,6 +67,14 @@ export function toggleNoteVibrato(index) {
   };
 }
 
+export function setNoteTuplet(index, tuplet) {
+  return {
+    type: types.SET_NOTE_TUPLET,
+    index,
+    tuplet
+  };
+}
+
 export function changeBpm(index, bpm, all) {
   return {
     type: types.CHANGE_BPM,

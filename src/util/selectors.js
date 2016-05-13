@@ -1,41 +1,14 @@
 import { createSelector } from 'reselect';
+import { memoize } from 'lodash';
+import { calcMeasureValidity } from './audioMath';
+
+const memoizedValidity = memoize(calcMeasureValidity);
 
 export function timeSignatureSelector(state) {
   const measures = state.tracks[state.currentTrackIndex].measures;
   const measureIndex = state.cursor.measureIndex;
   return measures.length > 0 ? measures[measureIndex].timeSignature : { beats: 4, beatType: 4 };
 }
-
-const calcMeasureValidity = (measure) => {
-  const timeSig = measure.timeSignature.beats / measure.timeSignature.beatType;
-  const notesTotal = measure.notes.reduce((total, note) => {
-    let duration;
-    switch(note.duration) {
-      case 'q':
-        duration = 0.25;
-        break;
-      case 'e':
-        duration = 0.125;
-        break;
-      case 's':
-        duration = 0.0625;
-        break;
-      case 'h':
-       duration = 0.5;
-       break;
-      default:
-       duration = 1.0;
-    }
-
-    if(note.dotted) {
-      duration *= 1.5;
-    }
-
-    return total + duration;
-  }, 0);
-
-  return timeSig === notesTotal;
-};
 
 const currentMeasureSelector = state => state.tracks[state.currentTrackIndex].measures;
 const measureIndexSelector = (_, props) => props.measureIndex;
@@ -76,7 +49,7 @@ export const finalMeasureSelector = createSelector(
     return {
       measure,
       playingNoteIndex,
-      isValid: calcMeasureValidity(measure),
+      isValid: memoizedValidity(measure),
       tuning,
       measureLength,
       selectRange: selectRange ? selectRange[measureIndex] : undefined

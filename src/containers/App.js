@@ -208,6 +208,14 @@ class App extends Component {
       this.props.actions.toggleNoteVibrato(this.props.cursor);
     } else if(event.shiftKey && event.keyCode === 78) { // N
       this.props.actions.toggleNoteTrill(this.props.cursor);
+    } else if(event.keyCode === 220) { // \
+      const { measureIndex, noteIndex } = this.props.cursor;
+      const note = this.props.measures[measureIndex].notes[noteIndex];
+      if(note.tuplet) {
+        this.props.actions.setNoteTuplet(this.props.cursor, undefined);
+      } else {
+        this.props.actions.setNoteTuplet(this.props.cursor, '2/3'); // store string representation of multiplier, use with fractionjs
+      }
     } else if(event.keyCode >= 37 && event.keyCode <= 40) {
       return this.navigateCursor(event);
     }

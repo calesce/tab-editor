@@ -2,7 +2,7 @@ import { flatten, findIndex, cloneDeep } from 'lodash';
 import {
   CHANGE_NOTE, DELETE_NOTE, CHANGE_NOTE_LENGTH, INSERT_NOTE, TOGGLE_NOTE_DOTTED,
   PASTE_NOTE, CUT_NOTE, TOGGLE_NOTE_TREMOLO, INCREASE_NOTE_LENGTH, DECREASE_NOTE_LENGTH,
-  TOGGLE_NOTE_VIBRATO, ADD_REPEAT_END, TOGGLE_NOTE_TRILL
+  TOGGLE_NOTE_VIBRATO, ADD_REPEAT_END, TOGGLE_NOTE_TRILL, SET_NOTE_TUPLET
 } from '../actions/types';
 
 const replaceNote = (state, note, noteIndex) => {
@@ -138,6 +138,12 @@ export default function measure(state, action) {
     case TOGGLE_NOTE_TRILL: {
       const { noteIndex } = action.index;
       const note = Object.assign({}, state.notes[noteIndex], { trill: state.notes[noteIndex].trill ? false : true });
+      return replaceNote(state, note, noteIndex);
+    }
+
+    case SET_NOTE_TUPLET: {
+      const { noteIndex } = action.index;
+      const note = Object.assign({}, state.notes[noteIndex], { tuplet: action.tuplet });
       return replaceNote(state, note, noteIndex);
     }
 

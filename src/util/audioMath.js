@@ -1,4 +1,5 @@
 import { orderBy } from 'lodash';
+import Fraction from 'fraction.js';
 
 const durations = {
   w: 1,
@@ -9,10 +10,15 @@ const durations = {
   t: 32
 };
 
-export const getPercentageOfNote = (duration, timeSignature, dotted) => {
+export const getPercentageOfNote = (duration, timeSignature, dotted, tuplet) => {
   const numBeats = timeSignature.beatType / durations[duration];
-  const percentage = numBeats / timeSignature.beats;
-  return dotted ? percentage * 1.5 : percentage;
+  let percentage = Fraction(numBeats / timeSignature.beats);
+
+  percentage = dotted ? percentage.mul(Fraction(1.5)) : percentage;
+  if(tuplet) {
+    percentage = percentage.mul(Fraction(tuplet));
+  }
+  return percentage.n / percentage.d;
 };
 
 export const getDurationFromPercentage = (percentage, timeSignature) => {
@@ -20,22 +26,61 @@ export const getDurationFromPercentage = (percentage, timeSignature) => {
   return timeSignature.beatType / numBeats;
 };
 
-export const getReplaySpeedForNote = (duration, bpm, dotted) => {
+export const getReplaySpeedForNote = (duration, bpm, dotted, tuplet) => {
   const sortedDurations = orderBy(Object.keys(durations), d => durations[d], 'desc');
-  const replaySpeed = (60000 / bpm) * Math.pow(2, sortedDurations.indexOf(duration) - 3);
-  return dotted ? replaySpeed * 1.5 : replaySpeed;
+  let replaySpeed = (60000 / bpm) * Math.pow(2, sortedDurations.indexOf(duration) - 3);
+
+  replaySpeed = dotted ? replaySpeed * 1.5 : replaySpeed;
+  if(tuplet) {
+    const fraction = Fraction(tuplet);
+    replaySpeed = replaySpeed * (fraction.n / fraction.d);
+  }
+  return replaySpeed;
 };
 
-export const getBpmForNote = (note, bpm, dotted) => {
+export const getBpmForNote = (note, bpm) => {
   if(typeof note === 'string') {
     note = durations[note];
   }
-  const replaySpeed = bpm * (note / 4);
-  return dotted ? replaySpeed / 1.5 : replaySpeed;
+  return bpm * (note / 4);
 };
 
 export const numberOfTremoloNotesForDuration = (duration) => {
   const sortedDurations = orderBy(Object.keys(durations), d => durations[d]);
   const index = sortedDurations.indexOf(duration);
   return durations[sortedDurations[sortedDurations.length - 1 - index]];
+};
+
+export const calcMeasureValidity = (measure) => {
+  const timeSig = Fraction(measure.timeSignature.beats / measure.timeSignature.beatType);
+  const totalDuration = measure.notes.reduce((total, note) => {
+    let duration;
+    switch(note.duration) {
+      case 'q':
+        duration = Fraction(0.25);
+        break;
+      case 'e':
+        duration = Fraction(0.125);
+        break;
+      case 's':
+        duration = Fraction(0.0625);
+        break;
+      case 'h':
+       duration = Fraction(0.5);
+       break;
+      default:
+       duration = Fraction(1.0);
+    }
+
+    if(note.dotted) {
+      duration = duration.mul(Fraction(1.5));
+    }
+    if(note.tuplet) {
+      duration = duration.mul(Fraction(note.tuplet));
+    }
+
+    return total + duration;
+  }, Fraction(0));
+
+  return timeSig.equals(totalDuration);
 };

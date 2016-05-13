@@ -92,7 +92,7 @@ const playTrill = (replaySpeed, buffers, tuning, noteToPlay) => {
 };
 
 export function playCurrentNoteAtTime(note, time, buffers) {
-  const replaySpeed = getReplaySpeedForNote(note.duration, note.bpm, note.dotted);
+  const replaySpeed = getReplaySpeedForNote(note.duration, note.bpm, note.dotted, note.tuplet);
 
   if(note.fret[0] === 'rest') {
     playNoteAtTime('rest', time || audioContext.currentTime, replaySpeed, buffers, note.tuning);
@@ -116,7 +116,7 @@ export function playCurrentNoteOfTrackAtTime(track, playingIndex, buffers, time)
     noteToPlay = { duration: 'w', fret: ['rest'] };
   }
 
-  const replaySpeed = getReplaySpeedForNote(noteToPlay.duration, noteToPlay.bpm, noteToPlay.dotted);
+  const replaySpeed = getReplaySpeedForNote(noteToPlay.duration, noteToPlay.bpm, noteToPlay.dotted, noteToPlay.tuplet);
 
   if(noteToPlay.fret[0] === 'rest') {
     playNoteAtTime('rest', time || audioContext.currentTime, replaySpeed, buffers, tuning);

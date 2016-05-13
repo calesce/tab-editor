@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import shouldPureComponentUpdate from 'react-pure-render/function';
 
 import { getIndexOfNote, getStaffPositionOfNote, midiNotes } from '../../util/midiNotes';
+import { determineFlip } from '../../util/notationMath';
 
 import MusicNote from './MusicNote';
 import Bars from './Bars';
@@ -155,18 +156,11 @@ class MusicMeasure extends Component {
 
     return note.fret.map((fret, i) => {
       const yToUse = note.notes[i].y;
-
-      let flip = yToUse <= 93;
-      if(note.string.length > 1) {
-        const furthestFromMiddle = note.notes.reduce((max, next) => {
-          return Math.abs(max - 93) > Math.abs(next.y - 93) ? max : next.y;
-        }, 93);
-        flip = furthestFromMiddle <= 93;
-      }
+      const flip = determineFlip(note, yToUse);
 
       return <MusicNote key={i} x={note.x} y={yToUse} color={note.color} duration={note.duration} dotted={note.dotted}
         sharp={note.notes[i].renderSharp} natural={note.notes[i].renderNatural} measureY={yOffset} flip={flip}
-        tremolo={note.tremolo} vibrato={note.vibrato} trill={note.trill} />;
+        tremolo={note.tremolo} vibrato={note.vibrato} trill={note.trill} tuplet={note.tuplet} />;
     });
   }
 

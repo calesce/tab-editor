@@ -170,6 +170,16 @@ export default class MusicNote extends Component {
     );
   }
 
+  renderTuplet(x, y, flip, color) {
+    const yToUse = flip ? y + 15 : y + 51;
+    const xToUse = flip ? x + 9 : x + 6;
+    return (
+      <svg x={xToUse} y={yToUse} style={{ overflow: 'visible' }}>
+        <text color={color} y={0} style={{ fontSize: 13, fontWeight: 500, fontStyle: 'italic' }}>3</text>
+      </svg>
+    );
+  }
+
   renderSharp(x, y, color) {
     return (
       <svg x={x} y={y} style={{ overflow: 'visible' }}>
@@ -209,7 +219,7 @@ export default class MusicNote extends Component {
   }
 
   render() {
-    const { x, y, color, sharp, natural, dotted, tremolo, vibrato, trill } = this.props;
+    const { x, y, color, sharp, natural, dotted, tremolo, vibrato, trill, tuplet, flip } = this.props;
 
     let ledgerLinesAbove, ledgerLinesBelow;
     if(y >= 125.5) {
@@ -229,6 +239,7 @@ export default class MusicNote extends Component {
         { tremolo ? this.renderTremolo(x, y, color) : null }
         { vibrato ? this.renderVibrato(x, y, color) : null }
         { trill ? this.renderTrill(x, color) : null }
+        { tuplet ? this.renderTuplet(x, y, flip, color, tuplet) : null }
       </g>
     );
   }

@@ -55,10 +55,17 @@ const durationFromType = type => {
   return typeChar;
 };
 
+const tupletFromXml = (xml) => {
+  const normal = xml.childNamed('normal-notes').val;
+  const actual = xml.childNamed('actual-notes').val;
+  return `${normal}/${actual}`;
+};
+
 const getNotesForMeasure = (notes, stringCount) => {
   return notes.reduce((finalNotes, note) => {
     const duration = durationFromType(note.childNamed('type').val);
     const dotted = note.childNamed('dot') ? true : false;
+    const tuplet = note.childNamed('time-modification') ? tupletFromXml(note.childNamed('time-modification')) : undefined;
     const isChord = note.childNamed('chord') ? true : false;
 
     if(note.childNamed('rest')) {
@@ -81,7 +88,8 @@ const getNotesForMeasure = (notes, stringCount) => {
         duration,
         fret: frets,
         string: strings,
-        dotted
+        dotted,
+        tuplet
       });
     }
 
@@ -92,7 +100,8 @@ const getNotesForMeasure = (notes, stringCount) => {
       duration,
       fret: frets,
       string: strings,
-      dotted
+      dotted,
+      tuplet
     });
   }, []);
 };
