@@ -1,5 +1,20 @@
-import { range } from 'lodash';
+import { range, findIndex } from 'lodash';
 import { getBpmForNote, getPercentageOfNote, getDurationFromPercentage } from '../util/audioMath';
+
+export const getRealPlayingIndex = (playingIndex, scheduledSong, currentTrackIndex) => {
+  const { measureIndex, noteIndex } = playingIndex;
+  const newNoteIndex = findIndex(scheduledSong[measureIndex], notes => {
+    return notes.filter(note => note.trackIndex === currentTrackIndex && note.originalNoteIndex === noteIndex).length;
+  });
+
+  if(newNoteIndex === -1) {
+    return {
+      measureIndex: measureIndex === scheduledSong.length - 1 ? measureIndex : measureIndex + 1,
+      noteIndex: 0
+    };
+  }
+  return { ...playingIndex, noteIndex: newNoteIndex };
+};
 
 export const getReplaySpeed = (measure, noteIndex, lastNoteIndex) => {
   if(noteIndex === lastNoteIndex) {

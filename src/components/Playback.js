@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { findIndex } from 'lodash';
 
 import { setPlayingIndex } from '../actions/playingIndex';
 import { playCurrentNoteAtTime} from '../util/audio';
-import { createScheduleForSong, getReplaySpeed } from '../util/playbackSchedule';
+import { createScheduleForSong, getReplaySpeed, getRealPlayingIndex } from '../util/playbackSchedule';
 import { expandedTracksSelector } from '../util/trackSelectors';
 import audioContext from '../util/audioContext';
 
@@ -85,12 +84,7 @@ class Playback extends Component {
   startPlayback() {
     const { currentTrackIndex, playingIndex, expandedTracks, metronome } = this.props;
     const scheduledSong = createScheduleForSong(expandedTracks, metronome);
-    const realPlayingIndex = {
-      ...playingIndex,
-      noteIndex: findIndex(scheduledSong[playingIndex.measureIndex], notes => {
-        return notes.filter(note => note.trackIndex === currentTrackIndex && note.originalNoteIndex === playingIndex.noteIndex).length;
-      })
-    };
+    const realPlayingIndex = getRealPlayingIndex(playingIndex, scheduledSong, currentTrackIndex);
 
     this.requestId = requestAnimationFrame(() => {
       this.schedule(scheduledSong, realPlayingIndex, currentTrackIndex);
