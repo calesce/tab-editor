@@ -94,7 +94,9 @@ const playTrill = (replaySpeed, buffers, tuning, noteToPlay) => {
 export function playCurrentNoteAtTime(note, time, buffers) {
   const replaySpeed = getReplaySpeedFromPercentage(note.percentage, note.timeSignature, note.bpm);
 
-  if(note.fret[0] === 'rest') {
+  if(note.metronome) {
+    playWithBuffer(buffers[60], replaySpeed / 1000, time);
+  } else if(note.fret[0] === 'rest') {
     playNoteAtTime('rest', time || audioContext.currentTime, replaySpeed, buffers, note.tuning);
   } else if(note.tremolo) {
     playTremolo(replaySpeed, buffers, note.tuning, note);

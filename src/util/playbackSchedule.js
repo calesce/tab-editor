@@ -1,3 +1,4 @@
+import { range } from 'lodash';
 import { getBpmForNote, getPercentageOfNote, getDurationFromPercentage } from '../util/audioMath';
 
 export const getReplaySpeed = (measure, noteIndex, lastNoteIndex) => {
@@ -13,14 +14,14 @@ export const getReplaySpeed = (measure, noteIndex, lastNoteIndex) => {
   return Math.max(...speeds);
 };
 
-export const createScheduleForSong = (tracks) => {
+export const createScheduleForSong = (tracks, metronome) => {
   return tracks[0].measures.map((_, i) => {
-    return createScheduleForMeasure(tracks, i);
+    return createScheduleForMeasure(tracks, i, metronome);
   });
 };
 
-export const createScheduleForMeasure = (tracks, measureIndex) => {
-  const annotatedMeasures = tracks.reduce((accum, track, trackIndex) => {
+const measureWithTimeslots = (tracks, measureIndex) => {
+  return tracks.reduce((accum, track, trackIndex) => {
     const measure = track.measures[measureIndex];
 
     const noteBuckets = measure.notes.reduce((bucket, note, noteIndex) => {
@@ -63,8 +64,10 @@ export const createScheduleForMeasure = (tracks, measureIndex) => {
     }, { totalDuration: 0 });
     return accum.concat(noteBuckets);
   }, []);
+};
 
-  const scheduledMeasure = annotatedMeasures.reduce((accum, measure) => {
+const trackWithTimeslots = (measures) => {
+  return measures.reduce((accum, measure) => {
     Object.keys(measure).forEach(bucket => {
       if(bucket === 'totalDuration') {
         return accum;
@@ -77,8 +80,47 @@ export const createScheduleForMeasure = (tracks, measureIndex) => {
     });
     return accum;
   }, {});
+};
 
-  return Object.keys(scheduledMeasure).sort().map(timeSlot => {
-    return scheduledMeasure[timeSlot];
+const scheduledMeasureArray = (measure) => {
+  return Object.keys(measure).sort().map(timeSlot => {
+    return measure[timeSlot];
   });
+};
+
+const metronomeTrackForMeasure = (tracks, measureIndex) => {
+  const measure = tracks[0].measures[measureIndex];
+  const { beats, beatType } = measure.timeSignature;
+
+  return range(beats).reduce((bucket, index) => {
+    const percentage = (1 / beatType) / (beats / beatType);
+
+    const noteToUse = {
+      originalMeasureIndex: measure.measureIndex,
+      originalNoteIndex: index,
+      trackIndex: tracks.length,
+      instrument: 'woodblock',
+      tuning: tracks[0].tuning,
+      bpm: measure.bpm,
+      timeSignature: measure.timeSignature,
+      position: bucket.totalDuration,
+      percentage,
+      metronome: true // triggers custom playback method
+    };
+
+    return {
+      ...bucket,
+      [(bucket.totalDuration).toString()]: noteToUse,
+      totalDuration: bucket.totalDuration + percentage
+    };
+  }, { totalDuration: 0 });
+};
+
+export const createScheduleForMeasure = (tracks, measureIndex, metronome) => {
+  const annotatedMeasures = measureWithTimeslots(tracks, measureIndex);
+  const scheduledMeasure = metronome ?
+    trackWithTimeslots(annotatedMeasures.concat(metronomeTrackForMeasure(tracks, measureIndex))) :
+    trackWithTimeslots(annotatedMeasures);
+
+  return scheduledMeasureArray(scheduledMeasure);
 };

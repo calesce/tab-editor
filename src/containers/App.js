@@ -21,7 +21,6 @@ import TimeSignatureModal from '../components/editor/TimeSignatureModal';
 import TuningModal from '../components/editor/TuningModal';
 import BpmModal from '../components/editor/BpmModal';
 import Playback from '../components/Playback';
-import Metronome from '../components/Metronome';
 
 const Actions = Object.assign(TracksActions, TrackActions, MeasureActions, PlayingIndexActions, CursorActions, CopyPasteActions);
 
@@ -234,8 +233,7 @@ class App extends Component {
 
     return (
       <div style={style}>
-        { this.props.playingIndex ? <Playback buffers={buffers} /> : null}
-        { this.props.playingIndex && this.props.metronome ? <Metronome buffers={buffers.woodblock} /> : null}
+        { this.props.playingIndex ? <Playback buffers={buffers} metronome={this.props.metronome} /> : null}
         <EditorArea canPlay={buffers && (!this.props.metronome || this.state.buffers.woodblock)} handlePlay={this.handlePlay} openModal={this.openModal} />
         <Score />
         <TimeSignatureModal isOpen={openModal === 'timeSig'} closeModal={this.closeModal} />
