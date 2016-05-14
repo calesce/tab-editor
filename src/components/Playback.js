@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 
 import { setPlayingIndex } from '../actions/playingIndex';
 import { playCurrentNoteAtTime} from '../util/audio';
-import { getBpmForNote, getPercentageOfNote, getDurationFromPercentage } from '../util/audioMath';
+import { createScheduleForSong, getReplaySpeed } from '../util/playbackSchedule';
 import { expandedTracksSelector } from '../util/trackSelectors';
 import audioContext from '../util/audioContext';
 
@@ -14,7 +14,6 @@ class Playback extends Component {
 
     this.schedule = this.schedule.bind(this);
     this.advanceNote = this.advanceNote.bind(this);
-    this.createScheduleForMeasure = this.createScheduleForMeasure.bind(this);
     this.startPlayback = this.startPlayback.bind(this);
     this.updateNote = this.updateNote.bind(this);
   }
@@ -64,7 +63,7 @@ class Playback extends Component {
       }
     });
 
-    this.noteTime = this.noteTime + (60.0 / this.getReplaySpeed(measure, noteIndex, lastNoteIndex));
+    this.noteTime = this.noteTime + (60.0 / getReplaySpeed(measure, noteIndex, lastNoteIndex));
 
     if(measureIndex === measures.length - 1 && noteIndex === lastNoteIndex) {
       return false;
@@ -81,92 +80,11 @@ class Playback extends Component {
     }
   }
 
-  getReplaySpeed(measure, noteIndex, lastNoteIndex) {
-    if(noteIndex === lastNoteIndex) {
-      const speeds = measure[noteIndex].map(note => getBpmForNote(getDurationFromPercentage(1 - note.position, note.timeSignature), note.bpm));
-      return Math.max(...speeds);
-    }
-
-    const nextPosition = Math.min(...measure[noteIndex + 1].map(note => note.position));
-    const positionDiff = nextPosition - measure[noteIndex][0].position;
-
-    const speeds = measure[noteIndex].map(note => getBpmForNote(getDurationFromPercentage(positionDiff, note.timeSignature), note.bpm));
-    return Math.max(...speeds);
-  }
-
-  createScheduleForMeasure(tracks, measureIndex) {
-    const annotatedMeasures = tracks.reduce((accum, track, trackIndex) => {
-      const measure = track.measures[measureIndex];
-
-      const noteBuckets = measure.notes.reduce((bucket, note, noteIndex) => {
-        const percentage = getPercentageOfNote(note.duration, measure.timeSignature, note.dotted, note.tuplet);
-
-        const noteToUse = {
-          ...note,
-          originalMeasureIndex: measure.measureIndex,
-          originalNoteIndex: noteIndex,
-          instrument: track.instrument,
-          tuning: track.tuning,
-          bpm: measure.bpm,
-          timeSignature: measure.timeSignature,
-          trackIndex,
-          position: bucket.totalDuration,
-          percentage
-        };
-
-        if(bucket.totalDuration + percentage > 1.0) {
-          if(bucket.totalDuration < 1.0) { // Shorten the note
-            const newPercentage = 1.0 - bucket.totalDuration;
-            return {
-              ...bucket,
-              [(bucket.totalDuration).toString()]: {
-                ...noteToUse,
-                percentage: newPercentage
-              },
-              totalDuration: bucket.totalDuration + newPercentage
-            };
-          } else {
-            return bucket;
-          }
-        }
-
-        return {
-          ...bucket,
-          [(bucket.totalDuration).toString()]: noteToUse,
-          totalDuration: bucket.totalDuration + percentage
-        };
-      }, { totalDuration: 0 });
-      return accum.concat(noteBuckets);
-    }, []);
-
-    const scheduledMeasure = annotatedMeasures.reduce((accum, measure) => {
-      Object.keys(measure).forEach(bucket => {
-        if(bucket === 'totalDuration') {
-          return accum;
-        }
-        if(accum[bucket]) {
-          accum[bucket] = accum[bucket].concat(measure[bucket]);
-        } else {
-          accum[bucket] = [measure[bucket]];
-        }
-      });
-      return accum;
-    }, {});
-
-    return Object.keys(scheduledMeasure).sort().map(timeSlot => {
-      return scheduledMeasure[timeSlot];
-    });
-  }
-
   startPlayback() {
     const { currentTrackIndex, playingIndex, expandedTracks } = this.props;
 
-    const scheduledMeasures = expandedTracks[0].measures.map((_, i) => {
-      return this.createScheduleForMeasure(expandedTracks, i);
-    });
-
     this.requestId = requestAnimationFrame(() => {
-      this.schedule(scheduledMeasures, playingIndex, currentTrackIndex);
+      this.schedule(createScheduleForSong(expandedTracks), playingIndex, currentTrackIndex);
     });
   }
 
