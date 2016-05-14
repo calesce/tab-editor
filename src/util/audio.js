@@ -1,7 +1,7 @@
 import { getIndexOfNote } from './midiNotes';
 import audioContext from './audioContext';
 import { times } from 'lodash';
-import { numberOfTremoloNotesForDuration, getReplaySpeedForNote } from './audioMath';
+import { numberOfTremoloNotesForDuration, getReplaySpeedFromPercentage } from './audioMath';
 
 const playVibrato = (source, startTime, endTime) => {
   let freqGain = audioContext.createGain();
@@ -92,7 +92,7 @@ const playTrill = (replaySpeed, buffers, tuning, noteToPlay) => {
 };
 
 export function playCurrentNoteAtTime(note, time, buffers) {
-  const replaySpeed = getReplaySpeedForNote(note.duration, note.bpm, note.dotted, note.tuplet);
+  const replaySpeed = getReplaySpeedFromPercentage(note.percentage, note.timeSignature, note.bpm);
 
   if(note.fret[0] === 'rest') {
     playNoteAtTime('rest', time || audioContext.currentTime, replaySpeed, buffers, note.tuning);
@@ -102,29 +102,5 @@ export function playCurrentNoteAtTime(note, time, buffers) {
     playTrill(replaySpeed, buffers, note.tuning, note);
   } else {
     playNoteAtTime(note, time || audioContext.currentTime, replaySpeed, buffers, note.tuning);
-  }
-}
-
-export function playCurrentNoteOfTrackAtTime(track, playingIndex, buffers, time) {
-  const { measures, tuning } = track;
-
-  const measure = measures[playingIndex.measureIndex];
-  let noteToPlay;
-  if(measure.notes.length > 0) {
-    noteToPlay = measure.notes[playingIndex.noteIndex];
-  } else {
-    noteToPlay = { duration: 'w', fret: ['rest'] };
-  }
-
-  const replaySpeed = getReplaySpeedForNote(noteToPlay.duration, noteToPlay.bpm, noteToPlay.dotted, noteToPlay.tuplet);
-
-  if(noteToPlay.fret[0] === 'rest') {
-    playNoteAtTime('rest', time || audioContext.currentTime, replaySpeed, buffers, tuning);
-  } else if(noteToPlay.tremolo) {
-    playTremolo(replaySpeed, buffers, tuning, noteToPlay);
-  } else if(noteToPlay.trill) {
-    playTrill(replaySpeed, buffers, tuning, noteToPlay);
-  } else {
-    playNoteAtTime(noteToPlay, time || audioContext.currentTime, replaySpeed, buffers, tuning);
   }
 }

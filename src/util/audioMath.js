@@ -26,16 +26,8 @@ export const getDurationFromPercentage = (percentage, timeSignature) => {
   return timeSignature.beatType / numBeats;
 };
 
-export const getReplaySpeedForNote = (duration, bpm, dotted, tuplet) => {
-  const sortedDurations = orderBy(Object.keys(durations), d => durations[d], 'desc');
-  let replaySpeed = (60000 / bpm) * Math.pow(2, sortedDurations.indexOf(duration) - 3);
-
-  replaySpeed = dotted ? replaySpeed * 1.5 : replaySpeed;
-  if(tuplet) {
-    const fraction = Fraction(tuplet);
-    replaySpeed = replaySpeed * (fraction.n / fraction.d);
-  }
-  return replaySpeed;
+export const getReplaySpeedFromPercentage = (percentage, timeSignature, bpm) => {
+  return 240000 / (bpm  * getDurationFromPercentage(percentage, timeSignature));
 };
 
 export const getBpmForNote = (note, bpm) => {

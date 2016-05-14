@@ -83,7 +83,8 @@ class Playback extends Component {
 
   getReplaySpeed(measure, noteIndex, lastNoteIndex) {
     if(noteIndex === lastNoteIndex) {
-      return Math.max(...measure[noteIndex].map(note => getBpmForNote(getDurationFromPercentage(1 - note.position, note.timeSignature), note.bpm)));
+      const speeds = measure[noteIndex].map(note => getBpmForNote(getDurationFromPercentage(1 - note.position, note.timeSignature), note.bpm));
+      return Math.max(...speeds);
     }
 
     const nextPosition = Math.min(...measure[noteIndex + 1].map(note => note.position));
@@ -109,8 +110,25 @@ class Playback extends Component {
           bpm: measure.bpm,
           timeSignature: measure.timeSignature,
           trackIndex,
-          position: bucket.totalDuration
+          position: bucket.totalDuration,
+          percentage
         };
+
+        if(bucket.totalDuration + percentage > 1.0) {
+          if(bucket.totalDuration < 1.0) { // Shorten the note
+            const newPercentage = 1.0 - bucket.totalDuration;
+            return {
+              ...bucket,
+              [(bucket.totalDuration).toString()]: {
+                ...noteToUse,
+                percentage: newPercentage
+              },
+              totalDuration: bucket.totalDuration + newPercentage
+            };
+          } else {
+            return bucket;
+          }
+        }
 
         return {
           ...bucket,
