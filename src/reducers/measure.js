@@ -17,7 +17,10 @@ const insertNote = (state, action) => {
       fret: ['rest'],
       string: ['rest']
     }];
-    return Object.assign({}, state, { notes });
+    return {
+      ...state,
+      notes
+    };
   }
 
   const { noteIndex } = action.index;
@@ -27,7 +30,10 @@ const insertNote = (state, action) => {
     string: ['rest']
   };
   const notes = flatten([state.notes.slice(0, noteIndex + 1), note, state.notes.slice(noteIndex + 1, state.notes.length)]);
-  return Object.assign({}, state, { notes });
+  return{
+    ...state,
+    notes
+  };
 };
 
 const deleteNote = (state, action) => {

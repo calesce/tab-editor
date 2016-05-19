@@ -1,4 +1,5 @@
 import shallowEqual from 'react-pure-render/shallowEqual';
+import { isEqual } from 'lodash';
 
 const computeMeasureWidths = (track) => {
   return track.map((measure, index) => {
@@ -18,46 +19,53 @@ const computeMeasureWidths = (track) => {
         showBpm = true;
       }
 
-      return {
+      const newMeasure = {
         ...measure,
         width,
         renderTimeSignature: false,
         showBpm
       };
+      return isEqual(newMeasure, measure) ? measure : newMeasure;
     }
     width += 30;
     if(measure.notes.length === 0) {
       width += 20;
     }
 
-    return {
+    const newMeasure = {
       ...measure,
       width,
       renderTimeSignature: true,
       showBpm
     };
+    return isEqual(newMeasure, measure) ? measure : newMeasure;
   });
 };
 
 const measuresWithXCoords = (track) => {
-  return track.map(measure => ({
+  return track.map(measure => {
+    const newMeasure = {
       ...measure,
       notes: measure.notes.map((note, i) => ({
         ...note,
         x: calcXForNote(measure, i)
       }))
-  }));
+    };
+
+    return isEqual(newMeasure, measure) ? measure : newMeasure;
+  });
 };
 
 const trackWithRows = (measures, scoreBox) => {
   return measures.reduce((newMeasures, measure, index) => {
     if(index === 0) {
-      return [{
+      const newMeasure = {
         ...measure,
         rowIndex: index,
         indexOfRow: 0,
         xOfMeasure: 0
-      }];
+      };
+      return [isEqual(newMeasure, measure) ? measure : newMeasure];
     }
 
     const currentRow = newMeasures[index - 1].rowIndex;
@@ -75,22 +83,25 @@ const trackWithRows = (measures, scoreBox) => {
       indexOfRow = 0;
     }
 
-    return newMeasures.concat({
+    const newMeasure = {
       ...measure,
       rowIndex: newRowIndex,
       indexOfRow,
       xOfMeasure: indexOfRow === 0 ? indexOfRow : currentRowWidth
-    });
+    };
+
+    return newMeasures.concat(isEqual(newMeasure, measure) ? measure : newMeasure);
   }, []);
 };
 
 const linearTrack = (track) => {
   return track.map((measure, i) => {
-    return {
+    const newMeasure = {
       ...measure,
       rowIndex: 0,
       indexOfRow: i === 0 ? 0 : undefined
     };
+    return isEqual(newMeasure, measure) ? measure : newMeasure;
   });
 };
 

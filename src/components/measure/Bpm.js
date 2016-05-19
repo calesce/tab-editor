@@ -1,17 +1,21 @@
 import React, { Component } from 'react';
 import shouldPureComponentUpdate from 'react-pure-render/function';
 
+const style = {
+  MozUserSelect: 'none',
+  WebkitUserSelect: 'none',
+  msUserSelect: 'none',
+  cursor: 'default',
+  fontSize: 9
+};
+
 export default class Bpm extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
 
   render() {
-    const style = {
-      MozUserSelect: 'none',
-      WebkitUserSelect: 'none',
-      msUserSelect: 'none',
-      cursor: 'default',
-      fontSize: 9
-    };
+    if(this.props.tab && (this.props.displayOption !== 'tab' || !this.props.showBpm)) {
+      return null;
+    }
     const text = `= ${this.props.bpm}`;
 
     return (

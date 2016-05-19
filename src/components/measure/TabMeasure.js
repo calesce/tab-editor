@@ -17,6 +17,11 @@ import Repeat from './Repeat';
 
 import { setCursor } from '../../actions/cursor';
 
+const measureIndexStyle = {
+  fontSize: 9,
+  fill: 'tomato'
+};
+
 class TabMeasure extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
 
@@ -69,7 +74,6 @@ class TabMeasure extends Component {
   renderBars(x, y, measureWidth, stringCount) {
     const { playingNoteIndex, isValid, measureIndex, measureLength } = this.props;
 
-    const lastMeasure = measureIndex === measureLength - 1;
     let color = '#999999';
     let strokeWidth = 0.1;
     if(playingNoteIndex !== undefined) {
@@ -81,7 +85,7 @@ class TabMeasure extends Component {
     }
 
     return <Bars measureWidth={measureWidth} color={color} y={y} spaceBetweenBars={13}
-      strokeWidth={strokeWidth} strings={stringCount} lastMeasure={lastMeasure}
+      strokeWidth={strokeWidth} strings={stringCount} lastMeasure={measureIndex === measureLength - 1}
     />;
   }
 
@@ -125,8 +129,8 @@ class TabMeasure extends Component {
         {
           measure.notes.map((note, noteIndex) => this.renderTabNote(note, measureIndex, noteIndex, displayOption))
         }
-        { (measure.showBpm && displayOption === 'tab') ? <Bpm y={0} bpm={measure.bpm} />  : null }
-        { displayOption === 'tab' ? <text x={0} y={23} style={{ fontSize: 9, fill: 'tomato' }}>{measureIndex + 1}</text> : null }
+        <Bpm tab y={0} bpm={measure.bpm} showBpm={measure.showBpm} displayOption={displayOption} />
+        { displayOption === 'tab' ? <text x={0} y={23} style={measureIndexStyle}>{measureIndex + 1}</text> : null }
         { measure.indexOfRow === 0 ? <Clef y={25} strings={stringCount} tab /> : null }
         <TimeSignature yOffset={0} strings={stringCount} measure={measure} displayOption={displayOption} />
         { this.renderCursor() }
@@ -136,10 +140,22 @@ class TabMeasure extends Component {
   }
 }
 
+const makeCursorSelector = () => {
+  return cursorSelectorForMeasure;
+};
+
+const makeMapStateToProps = () => {
+  const cursorSelector = makeCursorSelector();
+  const mapStateToProps = (state, props) => {
+    return cursorSelector(state, props);
+  };
+  return mapStateToProps;
+};
+
 function mapDispatchToProps(dispatch) {
   return {
     setCursor: bindActionCreators(setCursor, dispatch)
   };
 }
 
-export default connect(cursorSelectorForMeasure, mapDispatchToProps)(TabMeasure);
+export default connect(makeMapStateToProps, mapDispatchToProps)(TabMeasure);
