@@ -1,15 +1,17 @@
-import * as types from './types';
+export const CUT_NOTE = 'CUT_NOTE';
+export const COPY_NOTE = 'COPY_NOTE';
+export const PASTE_NOTE = 'PASTE_NOTE';
 
 export function copyNote(selection) {
   return {
-    type: types.COPY_NOTE,
+    type: COPY_NOTE,
     selection
   };
 }
 
 export function cutNote(index, selection, range) {
   return {
-    type: types.CUT_NOTE,
+    type: CUT_NOTE,
     index,
     selection,
     range
@@ -18,7 +20,7 @@ export function cutNote(index, selection, range) {
 
 export function pasteNote(index, clipboard) {
   return {
-    type: types.PASTE_NOTE,
+    type: PASTE_NOTE,
     index,
     clipboard
   };

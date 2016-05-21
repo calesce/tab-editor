@@ -1,5 +1,7 @@
-import { SET_CURSOR, MOVE_CURSOR_LEFT, MOVE_CURSOR_RIGHT, MOVE_CURSOR_UP, MOVE_CURSOR_DOWN,
-DELETE_NOTE, DELETE_MEASURE, INSERT_NOTE, SET_SELECT_RANGE } from '../actions/types';
+import { SET_CURSOR, MOVE_CURSOR_LEFT, MOVE_CURSOR_RIGHT, MOVE_CURSOR_UP,
+  MOVE_CURSOR_DOWN, SET_SELECT_RANGE } from '../actions/cursor';
+import { DELETE_MEASURE } from '../actions/track';
+import { DELETE_NOTE, INSERT_NOTE } from '../actions/measure';
 
 import { getNextNote, getPrevNote, getUpperString, getLowerString } from '../util/cursor';
 

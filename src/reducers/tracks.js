@@ -3,11 +3,12 @@ import layout from './layout';
 import playingIndex from './playingIndex';
 import cursorReducer from './cursor';
 import { prepareTrack } from '../util';
-import { COPY_NOTE, CUT_NOTE, CHANGE_LAYOUT, INSERT_TRACK,
-  DELETE_TRACK, SELECT_TRACK, INSERT_MEASURE, DELETE_MEASURE,
-  CHANGE_BPM, CHANGE_TIME_SIGNATURE, SET_PLAYING_INDEX, TOGGLE_METRONOME,
-  SET_CURSOR, MOVE_CURSOR_LEFT, MOVE_CURSOR_RIGHT, REPLACE_SONG,
-  MOVE_CURSOR_UP, MOVE_CURSOR_DOWN, SET_SELECT_RANGE } from '../actions/types';
+import { COPY_NOTE, CUT_NOTE } from '../actions/cutCopyPaste';
+import { INSERT_TRACK, DELETE_TRACK, SELECT_TRACK, CHANGE_LAYOUT, REPLACE_SONG } from '../actions/tracks';
+import { INSERT_MEASURE, DELETE_MEASURE, CHANGE_BPM, CHANGE_TIME_SIGNATURE } from '../actions/track';
+import { SET_PLAYING_INDEX, TOGGLE_METRONOME } from '../actions/playingIndex';
+import { SET_CURSOR, MOVE_CURSOR_LEFT, MOVE_CURSOR_RIGHT,
+    MOVE_CURSOR_UP, MOVE_CURSOR_DOWN, SET_SELECT_RANGE } from '../actions/cursor';
 
 const replaceTrack = (tracks, action, currentTrackIndex, layout = 'page') => {
   return tracks.map((t, index) => {

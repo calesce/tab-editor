@@ -1,4 +1,4 @@
-import { SET_PLAYING_INDEX } from '../actions/types';
+import { SET_PLAYING_INDEX } from '../actions/playingIndex';
 
 export default function playingIndex(state, action) {
   switch(action.type) {

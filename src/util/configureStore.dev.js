@@ -4,7 +4,9 @@ import rootReducer from '../reducers';
 import DevTools from '../containers/DevTools';
 import undoable, { excludeAction } from 'redux-undo';
 
-import * as types from '../actions/types';
+import * as types from '../actions/cursor';
+import { RESIZE } from '../actions/tracks';
+import { SET_PLAYING_INDEX } from '../actions/playingIndex';
 
 const finalCreateStore = compose(
   DevTools.instrument(),
@@ -15,7 +17,7 @@ const finalCreateStore = compose(
   )
 )(createStore);
 
-const ignoredTypes = [types.SET_PLAYING_INDEX, types.SET_CURSOR, types.SET_SELECT_RANGE, types.RESIZE,
+const ignoredTypes = [SET_PLAYING_INDEX, types.SET_CURSOR, types.SET_SELECT_RANGE, RESIZE,
  types.MOVE_CURSOR_UP, types.MOVE_CURSOR_DOWN, types.MOVE_CURSOR_LEFT, types.MOVE_CURSOR_RIGHT ];
 const undoableReducer = undoable(rootReducer, { filter: excludeAction(ignoredTypes) });
 

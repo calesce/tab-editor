@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import shouldPureComponentUpdate from 'react-pure-render/function';
 
-import { changeTimeSignature } from '../../actions/measure';
+import { changeTimeSignature } from '../../actions/track';
 import { timeSignatureSelector } from '../../util/selectors';
 
 const style = {

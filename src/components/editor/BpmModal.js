@@ -4,7 +4,7 @@ import Modal from 'react-modal';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { changeBpm } from '../../actions/measure';
+import { changeBpm } from '../../actions/track';
 
 const style = {
   overlay: {

@@ -1,5 +1,7 @@
-import { DELETE_MEASURE, INSERT_MEASURE, REPLACE_SONG, CHANGE_TUNING,
-  CHANGE_BPM, SET_INSTRUMENT, CHANGE_TIME_SIGNATURE, PASTE_NOTE, CUT_NOTE } from '../actions/types';
+import { PASTE_NOTE, CUT_NOTE } from '../actions/cutCopyPaste';
+import { INSERT_MEASURE, DELETE_MEASURE, CHANGE_TUNING,
+  CHANGE_BPM, SET_INSTRUMENT, CHANGE_TIME_SIGNATURE } from '../actions/track';
+import { REPLACE_SONG } from '../actions/tracks';
 import measure from './measure';
 
 const replaceMeasure = (state, action) => {

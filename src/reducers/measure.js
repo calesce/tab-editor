@@ -1,9 +1,9 @@
 import { flatten, findIndex, cloneDeep } from 'lodash';
-import {
-  CHANGE_NOTE, DELETE_NOTE, CHANGE_NOTE_LENGTH, INSERT_NOTE, TOGGLE_NOTE_DOTTED,
-  PASTE_NOTE, CUT_NOTE, TOGGLE_NOTE_TREMOLO, INCREASE_NOTE_LENGTH, DECREASE_NOTE_LENGTH,
+import { PASTE_NOTE, CUT_NOTE } from '../actions/cutCopyPaste';
+import { CHANGE_NOTE, DELETE_NOTE, CHANGE_NOTE_LENGTH, INSERT_NOTE, TOGGLE_NOTE_DOTTED,
+  TOGGLE_NOTE_TREMOLO, INCREASE_NOTE_LENGTH, DECREASE_NOTE_LENGTH,
   TOGGLE_NOTE_VIBRATO, ADD_REPEAT_END, TOGGLE_NOTE_TRILL, SET_NOTE_TUPLET
-} from '../actions/types';
+} from '../actions/measure';
 
 const replaceNote = (state, note, noteIndex) => {
   const notes = flatten([state.notes.slice(0, noteIndex), note, state.notes.slice(noteIndex + 1, state.notes.length)]);

@@ -1,4 +1,4 @@
-import { CHANGE_LAYOUT } from '../actions/types';
+import { CHANGE_LAYOUT } from '../actions/tracks';
 
 export default function layout(state = 'page', action) {
   switch(action.type) {
