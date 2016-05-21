@@ -21,12 +21,15 @@ const getTuning = (part, maker) => {
   });
 };
 
-const getBpmForMeasure = (measures, measure, index) => {
+const getBpmForMeasure = (measures, measure, index, parts) => {
   const direction = measure.childNamed('direction');
+
   if(direction) {
     return parseInt(direction.childNamed('sound').attr.tempo);
-  } else {
+  } else if(measures[index - 1]) {
     return measures[index - 1].bpm ? measures[index - 1].bpm : 120;
+  } else {
+    return parts[parts.length - 1].measures[0].bpm;
   }
 };
 
@@ -78,6 +81,7 @@ const getNotesForMeasure = (notes, stringCount) => {
     }
     const fret = parseInt(note.childNamed('notations').childNamed('technical').childNamed('fret').val);
     const string = stringCount - parseInt(note.childNamed('notations').childNamed('technical').childNamed('string').val);
+    const tremolo = note.childNamed('notations').childNamed('ornaments') ? true : false;
 
     let frets, strings;
     if(isChord) {
@@ -89,6 +93,7 @@ const getNotesForMeasure = (notes, stringCount) => {
         fret: frets,
         string: strings,
         dotted,
+        tremolo,
         tuplet
       });
     }
@@ -101,14 +106,15 @@ const getNotesForMeasure = (notes, stringCount) => {
       fret: frets,
       string: strings,
       dotted,
+      tremolo,
       tuplet
     });
   }, []);
 };
 
-const measuresFromMusicXml = (measures, stringCount) => {
+const measuresFromMusicXml = (measures, stringCount, parts) => {
   return measures.reduce((finalMeasures, measure, i) => {
-    const bpm = getBpmForMeasure(finalMeasures, measure, i);
+    const bpm = getBpmForMeasure(finalMeasures, measure, i, parts);
     const timeSignature = getTimeSignatureForMeasure(finalMeasures, measure, i);
     const notes = getNotesForMeasure(measure.childrenNamed('note'), stringCount);
 
@@ -130,7 +136,7 @@ export function importMusicXml(xmlString) {
   return parts.reduce((finalParts, part, i) => {
     const instrument = instruments[i];
     const tuning = getTuning(part, maker);
-    const measures = measuresFromMusicXml(part.childrenNamed('measure'), tuning.length);
+    const measures = measuresFromMusicXml(part.childrenNamed('measure'), tuning.length, finalParts);
 
     return finalParts.concat({
       instrument,
