@@ -137,12 +137,12 @@ class EditorArea extends Component {
 
 function mapStateToProps(state) {
   return {
-    tracks: state.tracks,
-    layout: state.layout ? state.layout : 'page',
-    playingIndex: state.playingIndex,
-    cursor: state.cursor,
+    tracks: state.present.tracks,
+    layout: state.present.layout,
+    playingIndex: state.present.playingIndex,
+    cursor: state.present.cursor,
     timeSignature: timeSignatureSelector(state),
-    metronome: state.metronome
+    metronome: state.present.metronome
   };
 }
 

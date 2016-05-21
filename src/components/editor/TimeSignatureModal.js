@@ -97,7 +97,7 @@ export default class TimeSignatureModal extends Component {
 function mapStateToProps(state) {
   return {
     timeSignature: timeSignatureSelector(state),
-    measureIndex: state.cursor.measureIndex
+    measureIndex: state.present.cursor.measureIndex
   };
 }
 

@@ -71,8 +71,8 @@ export default class BpmModal extends Component {
 
 function mapStateToProps(state) {
   return {
-    measure: state.tracks[state.currentTrackIndex].measures[state.cursor.measureIndex],
-    cursor: state.cursor
+    measure: state.present.tracks[state.present.currentTrackIndex].measures[state.present.cursor.measureIndex],
+    cursor: state.present.cursor
   };
 }
 

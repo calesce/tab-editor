@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import shallowEqual from 'react-pure-render/shallowEqual';
 
+import { ActionCreators } from 'redux-undo';
+
 import * as TracksActions from '../actions/tracks';
 import * as TrackActions from '../actions/track';
 import * as MeasureActions from '../actions/measure';
@@ -217,6 +219,9 @@ class App extends Component {
       }
     } else if(event.keyCode >= 37 && event.keyCode <= 40) {
       return this.navigateCursor(event);
+    } else if((event.metaKey || event.ctrlKey) && event.keyCode === 90) { // Z
+      event.preventDefault();
+      return event.shiftKey ? this.props.redo() : this.props.undo();
     }
   }
 
@@ -254,7 +259,9 @@ const makeMapStateToProps = () => {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(Actions, dispatch)
+    actions: bindActionCreators(Actions, dispatch),
+    undo: bindActionCreators(ActionCreators.undo, dispatch),
+    redo: bindActionCreators(ActionCreators.redo, dispatch)
   };
 }
 

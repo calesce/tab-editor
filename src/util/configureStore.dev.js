@@ -2,6 +2,9 @@ import { createStore, compose } from 'redux';
 import { persistState } from 'redux-devtools';
 import rootReducer from '../reducers';
 import DevTools from '../containers/DevTools';
+import undoable, { excludeAction } from 'redux-undo';
+
+import * as types from '../actions/types';
 
 const finalCreateStore = compose(
   DevTools.instrument(),
@@ -12,12 +15,16 @@ const finalCreateStore = compose(
   )
 )(createStore);
 
-export default function configureStore(initialState) {
-  const store = finalCreateStore(rootReducer, initialState);
+const ignoredTypes = [types.SET_PLAYING_INDEX, types.SET_CURSOR, types.SET_SELECT_RANGE, types.RESIZE,
+ types.MOVE_CURSOR_UP, types.MOVE_CURSOR_DOWN, types.MOVE_CURSOR_LEFT, types.MOVE_CURSOR_RIGHT ];
+const undoableReducer = undoable(rootReducer, { filter: excludeAction(ignoredTypes) });
 
-  if (module.hot) {
+export default function configureStore(initialState) {
+  const store = finalCreateStore(undoableReducer, initialState);
+
+  if(module.hot) {
     module.hot.accept('../reducers', () => {
-      const nextReducer = require('../reducers').default;
+      const nextReducer = undoable(require('../reducers').default, { filter: excludeAction(ignoredTypes) });
       store.replaceReducer(nextReducer);
     });
   }

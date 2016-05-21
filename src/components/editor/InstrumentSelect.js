@@ -33,7 +33,7 @@ export default class InstrumentSelect extends Component {
 
 function mapStateToProps(state) {
   return {
-    instrument: state.tracks[state.currentTrackIndex].instrument
+    instrument: state.present.tracks[state.present.currentTrackIndex].instrument
   };
 }
 

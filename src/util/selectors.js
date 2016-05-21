@@ -5,12 +5,12 @@ import { calcMeasureValidity } from './audioMath';
 const memoizedValidity = memoize(calcMeasureValidity);
 
 export function timeSignatureSelector(state) {
-  const measures = state.tracks[state.currentTrackIndex].measures;
-  const measureIndex = state.cursor.measureIndex;
+  const measures = state.present.tracks[state.present.currentTrackIndex].measures;
+  const measureIndex = state.present.cursor.measureIndex;
   return measures.length > 0 ? measures[measureIndex].timeSignature : { beats: 4, beatType: 4 };
 }
 
-const currentMeasureSelector = state => state.tracks[state.currentTrackIndex].measures;
+const currentMeasureSelector = state => state.present.tracks[state.present.currentTrackIndex].measures;
 const measureIndexSelector = (_, props) => props.measureIndex;
 
 const measureSelector = createSelector(
@@ -28,11 +28,11 @@ const measureSelector = createSelector(
   };
 });
 
-export const playingIndexSelector = state => state.playingIndex;
-const cursorSelector = state => state.cursor;
-const tuningSelector = state => state.tracks[state.currentTrackIndex].tuning;
-const measureLengthSelector = state => state.tracks[state.currentTrackIndex].measures.length;
-export const selectRangeSelector = state => state.selectRange;
+export const playingIndexSelector = state => state.present.playingIndex;
+const cursorSelector = state => state.present.cursor;
+const tuningSelector = state => state.present.tracks[state.present.currentTrackIndex].tuning;
+const measureLengthSelector = state => state.present.tracks[state.present.currentTrackIndex].measures.length;
+export const selectRangeSelector = state => state.present.selectRange;
 
 export const finalMeasureSelector = createSelector(
   measureSelector,
@@ -68,9 +68,9 @@ export const cursorSelectorForMeasure = createSelector(
 
 const measuresTuningLayoutSelector = state => (
   {
-    measures: state.tracks[state.currentTrackIndex].measures,
-    tuning: state.tracks[state.currentTrackIndex].tuning,
-    layout: state.layout
+    measures: state.present.tracks[state.present.currentTrackIndex].measures,
+    tuning: state.present.tracks[state.present.currentTrackIndex].tuning,
+    layout: state.present.layout
   }
 );
 
@@ -97,21 +97,23 @@ export const scoreSelector = createSelector(
 );
 
 const instrumentListSelector = state => {
-  return state.tracks.map(track => track.instrument);
+  return state.present.tracks.map(track => track.instrument);
 };
 
 export const makeAppSelector = () => {
   return createSelector(
     state => ({
-      measures: state.tracks[state.currentTrackIndex].measures,
-      clipboard: state.clipboard,
-      layout: state.layout,
-      playingIndex: state.playingIndex,
-      cursor: state.cursor,
-      selectRange: state.selectRange,
-      tuning: state.tracks[state.currentTrackIndex].tuning,
-      currentTrackIndex: state.currentTrackIndex,
-      metronome: state.metronome
+      measures: state.present.tracks[state.present.currentTrackIndex].measures,
+      clipboard: state.present.clipboard,
+      layout: state.present.layout,
+      playingIndex: state.present.playingIndex,
+      cursor: state.present.cursor,
+      selectRange: state.present.selectRange,
+      tuning: state.present.tracks[state.present.currentTrackIndex].tuning,
+      currentTrackIndex: state.present.currentTrackIndex,
+      metronome: state.present.metronome,
+      future: state.future,
+      past: state.past
     }),
     instrumentListSelector,
     (appState, instruments) => {

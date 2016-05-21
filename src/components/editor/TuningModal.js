@@ -117,7 +117,7 @@ class TuningModal extends Component {
 
 function mapStateToProps(state) {
   return {
-    tuning: state.tracks[state.currentTrackIndex].tuning
+    tuning: state.present.tracks[state.present.currentTrackIndex].tuning
   };
 }
 
