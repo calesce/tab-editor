@@ -4,17 +4,17 @@ import playingIndex from './playingIndex';
 import cursorReducer from './cursor';
 import { prepareTrack } from '../util';
 import { COPY_NOTE, CUT_NOTE } from '../actions/cutCopyPaste';
-import { INSERT_TRACK, DELETE_TRACK, SELECT_TRACK, CHANGE_LAYOUT, REPLACE_SONG } from '../actions/tracks';
+import { INSERT_TRACK, DELETE_TRACK, SELECT_TRACK, CHANGE_LAYOUT, REPLACE_SONG, RESIZE } from '../actions/tracks';
 import { INSERT_MEASURE, DELETE_MEASURE, CHANGE_BPM, CHANGE_TIME_SIGNATURE } from '../actions/track';
 import { SET_PLAYING_INDEX, TOGGLE_METRONOME } from '../actions/playingIndex';
 import { SET_CURSOR, MOVE_CURSOR_LEFT, MOVE_CURSOR_RIGHT,
     MOVE_CURSOR_UP, MOVE_CURSOR_DOWN, SET_SELECT_RANGE } from '../actions/cursor';
 
-const replaceTrack = (tracks, action, currentTrackIndex, layout = 'page') => {
+const replaceTrack = (tracks, action, currentTrackIndex, layout = 'page', width) => {
   return tracks.map((t, index) => {
     if(index === currentTrackIndex) {
       const newTrack = track(t, action);
-      return prepareTrack(newTrack, layout, { width: window.innerWidth - 10 });
+      return prepareTrack(newTrack, layout, { width });
     }
     return t;
   });
@@ -22,7 +22,7 @@ const replaceTrack = (tracks, action, currentTrackIndex, layout = 'page') => {
 
 const applyActionToEachTrack = (state, action) => {
   const currentTrack = state.tracks[state.currentTrackIndex];
-  const newTracks = state.tracks.map((t) => prepareTrack(track(t, action), state.layout, { width: window.innerWidth - 10 }));
+  const newTracks = state.tracks.map((t) => prepareTrack(track(t, action), state.layout, { width: state.width }));
 
   return {
     ...state,
@@ -60,7 +60,7 @@ export default function tracks(state = {}, action) {
 
       return {
         ...state,
-        tracks: replaceTrack(state.tracks.concat(newTrack), action, state.tracks.length, state.layout),
+        tracks: replaceTrack(state.tracks.concat(newTrack), action, state.tracks.length, state.layout, state.width),
         currentTrackIndex: state.tracks.length,
         cursor: defaultCursor
       };
@@ -70,7 +70,7 @@ export default function tracks(state = {}, action) {
       if(state.tracks.length === 1) {
         return {
           ...state,
-          tracks: replaceTrack([defaultTrack(state)], action, 0, state.layout),
+          tracks: replaceTrack([defaultTrack(state)], action, 0, state.layout, state.width),
           cursor: defaultCursor
         };
       }
@@ -111,7 +111,7 @@ export default function tracks(state = {}, action) {
     }
 
     case REPLACE_SONG: {
-      const tracks = action.tracks.map(track => prepareTrack(track, state.layout, { width: window.innerWidth - 10 }));
+      const tracks = action.tracks.map(track => prepareTrack(track, state.layout, { width: state.width }));
 
       return {
         ...state,
@@ -131,7 +131,7 @@ export default function tracks(state = {}, action) {
       return {
         ...state,
         clipboard: action.selection,
-        tracks: replaceTrack(state.tracks, action, state.currentTrackIndex, state.layout)
+        tracks: replaceTrack(state.tracks, action, state.currentTrackIndex, state.layout, state.width)
       };
     }
 
@@ -139,7 +139,7 @@ export default function tracks(state = {}, action) {
       const newLayout = layout(state.layout, action);
       return {
         ...state,
-        tracks: replaceTrack(state.tracks, action, state.currentTrackIndex, newLayout),
+        tracks: replaceTrack(state.tracks, action, state.currentTrackIndex, newLayout, state.width),
         layout: newLayout
       };
     }
@@ -170,12 +170,20 @@ export default function tracks(state = {}, action) {
       };
     }
 
+    case RESIZE: {
+      return {
+        ...state,
+        width: window.innerWidth - 10,
+        tracks: replaceTrack(state.tracks, action, state.currentTrackIndex, state.layout, window.innerWidth - 10)
+      };
+    }
+
     default: {
       const currentTrack = state.tracks[state.currentTrackIndex];
 
       return {
         ...state,
-        tracks: replaceTrack(state.tracks, action, state.currentTrackIndex, state.layout),
+        tracks: replaceTrack(state.tracks, action, state.currentTrackIndex, state.layout, state.width),
         cursor: cursorReducer(state.cursor, action, currentTrack.measures, currentTrack.tuning)
       };
     }

@@ -7,9 +7,11 @@ import configureStore from './util/configureStore';
 import { prepareRows, replaceBpm } from './util';
 import track from '../data/song';
 
+const SCORE_WIDTH = window.innerWidth - 10;
+
 const trackWithWidths = {
   ...track,
-  measures: prepareRows(replaceBpm(track.measures), 'linear', { width: window.innerWidth - 10 })
+  measures: prepareRows(replaceBpm(track.measures), 'linear', { width: SCORE_WIDTH })
 };
 
 const store = configureStore({
@@ -22,7 +24,8 @@ const store = configureStore({
     noteIndex: 0,
     stringIndex: 0
   },
-  metronome: false
+  metronome: false,
+  width: SCORE_WIDTH
 });
 
 const rootElement = document.getElementById('root');
