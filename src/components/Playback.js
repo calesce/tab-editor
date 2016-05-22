@@ -60,7 +60,7 @@ class Playback extends Component {
         this.updateNote({
           measureIndex: note.originalMeasureIndex,
           noteIndex: note.originalNoteIndex
-        }, audioContext.currentTime - this.noteTime);
+        });
       }
     });
 
@@ -91,8 +91,8 @@ class Playback extends Component {
     });
   }
 
-  updateNote(playingIndex, time) {
-    window.setTimeout(() => this.props.setPlayingIndex(playingIndex), time);
+  updateNote(playingIndex) {
+    this.props.setPlayingIndex(playingIndex);
   }
 
   render() {
