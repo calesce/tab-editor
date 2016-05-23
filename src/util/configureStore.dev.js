@@ -2,11 +2,7 @@ import { createStore, compose } from 'redux';
 import { persistState } from 'redux-devtools';
 import rootReducer from '../reducers';
 import DevTools from '../containers/DevTools';
-import undoable, { excludeAction } from 'redux-undo';
-
-import * as types from '../actions/cursor';
-import { RESIZE } from '../actions/tracks';
-import { SET_PLAYING_INDEX } from '../actions/playingIndex';
+import { getUndoableReducer } from './undoable';
 
 const finalCreateStore = compose(
   DevTools.instrument(),
@@ -17,16 +13,12 @@ const finalCreateStore = compose(
   )
 )(createStore);
 
-const ignoredTypes = [SET_PLAYING_INDEX, types.SET_CURSOR, types.SET_SELECT_RANGE, RESIZE,
- types.MOVE_CURSOR_UP, types.MOVE_CURSOR_DOWN, types.MOVE_CURSOR_LEFT, types.MOVE_CURSOR_RIGHT ];
-const undoableReducer = undoable(rootReducer, { filter: excludeAction(ignoredTypes) });
-
 export default function configureStore(initialState) {
-  const store = finalCreateStore(undoableReducer, initialState);
+  const store = finalCreateStore(getUndoableReducer(rootReducer), initialState);
 
   if(module.hot) {
     module.hot.accept('../reducers', () => {
-      const nextReducer = undoable(require('../reducers').default, { filter: excludeAction(ignoredTypes) });
+      const nextReducer = getUndoableReducer(require('../reducers').default);
       store.replaceReducer(nextReducer);
     });
   }
