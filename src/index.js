@@ -4,15 +4,15 @@ import { AppContainer } from 'react-hot-loader';
 
 import Root from './containers/Root';
 import configureStore from './util/configureStore';
-import { prepareRows, replaceBpm } from './util';
+import { prepareTrack, replaceBpm } from './util';
 import track from '../data/song';
 
 const SCORE_WIDTH = window.innerWidth - 10;
 
-const trackWithWidths = {
+const trackWithWidths = prepareTrack({
   ...track,
-  measures: prepareRows(replaceBpm(track.measures), 'linear', { width: SCORE_WIDTH })
-};
+  measures: replaceBpm(track.measures)
+}, 'linear', { width: 'SCORE_WIDTH'});
 
 const store = configureStore({
   tracks: [trackWithWidths],
