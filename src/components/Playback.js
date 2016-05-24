@@ -3,8 +3,11 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { setPlayingIndex } from '../actions/playingIndex';
+import { setCursor } from '../actions/cursor';
+
 import { playCurrentNoteAtTime} from '../util/audio';
-import { createScheduleForSong, getReplaySpeed, getRealPlayingIndex } from '../util/playbackSchedule';
+import { createScheduleForSong, getReplaySpeed,
+  getRealPlayingIndex, createCountdownSchedule } from '../util/playbackSchedule';
 import { expandedTracksSelector } from '../util/trackSelectors';
 import audioContext from '../util/audioContext';
 
@@ -15,6 +18,7 @@ class Playback extends Component {
     this.schedule = this.schedule.bind(this);
     this.advanceNote = this.advanceNote.bind(this);
     this.startPlayback = this.startPlayback.bind(this);
+    this.startCountdown = this.startCountdown.bind(this);
     this.updateNote = this.updateNote.bind(this);
   }
 
@@ -25,17 +29,28 @@ class Playback extends Component {
   componentWillMount() {
     this.startTime = audioContext.currentTime + .005;
     this.noteTime = 0.0;
-    this.startPlayback();
+    if(this.props.countdown) {
+      this.startCountdown();
+    } else {
+      this.startPlayback();
+    }
   }
 
   componentWillUnmount() {
+    if(this.playingIndexCopy) {
+      this.props.setCursor({ ...this.playingIndexCopy, stringIndex: 0 });
+    }
     cancelAnimationFrame(this.requestId);
   }
 
-  schedule(measures, playingIndex, visibleTrackIndex) {
+  schedule(measures, playingIndex, visibleTrackIndex, countdown) {
     while(this.noteTime < audioContext.currentTime - this.startTime + 0.200) {
       if(playingIndex === false) {
-        return this.props.setPlayingIndex(null);
+        if(countdown) {
+          return this.startPlayback();
+        } else {
+          return this.props.setPlayingIndex(null);
+        }
       }
       const contextPlayTime = this.noteTime + this.startTime;
 
@@ -44,10 +59,10 @@ class Playback extends Component {
       measures[measureIndex][noteIndex].forEach(note => {
         playCurrentNoteAtTime(note, contextPlayTime, this.props.buffers[note.instrument]);
       });
-      playingIndex = this.advanceNote(playingIndex, measures, visibleTrackIndex, this);
+      playingIndex = this.advanceNote(playingIndex, measures, visibleTrackIndex);
     }
     this.requestId = requestAnimationFrame(() => {
-      this.schedule(measures, playingIndex, visibleTrackIndex);
+      this.schedule(measures, playingIndex, visibleTrackIndex, countdown);
     });
   }
 
@@ -82,12 +97,25 @@ class Playback extends Component {
   }
 
   startPlayback() {
-    const { currentTrackIndex, playingIndex, expandedTracks, metronome } = this.props;
-    const scheduledSong = createScheduleForSong(expandedTracks, metronome);
-    const realPlayingIndex = getRealPlayingIndex(playingIndex, scheduledSong, currentTrackIndex);
+    const { currentTrackIndex, playingIndex, expandedTracks, metronome, countdown } = this.props;
+    const scheduledSong = createScheduleForSong(expandedTracks, metronome, countdown);
+    const realPlayingIndex = getRealPlayingIndex(this.playingIndexCopy || playingIndex, scheduledSong, currentTrackIndex);
+    this.playingIndexCopy = null;
 
     this.requestId = requestAnimationFrame(() => {
       this.schedule(scheduledSong, realPlayingIndex, currentTrackIndex);
+    });
+  }
+
+  startCountdown() {
+    const { playingIndex, expandedTracks } = this.props;
+    this.playingIndexCopy = { measureIndex: playingIndex.measureIndex, noteIndex: playingIndex.noteIndex };
+    this.updateNote({ measureIndex: playingIndex.measureIndex, noteIndex: -1 });
+
+    const countdownTrack = createCountdownSchedule(expandedTracks, playingIndex.measureIndex);
+
+    this.requestId = requestAnimationFrame(() => {
+      this.schedule(countdownTrack, { noteIndex: 0, measureIndex: 0 }, -1, true);
     });
   }
 
@@ -102,7 +130,8 @@ class Playback extends Component {
 
 function mapDispatchToProps(dispatch) {
   return {
-    setPlayingIndex: bindActionCreators(setPlayingIndex, dispatch)
+    setPlayingIndex: bindActionCreators(setPlayingIndex, dispatch),
+    setCursor: bindActionCreators(setCursor, dispatch)
   };
 }
 

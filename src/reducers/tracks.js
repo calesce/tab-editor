@@ -6,7 +6,7 @@ import { prepareTrack } from '../util';
 import { COPY_NOTE, CUT_NOTE } from '../actions/cutCopyPaste';
 import { INSERT_TRACK, DELETE_TRACK, SELECT_TRACK, CHANGE_LAYOUT, REPLACE_SONG, RESIZE } from '../actions/tracks';
 import { INSERT_MEASURE, DELETE_MEASURE, CHANGE_BPM, CHANGE_TIME_SIGNATURE } from '../actions/track';
-import { SET_PLAYING_INDEX, TOGGLE_METRONOME } from '../actions/playingIndex';
+import { SET_PLAYING_INDEX, TOGGLE_METRONOME, TOGGLE_COUNTDOWN } from '../actions/playingIndex';
 import { SET_CURSOR, MOVE_CURSOR_LEFT, MOVE_CURSOR_RIGHT,
     MOVE_CURSOR_UP, MOVE_CURSOR_DOWN, SET_SELECT_RANGE } from '../actions/cursor';
 
@@ -92,6 +92,12 @@ export default function tracks(state = {}, action) {
       return {
         ...state,
         metronome: !state.metronome
+      };
+
+    case TOGGLE_COUNTDOWN:
+      return {
+        ...state,
+        countdown: !state.countdown
       };
 
     case INSERT_MEASURE: {

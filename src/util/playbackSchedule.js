@@ -131,6 +131,10 @@ const metronomeTrackForMeasure = (tracks, measureIndex) => {
   }, { totalDuration: 0 });
 };
 
+export const createCountdownSchedule = (tracks, measureIndex) => {
+  return [scheduledMeasureArray(trackWithTimeslots([metronomeTrackForMeasure(tracks, measureIndex)]))];
+};
+
 export const createScheduleForMeasure = (tracks, measureIndex, metronome) => {
   const annotatedMeasures = measureWithTimeslots(tracks, measureIndex);
   const scheduledMeasure = metronome ?

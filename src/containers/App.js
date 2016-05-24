@@ -92,7 +92,7 @@ class App extends Component {
 
   handlePlay() {
     if(!this.props.playingIndex && this.state.buffers) {
-      if(!this.props.metronome || this.state.buffers.woodblock) {
+      if(!(this.props.metronome || this.props.countdown) || this.state.buffers.woodblock) {
         this.props.actions.setPlayingIndex(this.props.cursor);
       }
     }
@@ -234,12 +234,14 @@ class App extends Component {
   }
 
   render() {
+    const { playingIndex, metronome, countdown } = this.props;
     const { openModal, buffers } = this.state;
 
     return (
       <div style={style}>
-        { this.props.playingIndex ? <Playback buffers={buffers} metronome={this.props.metronome} /> : null}
-        <EditorArea canPlay={buffers && (!this.props.metronome || this.state.buffers.woodblock)} handlePlay={this.handlePlay} openModal={this.openModal} />
+        { playingIndex ? <Playback buffers={buffers} metronome={metronome} countdown={countdown} /> : null}
+        <EditorArea canPlay={buffers && (!(metronome || countdown) || buffers.woodblock)}
+          handlePlay={this.handlePlay} openModal={this.openModal} />
         <Score />
         <TimeSignatureModal isOpen={openModal === 'timeSig'} closeModal={this.closeModal} />
         <TuningModal isOpen={openModal === 'tuning'} closeModal={this.closeModal} />

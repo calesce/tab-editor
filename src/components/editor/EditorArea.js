@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import { changeLayout, insertTrack, deleteTrack, replaceSong } from '../../actions/tracks';
-import { setPlayingIndex, toggleMetronome } from '../../actions/playingIndex';
+import { setPlayingIndex, toggleMetronome, toggleCountdown } from '../../actions/playingIndex';
 import { setCursor } from '../../actions/cursor';
 import { addRepeatEnd } from '../../actions/measure';
 import { timeSignatureSelector } from '../../util/selectors';
@@ -127,6 +127,7 @@ class EditorArea extends Component {
         <TrackSelect />
         <button onClick={this.addRepeatEnd}>repeat</button>
         <button onClick={this.props.toggleMetronome}>{ this.props.metronome ? 'metronome on' : 'metronome off'}</button>
+        <button onClick={this.props.toggleCountdown}>{ this.props.countdown ? 'countdown on' : 'countdown off'}</button>
         <button><a download='song' href={url}>export</a></button>
         <input ref={this.inputRef} type='file' style={hiddenStyle} onChange={this.onImport} />
         <button onClick={this.importClicked}>import MusicXML</button>
@@ -142,7 +143,8 @@ function mapStateToProps(state) {
     playingIndex: state.present.playingIndex,
     cursor: state.present.cursor,
     timeSignature: timeSignatureSelector(state),
-    metronome: state.present.metronome
+    metronome: state.present.metronome,
+    countdown: state.present.countdown
   };
 }
 
@@ -155,6 +157,7 @@ function mapDispatchToProps(dispatch) {
     setCursor: bindActionCreators(setCursor, dispatch),
     addRepeatEnd: bindActionCreators(addRepeatEnd, dispatch),
     toggleMetronome: bindActionCreators(toggleMetronome, dispatch),
+    toggleCountdown: bindActionCreators(toggleCountdown, dispatch),
     replaceSong: bindActionCreators(replaceSong, dispatch)
   };
 }

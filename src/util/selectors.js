@@ -114,6 +114,7 @@ export const makeAppSelector = () => {
       tuning: state.present.tracks[state.present.currentTrackIndex].tuning,
       currentTrackIndex: state.present.currentTrackIndex,
       metronome: state.present.metronome,
+      countdown: state.present.countdown,
       future: state.future,
       past: state.past
     }),
