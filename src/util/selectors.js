@@ -12,7 +12,7 @@ export function timeSignatureSelector(state) {
 
 const currentMeasureSelector = state => state.present.tracks[state.present.currentTrackIndex].measures;
 const measureIndexSelector = (_, props) => props.measureIndex;
-const currentWidthSelector = state => state.present.width;
+const scoreBoxSelector = state => state.present.scoreBox;
 
 const measureSelector = createSelector(
   currentMeasureSelector, measureIndexSelector,
@@ -87,13 +87,14 @@ const calcWidth = (measures) => {
 
 export const scoreSelector = createSelector(
   measuresTuningLayoutSelector,
-  currentWidthSelector,
-  ({ measures, tuning, layout }, width) => {
+  scoreBoxSelector,
+  ({ measures, tuning, layout }, { x, y, width }) => {
     return {
       measures,
       rowHeight: 20 * tuning.length + 210,
       height: layout === 'linear' ? '99%' : calcHeight(measures, tuning),
-      width: layout === 'linear' ? calcWidth(measures) : width
+      width: layout === 'linear' ? calcWidth(measures) : width,
+      x, y
     };
   }
 );

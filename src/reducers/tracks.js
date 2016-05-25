@@ -10,11 +10,11 @@ import { SET_PLAYING_INDEX, TOGGLE_METRONOME, TOGGLE_COUNTDOWN } from '../action
 import { SET_CURSOR, MOVE_CURSOR_LEFT, MOVE_CURSOR_RIGHT,
     MOVE_CURSOR_UP, MOVE_CURSOR_DOWN, SET_SELECT_RANGE } from '../actions/cursor';
 
-const replaceTrack = (tracks, action, currentTrackIndex, layout = 'page', width) => {
+const replaceTrack = (tracks, action, currentTrackIndex, layout = 'page', scoreBox) => {
   return tracks.map((t, index) => {
     if(index === currentTrackIndex) {
       const newTrack = track(t, action);
-      return prepareTrack(newTrack, layout, { width });
+      return prepareTrack(newTrack, layout, scoreBox);
     }
     return t;
   });
@@ -22,7 +22,7 @@ const replaceTrack = (tracks, action, currentTrackIndex, layout = 'page', width)
 
 const applyActionToEachTrack = (state, action) => {
   const currentTrack = state.tracks[state.currentTrackIndex];
-  const newTracks = state.tracks.map((t) => prepareTrack(track(t, action), state.layout, { width: state.width }));
+  const newTracks = state.tracks.map((t) => prepareTrack(track(t, action), state.layout, state.scoreBox));
 
   return {
     ...state,
@@ -60,7 +60,7 @@ export default function tracks(state = {}, action) {
 
       return {
         ...state,
-        tracks: replaceTrack(state.tracks.concat(newTrack), action, state.tracks.length, state.layout, state.width),
+        tracks: replaceTrack(state.tracks.concat(newTrack), action, state.tracks.length, state.layout, state.scoreBox),
         currentTrackIndex: state.tracks.length,
         cursor: defaultCursor
       };
@@ -70,7 +70,7 @@ export default function tracks(state = {}, action) {
       if(state.tracks.length === 1) {
         return {
           ...state,
-          tracks: replaceTrack([defaultTrack(state)], action, 0, state.layout, state.width),
+          tracks: replaceTrack([defaultTrack(state)], action, 0, state.layout, state.scoreBox),
           cursor: defaultCursor
         };
       }
@@ -117,7 +117,7 @@ export default function tracks(state = {}, action) {
     }
 
     case REPLACE_SONG: {
-      const tracks = action.tracks.map(track => prepareTrack(track, state.layout, { width: state.width }));
+      const tracks = action.tracks.map(track => prepareTrack(track, state.layout, state.scoreBox));
 
       return {
         ...state,
@@ -137,7 +137,7 @@ export default function tracks(state = {}, action) {
       return {
         ...state,
         clipboard: action.selection,
-        tracks: replaceTrack(state.tracks, action, state.currentTrackIndex, state.layout, state.width)
+        tracks: replaceTrack(state.tracks, action, state.currentTrackIndex, state.layout, state.scoreBox)
       };
     }
 
@@ -145,7 +145,7 @@ export default function tracks(state = {}, action) {
       const newLayout = layout(state.layout, action);
       return {
         ...state,
-        tracks: replaceTrack(state.tracks, action, state.currentTrackIndex, newLayout, state.width),
+        tracks: replaceTrack(state.tracks, action, state.currentTrackIndex, newLayout, state.scoreBox),
         layout: newLayout
       };
     }
@@ -177,10 +177,15 @@ export default function tracks(state = {}, action) {
     }
 
     case RESIZE: {
+      const scoreBox = {
+        ...state.scoreBox,
+        width: window.innerWidth - 10
+      };
+
       return {
         ...state,
-        width: window.innerWidth - 10,
-        tracks: replaceTrack(state.tracks, action, state.currentTrackIndex, state.layout, window.innerWidth - 10)
+        scoreBox,
+        tracks: replaceTrack(state.tracks, action, state.currentTrackIndex, state.layout, scoreBox)
       };
     }
 
@@ -189,7 +194,7 @@ export default function tracks(state = {}, action) {
 
       return {
         ...state,
-        tracks: replaceTrack(state.tracks, action, state.currentTrackIndex, state.layout, state.width),
+        tracks: replaceTrack(state.tracks, action, state.currentTrackIndex, state.layout, state.scoreBox),
         cursor: cursorReducer(state.cursor, action, currentTrack.measures, currentTrack.tuning)
       };
     }

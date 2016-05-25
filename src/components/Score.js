@@ -10,12 +10,12 @@ import Measure from './measure/Measure';
 import SelectBox from './SelectBox';
 
 const SVG_TOP = 50;
-// Give some room for user error when selecting a range of notes
-const SELECT_ERROR = 6;
+const SELECT_ERROR = 6; // Give some room for user error when selecting a range of notes
 
 const style = {
+  position: 'absolute',
   top: 0,
-  marginLeft: 5,
+  left: 5,
   display: 'flex',
   flexWrap: 'wrap',
   flex: 1
@@ -102,29 +102,29 @@ class Score extends Component {
   onMouseDown(e) {
     e.preventDefault();
 
-    const x = e.pageX;
-    const y = e.pageY - SVG_TOP;
+    const dragX = e.pageX;
+    const dragY = e.pageY - SVG_TOP;
 
     this.setState({
-      dragStart: { x, y },
-      x,
-      y,
+      dragStart: { dragX, dragY },
+      dragX,
+      dragY,
       selectedRanges: undefined
     });
   }
 
   onMouseUp() {
-    const { x, y, dragHeight, dragWidth } = this.state;
+    const { dragX, dragY, dragHeight, dragWidth } = this.state;
 
     let selectedRows;
     if(dragWidth > 5 && dragHeight > 5) {
-      const startRow = Math.floor(y / this.props.rowHeight);
-      const endRow = Math.floor((y + dragHeight) / this.props.rowHeight);
+      const startRow = Math.floor(dragY / this.props.rowHeight);
+      const endRow = Math.floor((dragY + dragHeight) / this.props.rowHeight);
       selectedRows = Array.from({ length: endRow - startRow + 1 }, (_, k) => k + startRow);
     }
 
     const selectRange = this.props.measures.reduce((accum, measure, i) => {
-      const measureRange = this.getSelectedRange(measure, x, x + dragWidth, selectedRows);
+      const measureRange = this.getSelectedRange(measure, dragX, dragX + dragWidth, selectedRows);
       if(Array.isArray(measureRange)) {
         if(measureRange.length === 0) {
           return accum;
@@ -144,8 +144,8 @@ class Score extends Component {
 
     this.setState({
       dragStart: undefined,
-      x: undefined,
-      y: undefined,
+      dragX: undefined,
+      dragY: undefined,
       dragWidth: undefined,
       dragHeight: undefined
     });
@@ -159,23 +159,23 @@ class Score extends Component {
       const y = e.pageY - SVG_TOP;
 
       this.setState({
-        x: Math.min(this.state.dragStart.x, x),
-        y: Math.min(this.state.dragStart.y, y),
-        dragWidth: Math.abs(this.state.dragStart.x - x),
-        dragHeight: Math.abs(this.state.dragStart.y - y)
+        dragX: Math.min(this.state.dragStart.dragX, x),
+        dragY: Math.min(this.state.dragStart.dragY, y),
+        dragWidth: Math.abs(this.state.dragStart.dragX - x),
+        dragHeight: Math.abs(this.state.dragStart.dragY - y)
       });
     }
   }
 
   render() {
-    const { height, width, measures } = this.props;
-    const { x, y, dragWidth, dragHeight, selectRanges } = this.state;
+    const { height, width, measures, x, y } = this.props;
+    const { dragX, dragY, dragWidth, dragHeight, selectRanges } = this.state;
 
     return (
-      <div style={{ ...style, height, width }}
+      <div style={{ ...style, height, width, left: x, top: y }}
         onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp} onMouseMove={this.onMouseMove}>
         { measures.map((_, i) => <Measure key={i} measureIndex={i} selected={selectRanges ? selectRanges[i] : undefined} />) }
-        <SelectBox height={height} width={width} x={x} y={y} dragWidth={dragWidth} dragHeight={dragHeight} />
+        <SelectBox height={height} width={width} x={dragX} y={dragY} dragWidth={dragWidth} dragHeight={dragHeight} />
       </div>
     );
   }
@@ -191,6 +191,7 @@ const makeScoreSelector = () => {
   return scoreSelector;
 };
 
+// TODO this can be a reusable utility
 const makeMapStateToProps = () => {
   const newScoreSelector = makeScoreSelector();
   const mapStateToProps = (state, props) => {

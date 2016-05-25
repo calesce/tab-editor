@@ -3,11 +3,11 @@ import { trackWithRows, linearTrack, computeTrackLayout } from './scoreLayout';
 export const prepareTrack = (track, layout, scoreBox) => {
   return {
     ...track,
-    measures: prepareRows(track.measures, layout, scoreBox)
+    measures: prepareRowLayout(track.measures, layout, scoreBox)
   };
 };
 
-const prepareRows = (measures, layout, scoreBox) => {
+const prepareRowLayout = (measures, layout, scoreBox) => {
   return layout === 'page' ?
     trackWithRows(computeTrackLayout(measures), scoreBox) :
     linearTrack(computeTrackLayout(measures));
