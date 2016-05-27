@@ -9,7 +9,8 @@ import { scoreSelector } from '../util/selectors';
 import Measure from './measure/Measure';
 import SelectBox from './SelectBox';
 
-const SVG_TOP = 50;
+const SVG_LEFT = 265;
+const SVG_TOP = 5;
 const SELECT_ERROR = 6; // Give some room for user error when selecting a range of notes
 
 const style = {
@@ -102,7 +103,7 @@ class Score extends Component {
   onMouseDown(e) {
     e.preventDefault();
 
-    const dragX = e.pageX;
+    const dragX = e.pageX - SVG_LEFT;
     const dragY = e.pageY - SVG_TOP;
 
     this.setState({
@@ -155,7 +156,7 @@ class Score extends Component {
     if(this.state.dragStart) {
       e.preventDefault();
 
-      const x = e.pageX;
+      const x = e.pageX - SVG_LEFT;
       const y = e.pageY - SVG_TOP;
 
       this.setState({

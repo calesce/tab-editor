@@ -179,7 +179,7 @@ export default function tracks(state = {}, action) {
     case RESIZE: {
       const scoreBox = {
         ...state.scoreBox,
-        width: window.innerWidth - 10
+        width: window.innerWidth - 270
       };
 
       return {

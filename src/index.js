@@ -8,9 +8,9 @@ import { prepareTrack, replaceBpm } from './util';
 import track from '../data/song';
 
 const scoreBox = {
-  x: 10,
-  y: 50,
-  width: window.innerWidth - 10
+  x: 270,
+  y: 5,
+  width: window.innerWidth - 270
 };
 
 const trackWithWidths = prepareTrack({

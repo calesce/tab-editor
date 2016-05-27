@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import shouldPureComponentUpdate from 'react-pure-render/function';
 
-const SVG_TOP = 50;
+const SVG_TOP = 5;
 
 const svgStyle = {
   position: 'absolute',

@@ -14,15 +14,20 @@ import InstrumentSelect from './InstrumentSelect';
 import TrackSelect from './TrackSelect';
 
 const style = {
+  position: 'fixed',
   display: 'flex',
+  flexDirection: 'row',
+  flexWrap: 'wrap',
   justifyContent: 'space-around',
-  alignItems: 'center',
+  alignItems: 'flex-start',
   top: 0,
   left: 0,
-  height: 50,
+  height: '100%',
   zIndex: 99,
-  width: '100%',
-  background: 'tomato'
+  width: 255,
+  overflow: 'hidden',
+  background: 'tomato',
+  boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.1)'
 };
 
 const hiddenStyle = { display: 'none' };
