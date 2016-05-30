@@ -16,7 +16,7 @@ const SELECT_ERROR = 6; // Give some room for user error when selecting a range 
 const style = {
   position: 'absolute',
   top: 0,
-  left: 5,
+  left: 0,
   display: 'flex',
   flexWrap: 'wrap',
   flex: 1

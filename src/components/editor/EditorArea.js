@@ -12,21 +12,20 @@ import { importMusicXml } from '../../util/musicXml';
 
 import InstrumentSelect from './InstrumentSelect';
 import TrackSelect from './TrackSelect';
+import SidebarGroup from './SidebarGroup';
 
 const style = {
   position: 'fixed',
   display: 'flex',
-  flexDirection: 'row',
-  flexWrap: 'wrap',
-  justifyContent: 'space-around',
-  alignItems: 'flex-start',
+  flexDirection: 'column',
+  justifyContent: 'flex-start',
   top: 0,
   left: 0,
   height: '100%',
   zIndex: 99,
   width: 255,
   overflow: 'hidden',
-  background: 'tomato',
+  background: 'wheat', // try sandybrown, peachpuff, moccasin, navajowhite, linen, cornsilk, wheat
   boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.1)'
 };
 
@@ -121,21 +120,30 @@ class EditorArea extends Component {
 
     return (
       <div style={style}>
-        { this.renderPlayStop(canPlay) }
-        <EditorButton onClick={openModal} type='timeSig' label={timeSignatureLabel} />
-        <button onClick={this.toggleLayout}>{layout}</button>
-        <EditorButton onClick={openModal} type='tuning' label='tuning' />
-        <EditorButton onClick={openModal} type='bpm' label='bpm' />
-        <InstrumentSelect />
-        <button onClick={this.props.insertTrack}>add track</button>
-        <button onClick={this.props.deleteTrack}>remove track</button>
-        <TrackSelect />
-        <button onClick={this.addRepeatEnd}>repeat</button>
-        <button onClick={this.props.toggleMetronome}>{ this.props.metronome ? 'metronome on' : 'metronome off'}</button>
-        <button onClick={this.props.toggleCountdown}>{ this.props.countdown ? 'countdown on' : 'countdown off'}</button>
-        <button><a download='song' href={url}>export</a></button>
-        <input ref={this.inputRef} type='file' style={hiddenStyle} onChange={this.onImport} />
-        <button onClick={this.importClicked}>import MusicXML</button>
+        <SidebarGroup title='Notes'>
+          <div>todo</div>
+        </SidebarGroup>
+        <SidebarGroup title='Measure'>
+          <EditorButton onClick={openModal} type='timeSig' label={timeSignatureLabel} />
+          <EditorButton onClick={openModal} type='bpm' label='bpm' />
+          <button onClick={this.addRepeatEnd}>repeat</button>
+        </SidebarGroup>
+        <SidebarGroup title='Track'>
+          <EditorButton onClick={openModal} type='tuning' label='tuning' />
+          <InstrumentSelect />
+          <button onClick={this.props.insertTrack}>add track</button>
+          <button onClick={this.props.deleteTrack}>remove track</button>
+          <TrackSelect />
+        </SidebarGroup>
+        <SidebarGroup title='Song'>
+          { this.renderPlayStop(canPlay) }
+          <button onClick={this.toggleLayout}>{layout}</button>
+          <button onClick={this.props.toggleMetronome}>{ this.props.metronome ? 'metronome on' : 'metronome off'}</button>
+          <button onClick={this.props.toggleCountdown}>{ this.props.countdown ? 'countdown on' : 'countdown off'}</button>
+          <button><a download='song' href={url}>export</a></button>
+          <input ref={this.inputRef} type='file' style={hiddenStyle} onChange={this.onImport} />
+          <button onClick={this.importClicked}>import MusicXML</button>
+        </SidebarGroup>
       </div>
     );
   }
