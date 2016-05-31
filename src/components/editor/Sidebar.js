@@ -48,7 +48,7 @@ class EditorButton extends Component {
   }
 }
 
-class EditorArea extends Component {
+class Sidebar extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
 
   constructor() {
@@ -181,4 +181,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditorArea);
+export default connect(mapStateToProps, mapDispatchToProps)(Sidebar);

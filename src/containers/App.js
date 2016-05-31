@@ -18,7 +18,7 @@ import { loadSoundfonts } from '../util/soundfonts';
 import { makeAppSelector } from '../util/selectors';
 
 import Score from '../components/Score';
-import EditorArea from '../components/editor/EditorArea';
+import Sidebar from '../components/editor/Sidebar';
 import TimeSignatureModal from '../components/editor/TimeSignatureModal';
 import TuningModal from '../components/editor/TuningModal';
 import BpmModal from '../components/editor/BpmModal';
@@ -240,7 +240,7 @@ class App extends Component {
     return (
       <div style={style}>
         { playingIndex ? <Playback buffers={buffers} metronome={metronome} countdown={countdown} /> : null}
-        <EditorArea canPlay={buffers && (!(metronome || countdown) || buffers.woodblock)}
+        <Sidebar canPlay={buffers && (!(metronome || countdown) || buffers.woodblock)}
           handlePlay={this.handlePlay} openModal={this.openModal} />
         <Score />
         <TimeSignatureModal isOpen={openModal === 'timeSig'} closeModal={this.closeModal} />
