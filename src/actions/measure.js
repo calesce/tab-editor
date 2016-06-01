@@ -1,6 +1,7 @@
 export const CHANGE_NOTE = 'CHANGE_NOTE';
 export const DELETE_NOTE = 'DELETE_NOTE';
 export const INSERT_NOTE = 'INSERT_NOTE';
+export const MAKE_NOTE_REST = 'MAKE_NOTE_REST';
 export const TOGGLE_NOTE_DOTTED = 'TOGGLE_NOTE_DOTTED';
 export const SET_NOTE_TUPLET = 'SET_NOTE_TUPLET';
 export const TOGGLE_NOTE_TREMOLO = 'TOGGLE_NOTE_TREMOLO';
@@ -37,6 +38,13 @@ export function changeNoteLength(index, duration) {
 export function insertNote(index) {
   return {
     type: INSERT_NOTE,
+    index
+  };
+}
+
+export function makeNoteRest(index) {
+  return {
+    type: MAKE_NOTE_REST,
     index
   };
 }

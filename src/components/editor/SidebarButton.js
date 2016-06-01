@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { changeNoteLength } from '../../actions/measure';
+import { changeNoteLength, makeNoteRest, toggleNoteDotted } from '../../actions/measure';
 
 const selectedColor = '#b3caf5';
 
@@ -60,7 +60,19 @@ const SixteenthNote = ({ color }) => {
   );
 };
 
-class NoteIcon extends Component {
+const RestButton = ({ color }) => (
+  <g transform='scale(1.2), translate(11, 6)'>
+    <path fill={color}
+      d='M3.576.56c-.247.105-.394.465-.28.717.033.036.39.464.75.936.824.927.964 1.147 1.146 1.575.718 1.47.324 3.34-.934 4.522-.106.14-.57.532-1.006.856-1.25 1.077-1.827 1.69-2.04 2.23-.077.14-.077.28-.077.5-.034.498 0 .54 1.478 2.256 2.003 2.405 3.438 4.092 3.55 4.198l.106.104-.144-.07c-1.976-.822-4.197-1.217-4.95-.857a.854.854 0 0 0-.506.5c-.29.61-.21 1.51.22 2.832.392 1.185 1.18 2.76 1.967 3.943.324.506.936 1.292 1.006 1.328.106.107.254.07.358 0 .108-.14.108-.253-.102-.497-.753-1.077-1.11-3.305-.683-4.488.175-.533.395-.822.787-1.004 1.04-.464 3.34.11 4.305 1.075.07.072.218.22.288.254.254.106.612-.034.718-.288.15-.254.07-.428-.253-.822-.605-.717-2.433-2.87-2.685-3.192-.648-.752-.936-1.468-1.007-2.368-.034-1.148.43-2.363 1.295-3.16.105-.14.57-.533 1-.855 1.328-1.113 1.87-1.723 2.08-2.3.148-.465.078-.894-.246-1.288-.112-.104-1.365-1.652-2.833-3.41C4.87 1.427 4.154.562 4.05.527a.736.736 0 0 0-.47.035z'
+    />
+  </g>
+);
+
+const DottedButton = ({ color }) => (
+  <circle cx={17} cy={30} r={3} fill={color} stroke={color} />
+);
+
+class SidebarButton extends Component {
   constructor(props) {
     super(props);
 
@@ -69,6 +81,7 @@ class NoteIcon extends Component {
     this.onMouseEnter = this.onMouseEnter.bind(this);
     this.onMouseLeave = this.onMouseLeave.bind(this);
     this.onClick = this.onClick.bind(this);
+    this.getSvgForType = this.getSvgForType.bind(this);
   }
 
   onMouseEnter() {
@@ -80,53 +93,80 @@ class NoteIcon extends Component {
   }
 
   onClick() {
-    this.props.changeNoteLength(this.props.cursor, this.props.duration);
+    if(this.props.duration) {
+      this.props.changeNoteLength(this.props.cursor, this.props.duration);
+    } else if(this.props.rest) {
+      this.props.makeNoteRest(this.props.cursor);
+    } else if(this.props.dot) {
+      this.props.toggleNoteDotted(this.props.cursor);
+    }
   }
 
-  getNoteSvgForType(type, color) {
-    switch(type) {
-      case 'w':
-        return <WholeNote color={color}/>;
-      case 'h':
-        return <HalfNote color={color}/>;
-      case 'q':
-        return <QuarterNote color={color}/>;
-      case 'e':
-        return <EighthNote color={color}/>;
-      case 's':
-        return <SixteenthNote color={color}/>;
-      default:
-        return <SixteenthNote color={color}/>;
+  getSvgForType(color) {
+    if(this.props.duration) {
+      switch(this.props.duration) {
+        case 'w':
+          return <WholeNote color={color}/>;
+        case 'h':
+          return <HalfNote color={color}/>;
+        case 'q':
+          return <QuarterNote color={color}/>;
+        case 'e':
+          return <EighthNote color={color}/>;
+        case 's':
+          return <SixteenthNote color={color}/>;
+        default:
+          return <SixteenthNote color={color}/>;
+      }
+    } else if(this.props.rest) {
+      return <RestButton color={color}/>;
+    } else if(this.props.dot) {
+      return <DottedButton color={color}/>;
     }
   }
 
   render() {
     const style = this.state.hover ? hoverStyle : {};
     const color = (this.props.selected || this.state.hover) ? selectedColor : 'black';
-    const note = this.getNoteSvgForType(this.props.duration, color);
+    const icon = this.getSvgForType(color);
 
     return (
       <svg onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave} onClick={this.onClick}
-        width='40' height='40' style={style}>
-        {note}
+        width='40' height='50' style={style}>
+        {icon}
       </svg>
     );
   }
 }
 
+const isButtonSelected = (state, props, currentNote) => {
+  if(state.selectRange) {
+    return false;
+  }
+  if(props.duration) {
+    return props.duration === currentNote.duration;
+  } else if(props.rest) {
+    return currentNote.fret[0] === 'rest';
+  } else if(props.dot) {
+    return currentNote.dotted;
+  }
+};
+
 const currentNoteSelector = (state, ownProps) => {
-  const { selectRange, cursor, currentTrackIndex, tracks } = state.present;
+  const { cursor, currentTrackIndex, tracks } = state.present;
   const cursorNote = tracks[currentTrackIndex].measures[cursor.measureIndex].notes[cursor.noteIndex];
   return {
     cursor,
-    selected : selectRange ? false : ownProps.duration === cursorNote.duration
+    selected : isButtonSelected(state, ownProps, cursorNote)
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    changeNoteLength: bindActionCreators(changeNoteLength, dispatch)
+    changeNoteLength: bindActionCreators(changeNoteLength, dispatch),
+    makeNoteRest: bindActionCreators(makeNoteRest, dispatch),
+    toggleNoteDotted: bindActionCreators(toggleNoteDotted, dispatch)
   };
 };
 
-export default connect(currentNoteSelector, mapDispatchToProps)(NoteIcon);
+export default connect(currentNoteSelector, mapDispatchToProps)(SidebarButton);

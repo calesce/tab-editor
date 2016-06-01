@@ -1,6 +1,6 @@
 import { flatten, findIndex, cloneDeep } from 'lodash';
 import { PASTE_NOTE, CUT_NOTE } from '../actions/cutCopyPaste';
-import { CHANGE_NOTE, DELETE_NOTE, CHANGE_NOTE_LENGTH, INSERT_NOTE, TOGGLE_NOTE_DOTTED,
+import { CHANGE_NOTE, DELETE_NOTE, CHANGE_NOTE_LENGTH, INSERT_NOTE, MAKE_NOTE_REST, TOGGLE_NOTE_DOTTED,
   TOGGLE_NOTE_TREMOLO, INCREASE_NOTE_LENGTH, DECREASE_NOTE_LENGTH,
   TOGGLE_NOTE_VIBRATO, ADD_REPEAT_END, TOGGLE_NOTE_TRILL, SET_NOTE_TUPLET
 } from '../actions/measure';
@@ -217,6 +217,16 @@ export default function measure(state, action) {
         }
       }
 
+      return replaceNote(state, note, noteIndex);
+    }
+
+    case MAKE_NOTE_REST: {
+      const { noteIndex } = action.index;
+      const note = {
+        ...state.notes[noteIndex],
+        fret: ['rest'],
+        string: ['rest']
+      };
       return replaceNote(state, note, noteIndex);
     }
 

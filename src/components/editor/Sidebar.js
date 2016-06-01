@@ -13,7 +13,7 @@ import { importMusicXml } from '../../util/musicXml';
 import InstrumentSelect from './InstrumentSelect';
 import TrackSelect from './TrackSelect';
 import SidebarGroup from './SidebarGroup';
-import NoteIcon from './NoteIcon';
+import SidebarButton from './SidebarButton';
 
 const style = {
   position: 'fixed',
@@ -122,12 +122,14 @@ class Sidebar extends Component {
     return (
       <div style={style}>
         <SidebarGroup title='Notes'>
-          <NoteIcon duration='w'/>
-          <NoteIcon duration='h'/>
-          <NoteIcon duration='q'/>
-          <NoteIcon duration='e'/>
-          <NoteIcon duration='s'/>
-          <NoteIcon duration='t'/>
+          <SidebarButton duration='w'/>
+          <SidebarButton duration='h'/>
+          <SidebarButton duration='q'/>
+          <SidebarButton duration='e'/>
+          <SidebarButton duration='s'/>
+          <SidebarButton duration='t'/>
+          <SidebarButton rest />
+          <SidebarButton dot />
         </SidebarGroup>
         <SidebarGroup title='Measure'>
           <EditorButton onClick={openModal} type='timeSig' label={timeSignatureLabel} />

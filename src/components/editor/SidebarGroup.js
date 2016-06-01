@@ -14,8 +14,9 @@ const headerStyle = {
 };
 
 const flexStyle = {
+  marginLeft: 10,
   display: 'flex',
-  justifyContent: 'space-around',
+  justifyContent: 'flex-start',
   flexWrap: 'wrap'
 };
 
