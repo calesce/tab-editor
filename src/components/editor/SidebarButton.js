@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { changeNoteLength, makeNoteRest, toggleNoteDotted } from '../../actions/measure';
+import { changeNoteLength, makeNoteRest, toggleNoteDotted, setNoteTuplet,
+  toggleNoteTremolo, toggleNoteTrill, toggleNoteVibrato } from '../../actions/measure';
 
 const selectedColor = '#b3caf5';
 
@@ -69,7 +70,34 @@ const RestButton = ({ color }) => (
 );
 
 const DottedButton = ({ color }) => (
-  <circle cx={17} cy={30} r={3} fill={color} stroke={color} />
+  <circle cx={19} cy={30} r={3} fill={color} stroke={color} />
+);
+
+const tupletStyle = { fontSize: 13, fontWeight: 500, fontStyle: 'italic', ...hoverStyle };
+const TupletButton = ({ color }) => (
+  <g transform='scale(1.2), translate(11, 23)'>
+    <text fill={color} y={0} style={tupletStyle}>3</text>
+  </g>
+);
+
+const TremoloButton = ({ color }) => (
+  <g transform='scale(1.0), translate(8, 13)'>
+    <path fill={color} d='M17.025 0L4.538 6.412V3.375l12.487-6.412m0 8.55L4.538 11.925V8.887l12.487-6.412m0 8.55L4.538 17.437V14.4l12.487-6.413'/>
+  </g>
+);
+
+const TrillButton = ({ color }) => (
+  <g transform='scale(0.9), translate(8, 20)'>
+    <text fill={color} y={7} style={{ fontSize: 12 }}>tr</text>
+    <path fill={color} d='M25.912 1.896c.128-.144.288-.216.512-.216.352 0 .64.216.64.48 0 .096-.032.192-.096.264-.992 1.128-1.984 2.232-2.976 3.36-.128.144-.32.216-.544.216-.192 0-.352-.048-.48-.168l-3.136-2.856-2.496 2.808c-.128.144-.32.216-.544.216-.192 0-.352-.048-.48-.168l-3.168-2.856c-.32.384-.672.744-.992 1.128-.128.144-.288.216-.512.216-.352 0-.64-.216-.64-.48 0-.096.032-.192.096-.264.992-1.128 1.984-2.232 2.976-3.36.128-.144.32-.216.544-.216.192 0 .352.048.48.168l3.136 2.856L20.728.216c.128-.144.32-.216.544-.216.192 0 .352.048.48.168l3.168 2.856c.32-.384.672-.744.992-1.128z'/>
+  </g>
+);
+
+const VibratoButton = ({ color }) => (
+  <g transform='scale(0.9), translate(10, 20)'>
+    <path fill={color} d='M14.912 1.896c.128-.144.288-.216.512-.216.352 0 .64.216.64.48 0 .096-.032.192-.096.264-.992 1.128-1.984 2.232-2.976 3.36-.128.144-.32.216-.544.216-.192 0-.352-.048-.48-.168L8.832 2.976 6.336 5.784c-.128.144-.32.216-.544.216-.192 0-.352-.048-.48-.168L2.144 2.976c-.32.384-.672.744-.992 1.128-.128.144-.288.216-.512.216-.352 0-.64-.216-.64-.48 0-.096.032-.192.096-.264.992-1.128 1.984-2.232 2.976-3.36C3.2.072 3.392 0 3.616 0c.192 0 .352.048.48.168l3.136 2.856L9.728.216c.128-.144.32-.216.544-.216.192 0 .352.048.48.168l3.168 2.856c.32-.384.672-.744.992-1.128z'/>
+    <path fill={color} d='M27.912 1.896c.128-.144.288-.216.512-.216.352 0 .64.216.64.48 0 .096-.032.192-.096.264-.992 1.128-1.984 2.232-2.976 3.36-.128.144-.32.216-.544.216-.192 0-.352-.048-.48-.168l-3.136-2.856-2.496 2.808c-.128.144-.32.216-.544.216-.192 0-.352-.048-.48-.168l-3.168-2.856c-.32.384-.672.744-.992 1.128-.128.144-.288.216-.512.216-.352 0-.64-.216-.64-.48 0-.096.032-.192.096-.264.992-1.128 1.984-2.232 2.976-3.36.128-.144.32-.216.544-.216.192 0 .352.048.48.168l3.136 2.856L22.728.216c.128-.144.32-.216.544-.216.192 0 .352.048.48.168l3.168 2.856c.32-.384.672-.744.992-1.128z'/>
+  </g>
 );
 
 class SidebarButton extends Component {
@@ -99,6 +127,18 @@ class SidebarButton extends Component {
       this.props.makeNoteRest(this.props.cursor);
     } else if(this.props.dot) {
       this.props.toggleNoteDotted(this.props.cursor);
+    } else if(this.props.tuplet) {
+      if(this.props.currentNote.tuplet) {
+        this.props.setNoteTuplet(this.props.cursor, undefined);
+      } else {
+        this.props.setNoteTuplet(this.props.cursor, '2/3');
+      }
+    } else if(this.props.tremolo) {
+      this.props.toggleNoteTremolo(this.props.cursor);
+    } else if(this.props.trill) {
+      this.props.toggleNoteTrill(this.props.cursor);
+    } else if(this.props.vibrato) {
+      this.props.toggleNoteVibrato(this.props.cursor);
     }
   }
 
@@ -122,6 +162,14 @@ class SidebarButton extends Component {
       return <RestButton color={color}/>;
     } else if(this.props.dot) {
       return <DottedButton color={color}/>;
+    } else if(this.props.tuplet) {
+      return <TupletButton color={color}/>;
+    } else if(this.props.tremolo) {
+      return <TremoloButton color={color}/>;
+    } else if(this.props.trill) {
+      return <TrillButton color={color}/>;
+    } else if(this.props.vibrato) {
+      return <VibratoButton color={color}/>;
     }
   }
 
@@ -149,15 +197,24 @@ const isButtonSelected = (state, props, currentNote) => {
     return currentNote.fret[0] === 'rest';
   } else if(props.dot) {
     return currentNote.dotted;
+  } else if(props.tuplet) {
+    return currentNote.tuplet;
+  } else if(props.tremolo) {
+    return currentNote.tremolo;
+  } else if(props.trill) {
+    return currentNote.trill;
+  } else if(props.vibrato) {
+    return currentNote.vibrato;
   }
 };
 
 const currentNoteSelector = (state, ownProps) => {
   const { cursor, currentTrackIndex, tracks } = state.present;
-  const cursorNote = tracks[currentTrackIndex].measures[cursor.measureIndex].notes[cursor.noteIndex];
+  const currentNote = tracks[currentTrackIndex].measures[cursor.measureIndex].notes[cursor.noteIndex];
   return {
     cursor,
-    selected : isButtonSelected(state, ownProps, cursorNote)
+    selected : isButtonSelected(state, ownProps, currentNote),
+    currentNote
   };
 };
 
@@ -165,7 +222,11 @@ const mapDispatchToProps = dispatch => {
   return {
     changeNoteLength: bindActionCreators(changeNoteLength, dispatch),
     makeNoteRest: bindActionCreators(makeNoteRest, dispatch),
-    toggleNoteDotted: bindActionCreators(toggleNoteDotted, dispatch)
+    toggleNoteDotted: bindActionCreators(toggleNoteDotted, dispatch),
+    setNoteTuplet: bindActionCreators(setNoteTuplet, dispatch),
+    toggleNoteTremolo: bindActionCreators(toggleNoteTremolo, dispatch),
+    toggleNoteTrill: bindActionCreators(toggleNoteTrill, dispatch),
+    toggleNoteVibrato: bindActionCreators(toggleNoteVibrato, dispatch)
   };
 };
 

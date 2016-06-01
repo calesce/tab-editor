@@ -130,6 +130,10 @@ class Sidebar extends Component {
           <SidebarButton duration='t'/>
           <SidebarButton rest />
           <SidebarButton dot />
+          <SidebarButton tuplet />
+          <SidebarButton tremolo />
+          <SidebarButton trill />
+          <SidebarButton vibrato />
         </SidebarGroup>
         <SidebarGroup title='Measure'>
           <EditorButton onClick={openModal} type='timeSig' label={timeSignatureLabel} />
