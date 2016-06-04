@@ -56,7 +56,8 @@ class App extends Component {
 
   componentWillMount() {
     loadSoundfonts([...this.props.instruments, 'woodblock'])
-      .then(buffers => this.setState({ buffers }));
+      .then(buffers => this.setState({ buffers }))
+      .catch(err => err);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -72,7 +73,8 @@ class App extends Component {
         buffers: undefined
       }, () => {
         loadSoundfonts(this.props.instruments)
-          .then(buffers => this.setState({ buffers }));
+          .then(buffers => this.setState({ buffers }))
+          .catch(err => err);
       });
     }
   }
