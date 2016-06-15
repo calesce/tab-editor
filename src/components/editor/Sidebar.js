@@ -14,6 +14,7 @@ import InstrumentSelect from './InstrumentSelect';
 import TrackSelect from './TrackSelect';
 import SidebarGroup from './SidebarGroup';
 import SidebarButton from './SidebarButton';
+import TimeSignature from './TimeSignatureButton';
 
 const style = {
   position: 'fixed',
@@ -23,7 +24,7 @@ const style = {
   top: 0,
   left: 0,
   height: '100%',
-  zIndex: 99,
+  zIndex: 3,
   width: 255,
   overflow: 'hidden',
   background: 'wheat', // try sandybrown, peachpuff, moccasin, navajowhite, linen, cornsilk, wheat
@@ -117,8 +118,6 @@ class Sidebar extends Component {
     const blob = new Blob([JSON.stringify(tracks)], { type: 'application/json' });
     const url  = window.URL.createObjectURL(blob);
 
-    const timeSignatureLabel = `${timeSignature.beats}/${timeSignature.beatType}`;
-
     return (
       <div style={style}>
         <SidebarGroup title='Notes'>
@@ -136,7 +135,7 @@ class Sidebar extends Component {
           <SidebarButton vibrato />
         </SidebarGroup>
         <SidebarGroup title='Measure'>
-          <EditorButton onClick={openModal} type='timeSig' label={timeSignatureLabel} />
+          <TimeSignature timeSignature={timeSignature} />
           <EditorButton onClick={openModal} type='bpm' label='bpm' />
           <button onClick={this.addRepeatEnd}>repeat</button>
         </SidebarGroup>

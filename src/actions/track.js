@@ -35,11 +35,12 @@ export function changeBpm(index, bpm, all) {
   };
 }
 
-export function changeTimeSignature(index, timeSignature, all) {
+export function changeTimeSignature(index, timeSignature, toEnd, all) {
   return {
     type: CHANGE_TIME_SIGNATURE,
     index,
     timeSignature,
+    toEnd,
     all
   };
 }

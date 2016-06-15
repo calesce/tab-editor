@@ -19,7 +19,6 @@ import { makeAppSelector } from '../util/selectors';
 
 import Score from '../components/Score';
 import Sidebar from '../components/editor/Sidebar';
-import TimeSignatureModal from '../components/editor/TimeSignatureModal';
 import TuningModal from '../components/editor/TuningModal';
 import BpmModal from '../components/editor/BpmModal';
 import Playback from '../components/Playback';
@@ -245,7 +244,6 @@ class App extends Component {
         <Sidebar canPlay={buffers && (!(metronome || countdown) || buffers.woodblock)}
           handlePlay={this.handlePlay} openModal={this.openModal} />
         <Score />
-        <TimeSignatureModal isOpen={openModal === 'timeSig'} closeModal={this.closeModal} />
         <TuningModal isOpen={openModal === 'tuning'} closeModal={this.closeModal} />
         <BpmModal isOpen={openModal === 'bpm'} closeModal={this.closeModal} />
       </div>

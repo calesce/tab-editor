@@ -55,6 +55,18 @@ const changeTimeSigMeasuresAfterCurrent = (measures, timeSignature, measureIndex
   });
 };
 
+const changeSingleTimeSigMeasure = (measures, timeSignature, measureIndex) => {
+  return measures.map((measure, i) => {
+    if(measureIndex === i) {
+      return {
+        ...measure,
+        timeSignature
+      };
+    }
+    return measure;
+  });
+};
+
 export default function track(state = {}, action) {
   switch(action.type) {
     case DELETE_MEASURE:
@@ -96,8 +108,16 @@ export default function track(state = {}, action) {
 
     case CHANGE_TIME_SIGNATURE: {
       const { timeSignature, index } = action;
-      const newMeasures = action.all ? changeTimeSigAllMeasures(state.measures, timeSignature)
-                                   : changeTimeSigMeasuresAfterCurrent(state.measures, timeSignature, index.measureIndex);
+
+      let newMeasures;
+      if(action.all) {
+        newMeasures = changeTimeSigAllMeasures(state.measures, timeSignature);
+      } else if(action.toEnd) {
+        newMeasures = changeTimeSigMeasuresAfterCurrent(state.measures, timeSignature, index.measureIndex);
+      } else {
+        newMeasures = changeSingleTimeSigMeasure(state.measures, timeSignature, index.measureIndex);
+      }
+
       return {
         ...state,
         measures: newMeasures
