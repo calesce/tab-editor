@@ -60,7 +60,7 @@ class TimeSignature extends Component {
       <div>
         <TimeSignatureButton onClick={this.onClick} timeSignature={timeSignature} style={style} color={color} />
         { this.state.popoverOpen ?
-          <TimeSignaturePopover checked={true} timeSignature={timeSignature} onClose={this.onPopoverClose} />
+          <TimeSignaturePopover timeSignature={timeSignature} onClose={this.onPopoverClose} />
           : null }
       </div>
     );

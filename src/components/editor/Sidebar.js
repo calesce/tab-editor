@@ -15,6 +15,7 @@ import TrackSelect from './TrackSelect';
 import SidebarGroup from './SidebarGroup';
 import SidebarButton from './SidebarButton';
 import TimeSignature from './TimeSignatureButton';
+import BpmButton from './BpmButton';
 
 const style = {
   position: 'fixed',
@@ -56,6 +57,7 @@ class Sidebar extends Component {
     super();
 
     this.toggleLayout = this.toggleLayout.bind(this);
+    this.openBpm = this.openBpm.bind(this);
     this.handleStop = this.handleStop.bind(this);
     this.renderPlayButton = this.renderPlayButton.bind(this);
     this.renderPlayStop = this.renderPlayStop.bind(this);
@@ -89,6 +91,10 @@ class Sidebar extends Component {
       this.renderPlayButton(canPlay);
   }
 
+  openBpm() {
+    this.props.openModal('bpm');
+  }
+
   addRepeatEnd() {
     this.props.addRepeatEnd(this.props.cursor);
   }
@@ -114,7 +120,7 @@ class Sidebar extends Component {
   }
 
   render() {
-    const { openModal, timeSignature, layout, canPlay, tracks } = this.props;
+    const { popoverOpen, openModal, closeModal, timeSignature, layout, canPlay, tracks } = this.props;
     const blob = new Blob([JSON.stringify(tracks)], { type: 'application/json' });
     const url  = window.URL.createObjectURL(blob);
 
@@ -136,7 +142,7 @@ class Sidebar extends Component {
         </SidebarGroup>
         <SidebarGroup title='Measure'>
           <TimeSignature timeSignature={timeSignature} />
-          <EditorButton onClick={openModal} type='bpm' label='bpm' />
+          <BpmButton onClick={this.openBpm} onClose={closeModal} popoverOpen={popoverOpen === 'bpm'} />
           <button onClick={this.addRepeatEnd}>repeat</button>
         </SidebarGroup>
         <SidebarGroup title='Track'>

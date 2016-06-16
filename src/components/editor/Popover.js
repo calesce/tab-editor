@@ -24,7 +24,7 @@ class Popover extends Component {
 
   render() {
     return (
-      <div style={{ ...popoverStyle, width: this.props.width, height: this.props.height }}>
+      <div style={{ ...popoverStyle, width: this.props.width, height: this.props.height, marginTop: this.props.marginTop }}>
         {this.props.children}
       </div>
     );

@@ -26,22 +26,17 @@ export function changeTuning(tuning) {
   };
 }
 
-export function changeBpm(index, bpm, all) {
+export function changeBpm(index, bpm, toEnd, all) {
   return {
     type: CHANGE_BPM,
-    index,
-    bpm,
-    all
+    index, bpm, toEnd, all
   };
 }
 
 export function changeTimeSignature(index, timeSignature, toEnd, all) {
   return {
     type: CHANGE_TIME_SIGNATURE,
-    index,
-    timeSignature,
-    toEnd,
-    all
+    index, timeSignature, toEnd, all
   };
 }
 

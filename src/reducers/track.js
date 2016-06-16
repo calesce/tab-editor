@@ -17,14 +17,14 @@ const replaceMeasure = (state, action) => {
   });
 };
 
-const changeAllMeasures = (measures, bpm) => {
+const changeBpmAllMeasures = (measures, bpm) => {
   return measures.map((measure) => ({
     ...measure,
     bpm
   }));
 };
 
-const changeMeasuresAfterCurrent = (measures, bpm, measureIndex) => {
+const changeBpmMeasuresAfterCurrent = (measures, bpm, measureIndex) => {
   return measures.map((measure, i) => {
     if(measureIndex > i) {
       return measure;
@@ -33,6 +33,18 @@ const changeMeasuresAfterCurrent = (measures, bpm, measureIndex) => {
       ...measure,
       bpm
     };
+  });
+};
+
+const changeSingleBpmMeasure = (measures, bpm, measureIndex) => {
+  return measures.map((measure, i) => {
+    if(measureIndex === i) {
+      return {
+        ...measure,
+        bpm
+      };
+    }
+    return measure;
   });
 };
 
@@ -98,8 +110,14 @@ export default function track(state = {}, action) {
       return Object.assign({}, state, { tuning: action.tuning });
 
     case CHANGE_BPM: {
-      const newMeasures = action.all ? changeAllMeasures(state.measures, action.bpm)
-                                   : changeMeasuresAfterCurrent(state.measures, action.bpm, action.index.measureIndex);
+      let newMeasures;
+      if(action.all) {
+        newMeasures = changeBpmAllMeasures(state.measures, action.bpm);
+      } else if(action.toEnd) {
+        newMeasures = changeBpmMeasuresAfterCurrent(state.measures, action.bpm, action.index.measureIndex);
+      } else {
+        newMeasures = changeSingleBpmMeasure(state.measures, action.bpm, action.index.measureIndex);
+      }
       return {
         ...state,
         measures: newMeasures

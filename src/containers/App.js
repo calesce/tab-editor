@@ -20,7 +20,6 @@ import { makeAppSelector } from '../util/selectors';
 import Score from '../components/Score';
 import Sidebar from '../components/editor/Sidebar';
 import TuningModal from '../components/editor/TuningModal';
-import BpmModal from '../components/editor/BpmModal';
 import Playback from '../components/Playback';
 
 const Actions = Object.assign(TracksActions, TrackActions, MeasureActions, PlayingIndexActions, CursorActions, CopyPasteActions);
@@ -242,10 +241,9 @@ class App extends Component {
       <div style={style}>
         { playingIndex ? <Playback buffers={buffers} metronome={metronome} countdown={countdown} /> : null}
         <Sidebar canPlay={buffers && (!(metronome || countdown) || buffers.woodblock)}
-          handlePlay={this.handlePlay} openModal={this.openModal} />
+          handlePlay={this.handlePlay} popoverOpen={openModal} openModal={this.openModal} closeModal={this.closeModal} />
         <Score />
         <TuningModal isOpen={openModal === 'tuning'} closeModal={this.closeModal} />
-        <BpmModal isOpen={openModal === 'bpm'} closeModal={this.closeModal} />
       </div>
     );
   }

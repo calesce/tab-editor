@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import Popover from './Popover';
-import hover from './hoverContainer';
+import HoverableText from './HoverableText';
 
 const textStyle = {
   fontFamily: 'Optima, Segoe, Segoe UI, Candara, Calibri, Arial, sans-serif'
@@ -13,12 +13,6 @@ const flexStyle = {
   flexDirection: 'column',
   justifyContent: 'space-between'
 };
-
-const HoverableText = hover()(({ text, color, style, onClick }) => (
-  <span onClick={onClick} style={{ ...style, ...textStyle, color, fontSize: 20, fontWeight: 500 }}>
-    { text }
-  </span>
-));
 
 class TimeSignaturePopover extends Component {
   constructor(props) {
@@ -116,7 +110,7 @@ class TimeSignaturePopover extends Component {
           </span>
           <div style={{ display: 'flex', justifyContent: 'center', flexShrink: 10 }}>
             <span style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingTop: 15, alignItems: 'flex-end', flexBasis: '55%' }}>
-              <h3 style={{ ...textStyle, fontSize: 40, paddingRight: 10 }}>{this.state.timeSignature.beats}</h3>
+              <h3 style={{ textStyle, fontSize: 40, paddingRight: 10 }}>{this.state.timeSignature.beats}</h3>
             </span>
             <span style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingTop: 15, flexBasis: '45%' }}>
               <HoverableText onClick={this.onIncrementBeats} text='&#9650;'/>
@@ -125,7 +119,7 @@ class TimeSignaturePopover extends Component {
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', flexShrink: 10 }}>
             <span style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingBottom: 15, alignItems: 'flex-end', flexBasis: '55%' }}>
-              <h3 style={{ ...textStyle, fontSize: 40, paddingRight: 10 }}>{this.state.timeSignature.beatType}</h3>
+              <h3 style={{ textStyle, fontSize: 40, paddingRight: 10 }}>{this.state.timeSignature.beatType}</h3>
             </span>
             <span style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingBottom: 15, flexBasis: '45%' }}>
               <HoverableText onClick={this.onIncrementBeatType} text='&#9650;'/>
@@ -133,9 +127,9 @@ class TimeSignaturePopover extends Component {
             </span>
           </div>
           <span style={{ display: 'flex', justifyContent: 'space-around', paddingBottom: 10, paddingLeft: 5, paddingRight: 5 }}>
-            <small style={{ ...textStyle, fontWeight: 300, fontSize: 12, paddingTop: 3 }}>To End</small>
+            <small style={{ textStyle, fontWeight: 300, fontSize: 12, paddingTop: 3 }}>To End</small>
             <input type='checkbox' value={this.state.toEndChecked} onChange={this.toEndChanged} />
-            <small style={{ ...textStyle, fontWeight: 300, fontSize: 12, paddingTop: 3 }}>All Measures</small>
+            <small style={{ textStyle, fontWeight: 300, fontSize: 12, paddingTop: 3 }}>All Measures</small>
             <input type='checkbox' value={this.state.allChecked} onChange={this.allChanged} />
           </span>
         </div>
