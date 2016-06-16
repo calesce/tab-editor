@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import shouldPureComponentUpdate from 'react-pure-render/function';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { changeNoteLength, makeNoteRest, toggleNoteDotted, setNoteTuplet,
@@ -111,6 +112,8 @@ class SidebarButton extends Component {
     this.onClick = this.onClick.bind(this);
     this.getSvgForType = this.getSvgForType.bind(this);
   }
+
+  shouldComponentUpdate = shouldPureComponentUpdate;
 
   onMouseEnter() {
     this.setState({ hover: true });

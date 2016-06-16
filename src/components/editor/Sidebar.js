@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 import { changeLayout, insertTrack, deleteTrack, replaceSong } from '../../actions/tracks';
 import { setPlayingIndex, toggleMetronome, toggleCountdown } from '../../actions/playingIndex';
 import { setCursor } from '../../actions/cursor';
-import { addRepeatEnd } from '../../actions/measure';
 import { timeSignatureSelector } from '../../util/selectors';
 import { importMusicXml } from '../../util/musicXml';
 
@@ -16,6 +15,7 @@ import SidebarGroup from './SidebarGroup';
 import SidebarButton from './SidebarButton';
 import TimeSignature from './TimeSignatureButton';
 import BpmButton from './BpmButton';
+import { RepeatStart, RepeatEnd } from './RepeatButton';
 
 const style = {
   position: 'fixed',
@@ -143,7 +143,8 @@ class Sidebar extends Component {
         <SidebarGroup title='Measure'>
           <TimeSignature timeSignature={timeSignature} />
           <BpmButton onClick={this.openBpm} onClose={closeModal} popoverOpen={popoverOpen === 'bpm'} />
-          <button onClick={this.addRepeatEnd}>repeat</button>
+          <RepeatStart />
+          <RepeatEnd />
         </SidebarGroup>
         <SidebarGroup title='Track'>
           <EditorButton onClick={openModal} type='tuning' label='tuning' />
@@ -185,7 +186,6 @@ function mapDispatchToProps(dispatch) {
     deleteTrack: bindActionCreators(deleteTrack, dispatch),
     setPlayingIndex: bindActionCreators(setPlayingIndex, dispatch),
     setCursor: bindActionCreators(setCursor, dispatch),
-    addRepeatEnd: bindActionCreators(addRepeatEnd, dispatch),
     toggleMetronome: bindActionCreators(toggleMetronome, dispatch),
     toggleCountdown: bindActionCreators(toggleCountdown, dispatch),
     replaceSong: bindActionCreators(replaceSong, dispatch)

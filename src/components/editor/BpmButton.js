@@ -28,7 +28,7 @@ const BpmButton = hover()(({ bpm, style, onClick, color}) => (
         />
         <path strokeWidth={1.5} stroke={color} d='M 14.72547,29.05645 L 14.72547,0.46888' />
       </g>
-      <g transform='translate(10, 14)'>
+      <g transform='translate(10, 17)'>
         <text fill={color} style={textStyle}>
           ={bpm}
         </text>
