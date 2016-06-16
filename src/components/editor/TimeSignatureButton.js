@@ -30,28 +30,27 @@ class TimeSignature extends Component {
 
     this.onClick = this.onClick.bind(this);
     this.onPopoverClose = this.onPopoverClose.bind(this);
-    this.setPopoverRef = this.setPopoverRef.bind(this);
 
     this.state = {
       popoverOpen: false
     };
   }
 
-  onClick() {
+  onClick(event) {
     if(!this.state.popoverOpen) {
-      this.setState({ popoverOpen: true });
+      if(!this.event || event.target !== this.event.target) {
+        this.setState({ popoverOpen: true });
+      }
+      this.event = null;
     }
   }
 
-  onPopoverClose(timeSignature, toEndChecked, allChecked) {
+  onPopoverClose(event, timeSignature, toEndChecked, allChecked) {
+    this.event = event;
     if(timeSignature.beats !== this.props.timeSignature.beats || timeSignature.beatType !== this.props.timeSignature.beatType) {
       this.props.changeTimeSignature({ measureIndex: this.props.measureIndex }, timeSignature, toEndChecked, allChecked);
     }
     this.setState({ popoverOpen: false });
-  }
-
-  setPopoverRef(ref) {
-    this._popover = ref;
   }
 
   render() {

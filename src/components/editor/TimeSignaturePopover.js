@@ -1,23 +1,17 @@
 import React, { Component } from 'react';
-import onClickOutside from 'react-onclickoutside';
 
+import Popover from './Popover';
 import hover from './hoverContainer';
 
 const textStyle = {
   fontFamily: 'Optima, Segoe, Segoe UI, Candara, Calibri, Arial, sans-serif'
 };
 
-const popoverStyle = {
-  position: 'absolute',
-  zIndex: 5,
-  background: '#FEFBF7',
-  width: 160,
+const flexStyle = {
   height: 200,
-  marginTop: -200,
-  marginLeft: 40,
-  borderRadius: 12,
-  boxShadow: '4px 4px 4px rgba(0, 0, 0, 0.1)',
-  display: 'flex', flexDirection: 'column', justifyContent: 'space-between'
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between'
 };
 
 const HoverableText = hover()(({ text, color, style, onClick }) => (
@@ -26,12 +20,11 @@ const HoverableText = hover()(({ text, color, style, onClick }) => (
   </span>
 ));
 
-class Popover extends Component {
+class TimeSignaturePopover extends Component {
   constructor(props) {
     super(props);
 
-    this.handleClickOutside = this.handleClickOutside.bind(this);
-    this.setPopoverRef = this.setPopoverRef.bind(this);
+    this.onClose = this.onClose.bind(this);
     this.onTwoFourClick = this.onTwoFourClick.bind(this);
     this.onFourFourClick = this.onFourFourClick.bind(this);
     this.onSixEightClick = this.onSixEightClick.bind(this);
@@ -49,16 +42,8 @@ class Popover extends Component {
     };
   }
 
-  componentDidMount() {
-    global.document.addEventListener('click', this.onOutsideClick);
-  }
-
-  componentWillUnmount() {
-    global.document.removeEventListener('click', this.onOutsideClick);
-  }
-
-  handleClickOutside() {
-    this.props.onClose(this.state.timeSignature, this.state.toEndChecked, this.state.allChecked);
+  onClose(e) {
+    this.props.onClose(e, this.state.timeSignature, this.state.toEndChecked, this.state.allChecked);
   }
 
   onTwoFourClick() {
@@ -120,45 +105,43 @@ class Popover extends Component {
     this.setState({ allChecked: !this.state.allChecked });
   }
 
-  setPopoverRef(ref) {
-    this._popover = ref;
-  }
-
   render() {
     return (
-      <div style={popoverStyle} ref={this.setPopoverRef}>
-        <span style={{ display: 'flex', justifyContent: 'space-around', paddingTop: 10 }}>
-          <HoverableText onClick={this.onTwoFourClick} text='2/4'/>
-          <HoverableText onClick={this.onFourFourClick} text='4/4'/>
-          <HoverableText onClick={this.onSixEightClick} text='6/8'/>
-        </span>
-        <div style={{ display: 'flex', justifyContent: 'center', flexShrink: 10 }}>
-          <span style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingTop: 15, alignItems: 'flex-end', flexBasis: '55%' }}>
-            <h3 style={{ ...textStyle, fontSize: 40, paddingRight: 10 }}>{this.state.timeSignature.beats}</h3>
+      <Popover onClose={this.onClose} height={200} width={160}>
+        <div style={flexStyle}>
+          <span style={{ display: 'flex', justifyContent: 'space-around', paddingTop: 10 }}>
+            <HoverableText onClick={this.onTwoFourClick} text='2/4'/>
+            <HoverableText onClick={this.onFourFourClick} text='4/4'/>
+            <HoverableText onClick={this.onSixEightClick} text='6/8'/>
           </span>
-          <span style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingTop: 15, flexBasis: '45%' }}>
-            <HoverableText onClick={this.onIncrementBeats} text='&#9650;'/>
-            <HoverableText onClick={this.onDecrementBeats} text='&#9660;'/>
+          <div style={{ display: 'flex', justifyContent: 'center', flexShrink: 10 }}>
+            <span style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingTop: 15, alignItems: 'flex-end', flexBasis: '55%' }}>
+              <h3 style={{ ...textStyle, fontSize: 40, paddingRight: 10 }}>{this.state.timeSignature.beats}</h3>
+            </span>
+            <span style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingTop: 15, flexBasis: '45%' }}>
+              <HoverableText onClick={this.onIncrementBeats} text='&#9650;'/>
+              <HoverableText onClick={this.onDecrementBeats} text='&#9660;'/>
+            </span>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'center', flexShrink: 10 }}>
+            <span style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingBottom: 15, alignItems: 'flex-end', flexBasis: '55%' }}>
+              <h3 style={{ ...textStyle, fontSize: 40, paddingRight: 10 }}>{this.state.timeSignature.beatType}</h3>
+            </span>
+            <span style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingBottom: 15, flexBasis: '45%' }}>
+              <HoverableText onClick={this.onIncrementBeatType} text='&#9650;'/>
+              <HoverableText onClick={this.onDecrementBeatType} text='&#9660;'/>
+            </span>
+          </div>
+          <span style={{ display: 'flex', justifyContent: 'space-around', paddingBottom: 10, paddingLeft: 5, paddingRight: 5 }}>
+            <small style={{ ...textStyle, fontWeight: 300, fontSize: 12, paddingTop: 3 }}>To End</small>
+            <input type='checkbox' value={this.state.toEndChecked} onChange={this.toEndChanged} />
+            <small style={{ ...textStyle, fontWeight: 300, fontSize: 12, paddingTop: 3 }}>All Measures</small>
+            <input type='checkbox' value={this.state.allChecked} onChange={this.allChanged} />
           </span>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'center', flexShrink: 10 }}>
-          <span style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingBottom: 15, alignItems: 'flex-end', flexBasis: '55%' }}>
-            <h3 style={{ ...textStyle, fontSize: 40, paddingRight: 10 }}>{this.state.timeSignature.beatType}</h3>
-          </span>
-          <span style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingBottom: 15, flexBasis: '45%' }}>
-            <HoverableText onClick={this.onIncrementBeatType} text='&#9650;'/>
-            <HoverableText onClick={this.onDecrementBeatType} text='&#9660;'/>
-          </span>
-        </div>
-        <span style={{ display: 'flex', justifyContent: 'space-around', paddingBottom: 10, paddingLeft: 5, paddingRight: 5 }}>
-          <small style={{ ...textStyle, fontWeight: 300, fontSize: 12, paddingTop: 3 }}>To End</small>
-          <input type='checkbox' value={this.state.toEndChecked} onChange={this.toEndChanged} />
-          <small style={{ ...textStyle, fontWeight: 300, fontSize: 12, paddingTop: 3 }}>All Measures</small>
-          <input type='checkbox' value={this.state.allChecked} onChange={this.allChanged} />
-        </span>
-      </div>
+      </Popover>
     );
   }
 }
 
-export default onClickOutside(Popover);
+export default TimeSignaturePopover;
