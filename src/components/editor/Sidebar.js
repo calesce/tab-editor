@@ -4,8 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import { changeLayout, insertTrack, deleteTrack, replaceSong } from '../../actions/tracks';
-import { setPlayingIndex, toggleMetronome, toggleCountdown } from '../../actions/playingIndex';
-import { setCursor } from '../../actions/cursor';
+import { toggleMetronome, toggleCountdown } from '../../actions/playingIndex';
 import { timeSignatureSelector } from '../../util/selectors';
 import { importMusicXml } from '../../util/musicXml';
 
@@ -16,6 +15,7 @@ import SidebarButton from './SidebarButton';
 import TimeSignature from './TimeSignatureButton';
 import BpmButton from './BpmButton';
 import { RepeatStart, RepeatEnd } from './RepeatButton';
+import PlayPauseButton from './PlayPauseButton';
 
 const style = {
   position: 'fixed',
@@ -58,10 +58,6 @@ class Sidebar extends Component {
 
     this.toggleLayout = this.toggleLayout.bind(this);
     this.openBpm = this.openBpm.bind(this);
-    this.handleStop = this.handleStop.bind(this);
-    this.renderPlayButton = this.renderPlayButton.bind(this);
-    this.renderPlayStop = this.renderPlayStop.bind(this);
-    this.addRepeatEnd = this.addRepeatEnd.bind(this);
     this.inputRef = this.inputRef.bind(this);
     this.importClicked = this.importClicked.bind(this);
     this.onImport = this.onImport.bind(this);
@@ -72,31 +68,8 @@ class Sidebar extends Component {
     this.props.changeLayout(this.props.layout === 'page' ? 'linear' : 'page');
   }
 
-  handleStop() {
-    this.props.setCursor({
-      measureIndex: this.props.playingIndex.measureIndex,
-      noteIndex: this.props.playingIndex.noteIndex,
-      stringIndex: this.props.cursor.stringIndex
-    });
-    this.props.setPlayingIndex(null);
-  }
-
-  renderPlayButton(canPlay) {
-    return canPlay ? <button onClick={this.props.handlePlay}>Play</button> : <button disabled>Play</button>;
-  }
-
-  renderPlayStop(canPlay) {
-    return this.props.playingIndex ?
-      <button onClick={this.handleStop}>Stop</button> :
-      this.renderPlayButton(canPlay);
-  }
-
   openBpm() {
     this.props.openModal('bpm');
-  }
-
-  addRepeatEnd() {
-    this.props.addRepeatEnd(this.props.cursor);
   }
 
   inputRef(input) {
@@ -154,7 +127,7 @@ class Sidebar extends Component {
           <TrackSelect />
         </SidebarGroup>
         <SidebarGroup title='Song'>
-          { this.renderPlayStop(canPlay) }
+          <PlayPauseButton canPlay={canPlay} />
           <button onClick={this.toggleLayout}>{layout}</button>
           <button onClick={this.props.toggleMetronome}>{ this.props.metronome ? 'metronome on' : 'metronome off'}</button>
           <button onClick={this.props.toggleCountdown}>{ this.props.countdown ? 'countdown on' : 'countdown off'}</button>
@@ -171,8 +144,6 @@ function mapStateToProps(state) {
   return {
     tracks: state.present.tracks,
     layout: state.present.layout,
-    playingIndex: state.present.playingIndex,
-    cursor: state.present.cursor,
     timeSignature: timeSignatureSelector(state),
     metronome: state.present.metronome,
     countdown: state.present.countdown
@@ -184,8 +155,6 @@ function mapDispatchToProps(dispatch) {
     changeLayout: bindActionCreators(changeLayout, dispatch),
     insertTrack: bindActionCreators(insertTrack, dispatch),
     deleteTrack: bindActionCreators(deleteTrack, dispatch),
-    setPlayingIndex: bindActionCreators(setPlayingIndex, dispatch),
-    setCursor: bindActionCreators(setCursor, dispatch),
     toggleMetronome: bindActionCreators(toggleMetronome, dispatch),
     toggleCountdown: bindActionCreators(toggleCountdown, dispatch),
     replaceSong: bindActionCreators(replaceSong, dispatch)

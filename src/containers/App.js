@@ -236,12 +236,13 @@ class App extends Component {
   render() {
     const { playingIndex, metronome, countdown } = this.props;
     const { openModal, buffers } = this.state;
+    const canPlay = buffers && (!(metronome || countdown) || buffers.woodblock);
 
     return (
       <div style={style}>
         { playingIndex ? <Playback buffers={buffers} metronome={metronome} countdown={countdown} /> : null}
-        <Sidebar canPlay={buffers && (!(metronome || countdown) || buffers.woodblock)}
-          handlePlay={this.handlePlay} popoverOpen={openModal} openModal={this.openModal} closeModal={this.closeModal} />
+        <Sidebar canPlay={canPlay} popoverOpen={openModal}
+          openModal={this.openModal} closeModal={this.closeModal} />
         <Score />
         <TuningModal isOpen={openModal === 'tuning'} closeModal={this.closeModal} />
       </div>
