@@ -1,5 +1,8 @@
-export function getXOfCurrentNote(playingIndex, measures) {
-  const { measureIndex, noteIndex } = playingIndex;
+/* @flow */
+
+type PlayingIndex = { measureIndex: number; noteIndex: number };
+
+export function getXOfCurrentNote({ measureIndex, noteIndex }: PlayingIndex, measures: Array<Object>): number {
   const xOfMeasures = measures.reduce((acc, curr, i) => {
     if(i >= measureIndex) {
       return acc;
@@ -10,22 +13,22 @@ export function getXOfCurrentNote(playingIndex, measures) {
   return xOfMeasures + 55 * noteIndex;
 }
 
-export function getYOfCurrentNote(playingIndex, measures, stringCount) {
+export function getYOfCurrentNote(playingIndex: PlayingIndex, measures: Array<Object>, stringCount: number): number {
   const position = measures[playingIndex.measureIndex];
   return (position.rowIndex) * (27 * stringCount) + 50;
 }
 
-export function updateScrollPosition(playingIndex, measures, layout, stringCount) {
+export function updateScrollPosition(playingIndex: PlayingIndex, measures: Array<Object>, layout: string, stringCount: number): void {
   if(layout === 'linear') {
     const x = getXOfCurrentNote(playingIndex, measures);
-    const { scrollX, innerWidth } = window;
+    let { scrollX, innerWidth } = window;
 
     if(x > innerWidth + scrollX - 200) {
       window.scroll(x - 200, 0);
     }
   } else {
     const y = getYOfCurrentNote(playingIndex, measures, stringCount);
-    const { innerHeight, scrollY } = window;
+    let { innerHeight, scrollY } = window;
 
     if(y > innerHeight + scrollY - 270) {
       window.scroll(0, y - 100);

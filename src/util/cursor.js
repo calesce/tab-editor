@@ -1,4 +1,8 @@
-export const getNextNote = (measures, { stringIndex, measureIndex, noteIndex }) => {
+/* @flow */
+
+type Cursor = { measureIndex: number; noteIndex: number, stringIndex: number };
+
+export const getNextNote = (measures: Array<Object>, { stringIndex, measureIndex, noteIndex }: Cursor): Cursor => {
   if(noteIndex >= measures[measureIndex].notes.length - 1) {
     return {
       measureIndex: measureIndex + 1,
@@ -14,7 +18,7 @@ export const getNextNote = (measures, { stringIndex, measureIndex, noteIndex }) 
   }
 };
 
-export const getPrevNote = (measures, { stringIndex, measureIndex, noteIndex }) => {
+export const getPrevNote = (measures: Array<Object>, { stringIndex, measureIndex, noteIndex }: Cursor): Cursor => {
   if(measureIndex === 0 && noteIndex === 0) {
     return { measureIndex, noteIndex, stringIndex };
   } else if(noteIndex === 0) {
@@ -41,15 +45,15 @@ export const getPrevNote = (measures, { stringIndex, measureIndex, noteIndex }) 
   }
 };
 
-export const getUpperString = (stringIndex, stringCount) => {
+export const getUpperString = (stringIndex: number, stringCount: number): number => {
   return stringIndex === stringCount - 1 ? 0 : stringIndex + 1;
 };
 
-export const getLowerString = (stringIndex, stringCount) => {
+export const getLowerString = (stringIndex: number, stringCount: number): number => {
   return stringIndex === 0 ? stringCount - 1 : stringIndex - 1;
 };
 
-export const cursorAfterCutting = (measures, selectRange, oldCursor) => {
+export const cursorAfterCutting = (measures: Array<Object>, selectRange: any, oldCursor: Cursor): Cursor => {
   const firstMeasureIndex = parseInt(Object.keys(selectRange)[0]);
 
   let measureIndex = firstMeasureIndex;
@@ -75,7 +79,7 @@ export const cursorAfterCutting = (measures, selectRange, oldCursor) => {
   };
 };
 
-export const cursorAfterPasting = (measures, clipboard, oldCursor) => {
+export const cursorAfterPasting = (measures: Array<Object>, clipboard: any, oldCursor: Cursor): Cursor => {
   if(clipboard.notes) {
     return {
       ...oldCursor,
@@ -99,9 +103,7 @@ export const cursorAfterPasting = (measures, clipboard, oldCursor) => {
   }
 };
 
-export const getNotesFromSelection = (measures, cursor, selectRange) => {
-  const { measureIndex, noteIndex } = cursor;
-
+export const getNotesFromSelection = (measures: Array<Object>, { measureIndex, noteIndex }: Cursor, selectRange: Object): Object => {
   if(selectRange) {
     if(Object.keys(selectRange).length === 1 && selectRange[Object.keys(selectRange)[0]] !== 'all') {
       const measureIndex = Object.keys(selectRange)[0];

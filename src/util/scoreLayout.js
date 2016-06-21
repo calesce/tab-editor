@@ -1,7 +1,10 @@
+/* @flow */
 import shallowEqual from 'react-pure-render/shallowEqual';
 import { isEqual } from 'lodash';
 
-const calcXForNote = (measure, noteIndex) => {
+export type ScoreBox = { x: number; y: number, width: number };
+
+const calcXForNote = (measure: Object, noteIndex: number): number => {
   let x = 0 + (noteIndex * 53 + 33);
   if(measure.indexOfRow === 0) {
     x += 8;
@@ -15,7 +18,7 @@ const calcXForNote = (measure, noteIndex) => {
   return x;
 };
 
-export const linearTrack = (track) => {
+export const linearTrack = (track: Array<Object>): Array<Object> => {
   return track.map((measure, i) => {
     const newMeasure = {
       ...measure,
@@ -26,7 +29,7 @@ export const linearTrack = (track) => {
   });
 };
 
-export const computeTrackLayout = measures => {
+export const computeTrackLayout = (measures: Array<Object>): Array<Object> => {
   return measures.map((measure, index) => {
     let width = 59 * measure.notes.length;
     let showBpm = false;
@@ -74,7 +77,7 @@ export const computeTrackLayout = measures => {
   });
 };
 
-export const trackWithRows = (measures, scoreBox) => {
+export const trackWithRows = (measures: Array<Object>, scoreBox: ScoreBox): Array<Object> => {
   return measures.reduce((newMeasures, measure, index) => {
     if(index === 0) {
       const newMeasure = {

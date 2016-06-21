@@ -1,16 +1,17 @@
+/* @flow */
 import Soundfont from 'soundfont-player';
 import audioContext from '../util/audioContext';
 
 // Fix for Safari/Edge, which can't play .ogg files
 if(!!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/) || !!navigator.userAgent.match(/Edge\/\d+/)) {
-  Soundfont.nameToUrl = function(name) {
+  Soundfont.nameToUrl = function(name: string): string {
     return `https://cdn.rawgit.com/gleitz/midi-js-Soundfonts/master/FluidR3_GM/${name}-mp3.js`;
   };
 }
 
 let bufferCache = {};
 
-export function loadSoundfonts(instruments) {
+export function loadSoundfonts(instruments: Array<string>): Promise {
   const promises = instruments.map(instrument => {
     return loadSoundfont(instrument, bufferCache);
   });
@@ -24,7 +25,7 @@ export function loadSoundfonts(instruments) {
     });
 }
 
-const loadSoundfont = (instrument, cache) => {
+const loadSoundfont = (instrument: string, cache: Object): Promise => {
   if(cache[instrument]) {
     return new Promise(resolve => resolve(cache[instrument]));
   }

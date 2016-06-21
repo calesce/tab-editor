@@ -1,19 +1,18 @@
-import { trackWithRows, linearTrack, computeTrackLayout } from './scoreLayout';
+/* @flow */
+import { trackWithRows, linearTrack, computeTrackLayout, ScoreBox } from './scoreLayout';
 
-export const prepareTrack = (track, layout, scoreBox) => {
-  return {
-    ...track,
-    measures: prepareRowLayout(track.measures, layout, scoreBox)
-  };
-};
+export const prepareTrack = (track: Object, layout: string, scoreBox: ScoreBox): Object => ({
+  ...track,
+  measures: prepareRowLayout(track.measures, layout, scoreBox)
+});
 
-const prepareRowLayout = (measures, layout, scoreBox) => {
+const prepareRowLayout = (measures: Array<Object>, layout: string, scoreBox: ScoreBox): Array<Object> => {
   return layout === 'page' ?
     trackWithRows(computeTrackLayout(measures), scoreBox) :
     linearTrack(computeTrackLayout(measures));
 };
 
-export const replaceBpm = (measures) => {
+export const replaceBpm = (measures: Array<Object>): Array<Object> => {
   return measures.reduce((endMeasures, measure, i) => {
     if(measure.bpm) {
       return endMeasures.concat(measure);

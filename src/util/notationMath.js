@@ -1,4 +1,6 @@
-export const determineFlip = (note, yToUse) => {
+/* @flow */
+
+export const determineFlip = (note: Object, yToUse: number): boolean => {
   if(note.string.length > 1) {
     const furthestFromMiddle = note.notes.reduce((max, next) => {
       return Math.abs(max - 93) > Math.abs(next.y - 93) ? max : next.y;

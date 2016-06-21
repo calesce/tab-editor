@@ -1,5 +1,9 @@
+/* @flow */
+
 import { orderBy } from 'lodash';
 import Fraction from 'fraction.js';
+
+type TimeSignature = { beats: number, beatType: number };
 
 const durations = {
   w: 1,
@@ -10,7 +14,7 @@ const durations = {
   t: 32
 };
 
-export const getPercentageOfNote = (duration, timeSignature, dotted, tuplet) => {
+export const getPercentageOfNote = (duration: string, timeSignature: TimeSignature, dotted: boolean, tuplet: boolean): number => {
   const numBeats = timeSignature.beatType / durations[duration];
   let percentage = Fraction(numBeats / timeSignature.beats);
 
@@ -21,49 +25,44 @@ export const getPercentageOfNote = (duration, timeSignature, dotted, tuplet) => 
   return percentage.n / percentage.d;
 };
 
-export const getDurationFromPercentage = (percentage, timeSignature) => {
+export const getDurationFromPercentage = (percentage: number, timeSignature: TimeSignature): number => {
   const numBeats = timeSignature.beats * percentage;
   return timeSignature.beatType / numBeats;
 };
 
-export const getReplaySpeedFromPercentage = (percentage, timeSignature, bpm) => {
+export const getReplaySpeedFromPercentage = (percentage: number, timeSignature: TimeSignature, bpm: number): number => {
   return 240000 / (bpm  * getDurationFromPercentage(percentage, timeSignature));
 };
 
-export const getBpmForNote = (note, bpm) => {
-  if(typeof note === 'string') {
-    note = durations[note];
-  }
-  return bpm * (note / 4);
-};
+export const getBpmForNote = (note: number, bpm: number): number => (
+  bpm * (note / 4)
+);
 
-export const numberOfTremoloNotesForDuration = (duration) => {
+export const numberOfTremoloNotesForDuration = (duration: string): number => {
   const sortedDurations = orderBy(Object.keys(durations), d => durations[d]);
   const index = sortedDurations.indexOf(duration);
   return durations[sortedDurations[sortedDurations.length - 1 - index]];
 };
 
-export const calcMeasureValidity = (measure) => {
+const getDurationFraction = (duration: string): any => {
+  switch(duration) {
+    case 'q':
+      return Fraction(0.25);
+    case 'e':
+      return Fraction(0.125);
+    case 's':
+      return Fraction(0.0625);
+    case 'h':
+     return Fraction(0.5);
+    default:
+     return Fraction(1.0);
+  }
+};
+
+export const calcMeasureValidity = (measure: Object): boolean => {
   const timeSig = Fraction(measure.timeSignature.beats / measure.timeSignature.beatType);
   const totalDuration = measure.notes.reduce((total, note) => {
-    let duration;
-    switch(note.duration) {
-      case 'q':
-        duration = Fraction(0.25);
-        break;
-      case 'e':
-        duration = Fraction(0.125);
-        break;
-      case 's':
-        duration = Fraction(0.0625);
-        break;
-      case 'h':
-       duration = Fraction(0.5);
-       break;
-      default:
-       duration = Fraction(1.0);
-    }
-
+    let duration = getDurationFraction(note.duration);
     if(note.dotted) {
       duration = duration.mul(Fraction(1.5));
     }
