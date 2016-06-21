@@ -191,7 +191,7 @@ class SidebarButton extends Component {
 }
 
 const isButtonSelected = (state, props, currentNote) => {
-  if(state.selectRange) {
+  if(state.selectRange || !currentNote) {
     return false;
   }
   if(props.duration) {
@@ -216,7 +216,7 @@ const currentNoteSelector = (state, ownProps) => {
   const currentNote = tracks[currentTrackIndex].measures[cursor.measureIndex].notes[cursor.noteIndex];
   return {
     cursor,
-    selected : isButtonSelected(state, ownProps, currentNote),
+    selected: isButtonSelected(state, ownProps, currentNote),
     currentNote
   };
 };

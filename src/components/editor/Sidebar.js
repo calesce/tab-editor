@@ -4,7 +4,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import { changeLayout, insertTrack, deleteTrack, replaceSong } from '../../actions/tracks';
-import { toggleMetronome, toggleCountdown } from '../../actions/playingIndex';
 import { timeSignatureSelector } from '../../util/selectors';
 import { importMusicXml } from '../../util/musicXml';
 
@@ -16,6 +15,7 @@ import TimeSignature from './TimeSignatureButton';
 import BpmButton from './BpmButton';
 import { RepeatStart, RepeatEnd } from './RepeatButton';
 import PlayPauseButton from './PlayPauseButton';
+import { MetronomeButton, CountdownButton } from './MetronomeButton';
 
 const style = {
   position: 'fixed',
@@ -128,9 +128,9 @@ class Sidebar extends Component {
         </SidebarGroup>
         <SidebarGroup title='Song'>
           <PlayPauseButton canPlay={canPlay} />
+          <MetronomeButton />
+          <CountdownButton />
           <button onClick={this.toggleLayout}>{layout}</button>
-          <button onClick={this.props.toggleMetronome}>{ this.props.metronome ? 'metronome on' : 'metronome off'}</button>
-          <button onClick={this.props.toggleCountdown}>{ this.props.countdown ? 'countdown on' : 'countdown off'}</button>
           <button><a download='song' href={url}>export</a></button>
           <input ref={this.inputRef} type='file' style={hiddenStyle} onChange={this.onImport} />
           <button onClick={this.importClicked}>import MusicXML</button>
@@ -144,9 +144,7 @@ function mapStateToProps(state) {
   return {
     tracks: state.present.tracks,
     layout: state.present.layout,
-    timeSignature: timeSignatureSelector(state),
-    metronome: state.present.metronome,
-    countdown: state.present.countdown
+    timeSignature: timeSignatureSelector(state)
   };
 }
 
@@ -155,8 +153,6 @@ function mapDispatchToProps(dispatch) {
     changeLayout: bindActionCreators(changeLayout, dispatch),
     insertTrack: bindActionCreators(insertTrack, dispatch),
     deleteTrack: bindActionCreators(deleteTrack, dispatch),
-    toggleMetronome: bindActionCreators(toggleMetronome, dispatch),
-    toggleCountdown: bindActionCreators(toggleCountdown, dispatch),
     replaceSong: bindActionCreators(replaceSong, dispatch)
   };
 }
