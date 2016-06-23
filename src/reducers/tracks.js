@@ -1,202 +1,37 @@
-import track from './track';
-import layout from './layout';
-import playingIndex from './playingIndex';
-import cursorReducer from './cursor';
+import trackReducer from './track';
 import { prepareTrack } from '../util';
-import { COPY_NOTE, CUT_NOTE } from '../actions/cutCopyPaste';
-import { INSERT_TRACK, DELETE_TRACK, SELECT_TRACK, CHANGE_LAYOUT, REPLACE_SONG, RESIZE } from '../actions/tracks';
+import { REPLACE_SONG } from '../actions/tracks';
 import { INSERT_MEASURE, DELETE_MEASURE, CHANGE_BPM, CHANGE_TIME_SIGNATURE } from '../actions/track';
-import { SET_PLAYING_INDEX, TOGGLE_METRONOME, TOGGLE_COUNTDOWN } from '../actions/playingIndex';
-import { SET_CURSOR, MOVE_CURSOR_LEFT, MOVE_CURSOR_RIGHT,
-    MOVE_CURSOR_UP, MOVE_CURSOR_DOWN, SET_SELECT_RANGE } from '../actions/cursor';
 
-const replaceTrack = (tracks, action, currentTrackIndex, layout = 'page', scoreBox) => {
+const replaceTrack = (tracks, currentTrackIndex, layout = 'page', scoreBox, action) => {
   return tracks.map((t, index) => {
     if(index === currentTrackIndex) {
-      const newTrack = track(t, action);
+      const newTrack = trackReducer(t, action);
       return prepareTrack(newTrack, layout, scoreBox);
     }
     return t;
   });
 };
 
-const applyActionToEachTrack = (state, action) => {
-  const currentTrack = state.tracks[state.currentTrackIndex];
-  const newTracks = state.tracks.map((t) => prepareTrack(track(t, action), state.layout, state.scoreBox));
-
-  return {
-    ...state,
-    tracks: newTracks,
-    layout: layout(state.layout, action),
-    playingIndex: playingIndex(state.playingIndex, action),
-    cursor: cursorReducer(state.cursor, action, currentTrack.measures, currentTrack.tuning)
-  };
+const applyActionToEachTrack = (tracks, currentTrackIndex, layout, scoreBox, action) => {
+  return tracks.map(t => prepareTrack(trackReducer(t, action), layout, scoreBox));
 };
 
-const defaultCursor = {
-  measureIndex: 0,
-  noteIndex: 0,
-  stringIndex: 0
-};
-
-const defaultTrack = (state) => {
-  const currentTrack = state.tracks[state.currentTrackIndex];
-
-  return {
-    instrument: currentTrack.instrument,
-    tuning: currentTrack.tuning,
-    measures: currentTrack.measures.map((measure) => ({
-      bpm: measure.bpm,
-      timeSignature: measure.timeSignature,
-      notes: []
-    }))
-  };
-};
-
-export default function tracks(state = {}, action) {
+export default function tracks(tracks, currentTrackIndex, layout, scoreBox, action) {
   switch(action.type) {
-    case INSERT_TRACK: {
-      const newTrack = defaultTrack(state);
-
-      return {
-        ...state,
-        tracks: replaceTrack(state.tracks.concat(newTrack), action, state.tracks.length, state.layout, state.scoreBox),
-        currentTrackIndex: state.tracks.length,
-        cursor: defaultCursor
-      };
-    }
-
-    case DELETE_TRACK:
-      if(state.tracks.length === 1) {
-        return {
-          ...state,
-          tracks: replaceTrack([defaultTrack(state)], action, 0, state.layout, state.scoreBox),
-          cursor: defaultCursor
-        };
-      }
-      return {
-        ...state,
-        tracks: state.tracks.filter((_, i) => state.currentTrackIndex !== i),
-        currentTrackIndex: 0,
-        cursor: defaultCursor
-      };
-
-    case SELECT_TRACK:
-      return {
-        ...state,
-        currentTrackIndex: action.index,
-        cursor: defaultCursor
-      };
-
-    case TOGGLE_METRONOME:
-      return {
-        ...state,
-        metronome: !state.metronome
-      };
-
-    case TOGGLE_COUNTDOWN:
-      return {
-        ...state,
-        countdown: !state.countdown
-      };
-
-    case INSERT_MEASURE: {
-      return applyActionToEachTrack(state, action);
-    }
-
-    case DELETE_MEASURE: {
-      return applyActionToEachTrack(state, action);
-    }
-
-    case CHANGE_BPM: {
-      return applyActionToEachTrack(state, action);
-    }
-
-    case CHANGE_TIME_SIGNATURE: {
-      return applyActionToEachTrack(state, action);
-    }
-
     case REPLACE_SONG: {
-      const tracks = action.tracks.map(track => prepareTrack(track, state.layout, state.scoreBox));
-
-      return {
-        ...state,
-        currentTrackIndex: 0,
-        tracks,
-        cursor: defaultCursor
-      };
+      return action.tracks.map(track => prepareTrack(track, layout, scoreBox));
     }
 
-    case COPY_NOTE:
-      return {
-        ...state,
-        clipboard: action.selection
-      };
-
-    case CUT_NOTE: {
-      return {
-        ...state,
-        clipboard: action.selection,
-        tracks: replaceTrack(state.tracks, action, state.currentTrackIndex, state.layout, state.scoreBox)
-      };
-    }
-
-    case CHANGE_LAYOUT: {
-      const newLayout = layout(state.layout, action);
-      return {
-        ...state,
-        tracks: replaceTrack(state.tracks, action, state.currentTrackIndex, newLayout, state.scoreBox),
-        layout: newLayout
-      };
-    }
-
-    case SET_PLAYING_INDEX:
-      return {
-        ...state,
-        playingIndex: playingIndex(state.playingIndex, action)
-      };
-
-    case SET_CURSOR:
-    case MOVE_CURSOR_LEFT:
-    case MOVE_CURSOR_RIGHT:
-    case MOVE_CURSOR_UP:
-    case MOVE_CURSOR_DOWN: {
-      const currentTrack = state.tracks[state.currentTrackIndex];
-      return {
-        ...state,
-        cursor: cursorReducer(state.cursor, action, currentTrack.measures, currentTrack.tuning)
-      };
-    }
-
-    case SET_SELECT_RANGE: {
-      return {
-        ...state,
-        selectRange: action.range,
-        cursor: cursorReducer(state.cursor, action)
-      };
-    }
-
-    case RESIZE: {
-      const scoreBox = {
-        ...state.scoreBox,
-        width: window.innerWidth - 270
-      };
-
-      return {
-        ...state,
-        scoreBox,
-        tracks: replaceTrack(state.tracks, action, state.currentTrackIndex, state.layout, scoreBox)
-      };
+    case INSERT_MEASURE:
+    case DELETE_MEASURE:
+    case CHANGE_BPM:
+    case CHANGE_TIME_SIGNATURE: {
+      return applyActionToEachTrack(tracks, currentTrackIndex, layout, scoreBox, action);
     }
 
     default: {
-      const currentTrack = state.tracks[state.currentTrackIndex];
-
-      return {
-        ...state,
-        tracks: replaceTrack(state.tracks, action, state.currentTrackIndex, state.layout, state.scoreBox),
-        cursor: cursorReducer(state.cursor, action, currentTrack.measures, currentTrack.tuning)
-      };
+      return replaceTrack(tracks, currentTrackIndex, layout, scoreBox, action);
     }
   }
 }

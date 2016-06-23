@@ -32,25 +32,7 @@ export default function cursor(state = initialState, action, measures, tuning) {
         stringIndex: getLowerString(state.stringIndex, tuning.length)
       };
 
-    case INSERT_NOTE:
-      if(measures[measureIndex].notes.length === 0) {
-        return state;
-      }
-      return Object.assign({}, state, { noteIndex: state.noteIndex + 1 });
-
-    case DELETE_NOTE: {
-      const measure = measures[measureIndex];
-      const note = measure.notes[noteIndex];
-      if(note.fret[0] === 'rest' && noteIndex !== 0) {
-        return getPrevNote(measures, state);
-      }
-      return state;
-    }
-
-    case DELETE_MEASURE:
-      return getPrevNote(measures, state);
-
-    case SET_SELECT_RANGE:
+    case SET_SELECT_RANGE: {
       if(action.range) {
         const measureIndex = parseInt(Object.keys(action.range)[0]);
         if(action.range[measureIndex] === 'all') {
@@ -69,6 +51,27 @@ export default function cursor(state = initialState, action, measures, tuning) {
       }
 
       return state;
+    }
+
+    case INSERT_NOTE: {
+      if(measures[measureIndex].notes.length === 0) {
+        return state;
+      }
+      return Object.assign({}, state, { noteIndex: state.noteIndex + 1 });
+    }
+
+    case DELETE_NOTE: {
+      const measure = measures[measureIndex];
+      const note = measure.notes[noteIndex];
+      if(note.fret[0] === 'rest' && noteIndex !== 0) {
+        return getPrevNote(measures, state);
+      }
+      return state;
+    }
+
+    case DELETE_MEASURE: {
+      return getPrevNote(measures, state);
+    }
 
     default:
       return state;

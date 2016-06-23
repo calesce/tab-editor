@@ -23,12 +23,14 @@ const store = configureStore({
   layout: 'page',
   currentTrackIndex: 0,
   clipboard: null,
+  playingIndex: null,
   cursor: {
     measureIndex: 0,
     noteIndex: 0,
     stringIndex: 0
   },
   metronome: false,
+  countdown: false,
   scoreBox
 });
 
