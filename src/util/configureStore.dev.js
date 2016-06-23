@@ -2,7 +2,6 @@ import { createStore, compose } from 'redux';
 import { persistState } from 'redux-devtools';
 import rootReducer from '../reducers';
 import DevTools from '../containers/DevTools';
-import { getUndoableReducer } from './undoable';
 
 const finalCreateStore = compose(
   DevTools.instrument(),
@@ -14,11 +13,11 @@ const finalCreateStore = compose(
 )(createStore);
 
 export default function configureStore(initialState) {
-  const store = finalCreateStore(getUndoableReducer(rootReducer), initialState);
+  const store = finalCreateStore(rootReducer, initialState);
 
   if(module.hot) {
     module.hot.accept('../reducers', () => {
-      const nextReducer = getUndoableReducer(require('../reducers').default);
+      const nextReducer = require('../reducers').default;
       store.replaceReducer(nextReducer);
     });
   }

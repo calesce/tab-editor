@@ -131,8 +131,8 @@ class Bpm extends Component {
 
 function mapStateToProps(state) {
   return {
-    bpm: state.present.tracks[state.present.currentTrackIndex].measures[state.present.cursor.measureIndex].bpm,
-    cursor: state.present.cursor
+    bpm: state.tracks.present[state.currentTrackIndex].measures[state.cursor.measureIndex].bpm,
+    cursor: state.cursor
   };
 }
 

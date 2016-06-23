@@ -2,8 +2,8 @@ import { createSelector } from 'reselect';
 import { findIndex } from 'lodash';
 import { playingIndexSelector, selectRangeSelector } from './selectors';
 
-const tracksSelector = state => state.present.tracks;
-const currentTrackIndexSelector = state => state.present.currentTrackIndex;
+const tracksSelector = state => state.tracks.present;
+const currentTrackIndexSelector = state => state.currentTrackIndex;
 
 const getRepeatingSection = (measures, repeatIndex) => {
   return repeatIndex === -1 ? [] : measures.slice(0, repeatIndex + 1);

@@ -70,7 +70,7 @@ class TimeSignature extends Component {
 function mapStateToProps(state) {
   return {
     timeSignature: timeSignatureSelector(state),
-    measureIndex: state.present.cursor.measureIndex
+    measureIndex: state.cursor.measureIndex
   };
 }
 

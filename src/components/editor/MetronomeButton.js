@@ -4,8 +4,8 @@ import { toggleMetronome, toggleCountdown } from '../../actions/playingIndex';
 
 import hover from './hoverContainer';
 
-const isMetronomeSelected = state => ({ selected: state.present.metronome === true });
-const isCountdownSelected = state => ({ selected: state.present.countdown === true });
+const isMetronomeSelected = state => ({ selected: state.metronome === true });
+const isCountdownSelected = state => ({ selected: state.countdown === true });
 
 const mapDispatchMetronome = { toggleMetronome };
 const mapDispatchCountdown = { toggleCountdown };

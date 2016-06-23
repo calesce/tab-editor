@@ -16,7 +16,7 @@ const scoreBox = {
 const trackWithWidths = prepareTrack({
   ...track,
   measures: replaceBpm(track.measures)
-}, 'linear', scoreBox);
+}, 'page', scoreBox);
 
 const store = configureStore({
   tracks: [trackWithWidths],

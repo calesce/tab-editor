@@ -28,8 +28,8 @@ export default class TrackSelect extends Component {
 
 function mapStateToProps(state) {
   return {
-    tracks: state.present.tracks,
-    currentTrackIndex: state.present.currentTrackIndex
+    tracks: state.tracks.present,
+    currentTrackIndex: state.currentTrackIndex
   };
 }
 

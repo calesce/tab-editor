@@ -1,3 +1,4 @@
+import { ActionTypes } from 'redux-undo';
 import { SET_PLAYING_INDEX, TOGGLE_METRONOME, TOGGLE_COUNTDOWN } from '../actions/playingIndex';
 import { COPY_NOTE, CUT_NOTE } from '../actions/cutCopyPaste';
 import { INSERT_TRACK, DELETE_TRACK, SELECT_TRACK, CHANGE_LAYOUT, REPLACE_SONG, RESIZE } from '../actions/tracks';
@@ -17,16 +18,29 @@ const defaultCursor = {
 };
 
 const emptyTrack = (tracks, currentTrackIndex) => {
-  const currentTrack = tracks[currentTrackIndex];
-
   return {
-    instrument: currentTrack.instrument,
-    tuning: currentTrack.tuning,
-    measures: currentTrack.measures.map((measure) => ({
+    instrument: tracks[currentTrackIndex].instrument,
+    tuning: tracks[currentTrackIndex].tuning,
+    measures: tracks[currentTrackIndex].measures.map((measure) => ({
       bpm: measure.bpm,
       timeSignature: measure.timeSignature,
       notes: []
     }))
+  };
+};
+
+const getValidCursor = (cursor, track) => {
+  let { measureIndex, noteIndex } = cursor;
+  if(measureIndex > track.measures.length - 1) {
+    measureIndex = track.measures.length - 1;
+    noteIndex = track.measures[measureIndex].notes.length - 1;
+  } else if(noteIndex > track.measures[measureIndex].notes.length - 1) {
+    noteIndex = track.measures[measureIndex].notes.length - 1;
+  }
+  return {
+    ...cursor,
+    measureIndex,
+    noteIndex
   };
 };
 
@@ -64,7 +78,7 @@ export default function rootReducer(state = {}, action) {
       return {
         ...state,
         clipboard: action.selection,
-        tracks: tracksReducer(state.tracks, state.currentTrackIndex, state.layout, state.scoreBox, action)
+        tracks: tracksReducer(state.tracks, action, state.currentTrackIndex, state.layout, state.scoreBox)
       };
     }
 
@@ -73,7 +87,7 @@ export default function rootReducer(state = {}, action) {
       return {
         ...state,
         layout,
-        tracks: tracksReducer(state.tracks, state.currentTrackIndex, layout, state.scoreBox, action)
+        tracks: tracksReducer(state.tracks, action, state.currentTrackIndex, layout, state.scoreBox)
       };
     }
 
@@ -86,7 +100,7 @@ export default function rootReducer(state = {}, action) {
       return {
         ...state,
         scoreBox,
-        tracks: tracksReducer(state.tracks, state.currentTrackIndex, state.layout, scoreBox, action)
+        tracks: tracksReducer(state.tracks, action, state.currentTrackIndex, state.layout, scoreBox)
       };
     }
 
@@ -95,29 +109,31 @@ export default function rootReducer(state = {}, action) {
         ...state,
         currentTrackIndex: 0,
         cursor: defaultCursor,
-        tracks: tracksReducer(state.tracks, 0, state.layout, state.scoreBox, action)
-      }
+        tracks: tracksReducer(state.tracks, action ,0, state.layout, state.scoreBox)
+      };
     }
 
     case INSERT_TRACK: {
-      const newTrack = emptyTrack(state.tracks, state.currentTrackIndex);
-
+      const newTrack = emptyTrack(state.tracks.present, state.currentTrackIndex);
       return {
         ...state,
-        tracks: tracksReducer(state.tracks.concat(newTrack), state.tracks.length, state.layout, state.scoreBox, action),
-        currentTrackIndex: state.tracks.length,
+        tracks: tracksReducer(
+          state.tracks, action, state.tracks.present.length, state.layout, state.scoreBox,
+          state.tracks.present.concat(newTrack)
+        ),
+        currentTrackIndex: state.tracks.present.length,
         cursor: defaultCursor
       };
     }
 
     case DELETE_TRACK: {
-      const newTracks = state.tracks.length === 1 ?
-        [emptyTrack(state.tracks, state.currentTrackIndex)] :
-        state.tracks.filter((_, i) => state.currentTrackIndex !== i);
+      const newTracks = state.tracks.present.length === 1 ?
+        [emptyTrack(state.tracks.present, state.currentTrackIndex)] :
+        state.tracks.present.filter((_, i) => state.currentTrackIndex !== i);
 
       return {
         ...state,
-        tracks: tracksReducer(newTracks, 0, state.layout, state.scoreBox, action),
+        tracks: tracksReducer(state.tracks, action, 0, state.layout, state.scoreBox, newTracks),
         currentTrackIndex: 0,
         cursor: defaultCursor
       };
@@ -126,7 +142,7 @@ export default function rootReducer(state = {}, action) {
     case SELECT_TRACK: {
       return {
         ...state,
-        tracks: tracksReducer(state.tracks, action.index, state.layout, state.scoreBox, action),
+        tracks: tracksReducer(state.tracks, action, action.index, state.layout, state.scoreBox),
         currentTrackIndex: action.index,
         cursor: defaultCursor
       };
@@ -145,7 +161,7 @@ export default function rootReducer(state = {}, action) {
     case MOVE_CURSOR_RIGHT:
     case MOVE_CURSOR_UP:
     case MOVE_CURSOR_DOWN: {
-      const currentTrack = state.tracks[state.currentTrackIndex];
+      const currentTrack = state.tracks.present[state.currentTrackIndex];
       return {
         ...state,
         cursor: cursorReducer(state.cursor, action, currentTrack.measures, currentTrack.tuning)
@@ -155,20 +171,31 @@ export default function rootReducer(state = {}, action) {
     case INSERT_NOTE:
     case DELETE_NOTE:
     case DELETE_MEASURE: {
-      const currentTrack = state.tracks[state.currentTrackIndex];
+      const currentTrack = state.tracks.present[state.currentTrackIndex];
       const cursor = cursorReducer(state.cursor, action, currentTrack.measures, currentTrack.tuning);
 
       return {
         ...state,
         cursor,
-        tracks: tracksReducer(state.tracks, state.currentTrackIndex, state.layout, state.scoreBox, action)
-      }
+        tracks: tracksReducer(state.tracks, action, state.currentTrackIndex, state.layout, state.scoreBox)
+      };
+    }
+
+    case ActionTypes.UNDO:
+    case ActionTypes.REDO: {
+      const tracks = tracksReducer(state.tracks, action, state.currentTrackIndex, state.layout, state.scoreBox);
+      return {
+        ...state,
+        tracks,
+        selectRange: undefined,
+        cursor: getValidCursor(state.cursor, tracks.present[state.currentTrackIndex])
+      };
     }
 
     default: {
       return {
         ...state,
-        tracks: tracksReducer(state.tracks, state.currentTrackIndex, state.layout, state.scoreBox, action)
+        tracks: tracksReducer(state.tracks, action, state.currentTrackIndex, state.layout, state.scoreBox)
       };
     }
   }

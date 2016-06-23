@@ -143,8 +143,8 @@ class Sidebar extends Component {
 
 function mapStateToProps(state) {
   return {
-    tracks: state.present.tracks,
-    layout: state.present.layout,
+    tracks: state.tracks.present,
+    layout: state.layout,
     timeSignature: timeSignatureSelector(state)
   };
 }

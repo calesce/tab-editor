@@ -5,14 +5,14 @@ import { calcMeasureValidity } from './audioMath';
 const memoizedValidity = memoize(calcMeasureValidity);
 
 export function timeSignatureSelector(state) {
-  const measures = state.present.tracks[state.present.currentTrackIndex].measures;
-  const measureIndex = state.present.cursor.measureIndex;
+  const measures = state.tracks.present[state.currentTrackIndex].measures;
+  const measureIndex = state.cursor.measureIndex;
   return measures.length > 0 ? measures[measureIndex].timeSignature : { beats: 4, beatType: 4 };
 }
 
-const currentMeasureSelector = state => state.present.tracks[state.present.currentTrackIndex].measures;
+const currentMeasureSelector = state => state.tracks.present[state.currentTrackIndex].measures;
 const measureIndexSelector = (_, props) => props.measureIndex;
-const scoreBoxSelector = state => state.present.scoreBox;
+const scoreBoxSelector = state => state.scoreBox;
 
 const measureSelector = createSelector(
   currentMeasureSelector, measureIndexSelector,
@@ -29,11 +29,11 @@ const measureSelector = createSelector(
   };
 });
 
-export const playingIndexSelector = state => state.present.playingIndex;
-const cursorSelector = state => state.present.cursor;
-const tuningSelector = state => state.present.tracks[state.present.currentTrackIndex].tuning;
-const measureLengthSelector = state => state.present.tracks[state.present.currentTrackIndex].measures.length;
-export const selectRangeSelector = state => state.present.selectRange;
+export const playingIndexSelector = state => state.playingIndex;
+const cursorSelector = state => state.cursor;
+const tuningSelector = state => state.tracks.present[state.currentTrackIndex].tuning;
+const measureLengthSelector = state => state.tracks.present[state.currentTrackIndex].measures.length;
+export const selectRangeSelector = state => state.selectRange;
 
 export const finalMeasureSelector = createSelector(
   measureSelector,
@@ -67,13 +67,13 @@ export const cursorSelectorForMeasure = createSelector(
     return (!playingIndex && cursor.measureIndex === measureIndex && !selectRange) ? { cursor }: { cursor: undefined };
 });
 
-const measuresTuningLayoutSelector = state => (
-  {
-    measures: state.present.tracks[state.present.currentTrackIndex].measures,
-    tuning: state.present.tracks[state.present.currentTrackIndex].tuning,
-    layout: state.present.layout
-  }
-);
+const measuresTuningLayoutSelector = state => {
+  return {
+    measures: state.tracks.present[state.currentTrackIndex].measures,
+    tuning: state.tracks.present[state.currentTrackIndex].tuning,
+    layout: state.layout
+  };
+};
 
 const calcHeight = (measures, tuning) => {
   return (measures[measures.length - 1].rowIndex + 1) * (210 + 20 * tuning.length);
@@ -99,23 +99,21 @@ export const scoreSelector = createSelector(
   }
 );
 
-const instrumentListSelector = state => {
-  return state.present.tracks.map(track => track.instrument);
-};
+const instrumentListSelector = state => state.tracks.present.map(track => track.instrument);
 
 export const makeAppSelector = () => {
   return createSelector(
     state => ({
-      measures: state.present.tracks[state.present.currentTrackIndex].measures,
-      clipboard: state.present.clipboard,
-      layout: state.present.layout,
-      playingIndex: state.present.playingIndex,
-      cursor: state.present.cursor,
-      selectRange: state.present.selectRange,
-      tuning: state.present.tracks[state.present.currentTrackIndex].tuning,
-      currentTrackIndex: state.present.currentTrackIndex,
-      metronome: state.present.metronome,
-      countdown: state.present.countdown,
+      measures: state.tracks.present[state.currentTrackIndex].measures,
+      clipboard: state.clipboard,
+      layout: state.layout,
+      playingIndex: state.playingIndex,
+      cursor: state.cursor,
+      selectRange: state.selectRange,
+      tuning: state.tracks.present[state.currentTrackIndex].tuning,
+      currentTrackIndex: state.currentTrackIndex,
+      metronome: state.metronome,
+      countdown: state.countdown,
       future: state.future,
       past: state.past
     }),

@@ -212,8 +212,8 @@ const isButtonSelected = (state, props, currentNote) => {
 };
 
 const currentNoteSelector = (state, ownProps) => {
-  const { cursor, currentTrackIndex, tracks } = state.present;
-  const currentNote = tracks[currentTrackIndex].measures[cursor.measureIndex].notes[cursor.noteIndex];
+  const { cursor, currentTrackIndex, tracks } = state;
+  const currentNote = tracks.present[currentTrackIndex].measures[cursor.measureIndex].notes[cursor.noteIndex];
   return {
     cursor,
     selected: isButtonSelected(state, ownProps, currentNote),

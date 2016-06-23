@@ -6,10 +6,9 @@ import { addRepeatEnd } from '../../actions/measure';
 import hover from './hoverContainer';
 
 const isSelected = state => {
-  const { cursor, currentTrackIndex, tracks } = state.present;
   return {
-    cursor,
-    selected: tracks[currentTrackIndex].measures[cursor.measureIndex].repeatEnd
+    cursor: state.cursor,
+    selected: state.tracks.present[state.currentTrackIndex].measures[state.cursor.measureIndex].repeatEnd
   };
 };
 

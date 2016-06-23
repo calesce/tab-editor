@@ -57,8 +57,8 @@ class PlayPauseButton extends Component {
 
 function mapStateToProps(state) {
   return {
-    playingIndex: state.present.playingIndex,
-    cursor: state.present.cursor
+    playingIndex: state.playingIndex,
+    cursor: state.cursor
   };
 }
 

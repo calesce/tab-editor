@@ -1,37 +1,70 @@
-import trackReducer from './track';
-import { prepareTrack } from '../util';
-import { REPLACE_SONG } from '../actions/tracks';
+import undoable from 'redux-undo';
+
+import { ActionTypes } from 'redux-undo';
+import { REPLACE_SONG, INSERT_TRACK, DELETE_TRACK } from '../actions/tracks';
 import { INSERT_MEASURE, DELETE_MEASURE, CHANGE_BPM, CHANGE_TIME_SIGNATURE } from '../actions/track';
 
-const replaceTrack = (tracks, currentTrackIndex, layout = 'page', scoreBox, action) => {
-  return tracks.map((t, index) => {
+import trackReducer from './track';
+import { prepareTrack } from '../util';
+
+const replaceTrack = (tracks, currentTrackIndex, layout, scoreBox, action) => {
+  return tracks.map((track, index) => {
     if(index === currentTrackIndex) {
-      const newTrack = trackReducer(t, action);
-      return prepareTrack(newTrack, layout, scoreBox);
+      return prepareTrack(trackReducer(track, action), layout, scoreBox);
     }
-    return t;
+    return track;
   });
 };
 
-const applyActionToEachTrack = (tracks, currentTrackIndex, layout, scoreBox, action) => {
-  return tracks.map(t => prepareTrack(trackReducer(t, action), layout, scoreBox));
-};
+const applyActionToEachTrack = (tracks, layout, scoreBox, action) => (
+  tracks.map(track => prepareTrack(trackReducer(track, action), layout, scoreBox))
+);
 
-export default function tracks(tracks, currentTrackIndex, layout, scoreBox, action) {
+const undoableTracks = undoable((state, action) => {
+  return action.newTracks;
+});
+
+const tracks = (tracks, action, currentTrackIndex, layout, scoreBox, newTracks) => {
   switch(action.type) {
+    case ActionTypes.UNDO:
+    case ActionTypes.REDO: {
+      const newState = undoableTracks(tracks, action);
+      return newState;
+    }
+
     case REPLACE_SONG: {
-      return action.tracks.map(track => prepareTrack(track, layout, scoreBox));
+      return undoableTracks(tracks, {
+        type: 'tracks',
+        newTracks: action.tracks.map(track => prepareTrack(track, layout, scoreBox))
+      });
+    }
+
+    case INSERT_TRACK:
+    case DELETE_TRACK: {
+      return undoableTracks(tracks, {
+        type: 'tracks',
+        newTracks: replaceTrack(newTracks, currentTrackIndex, layout, scoreBox, action)
+      });
     }
 
     case INSERT_MEASURE:
     case DELETE_MEASURE:
     case CHANGE_BPM:
     case CHANGE_TIME_SIGNATURE: {
-      return applyActionToEachTrack(tracks, currentTrackIndex, layout, scoreBox, action);
+      return undoableTracks(tracks, {
+          type: 'tracks',
+          newTracks: applyActionToEachTrack(tracks.present, layout, scoreBox, action)
+      });
     }
 
     default: {
-      return replaceTrack(tracks, currentTrackIndex, layout, scoreBox, action);
+      return undoableTracks(tracks, {
+        type: 'tracks',
+        newTracks: replaceTrack(tracks.present || tracks, currentTrackIndex, layout, scoreBox, action)
+      });
     }
   }
-}
+};
+
+
+export default tracks;
