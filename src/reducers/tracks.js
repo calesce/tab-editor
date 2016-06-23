@@ -28,8 +28,10 @@ const tracks = (tracks, action, currentTrackIndex, layout, scoreBox, newTracks) 
   switch(action.type) {
     case ActionTypes.UNDO:
     case ActionTypes.REDO: {
-      const newState = undoableTracks(tracks, action);
-      return newState;
+      if(action.type === ActionTypes.UNDO && tracks.past.length < 2) {
+        return tracks;
+      }
+      return undoableTracks(tracks, action);
     }
 
     case REPLACE_SONG: {
