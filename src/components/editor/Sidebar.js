@@ -3,7 +3,7 @@ import shouldPureComponentUpdate from 'react-pure-render/function';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import { changeLayout, insertTrack, deleteTrack, replaceSong } from '../../actions/tracks';
+import { changeLayout, replaceSong } from '../../actions/tracks';
 import { timeSignatureSelector } from '../../util/selectors';
 import { importMusicXml } from '../../util/musicXml';
 
@@ -16,6 +16,7 @@ import BpmButton from './BpmButton';
 import { RepeatStart, RepeatEnd } from './RepeatButton';
 import PlayPauseButton from './PlayPauseButton';
 import { MetronomeButton, CountdownButton } from './MetronomeButton';
+import { InsertTrackButton, DeleteTrackButton } from './TrackButton';
 
 const style = {
   position: 'fixed',
@@ -120,11 +121,11 @@ class Sidebar extends Component {
           <RepeatEnd />
         </SidebarGroup>
         <SidebarGroup title='Track'>
-          <EditorButton onClick={openModal} type='tuning' label='tuning' />
-          <InstrumentSelect />
-          <button onClick={this.props.insertTrack}>add track</button>
-          <button onClick={this.props.deleteTrack}>remove track</button>
+          <InsertTrackButton />
+          <DeleteTrackButton />
           <TrackSelect />
+          <InstrumentSelect />
+          <EditorButton onClick={openModal} type='tuning' label='tuning' />
         </SidebarGroup>
         <SidebarGroup title='Song'>
           <PlayPauseButton canPlay={canPlay} />
@@ -151,8 +152,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     changeLayout: bindActionCreators(changeLayout, dispatch),
-    insertTrack: bindActionCreators(insertTrack, dispatch),
-    deleteTrack: bindActionCreators(deleteTrack, dispatch),
     replaceSong: bindActionCreators(replaceSong, dispatch)
   };
 }
