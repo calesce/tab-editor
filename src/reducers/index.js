@@ -8,7 +8,6 @@ import { DELETE_MEASURE } from '../actions/track';
 import { DELETE_NOTE, INSERT_NOTE } from '../actions/measure';
 
 import tracksReducer from './tracks';
-import layoutReducer from './layout';
 import cursorReducer from './cursor';
 
 const defaultCursor = {
@@ -83,11 +82,10 @@ export default function rootReducer(state = {}, action) {
     }
 
     case CHANGE_LAYOUT: {
-      const layout = layoutReducer(state.layout, action);
       return {
         ...state,
-        layout,
-        tracks: tracksReducer(state.tracks, action, state.currentTrackIndex, layout, state.scoreBox)
+        layout: action.layout,
+        tracks: tracksReducer(state.tracks, action, state.currentTrackIndex, action.layout, state.scoreBox)
       };
     }
 
