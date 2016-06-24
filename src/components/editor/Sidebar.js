@@ -17,6 +17,7 @@ import { RepeatStart, RepeatEnd } from './RepeatButton';
 import PlayPauseButton from './PlayPauseButton';
 import { MetronomeButton, CountdownButton } from './MetronomeButton';
 import { InsertTrackButton, DeleteTrackButton } from './TrackButton';
+import { UndoButton, RedoButton } from './UndoRedo';
 
 const style = {
   position: 'fixed',
@@ -100,6 +101,10 @@ class Sidebar extends Component {
 
     return (
       <div style={style}>
+        <SidebarGroup title=''>
+          <UndoButton />
+          <RedoButton />
+        </SidebarGroup>
         <SidebarGroup title='Notes'>
           <SidebarButton duration='w'/>
           <SidebarButton duration='h'/>
@@ -128,13 +133,15 @@ class Sidebar extends Component {
           <EditorButton onClick={openModal} type='tuning' label='tuning' />
         </SidebarGroup>
         <SidebarGroup title='Song'>
-          <PlayPauseButton canPlay={canPlay} />
-          <MetronomeButton />
-          <CountdownButton />
           <button onClick={this.toggleLayout}>{layout}</button>
           <button><a download='song' href={url}>export</a></button>
           <input ref={this.inputRef} type='file' style={hiddenStyle} onChange={this.onImport} />
           <button onClick={this.importClicked}>import MusicXML</button>
+        </SidebarGroup>
+        <SidebarGroup title='Play'>
+          <PlayPauseButton canPlay={canPlay} />
+          <MetronomeButton />
+          <CountdownButton />
         </SidebarGroup>
       </div>
     );
