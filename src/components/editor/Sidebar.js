@@ -101,10 +101,6 @@ class Sidebar extends Component {
 
     return (
       <div style={style}>
-        <SidebarGroup title=''>
-          <UndoButton />
-          <RedoButton />
-        </SidebarGroup>
         <SidebarGroup title='Notes'>
           <SidebarButton duration='w'/>
           <SidebarButton duration='h'/>
@@ -142,6 +138,10 @@ class Sidebar extends Component {
           <PlayPauseButton canPlay={canPlay} />
           <MetronomeButton />
           <CountdownButton />
+        </SidebarGroup>
+        <SidebarGroup title='Oops'>
+          <UndoButton />
+          <RedoButton />
         </SidebarGroup>
       </div>
     );
