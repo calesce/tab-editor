@@ -2,6 +2,7 @@ import { createSelector } from 'reselect';
 import { findIndex } from 'lodash';
 import { playingIndexSelector, selectRangeSelector } from './selectors';
 
+export const getTracksSelector = state => ({ tracks: state.tracks.present });
 const tracksSelector = state => state.tracks.present;
 const currentTrackIndexSelector = state => state.currentTrackIndex;
 
