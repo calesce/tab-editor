@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
-import Popover from './Popover';
+import { changeTimeSignature } from '../../actions/track';
 import HoverableText from './HoverableText';
 
 const textStyle = {
@@ -8,6 +9,7 @@ const textStyle = {
 };
 
 const flexStyle = {
+  background: '#FEFBF7',
   height: 200,
   display: 'flex',
   flexDirection: 'column',
@@ -18,7 +20,6 @@ class TimeSignaturePopover extends Component {
   constructor(props) {
     super(props);
 
-    this.onClose = this.onClose.bind(this);
     this.onTwoFourClick = this.onTwoFourClick.bind(this);
     this.onFourFourClick = this.onFourFourClick.bind(this);
     this.onSixEightClick = this.onSixEightClick.bind(this);
@@ -36,8 +37,9 @@ class TimeSignaturePopover extends Component {
     };
   }
 
-  onClose(e) {
-    this.props.onClose(e, this.state.timeSignature, this.state.toEndChecked, this.state.allChecked);
+  componentWillUnmount() {
+    const { timeSignature, toEndChecked, allChecked } = this.state;
+    this.props.changeTimeSignature({ measureIndex: this.props.measureIndex }, timeSignature, toEndChecked, allChecked);
   }
 
   onTwoFourClick() {
@@ -101,41 +103,39 @@ class TimeSignaturePopover extends Component {
 
   render() {
     return (
-      <Popover onClose={this.onClose} height={200} width={160}>
-        <div style={flexStyle}>
-          <span style={{ display: 'flex', justifyContent: 'space-around', paddingTop: 10 }}>
-            <HoverableText onClick={this.onTwoFourClick} text='2/4'/>
-            <HoverableText onClick={this.onFourFourClick} text='4/4'/>
-            <HoverableText onClick={this.onSixEightClick} text='6/8'/>
+      <div style={flexStyle}>
+        <span style={{ display: 'flex', justifyContent: 'space-around', paddingTop: 10 }}>
+          <HoverableText onClick={this.onTwoFourClick} text='2/4'/>
+          <HoverableText onClick={this.onFourFourClick} text='4/4'/>
+          <HoverableText onClick={this.onSixEightClick} text='6/8'/>
+        </span>
+        <div style={{ display: 'flex', justifyContent: 'center', flexShrink: 10 }}>
+          <span style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingTop: 15, alignItems: 'flex-end', flexBasis: '55%' }}>
+            <h3 style={{ textStyle, fontSize: 40, paddingRight: 10 }}>{this.state.timeSignature.beats}</h3>
           </span>
-          <div style={{ display: 'flex', justifyContent: 'center', flexShrink: 10 }}>
-            <span style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingTop: 15, alignItems: 'flex-end', flexBasis: '55%' }}>
-              <h3 style={{ textStyle, fontSize: 40, paddingRight: 10 }}>{this.state.timeSignature.beats}</h3>
-            </span>
-            <span style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingTop: 15, flexBasis: '45%' }}>
-              <HoverableText onClick={this.onIncrementBeats} text='&#9650;'/>
-              <HoverableText onClick={this.onDecrementBeats} text='&#9660;'/>
-            </span>
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'center', flexShrink: 10 }}>
-            <span style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingBottom: 15, alignItems: 'flex-end', flexBasis: '55%' }}>
-              <h3 style={{ textStyle, fontSize: 40, paddingRight: 10 }}>{this.state.timeSignature.beatType}</h3>
-            </span>
-            <span style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingBottom: 15, flexBasis: '45%' }}>
-              <HoverableText onClick={this.onIncrementBeatType} text='&#9650;'/>
-              <HoverableText onClick={this.onDecrementBeatType} text='&#9660;'/>
-            </span>
-          </div>
-          <span style={{ display: 'flex', justifyContent: 'space-around', paddingBottom: 10, paddingLeft: 5, paddingRight: 5 }}>
-            <small style={{ textStyle, fontWeight: 300, fontSize: 12, paddingTop: 3 }}>To End</small>
-            <input type='checkbox' value={this.state.toEndChecked} onChange={this.toEndChanged} />
-            <small style={{ textStyle, fontWeight: 300, fontSize: 12, paddingTop: 3 }}>All Measures</small>
-            <input type='checkbox' value={this.state.allChecked} onChange={this.allChanged} />
+          <span style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingTop: 15, flexBasis: '45%' }}>
+            <HoverableText onClick={this.onIncrementBeats} text='&#9650;'/>
+            <HoverableText onClick={this.onDecrementBeats} text='&#9660;'/>
           </span>
         </div>
-      </Popover>
+        <div style={{ display: 'flex', justifyContent: 'center', flexShrink: 10 }}>
+          <span style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingBottom: 15, alignItems: 'flex-end', flexBasis: '55%' }}>
+            <h3 style={{ textStyle, fontSize: 40, paddingRight: 10 }}>{this.state.timeSignature.beatType}</h3>
+          </span>
+          <span style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingBottom: 15, flexBasis: '45%' }}>
+            <HoverableText onClick={this.onIncrementBeatType} text='&#9650;'/>
+            <HoverableText onClick={this.onDecrementBeatType} text='&#9660;'/>
+          </span>
+        </div>
+        <span style={{ display: 'flex', justifyContent: 'space-around', paddingBottom: 10, paddingLeft: 5, paddingRight: 5 }}>
+          <small style={{ textStyle, fontWeight: 300, fontSize: 12, paddingTop: 3 }}>To End</small>
+          <input type='checkbox' value={this.state.toEndChecked} onChange={this.toEndChanged} />
+          <small style={{ textStyle, fontWeight: 300, fontSize: 12, paddingTop: 3 }}>All Measures</small>
+          <input type='checkbox' value={this.state.allChecked} onChange={this.allChanged} />
+        </span>
+      </div>
     );
   }
 }
 
-export default TimeSignaturePopover;
+export default connect(null, { changeTimeSignature })(TimeSignaturePopover);

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import Popover from 'react-popover-fork';
 
 import { changeTimeSignature } from '../../actions/track';
 import { timeSignatureSelector } from '../../util/selectors';
@@ -12,6 +13,12 @@ const textStyle = {
   fontSize: 17,
   fontWeight: 600,
   fontFamily: 'Optima, Segoe, Segoe UI, Candara, Calibri, Arial, sans-serif'
+};
+
+const popoverStyle = {
+  zIndex: 5,
+  fill: '#FEFBF7',
+  marginLeft: -10
 };
 
 const TimeSignatureButton = hover()(({ timeSignature, style, onClick, color}) => (
@@ -36,32 +43,31 @@ class TimeSignature extends Component {
     };
   }
 
-  onClick(event) {
-    if(!this.state.popoverOpen) {
-      if(!this.event || event.target !== this.event.target) {
-        this.setState({ popoverOpen: true });
-      }
-      this.event = null;
+  onClick() {
+    if(this.state.popoverOpen) {
+      this.onPopoverClose();
+    } else {
+      this.setState({ popoverOpen: true });
     }
   }
 
-  onPopoverClose(event, timeSignature, toEndChecked, allChecked) {
-    this.event = event;
-    if(timeSignature.beats !== this.props.timeSignature.beats || timeSignature.beatType !== this.props.timeSignature.beatType) {
+  onPopoverClose() {
+    //this.event = event;
+    /*if(timeSignature.beats !== this.props.timeSignature.beats || timeSignature.beatType !== this.props.timeSignature.beatType) {
       this.props.changeTimeSignature({ measureIndex: this.props.measureIndex }, timeSignature, toEndChecked, allChecked);
-    }
+    }*/
     this.setState({ popoverOpen: false });
   }
 
   render() {
     const { timeSignature, style, color } = this.props;
+    const body = <TimeSignaturePopover timeSignature={timeSignature} measureIndex={this.props.measureIndex} />;
 
     return (
       <div>
-        <TimeSignatureButton onClick={this.onClick} timeSignature={timeSignature} style={style} color={color} />
-        { this.state.popoverOpen ?
-          <TimeSignaturePopover timeSignature={timeSignature} onClose={this.onPopoverClose} />
-          : null }
+        <Popover style={popoverStyle} isOpen={this.state.popoverOpen} onOuterAction={this.onPopoverClose} body={body}>
+          <TimeSignatureButton onClick={this.onClick} timeSignature={timeSignature} style={style} color={color} />
+        </Popover>
       </div>
     );
   }
