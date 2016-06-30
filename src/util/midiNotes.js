@@ -31,13 +31,21 @@ export function getStaffPositionOfNote(midi: string): number {
 }
 
 export function previousNote(midi: string): string {
-  let index = getIndexOfNote(midi);
-
+  const index = getIndexOfNote(midi);
   return index === 0 ? midi : midis[index - 1];
 }
 
 export function nextNote(midi: string): string {
-  let index = getIndexOfNote(midi);
-
+  const index = getIndexOfNote(midi);
   return index >= midis.length - 1 ? midi : midis[index + 1];
+}
+
+export function previousOctave(midi: string): string {
+  const index = getIndexOfNote(midi);
+  return index < 12 ? midi : midis[index - 12];
+}
+
+export function nextOctave(midi: string): string {
+  const index = getIndexOfNote(midi);
+  return index > midis.length - 13 ? midi : midis[index + 12];
 }

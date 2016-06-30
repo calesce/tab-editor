@@ -16,6 +16,7 @@ import { MetronomeButton, CountdownButton } from './MetronomeButton';
 import { InsertTrackButton, DeleteTrackButton } from './TrackButton';
 import { UndoButton, RedoButton } from './UndoRedo';
 import ImportButton, { ExportButton } from './ImportExportButton';
+import TuningButton from './TuningButton';
 
 const style = {
   position: 'fixed',
@@ -32,22 +33,6 @@ const style = {
   boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.1)'
 };
 
-class EditorButton extends Component {
-  shouldComponentUpdate = shouldPureComponentUpdate;
-  constructor() {
-    super();
-    this.onClick = this.onClick.bind(this);
-  }
-
-  onClick() {
-    this.props.onClick(this.props.type);
-  }
-
-  render() {
-    return <button onClick={this.onClick}>{this.props.label}</button>;
-  }
-}
-
 class Sidebar extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
 
@@ -56,6 +41,7 @@ class Sidebar extends Component {
 
     this.toggleLayout = this.toggleLayout.bind(this);
     this.openBpm = this.openBpm.bind(this);
+    this.openTuning = this.openTuning.bind(this);
   }
 
   toggleLayout() {
@@ -63,11 +49,15 @@ class Sidebar extends Component {
   }
 
   openBpm() {
-    this.props.openModal('bpm');
+    this.props.togglePopover('bpm');
+  }
+
+  openTuning() {
+    this.props.togglePopover('tuning');
   }
 
   render() {
-    const { popoverOpen, openModal, closeModal, layout, canPlay } = this.props;
+    const { popoverOpen, togglePopover, layout, canPlay } = this.props;
 
     return (
       <div style={style}>
@@ -87,16 +77,16 @@ class Sidebar extends Component {
         </SidebarGroup>
         <SidebarGroup title='Measure'>
           <TimeSignature />
-          <BpmButton onClick={this.openBpm} onClose={closeModal} popoverOpen={popoverOpen === 'bpm'} />
+          <BpmButton onClick={this.openBpm} onClose={togglePopover} popoverOpen={popoverOpen === 'bpm'} />
           <RepeatStart />
           <RepeatEnd />
         </SidebarGroup>
         <SidebarGroup title='Track'>
           <InsertTrackButton />
           <DeleteTrackButton />
-          <TrackSelect />
+          <TuningButton onClick={this.openTuning} onClose={togglePopover} popoverOpen={popoverOpen === 'tuning'} />
           <InstrumentSelect />
-          <EditorButton onClick={openModal} type='tuning' label='tuning' />
+          <TrackSelect />
         </SidebarGroup>
         <SidebarGroup title='Song'>
           <ExportButton />

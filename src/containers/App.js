@@ -19,7 +19,6 @@ import { makeAppSelector } from '../util/selectors';
 
 import Score from '../components/Score';
 import Sidebar from '../components/editor/Sidebar';
-import TuningModal from '../components/editor/TuningModal';
 import Playback from '../components/Playback';
 
 const Actions = Object.assign(TracksActions, TrackActions, MeasureActions, PlayingIndexActions, CursorActions, CopyPasteActions);
@@ -39,8 +38,7 @@ class App extends Component {
     this.cutNote = this.cutNote.bind(this);
     this.selectAllNotes = this.selectAllNotes.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
-    this.openModal = this.openModal.bind(this);
-    this.closeModal = this.closeModal.bind(this);
+    this.togglePopover = this.togglePopover.bind(this);
 
     if (typeof window !== 'undefined') {
       window.addEventListener('keydown', this.handleKeyPress);
@@ -165,7 +163,7 @@ class App extends Component {
   }
 
   handleKeyPress(event) {
-    if(this.state.openModal || (this.props.playingIndex && event.keyCode !== 32)) {
+    if(this.state.popover || (this.props.playingIndex && event.keyCode !== 32)) {
       return;
     }
 
@@ -225,26 +223,20 @@ class App extends Component {
     }
   }
 
-  openModal(openModal) {
-    this.setState({ openModal });
-  }
-
-  closeModal() {
-    this.setState({ openModal: null });
+  togglePopover(popover) {
+    this.setState({ popover: this.state.popover ? null : popover });
   }
 
   render() {
     const { playingIndex, metronome, countdown } = this.props;
-    const { openModal, buffers } = this.state;
+    const { popover, buffers } = this.state;
     const canPlay = buffers && (!(metronome || countdown) || buffers.woodblock);
 
     return (
       <div style={style}>
         { playingIndex ? <Playback buffers={buffers} metronome={metronome} countdown={countdown} /> : null}
-        <Sidebar canPlay={canPlay} popoverOpen={openModal}
-          openModal={this.openModal} closeModal={this.closeModal} />
+        <Sidebar canPlay={canPlay} popoverOpen={popover} togglePopover={this.togglePopover} />
         <Score />
-        <TuningModal isOpen={openModal === 'tuning'} closeModal={this.closeModal} />
       </div>
     );
   }
