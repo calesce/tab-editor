@@ -65,7 +65,7 @@ class BpmPopover extends Component {
 
   componentDidMount() {
     if(this.textInput) {
-      this.textInput.focus();
+      this.textInput.select();
     }
   }
 
@@ -160,4 +160,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { changeBpm })(Bpm);
+export default connect(mapStateToProps)(Bpm);

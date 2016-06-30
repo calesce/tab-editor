@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Popover from 'react-popover-fork';
 
-import { changeTimeSignature } from '../../actions/track';
-import { timeSignatureSelector } from '../../util/selectors';
-
-import TimeSignaturePopover from './TimeSignaturePopover';
 import hover from './hoverContainer';
+import { timeSignatureSelector } from '../../util/selectors';
+import TimeSignaturePopover from './TimeSignaturePopover';
 
 const textStyle = {
   fontSize: 17,
@@ -52,10 +49,6 @@ class TimeSignature extends Component {
   }
 
   onPopoverClose() {
-    //this.event = event;
-    /*if(timeSignature.beats !== this.props.timeSignature.beats || timeSignature.beatType !== this.props.timeSignature.beatType) {
-      this.props.changeTimeSignature({ measureIndex: this.props.measureIndex }, timeSignature, toEndChecked, allChecked);
-    }*/
     this.setState({ popoverOpen: false });
   }
 
@@ -80,10 +73,4 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    changeTimeSignature: bindActionCreators(changeTimeSignature, dispatch)
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(TimeSignature);
+export default connect(mapStateToProps)(TimeSignature);
