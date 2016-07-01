@@ -1,17 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { reverse, last } from 'lodash';
+import { head, last } from 'lodash';
 import Popover from 'react-popover-fork';
 
+import HoverableText from './HoverableText';
 import hover from './hoverContainer';
 import { changeTuning } from '../../actions/track';
 import { nextNote, previousNote, previousOctave, nextOctave } from '../../util/midiNotes';
-
-/*const textStyle = {
-  fontSize: 10,
-  fontWeight: 700,
-  fontFamily: 'Optima, Segoe, Segoe UI, Candara, Calibri, Arial, sans-serif'
-};*/
 
 const popoverStyle = {
   zIndex: 5,
@@ -20,15 +15,16 @@ const popoverStyle = {
 };
 
 const flexStyle = {
-  background: '#FEFBF7',
   display: 'flex',
   flexDirection: 'column',
-  justifyContent: 'space-between'
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginRight: 5
 };
 
 const textInputStyle = {
   fontFamily: 'Optima, Segoe, Segoe UI, Candara, Calibri, Arial, sans-serif',
-  marginTop: 5, marginBottom: 5, marginLeft: 15, marginRight: 15, width: 70
+  marginTop: 5, marginBottom: 5, marginLeft: 5, marginRight: 5, width: 25
 };
 
 const TuningIcon = hover()(({ style, onClick, color}) => (
@@ -41,7 +37,19 @@ class TuningStringInput extends Component {
   constructor() {
     super();
 
+    this.removeString = this.removeString.bind(this);
     this.onTextChanged = this.onTextChanged.bind(this);
+    this.setRef = this.setRef.bind(this);
+  }
+
+  componentDidMount() {
+    if(this.props.index === 0) {
+      this.input.select();
+    }
+  }
+
+  removeString() {
+    this.props.removeString(this.props.index);
   }
 
   midiStringFromKeyCode(string, keyCode, shiftKey) {
@@ -78,9 +86,18 @@ class TuningStringInput extends Component {
 
   noop() { /* this exists to make React happy */ }
 
+  setRef(el) {
+    this.input = el;
+  }
+
   render() {
-    return <input style={textInputStyle} type='text' tabindex='1' size={2} value={this.props.string}
-      onChange={this.noop} onKeyDown={this.onTextChanged} />;
+    return (
+      <span style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <input style={textInputStyle} type='text' tabindex='1' size={2} value={this.props.string}
+          onChange={this.noop} onKeyDown={this.onTextChanged} ref={this.setRef} />
+        <HoverableText onClick={this.removeString} text='x' style={{ fontWeight: 600 }} />
+      </span>
+    );
   }
 }
 
@@ -92,28 +109,65 @@ class TuningPopover extends Component {
       tuning: [].concat(props.tuning)
     };
 
+    this.removeString = this.removeString.bind(this);
+    this.incrementAllStrings = this.incrementAllStrings.bind(this);
+    this.decrementAllStrings = this.decrementAllStrings.bind(this);
+    this.addTopString = this.addTopString.bind(this);
+    this.addBottomString = this.addBottomString.bind(this);
     this.onChange = this.onChange.bind(this);
   }
 
   componentWillUnmount() {
-    this.props.changeTuning(reverse(this.state.tuning));
+    this.props.changeTuning(this.state.tuning);
+  }
+
+  removeString(index) {
+    this.setState({ tuning: this.state.tuning.filter((_, i) => i !== this.state.tuning.length - 1 - index) });
+  }
+
+  incrementAllStrings() {
+    this.setState({ tuning: this.state.tuning.map(nextNote) });
+  }
+
+  decrementAllStrings() {
+    this.setState({ tuning: this.state.tuning.map(previousNote) });
+  }
+
+  addTopString() {
+    this.setState({ tuning: this.state.tuning.concat(last(this.state.tuning)) });
+  }
+
+  addBottomString() {
+    this.setState({ tuning: [head(this.state.tuning)].concat(this.state.tuning) });
   }
 
   onChange(newString, i) {
     const { tuning } = this.state;
-    const newTuning = tuning.slice(0, i).concat(newString).concat(tuning.slice(i + 1, tuning.length));
-    this.setState({ tuning: reverse(newTuning) });
+    const { length } = tuning;
+    const newTuning = tuning.slice(0, length - 1 - i).concat(newString).concat(tuning.slice(length - i, length));
+    this.setState({ tuning: newTuning });
   }
 
   render() {
-    const tuningInputs = reverse(this.state.tuning).map((string, i) => (
-      <TuningStringInput string={string} index={i} key={i} onChange={this.onChange} />
+    const { tuning } = this.state;
+
+    const tuningInputs = tuning.slice(0).reverse().map((string, i) => (
+      <TuningStringInput string={string} index={i}
+        key={i} onChange={this.onChange} removeString={this.removeString} />
     ));
 
     return (
-        <form style={flexStyle}>
+      <div style={{ display: 'flex', flexDirection: 'row', background: '#FEFBF7' }}>
+        <span style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', marginLeft: 5 }}>
+          <HoverableText onClick={this.incrementAllStrings} text='&#9650;'/>
+          <HoverableText onClick={this.decrementAllStrings} text='&#9660;'/>
+        </span>
+        <div style={flexStyle}>
+          <HoverableText onClick={this.addTopString} text='+' style={{ fontWeight: 800 }}/>
           {tuningInputs}
-        </form>
+          <HoverableText onClick={this.addBottomString} text='+' style={{ fontWeight: 800 }}/>
+        </div>
+      </div>
     );
   }
 }
@@ -123,12 +177,32 @@ class TuningButton extends Component {
   constructor() {
     super();
 
+    this.handleKeyPress = this.handleKeyPress.bind(this);
     this.onClick = this.onClick.bind(this);
     this.onPopoverClose = this.onPopoverClose.bind(this);
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('keydown', this.handleKeyPress);
+    }
 
     this.state = {
       popoverOpen: false
     };
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('keywdown', this.handleKeyPress);
+  }
+
+  handleKeyPress(e) {
+    if(this.state.popoverOpen) {
+      if(e.keyCode === 13) { // enter
+        this.onPopoverClose();
+      } else if(e.keyCode === 27) { // escape
+        // TODO make this cancel the tuning change instead of updating it
+        this.onPopoverClose();
+      }
+    }
   }
 
   onClick() {

@@ -35,7 +35,7 @@ export default function hover() {
 
         return (
           <div onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
-            <WrappedComponent {...this.props} color={color} style={style} />
+            <WrappedComponent {...this.props} color={color} style={{ ...this.props.style, ...style }} />
           </div>
         );
       }
