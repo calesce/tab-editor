@@ -93,7 +93,7 @@ class TuningStringInput extends Component {
   render() {
     return (
       <span style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <input style={textInputStyle} type='text' tabindex='1' size={2} value={this.props.string}
+        <input style={textInputStyle} type='text' size={2} value={this.props.string}
           onChange={this.noop} onKeyDown={this.onTextChanged} ref={this.setRef} />
         <HoverableText onClick={this.removeString} text='x' style={{ fontWeight: 600 }} />
       </span>
@@ -201,6 +201,8 @@ class TuningButton extends Component {
       } else if(e.keyCode === 27) { // escape
         // TODO make this cancel the tuning change instead of updating it
         this.onPopoverClose();
+      } else if(e.keyCode === 37 || e.keyCode === 39) { // left/right arrow
+        e.preventDefault();
       }
     }
   }
