@@ -75,10 +75,10 @@ export default class Sidebar extends Component {
           <RepeatEnd />
         </SidebarGroup>
         <SidebarGroup title='Track'>
-          <InsertTrackButton />
-          <DeleteTrackButton />
           <TuningButton onClick={this.openTuning} onClose={togglePopover} popoverOpen={popoverOpen === 'tuning'} />
           <InstrumentSelect />
+          <InsertTrackButton />
+          <DeleteTrackButton />
           <TrackSelect />
         </SidebarGroup>
         <SidebarGroup title='Song'>

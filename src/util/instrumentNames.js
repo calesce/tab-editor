@@ -1,4 +1,4 @@
-export const instrumentNameMappings = [
+export const instrumentNames = [
   'acoustic_grand_piano',
   'bright_acoustic_piano',
   'electric_grand_piano',

@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-
 import { selectTrack } from '../../actions/tracks';
 
 export default class TrackSelect extends Component {
@@ -33,10 +31,4 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    selectTrack: bindActionCreators(selectTrack, dispatch)
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(TrackSelect);
+export default connect(mapStateToProps, { selectTrack })(TrackSelect);

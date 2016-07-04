@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import shouldPureComponentUpdate from 'react-pure-render/function';
 
 import { setInstrument } from '../../actions/track';
-
-import instruments from 'soundfont-player/instruments.json';
+import { instrumentNames } from '../../util/instrumentNames';
 
 export default class InstrumentSelect extends Component {
   constructor() {
@@ -22,8 +20,8 @@ export default class InstrumentSelect extends Component {
 
   render() {
     return (
-      <select onChange={this.onChange} value={this.props.instrument}>
-        { instruments.map((instrument) => {
+      <select style={{ width: 180 }} onChange={this.onChange} value={this.props.instrument}>
+        { instrumentNames.map((instrument) => {
           return <option key={instrument} value={instrument}>{instrument}</option>;
         })}
       </select>
@@ -37,10 +35,4 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    setInstrument: bindActionCreators(setInstrument, dispatch)
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(InstrumentSelect);
+export default connect(mapStateToProps, { setInstrument })(InstrumentSelect);
