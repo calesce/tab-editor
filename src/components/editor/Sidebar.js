@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
 import shouldPureComponentUpdate from 'react-pure-render/function';
-import { connect } from 'react-redux';
-
-import { changeLayout } from '../../actions/tracks';
 
 import InstrumentSelect from './InstrumentSelect';
 import TrackSelect from './TrackSelect';
@@ -17,6 +14,7 @@ import { InsertTrackButton, DeleteTrackButton } from './TrackButton';
 import { UndoButton, RedoButton } from './UndoRedo';
 import ImportButton, { ExportButton } from './ImportExportButton';
 import TuningButton from './TuningButton';
+import LayoutButton from './LayoutButton';
 
 const style = {
   position: 'fixed',
@@ -33,19 +31,14 @@ const style = {
   boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.1)'
 };
 
-class Sidebar extends Component {
+export default class Sidebar extends Component {
   shouldComponentUpdate = shouldPureComponentUpdate;
 
   constructor() {
     super();
 
-    this.toggleLayout = this.toggleLayout.bind(this);
     this.openBpm = this.openBpm.bind(this);
     this.openTuning = this.openTuning.bind(this);
-  }
-
-  toggleLayout() {
-    this.props.changeLayout(this.props.layout === 'page' ? 'linear' : 'page');
   }
 
   openBpm() {
@@ -57,7 +50,7 @@ class Sidebar extends Component {
   }
 
   render() {
-    const { popoverOpen, togglePopover, layout, canPlay } = this.props;
+    const { popoverOpen, togglePopover, canPlay } = this.props;
 
     return (
       <div style={style}>
@@ -91,7 +84,7 @@ class Sidebar extends Component {
         <SidebarGroup title='Song'>
           <ExportButton />
           <ImportButton />
-          <button onClick={this.toggleLayout}>{layout}</button>
+          <LayoutButton />
         </SidebarGroup>
         <SidebarGroup title='Play'>
           <PlayPauseButton canPlay={canPlay} />
@@ -106,5 +99,3 @@ class Sidebar extends Component {
     );
   }
 }
-
-export default connect(state => ({ layout: state.layout }), { changeLayout })(Sidebar);
