@@ -7,11 +7,8 @@ import hover from './hoverContainer';
 const isMetronomeSelected = state => ({ selected: state.metronome === true });
 const isCountdownSelected = state => ({ selected: state.countdown === true });
 
-const mapDispatchMetronome = { toggleMetronome };
-const mapDispatchCountdown = { toggleCountdown };
-
 export const MetronomeButton =
-  connect(isMetronomeSelected, mapDispatchMetronome)(
+  connect(isMetronomeSelected, { toggleMetronome })(
     hover()(({ style, color, cursor, selected, toggleMetronome }) => {
       if(selected) {
         color = '#b3caf5';
@@ -35,7 +32,7 @@ export const MetronomeButton =
 );
 
 export const CountdownButton =
-  connect(isCountdownSelected, mapDispatchCountdown)(
+  connect(isCountdownSelected, { toggleCountdown })(
     hover()(({ style, color, cursor, selected, toggleCountdown }) => {
       if(selected) {
         color = '#b3caf5';

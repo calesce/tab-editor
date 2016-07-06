@@ -11,6 +11,13 @@ const currentMeasureSelector = createSelector(
   (measureIndex, measures) => measures[measureIndex]
 );
 
+const getPlayingNoteIndex = (playingIndex, measureIndex) => {
+  if(playingIndex) {
+    return playingIndex.measureIndex === measureIndex ? playingIndex.noteIndex : undefined;
+  }
+  return undefined;
+};
+
 export const makeMeasureSelector = () => {
   return createSelector(
     [
@@ -18,14 +25,9 @@ export const makeMeasureSelector = () => {
       measureLengthSelector, selectRangeSelector
     ],
     (measure, measureIndex, playingIndex, tuning, measureLength, selectRange) => {
-      let playingNoteIndex;
-      if(playingIndex) {
-        playingNoteIndex = playingIndex.measureIndex === measureIndex ? playingIndex.noteIndex : undefined;
-      }
-
       return {
         measure,
-        playingNoteIndex,
+        playingNoteIndex: getPlayingNoteIndex(playingIndex, measureIndex),
         isValid: memoizedValidity(measure),
         tuning,
         measureLength,

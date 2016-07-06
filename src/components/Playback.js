@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 
 import { setPlayingIndex } from '../actions/playingIndex';
 import { setCursor } from '../actions/cursor';
@@ -128,11 +127,4 @@ class Playback extends Component {
   }
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    setPlayingIndex: bindActionCreators(setPlayingIndex, dispatch),
-    setCursor: bindActionCreators(setCursor, dispatch)
-  };
-}
-
-export default connect(expandedTracksSelector, mapDispatchToProps)(Playback);
+export default connect(expandedTracksSelector, { setPlayingIndex, setCursor })(Playback);

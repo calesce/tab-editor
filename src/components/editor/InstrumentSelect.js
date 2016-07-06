@@ -31,10 +31,7 @@ export default class InstrumentSelect extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    instrument: state.tracks.present[state.currentTrackIndex].instrument
-  };
-}
-
-export default connect(mapStateToProps, { setInstrument })(InstrumentSelect);
+export default connect(
+  state => ({ instrument: state.tracks.present[state.currentTrackIndex].instrument }),
+  { setInstrument }
+)(InstrumentSelect);

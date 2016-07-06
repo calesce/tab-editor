@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 
 import { setCursor } from '../../actions/cursor';
 import { setPlayingIndex } from '../../actions/playingIndex';
-
 import hover from './hoverContainer';
 
 const PlayButton = ({ onClick, style, color, canPlay }) => (
@@ -55,11 +54,10 @@ class PlayPauseButton extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
+export default connect(
+  state => ({
     playingIndex: state.playingIndex,
     cursor: state.cursor
-  };
-}
-
-export default connect(mapStateToProps, { setPlayingIndex, setCursor })(hover()(PlayPauseButton));
+  }),
+  { setPlayingIndex, setCursor }
+)(hover()(PlayPauseButton));

@@ -85,7 +85,10 @@ const playTrill = (replaySpeed, buffers, tuning, noteToPlay) => {
     if(i % 2 === 0) {
       playNoteAtTime(noteToPlay, currentTime + (i * replaySpeed / (n * 1000)), replaySpeed / n, buffers, tuning);
     } else {
-      const nextNote = Object.assign({}, noteToPlay, { fret: noteToPlay.fret.map((note) => note + 1) });
+      const nextNote = {
+        ...noteToPlay,
+        fret: noteToPlay.fret.map((note) => note + 1)
+      };
       playNoteAtTime(nextNote, currentTime + (i * replaySpeed / (n * 1000)), replaySpeed / n, buffers, tuning);
     }
   });

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { head, last } from 'lodash';
 import Popover from 'react-popover-fork';
 
+import { tuningSelector } from '../../util/selectors';
 import HoverableText from './HoverableText';
 import hover from './hoverContainer';
 import { changeTuning } from '../../actions/track';
@@ -236,6 +237,4 @@ class TuningButton extends Component {
   }
 }
 
-const mapStateToProps = state => ({ tuning: state.tracks.present[state.currentTrackIndex].tuning });
-
-export default connect(mapStateToProps)(TuningButton);
+export default connect(state => ({ tuning: tuningSelector(state) }))(TuningButton);

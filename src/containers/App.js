@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-
 import { ActionCreators } from 'redux-undo';
 
 import * as TracksActions from '../actions/tracks';
@@ -242,12 +241,11 @@ class App extends Component {
   }
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
+export default connect(
+  makeMapStateToProps(makeAppSelector),
+  dispatch => ({
     actions: bindActionCreators(Actions, dispatch),
     undo: bindActionCreators(ActionCreators.undo, dispatch),
     redo: bindActionCreators(ActionCreators.redo, dispatch)
-  };
-}
-
-export default connect(makeMapStateToProps(makeAppSelector), mapDispatchToProps)(App);
+  })
+)(App);

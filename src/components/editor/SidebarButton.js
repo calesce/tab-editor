@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { changeNoteLength, makeNoteRest, toggleNoteDotted, setNoteTuplet,
   toggleNoteTremolo, toggleNoteTrill, toggleNoteVibrato } from '../../actions/measure';
@@ -223,16 +222,7 @@ const currentNoteSelector = (state, ownProps) => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    changeNoteLength: bindActionCreators(changeNoteLength, dispatch),
-    makeNoteRest: bindActionCreators(makeNoteRest, dispatch),
-    toggleNoteDotted: bindActionCreators(toggleNoteDotted, dispatch),
-    setNoteTuplet: bindActionCreators(setNoteTuplet, dispatch),
-    toggleNoteTremolo: bindActionCreators(toggleNoteTremolo, dispatch),
-    toggleNoteTrill: bindActionCreators(toggleNoteTrill, dispatch),
-    toggleNoteVibrato: bindActionCreators(toggleNoteVibrato, dispatch)
-  };
-};
-
-export default connect(currentNoteSelector, mapDispatchToProps)(SidebarButton);
+export default connect(currentNoteSelector, {
+  changeNoteLength, makeNoteRest, toggleNoteDotted, setNoteTuplet,
+  toggleNoteTremolo, toggleNoteTrill, toggleNoteVibrato
+})(SidebarButton);

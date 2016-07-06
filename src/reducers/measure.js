@@ -7,7 +7,7 @@ import { CHANGE_NOTE, DELETE_NOTE, CHANGE_NOTE_LENGTH, INSERT_NOTE, MAKE_NOTE_RE
 
 const replaceNote = (state, note, noteIndex) => {
   const notes = flatten([state.notes.slice(0, noteIndex), note, state.notes.slice(noteIndex + 1, state.notes.length)]);
-  return Object.assign({}, state, { notes });
+  return { ...state, notes };
 };
 
 const insertNote = (state, action) => {
@@ -43,7 +43,7 @@ const deleteNote = (state, action) => {
 
   if(note.fret[0] === 'rest') {
     const notes = flatten([state.notes.slice(0, noteIndex), state.notes.slice(noteIndex + 1, state.notes.length)]);
-    return Object.assign({}, state, { notes });
+    return { ...state, notes };
   } else if(currentStringIndex === -1) {
     return state;
   } else {
@@ -125,51 +125,75 @@ export default function measure(state, action) {
 
     case TOGGLE_NOTE_DOTTED: {
       const { noteIndex } = action.index;
-      const note = Object.assign({}, state.notes[noteIndex], { dotted: state.notes[noteIndex].dotted ? false : true });
+      const note = {
+        ...state.notes[noteIndex],
+        dotted: state.notes[noteIndex].dotted ? false : true
+      };
       return replaceNote(state, note, noteIndex);
     }
 
     case TOGGLE_NOTE_TREMOLO: {
       const { noteIndex } = action.index;
-      const note = Object.assign({}, state.notes[noteIndex], { tremolo: state.notes[noteIndex].tremolo ? false : true });
+      const note = {
+        ...state.notes[noteIndex],
+        tremolo: state.notes[noteIndex].tremolo ? false : true
+      };
       return replaceNote(state, note, noteIndex);
     }
 
     case TOGGLE_NOTE_VIBRATO: {
       const { noteIndex } = action.index;
-      const note = Object.assign({}, state.notes[noteIndex], { vibrato: state.notes[noteIndex].vibrato ? false : true });
+      const note = {
+        ...state.notes[noteIndex],
+        vibrato: state.notes[noteIndex].vibrato ? false : true
+      };
       return replaceNote(state, note, noteIndex);
     }
 
     case TOGGLE_NOTE_TRILL: {
       const { noteIndex } = action.index;
-      const note = Object.assign({}, state.notes[noteIndex], { trill: state.notes[noteIndex].trill ? false : true });
+      const note = {
+        ...state.notes[noteIndex],
+        trill: state.notes[noteIndex].trill ? false : true
+      };
       return replaceNote(state, note, noteIndex);
     }
 
     case SET_NOTE_TUPLET: {
       const { noteIndex } = action.index;
-      const note = Object.assign({}, state.notes[noteIndex], { tuplet: action.tuplet });
+      const note = {
+        ...state.notes[noteIndex],
+        tuplet: action.tuplet
+      };
       return replaceNote(state, note, noteIndex);
     }
 
     case CHANGE_NOTE_LENGTH: {
       const { noteIndex } = action.index;
-      const note = Object.assign({}, state.notes[noteIndex], { duration: action.duration });
+      const note = {
+        ...state.notes[noteIndex],
+        duration: action.duration
+      };
       return replaceNote(state, note, noteIndex);
     }
 
     case INCREASE_NOTE_LENGTH: {
       const { noteIndex } = action.index;
       const duration = increaseNoteLength(state.notes[noteIndex]);
-      const note = Object.assign({}, state.notes[noteIndex], { duration });
+      const note = {
+        ...state.notes[noteIndex],
+        duration
+      };
       return replaceNote(state, note, noteIndex);
     }
 
     case DECREASE_NOTE_LENGTH: {
       const { noteIndex } = action.index;
       const duration = decreaseNoteLength(state.notes[noteIndex]);
-      const note = Object.assign({}, state.notes[noteIndex], { duration });
+      const note = {
+        ...state.notes[noteIndex],
+        duration
+      };
       return replaceNote(state, note, noteIndex);
     }
 
@@ -234,10 +258,10 @@ export default function measure(state, action) {
       const { noteIndex } = action.index;
       if(action.clipboard.notes) {
         const notes = flatten([state.notes.slice(0, noteIndex + 1), action.clipboard.notes, state.notes.slice(noteIndex + 1, state.notes.length)]);
-        return Object.assign({}, state, { notes });
+        return { ...state, notes };
       } else if(!Array.isArray(action.clipboard)) {
         const notes = flatten([state.notes.slice(0, noteIndex + 1), action.clipboard, state.notes.slice(noteIndex + 1, state.notes.length)]);
-        return Object.assign({}, state, { notes });
+        return { ...state, notes };
       }
 
       return state;
@@ -251,10 +275,10 @@ export default function measure(state, action) {
         const notes = state.notes.filter((_, i) => {
           return action.range[measureIndex].indexOf(i) === -1;
         });
-        return Object.assign({}, state, { notes });
+        return { ...state, notes };
       } else if(!Array.isArray(action.selection)) {
         const notes = flatten([state.notes.slice(0, noteIndex), state.notes.slice(noteIndex + 1, state.notes.length)]);
-        return Object.assign({}, state, { notes });
+        return { ...state, notes };
       }
 
       return state;

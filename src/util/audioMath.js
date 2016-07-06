@@ -60,7 +60,7 @@ const getDurationFraction = (duration: string): any => {
   }
 };
 
-export const calcMeasureValidity = (measure: Object): boolean => {
+const calcMeasureValidity = (measure: Object): boolean => {
   const timeSig = Fraction(measure.timeSignature.beats / measure.timeSignature.beatType);
   const totalDuration = measure.notes.reduce((total, note) => {
     let duration = getDurationFraction(note.duration);

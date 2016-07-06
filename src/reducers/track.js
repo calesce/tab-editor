@@ -104,10 +104,16 @@ export default function track(state = {}, action) {
       return action.track;
 
     case SET_INSTRUMENT:
-      return Object.assign({}, state, { instrument: action.instrument });
+      return {
+        ...state,
+        instrument: action.instrument
+      };
 
     case CHANGE_TUNING:
-      return Object.assign({}, state, { tuning: action.tuning });
+      return {
+        ...state,
+        tuning: action.tuning
+      };
 
     case CHANGE_BPM: {
       let newMeasures;

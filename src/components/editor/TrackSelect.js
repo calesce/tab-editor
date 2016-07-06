@@ -24,11 +24,10 @@ export default class TrackSelect extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
+export default connect(
+  state => ({
     tracks: state.tracks.present,
     currentTrackIndex: state.currentTrackIndex
-  };
-}
-
-export default connect(mapStateToProps, { selectTrack })(TrackSelect);
+  }),
+  { selectTrack }
+)(TrackSelect);

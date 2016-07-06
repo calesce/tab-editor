@@ -153,11 +153,9 @@ class Bpm extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
+export default connect(
+  state => ({
     bpm: state.tracks.present[state.currentTrackIndex].measures[state.cursor.measureIndex].bpm,
     cursor: state.cursor
-  };
-}
-
-export default connect(mapStateToProps)(Bpm);
+  })
+)(Bpm);

@@ -1,5 +1,4 @@
 import React from 'react';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { addRepeatEnd } from '../../actions/measure';
 
@@ -12,13 +11,9 @@ const isSelected = state => {
   };
 };
 
-const mapDispatchEnd = dispatch => {
-  return {
-    addRepeatEnd: bindActionCreators(addRepeatEnd, dispatch)
-  };
-};
-
-export const RepeatEnd = connect(isSelected, mapDispatchEnd)(hover()(({ style, color, cursor, selected, addRepeatEnd }) => {
+export const RepeatEnd = connect(
+  isSelected, { addRepeatEnd }
+)(hover()(({ style, color, cursor, selected, addRepeatEnd }) => {
   if(selected) {
     color = '#b3caf5';
   }

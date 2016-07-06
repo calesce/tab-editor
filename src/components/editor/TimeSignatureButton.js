@@ -66,11 +66,9 @@ class TimeSignature extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
+export default connect(
+  state => ({
     timeSignature: timeSignatureSelector(state),
     measureIndex: state.cursor.measureIndex
-  };
-}
-
-export default connect(mapStateToProps)(TimeSignature);
+  })
+)(TimeSignature);
