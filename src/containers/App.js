@@ -14,7 +14,7 @@ import * as CopyPasteActions from '../actions/cutCopyPaste';
 import { cursorAfterCutting, cursorAfterPasting, getNotesFromSelection } from '../util/cursor';
 import { updateScrollPosition } from '../util/updateScroll';
 import { loadSoundfonts } from '../util/soundfonts';
-import { makeAppSelector } from '../util/selectors';
+import { makeMapStateToProps, makeAppSelector } from '../util/selectors';
 import shallowEqual from '../util/shallowEqual';
 
 import Score from '../components/Score';
@@ -242,14 +242,6 @@ class App extends Component {
   }
 }
 
-const makeMapStateToProps = () => {
-  const appSelector = makeAppSelector();
-  const mapStateToProps = (state, props) => {
-    return appSelector(state, props);
-  };
-  return mapStateToProps;
-};
-
 function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(Actions, dispatch),
@@ -258,4 +250,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(makeMapStateToProps, mapDispatchToProps)(App);
+export default connect(makeMapStateToProps(makeAppSelector), mapDispatchToProps)(App);

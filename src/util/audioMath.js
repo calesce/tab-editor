@@ -1,6 +1,7 @@
 /* @flow */
 
 import { orderBy } from 'lodash';
+import { memoize } from 'lodash';
 import Fraction from 'fraction.js';
 
 type TimeSignature = { beats: number, beatType: number };
@@ -75,3 +76,4 @@ export const calcMeasureValidity = (measure: Object): boolean => {
 
   return timeSig.equals(totalDuration);
 };
+export const memoizedValidity = memoize(calcMeasureValidity);

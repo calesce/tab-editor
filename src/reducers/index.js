@@ -77,15 +77,14 @@ export default function rootReducer(state = {}, action) {
       return {
         ...state,
         clipboard: action.selection,
-        tracks: tracksReducer(state.tracks, action, state.currentTrackIndex, state.layout, state.scoreBox)
+        tracks: tracksReducer(state.tracks, action, state.currentTrackIndex)
       };
     }
 
     case CHANGE_LAYOUT: {
       return {
         ...state,
-        layout: action.layout,
-        tracks: tracksReducer(state.tracks, action, state.currentTrackIndex, action.layout, state.scoreBox)
+        layout: action.layout
       };
     }
 
@@ -97,8 +96,7 @@ export default function rootReducer(state = {}, action) {
 
       return {
         ...state,
-        scoreBox,
-        tracks: tracksReducer(state.tracks, action, state.currentTrackIndex, state.layout, scoreBox)
+        scoreBox
       };
     }
 
@@ -107,7 +105,7 @@ export default function rootReducer(state = {}, action) {
         ...state,
         currentTrackIndex: 0,
         cursor: defaultCursor,
-        tracks: tracksReducer(state.tracks, action ,0, state.layout, state.scoreBox)
+        tracks: tracksReducer(state.tracks, action, 0)
       };
     }
 
@@ -116,9 +114,7 @@ export default function rootReducer(state = {}, action) {
       return {
         ...state,
         tracks: tracksReducer(
-          state.tracks, action, state.tracks.present.length, state.layout, state.scoreBox,
-          state.tracks.present.concat(newTrack)
-        ),
+          state.tracks, action, state.tracks.present.length, state.tracks.present.concat(newTrack)),
         currentTrackIndex: state.tracks.present.length,
         cursor: defaultCursor
       };
@@ -131,7 +127,7 @@ export default function rootReducer(state = {}, action) {
 
       return {
         ...state,
-        tracks: tracksReducer(state.tracks, action, 0, state.layout, state.scoreBox, newTracks),
+        tracks: tracksReducer(state.tracks, action, 0, newTracks),
         currentTrackIndex: 0,
         cursor: defaultCursor
       };
@@ -140,7 +136,7 @@ export default function rootReducer(state = {}, action) {
     case SELECT_TRACK: {
       return {
         ...state,
-        tracks: tracksReducer(state.tracks, action, action.index, state.layout, state.scoreBox),
+        tracks: tracksReducer(state.tracks, action, action.index),
         currentTrackIndex: action.index,
         cursor: defaultCursor
       };
@@ -175,13 +171,13 @@ export default function rootReducer(state = {}, action) {
       return {
         ...state,
         cursor,
-        tracks: tracksReducer(state.tracks, action, state.currentTrackIndex, state.layout, state.scoreBox)
+        tracks: tracksReducer(state.tracks, action, state.currentTrackIndex)
       };
     }
 
     case ActionTypes.UNDO:
     case ActionTypes.REDO: {
-      const tracks = tracksReducer(state.tracks, action, state.currentTrackIndex, state.layout, state.scoreBox);
+      const tracks = tracksReducer(state.tracks, action, state.currentTrackIndex);
       return {
         ...state,
         tracks,
@@ -193,7 +189,7 @@ export default function rootReducer(state = {}, action) {
     default: {
       return {
         ...state,
-        tracks: tracksReducer(state.tracks, action, state.currentTrackIndex, state.layout, state.scoreBox)
+        tracks: tracksReducer(state.tracks, action, state.currentTrackIndex)
       };
     }
   }

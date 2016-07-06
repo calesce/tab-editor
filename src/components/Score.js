@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
+import { scoreSelector } from '../util/layoutSelectors';
 import { setSelectRange } from '../actions/cursor';
-import { scoreSelector } from '../util/selectors';
 
 import Measure from './measure/Measure';
 import SelectBox from './SelectBox';
@@ -184,23 +183,4 @@ class Score extends Component {
   }
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    setSelectRange: bindActionCreators(setSelectRange, dispatch)
-  };
-}
-
-const makeScoreSelector = () => {
-  return scoreSelector;
-};
-
-// TODO this can be a reusable utility
-const makeMapStateToProps = () => {
-  const newScoreSelector = makeScoreSelector();
-  const mapStateToProps = (state, props) => {
-    return newScoreSelector(state, props);
-  };
-  return mapStateToProps;
-};
-
-export default connect(makeMapStateToProps, mapDispatchToProps)(Score);
+export default connect(scoreSelector, { setSelectRange })(Score);

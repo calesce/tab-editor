@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import shallowCompare from 'react-addons-shallow-compare';
-import { finalMeasureSelector } from '../../util/selectors';
+
+import { makeMapStateToProps } from '../../util/selectors';
+import { makeMeasureSelector } from '../../util/measureSelectors';
 
 import MusicMeasure from './MusicMeasure';
 import TabMeasure from './TabMeasure';
@@ -29,16 +31,4 @@ class Measure extends Component {
   }
 }
 
-const makeMeasureSelector = () => {
-  return finalMeasureSelector;
-};
-
-const makeMapStateToProps = () => {
-  const measureSelector = makeMeasureSelector();
-  const mapStateToProps = (state, props) => {
-    return measureSelector(state, props);
-  };
-  return mapStateToProps;
-};
-
-export default connect(makeMapStateToProps)(Measure);
+export default connect(makeMapStateToProps(makeMeasureSelector))(Measure);

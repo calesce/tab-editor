@@ -4,7 +4,7 @@ import { AppContainer } from 'react-hot-loader';
 
 import Root from './containers/Root';
 import configureStore from './util/configureStore';
-import { prepareTrack, replaceBpm } from './util';
+import { replaceBpm } from './util';
 import track from '../data/song';
 
 const scoreBox = {
@@ -13,13 +13,13 @@ const scoreBox = {
   width: window.innerWidth - 270
 };
 
-const trackWithWidths = prepareTrack({
+const trackWithBpm = {
   ...track,
   measures: replaceBpm(track.measures)
-}, 'page', scoreBox);
+};
 
 const store = configureStore({
-  tracks: [trackWithWidths],
+  tracks: [trackWithBpm],
   layout: 'page',
   currentTrackIndex: 0,
   clipboard: null,

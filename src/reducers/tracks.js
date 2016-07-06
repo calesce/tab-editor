@@ -5,26 +5,16 @@ import { REPLACE_SONG, INSERT_TRACK, DELETE_TRACK } from '../actions/tracks';
 import { INSERT_MEASURE, DELETE_MEASURE, CHANGE_BPM, CHANGE_TIME_SIGNATURE } from '../actions/track';
 
 import trackReducer from './track';
-import { prepareTrack } from '../util';
 
-const replaceTrack = (tracks, currentTrackIndex, layout, scoreBox, action) => {
-  return tracks.map((track, index) => {
-    if(index === currentTrackIndex) {
-      return prepareTrack(trackReducer(track, action), layout, scoreBox);
-    }
-    return track;
-  });
-};
-
-const applyActionToEachTrack = (tracks, layout, scoreBox, action) => (
-  tracks.map(track => prepareTrack(trackReducer(track, action), layout, scoreBox))
+const replaceTrack = (tracks, currentTrackIndex, action) => (
+  tracks.map((track, index) => index === currentTrackIndex ? trackReducer(track, action) : track)
 );
 
 const undoableTracks = undoable((state, action) => {
   return action.newTracks;
 });
 
-const tracks = (tracks, action, currentTrackIndex, layout, scoreBox, newTracks) => {
+const tracks = (tracks, action, currentTrackIndex, newTracks) => {
   switch(action.type) {
     case ActionTypes.UNDO:
     case ActionTypes.REDO: {
@@ -37,7 +27,7 @@ const tracks = (tracks, action, currentTrackIndex, layout, scoreBox, newTracks) 
     case REPLACE_SONG: {
       return undoableTracks(tracks, {
         type: 'tracks',
-        newTracks: action.tracks.map(track => prepareTrack(track, layout, scoreBox))
+        newTracks: action.tracks
       });
     }
 
@@ -45,7 +35,7 @@ const tracks = (tracks, action, currentTrackIndex, layout, scoreBox, newTracks) 
     case DELETE_TRACK: {
       return undoableTracks(tracks, {
         type: 'tracks',
-        newTracks: replaceTrack(newTracks, currentTrackIndex, layout, scoreBox, action)
+        newTracks: replaceTrack(newTracks, currentTrackIndex, action)
       });
     }
 
@@ -53,16 +43,17 @@ const tracks = (tracks, action, currentTrackIndex, layout, scoreBox, newTracks) 
     case DELETE_MEASURE:
     case CHANGE_BPM:
     case CHANGE_TIME_SIGNATURE: {
+      const newTracks = tracks.present || tracks;
       return undoableTracks(tracks, {
           type: 'tracks',
-          newTracks: applyActionToEachTrack(tracks.present, layout, scoreBox, action)
+          newTracks: newTracks.map(track => trackReducer(track, action))
       });
     }
 
     default: {
       return undoableTracks(tracks, {
         type: 'tracks',
-        newTracks: replaceTrack(tracks.present || tracks, currentTrackIndex, layout, scoreBox, action)
+        newTracks: replaceTrack(tracks.present || tracks, currentTrackIndex, action)
       });
     }
   }

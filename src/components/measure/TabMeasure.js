@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { findIndex } from 'lodash';
 import shallowCompare from 'react-addons-shallow-compare';
 
-import { cursorSelectorForMeasure } from '../../util/selectors';
+import { makeMapStateToProps } from '../../util/selectors';
+import { makeTabMeasureSelector } from '../../util/measureSelectors';
 
 import TabNote from './TabNote';
 import Bars from './Bars';
@@ -142,22 +142,7 @@ class TabMeasure extends Component {
   }
 }
 
-const makeCursorSelector = () => {
-  return cursorSelectorForMeasure;
-};
-
-const makeMapStateToProps = () => {
-  const cursorSelector = makeCursorSelector();
-  const mapStateToProps = (state, props) => {
-    return cursorSelector(state, props);
-  };
-  return mapStateToProps;
-};
-
-function mapDispatchToProps(dispatch) {
-  return {
-    setCursor: bindActionCreators(setCursor, dispatch)
-  };
-}
-
-export default connect(makeMapStateToProps, mapDispatchToProps)(TabMeasure);
+export default connect(
+  makeMapStateToProps(makeTabMeasureSelector),
+  { setCursor }
+)(TabMeasure);
