@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { findIndex } from 'lodash';
-import shouldPureComponentUpdate from 'react-pure-render/function';
+import shallowCompare from 'react-addons-shallow-compare';
 
 import { cursorSelectorForMeasure } from '../../util/selectors';
 
@@ -23,8 +23,6 @@ const measureIndexStyle = {
 };
 
 class TabMeasure extends Component {
-  shouldComponentUpdate = shouldPureComponentUpdate;
-
   constructor() {
     super();
 
@@ -32,6 +30,10 @@ class TabMeasure extends Component {
     this.renderCursor = this.renderCursor.bind(this);
     this.renderBars = this.renderBars.bind(this);
     this.renderTabNote = this.renderTabNote.bind(this);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return shallowCompare(this, nextProps, nextState);
   }
 
   onClick(noteIndex, stringIndex) {

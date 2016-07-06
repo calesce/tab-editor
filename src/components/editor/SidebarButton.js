@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import shouldPureComponentUpdate from 'react-pure-render/function';
+import shallowCompare from 'react-addons-shallow-compare';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { changeNoteLength, makeNoteRest, toggleNoteDotted, setNoteTuplet,
@@ -113,7 +113,9 @@ class SidebarButton extends Component {
     this.getSvgForType = this.getSvgForType.bind(this);
   }
 
-  shouldComponentUpdate = shouldPureComponentUpdate;
+  shouldComponentUpdate(nextProps, nextState) {
+    return shallowCompare(this, nextProps, nextState);
+  }
 
   onMouseEnter() {
     this.setState({ hover: true });

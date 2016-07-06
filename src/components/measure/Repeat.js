@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-import shouldPureComponentUpdate from 'react-pure-render/function';
 
 export default class Repeat extends Component {
-  shouldComponentUpdate = shouldPureComponentUpdate;
-
   render() {
     const { measureWidth, strings, y } = this.props;
     const x = measureWidth - 5;

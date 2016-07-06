@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
-import shouldPureComponentUpdate from 'react-pure-render/function';
+import shallowCompare from 'react-addons-shallow-compare';
 
 export default class Clef extends Component {
-  shouldComponentUpdate = shouldPureComponentUpdate;
-
   constructor() {
     super();
 
     this.renderTabClef = this.renderTabClef.bind(this);
     this.renderTrebleClef = this.renderTrebleClef.bind(this);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return shallowCompare(this, nextProps, nextState);
   }
 
   renderTabClef() {

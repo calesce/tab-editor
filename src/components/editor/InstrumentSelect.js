@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import shouldPureComponentUpdate from 'react-pure-render/function';
+import shallowCompare from 'react-addons-shallow-compare';
 
 import { setInstrument } from '../../actions/track';
 import { instrumentNames } from '../../util/instrumentNames';
@@ -11,7 +11,9 @@ export default class InstrumentSelect extends Component {
     this.onChange = this.onChange.bind(this);
   }
 
-  shouldComponentUpdate = shouldPureComponentUpdate;
+  shouldComponentUpdate(nextProps, nextState) {
+    return shallowCompare(this, nextProps, nextState);
+  }
 
   onChange(e) {
     const instrument = e.target.value;

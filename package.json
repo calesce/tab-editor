@@ -8,7 +8,8 @@
     "build": "npm run clean && npm run build:webpack",
     "start": "node server.js",
     "demo": "npm run build && mv dist dist1 && git checkout gh-pages && rm -rf dist && mv dist1 dist && git commit -a -m 'updated demo' && git push origin gh-pages && git checkout master",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "flow": "flow"
   },
   "repository": {
     "type": "git",
@@ -31,9 +32,9 @@
     "eslint-plugin-babel": "^3.1.0",
     "eslint-plugin-react": "^5.0.1",
     "express": "^4.13.4",
+    "flow-bin": "^0.28.0",
     "json-loader": "^0.5.4",
     "react-hot-loader": "^3.0.0-alpha.12",
-    "react-pure-render": "^1.0.2",
     "redux-devtools": "^3.2.0",
     "redux-devtools-dock-monitor": "^1.1.1",
     "redux-import-export-monitor": "^0.2.5",
@@ -47,6 +48,7 @@
     "fraction.js": "^3.3.1",
     "lodash": "^4.11.1",
     "react": "^15.0.1",
+    "react-addons-shallow-compare": "^15.2.0",
     "react-dom": "^15.0.1",
     "react-popover-fork": "^0.6.4",
     "react-redux": "^4.4.5",

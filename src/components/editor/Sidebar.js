@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import shouldPureComponentUpdate from 'react-pure-render/function';
+import shallowCompare from 'react-addons-shallow-compare';
 
 import InstrumentSelect from './InstrumentSelect';
 import TrackSelect from './TrackSelect';
@@ -32,13 +32,15 @@ const style = {
 };
 
 export default class Sidebar extends Component {
-  shouldComponentUpdate = shouldPureComponentUpdate;
-
   constructor() {
     super();
 
     this.openBpm = this.openBpm.bind(this);
     this.openTuning = this.openTuning.bind(this);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return shallowCompare(this, nextProps, nextState);
   }
 
   openBpm() {

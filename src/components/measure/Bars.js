@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import { range } from 'lodash';
-import shouldPureComponentUpdate from 'react-pure-render/function';
+import shallowCompare from 'react-addons-shallow-compare';
 
 export default class Bars extends Component {
-  shouldComponentUpdate = shouldPureComponentUpdate;
-
   constructor() {
     super();
 
     this.renderBar = this.renderBar.bind(this);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return shallowCompare(this, nextProps, nextState);
   }
 
   renderBar(i, y, color, stringCount, strokeWidth, measureWidth) {

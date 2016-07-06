@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import shouldPureComponentUpdate from 'react-pure-render/function';
+import shallowCompare from 'react-addons-shallow-compare';
 
 const style = {
   MozUserSelect: 'none',
@@ -10,8 +10,6 @@ const style = {
 };
 
 export default class TabNote extends Component {
-  shouldComponentUpdate = shouldPureComponentUpdate;
-
   constructor() {
     super();
 
@@ -24,6 +22,10 @@ export default class TabNote extends Component {
     this.renderTremolo = this.renderTremolo.bind(this);
     this.renderVibrato = this.renderVibrato.bind(this);
     this.renderTrill = this.renderTrill.bind(this);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return shallowCompare(this, nextProps, nextState);
   }
 
   onClick() {

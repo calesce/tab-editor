@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import shallowEqual from 'react-pure-render/shallowEqual';
 
 import { ActionCreators } from 'redux-undo';
 
@@ -16,6 +15,7 @@ import { cursorAfterCutting, cursorAfterPasting, getNotesFromSelection } from '.
 import { updateScrollPosition } from '../util/updateScroll';
 import { loadSoundfonts } from '../util/soundfonts';
 import { makeAppSelector } from '../util/selectors';
+import shallowEqual from '../util/shallowEqual';
 
 import Score from '../components/Score';
 import Sidebar from '../components/editor/Sidebar';

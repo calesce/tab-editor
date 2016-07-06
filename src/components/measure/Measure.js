@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import shouldPureComponentUpdate from 'react-pure-render/function';
+import shallowCompare from 'react-addons-shallow-compare';
 import { finalMeasureSelector } from '../../util/selectors';
 
 import MusicMeasure from './MusicMeasure';
@@ -10,7 +10,9 @@ import MeasureSelectBox from './MeasureSelectBox';
 const MEASURE_HEIGHT = 210;
 
 class Measure extends Component {
-  shouldComponentUpdate = shouldPureComponentUpdate;
+  shouldComponentUpdate(nextProps, nextState) {
+    return shallowCompare(this, nextProps, nextState);
+  }
 
   render() {
     const { playingNoteIndex, measureLength, measureIndex, measure, tuning, isValid, selectRange } = this.props;

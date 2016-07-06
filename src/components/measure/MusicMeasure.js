@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import shouldPureComponentUpdate from 'react-pure-render/function';
+import shallowCompare from 'react-addons-shallow-compare';
 
 import { getIndexOfNote, getStaffPositionOfNote, midiNotes } from '../../util/midiNotes';
 import { determineFlip } from '../../util/notationMath';
@@ -24,8 +24,6 @@ const measureNumberStyle = {
 };
 
 class MusicMeasure extends Component {
-  shouldComponentUpdate = shouldPureComponentUpdate;
-
   constructor() {
     super();
 
@@ -34,6 +32,10 @@ class MusicMeasure extends Component {
     this.determineAccidentals = this.determineAccidentals.bind(this);
     this.renderBars = this.renderBars.bind(this);
     this.renderMusicNote = this.renderMusicNote.bind(this);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return shallowCompare(this, nextProps, nextState);
   }
 
   annotateNotes(notes) {

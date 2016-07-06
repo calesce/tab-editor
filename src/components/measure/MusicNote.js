@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-import shouldPureComponentUpdate from 'react-pure-render/function';
+import shallowCompare from 'react-addons-shallow-compare';
 
 const overflow = { overflow: 'visible' };
 const tupletStyle = { fontSize: 13, fontWeight: 500, fontStyle: 'italic' };
 
 export default class MusicNote extends Component {
-  shouldComponentUpdate = shouldPureComponentUpdate;
-
   constructor() {
     super();
 
@@ -25,6 +23,10 @@ export default class MusicNote extends Component {
     this.renderNatural = this.renderNatural.bind(this);
     this.renderFlat = this.renderFlat.bind(this);
     this.renderLedgerLines = this.renderLedgerLines.bind(this);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return shallowCompare(this, nextProps, nextState);
   }
 
   renderQuarterNote(x, y, color) {

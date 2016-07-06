@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import shouldPureComponentUpdate from 'react-pure-render/function';
+import shallowCompare from 'react-addons-shallow-compare';
 
 const style = {
   MozUserSelect: 'none',
@@ -10,7 +10,9 @@ const style = {
 };
 
 export default class Bpm extends Component {
-  shouldComponentUpdate = shouldPureComponentUpdate;
+  shouldComponentUpdate(nextProps) {
+    return shallowCompare(this, nextProps);
+  }
 
   render() {
     if(this.props.tab && (this.props.displayOption !== 'tab' || !this.props.showBpm)) {

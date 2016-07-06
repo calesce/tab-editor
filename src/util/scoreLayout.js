@@ -1,5 +1,5 @@
 /* @flow */
-import shallowEqual from 'react-pure-render/shallowEqual';
+import shallowEqual from '../util/shallowEqual';
 import { isEqual } from 'lodash';
 
 export type ScoreBox = { x: number; y: number, width: number };
