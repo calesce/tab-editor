@@ -46,8 +46,8 @@ const expandedTracksFromMeasures = (tracks, repeatIndex) => {
   });
 };
 
-const getSectionOfTrack = (selection, tracks, currentTrackIndex) => {
-  return tracks.map((track, trackIndex) => {
+const getSectionOfTrack = (selection, tracks) => {
+  return tracks.map((track) => {
     return track.measures.filter(measure => {
       if(selection[measure.measureIndex]) {
         return true;

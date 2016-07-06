@@ -1,4 +1,5 @@
-export const instrumentNames = [
+/* @flow */
+export const instrumentNames: Array<string> = [
   'acoustic_grand_piano',
   'bright_acoustic_piano',
   'electric_grand_piano',
