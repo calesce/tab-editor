@@ -11,7 +11,7 @@ if(!!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/) || !!navigator.userAg
 
 let bufferCache = {};
 
-export function loadSoundfonts(instruments: Array<string>): Promise {
+export function loadSoundfonts(instruments: Array<string>): Promise<Object> {
   const promises = instruments.map(instrument => {
     return loadSoundfont(instrument, bufferCache);
   });
@@ -25,7 +25,7 @@ export function loadSoundfonts(instruments: Array<string>): Promise {
     });
 }
 
-const loadSoundfont = (instrument: string, cache: Object): Promise => {
+const loadSoundfont = (instrument: string, cache: Object): Promise<Object> => {
   if(cache[instrument]) {
     return new Promise(resolve => resolve(cache[instrument]));
   }

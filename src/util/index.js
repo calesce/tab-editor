@@ -1,5 +1,6 @@
 /* @flow */
-import { trackWithRows, linearTrack, computeTrackLayout, ScoreBox } from './scoreLayout';
+import { trackWithRows, linearTrack, computeTrackLayout } from './scoreLayout';
+import type { ScoreBox } from './scoreLayout';
 
 export const prepareTrack = (track: Object, layout: string, scoreBox: ScoreBox): Object => ({
   ...track,

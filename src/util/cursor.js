@@ -103,11 +103,11 @@ export const cursorAfterPasting = (measures: Array<Object>, clipboard: any, oldC
   }
 };
 
-export const getNotesFromSelection = (measures: Array<Object>, { measureIndex, noteIndex }: Cursor, selectRange: Object): Object => {
+export const getNotesFromSelection = (measures: Array<Object>, { measureIndex, noteIndex }: Cursor, selectRange: Object): Array<Object> | Object => {
   if(selectRange) {
     if(Object.keys(selectRange).length === 1 && selectRange[Object.keys(selectRange)[0]] !== 'all') {
       const measureIndex = Object.keys(selectRange)[0];
-      const measure = measures[measureIndex];
+      const measure = measures[parseInt(measureIndex)];
       const notes = measure.notes.filter((_, i) => {
         if(selectRange[measureIndex].indexOf(i) !== -1) {
           return true;
