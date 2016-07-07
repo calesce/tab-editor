@@ -4,7 +4,7 @@ import { orderBy } from 'lodash';
 import { memoize } from 'lodash';
 import Fraction from 'fraction.js';
 
-type TimeSignature = { beats: number, beatType: number };
+import type { TimeSignature } from './stateTypes';
 
 const durations = {
   w: 1,

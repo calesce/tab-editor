@@ -1,6 +1,6 @@
 /* @flow */
 
-type PlayingIndex = { measureIndex: number; noteIndex: number };
+import type { PlayingIndex } from './stateTypes';
 
 export function getXOfCurrentNote({ measureIndex, noteIndex }: PlayingIndex, measures: Array<Object>): number {
   const xOfMeasures = measures.reduce((acc, curr, i) => {

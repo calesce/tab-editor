@@ -1,8 +1,7 @@
 /* @flow */
 import shallowEqual from '../util/shallowEqual';
 import { isEqual } from 'lodash';
-
-type ScoreBox = { x: number; y: number, width: number };
+import type { ScoreBox } from './stateTypes';
 
 const calcXForNote = (measure: Object, noteIndex: number, indexOfRow: ?number): number => {
   let x = 0 + (noteIndex * 53 + 33);

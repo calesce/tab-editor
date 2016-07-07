@@ -1,10 +1,14 @@
+/* @flow */
+
 import { PASTE_NOTE, CUT_NOTE } from '../actions/cutCopyPaste';
 import { INSERT_MEASURE, DELETE_MEASURE, CHANGE_TUNING,
   CHANGE_BPM, SET_INSTRUMENT, CHANGE_TIME_SIGNATURE } from '../actions/track';
 import { REPLACE_SONG } from '../actions/tracks';
 import measure from './measure';
 
-const replaceMeasure = (state, action) => {
+import type { Track, Measure, TimeSignature } from '../util/stateTypes';
+
+const replaceMeasure = (state: Array<Measure>, action: Object): Array<Measure> => {
   if(!action.index) {
     return state;
   }
@@ -17,14 +21,14 @@ const replaceMeasure = (state, action) => {
   });
 };
 
-const changeBpmAllMeasures = (measures, bpm) => {
+const changeBpmAllMeasures = (measures: Array<Measure>, bpm: number): Array<Measure> => {
   return measures.map((measure) => ({
     ...measure,
     bpm
   }));
 };
 
-const changeBpmMeasuresAfterCurrent = (measures, bpm, measureIndex) => {
+const changeBpmMeasuresAfterCurrent = (measures: Array<Measure>, bpm: number, measureIndex: number): Array<Measure> => {
   return measures.map((measure, i) => {
     if(measureIndex > i) {
       return measure;
@@ -36,7 +40,7 @@ const changeBpmMeasuresAfterCurrent = (measures, bpm, measureIndex) => {
   });
 };
 
-const changeSingleBpmMeasure = (measures, bpm, measureIndex) => {
+const changeSingleBpmMeasure = (measures: Array<Measure>, bpm: number, measureIndex: number): Array<Measure> => {
   return measures.map((measure, i) => {
     if(measureIndex === i) {
       return {
@@ -48,14 +52,14 @@ const changeSingleBpmMeasure = (measures, bpm, measureIndex) => {
   });
 };
 
-const changeTimeSigAllMeasures = (measures, timeSignature) => {
+const changeTimeSigAllMeasures = (measures: Array<Measure>, timeSignature: TimeSignature): Array<Measure> => {
   return measures.map((measure) => ({
     ...measure,
     timeSignature
   }));
 };
 
-const changeTimeSigMeasuresAfterCurrent = (measures, timeSignature, measureIndex) => {
+const changeTimeSigMeasuresAfterCurrent = (measures: Array<Measure>, timeSignature: TimeSignature, measureIndex: number): Array<Measure> => {
   return measures.map((measure, i) => {
     if(measureIndex > i) {
       return measure;
@@ -67,7 +71,7 @@ const changeTimeSigMeasuresAfterCurrent = (measures, timeSignature, measureIndex
   });
 };
 
-const changeSingleTimeSigMeasure = (measures, timeSignature, measureIndex) => {
+const changeSingleTimeSigMeasure = (measures: Array<Measure>, timeSignature: TimeSignature, measureIndex: number): Array<Measure> => {
   return measures.map((measure, i) => {
     if(measureIndex === i) {
       return {
@@ -79,7 +83,7 @@ const changeSingleTimeSigMeasure = (measures, timeSignature, measureIndex) => {
   });
 };
 
-export default function track(state = {}, action) {
+export default function track(state: Track, action: Object): Track {
   switch(action.type) {
     case DELETE_MEASURE:
       return {
