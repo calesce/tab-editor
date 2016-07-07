@@ -1,9 +1,12 @@
+/* @flow */
+
 import { SET_CURSOR, MOVE_CURSOR_LEFT, MOVE_CURSOR_RIGHT, MOVE_CURSOR_UP,
   MOVE_CURSOR_DOWN, SET_SELECT_RANGE } from '../actions/cursor';
 import { DELETE_MEASURE } from '../actions/track';
 import { DELETE_NOTE, INSERT_NOTE } from '../actions/measure';
 
 import { getNextNote, getPrevNote, getUpperString, getLowerString } from '../util/cursor';
+import type { Cursor, Measure, Tuning } from '../util/stateTypes';
 
 const initialState = {
   measureIndex: 0,
@@ -11,7 +14,7 @@ const initialState = {
   stringIndex: 0
 };
 
-export default function cursor(state = initialState, action, measures, tuning) {
+export default function cursor(state: Cursor = initialState, action: Object, measures: Array<Measure>, tuning: Tuning): Cursor {
   const { noteIndex, measureIndex } = state;
 
   switch(action.type) {

@@ -1,3 +1,5 @@
+/* @flow */
+
 import { ActionTypes } from 'redux-undo';
 import { SET_PLAYING_INDEX, TOGGLE_METRONOME, TOGGLE_COUNTDOWN } from '../actions/playingIndex';
 import { COPY_NOTE, CUT_NOTE } from '../actions/cutCopyPaste';
@@ -6,6 +8,8 @@ import { SET_CURSOR, MOVE_CURSOR_LEFT, MOVE_CURSOR_RIGHT,
     MOVE_CURSOR_UP, MOVE_CURSOR_DOWN, SET_SELECT_RANGE } from '../actions/cursor';
 import { DELETE_MEASURE } from '../actions/track';
 import { DELETE_NOTE, INSERT_NOTE } from '../actions/measure';
+
+import type { State, Track, Cursor } from '../util/stateTypes';
 
 import tracksReducer from './tracks';
 import cursorReducer from './cursor';
@@ -16,7 +20,7 @@ const defaultCursor = {
   stringIndex: 0
 };
 
-const emptyTrack = (tracks, currentTrackIndex) => {
+const emptyTrack = (tracks: Array<Track>, currentTrackIndex: number): Track => {
   return {
     instrument: tracks[currentTrackIndex].instrument,
     tuning: tracks[currentTrackIndex].tuning,
@@ -28,7 +32,7 @@ const emptyTrack = (tracks, currentTrackIndex) => {
   };
 };
 
-const getValidCursor = (cursor, track) => {
+const getValidCursor = (cursor: Cursor, track: Track): Cursor => {
   let { measureIndex, noteIndex } = cursor;
   if(measureIndex > track.measures.length - 1) {
     measureIndex = track.measures.length - 1;
@@ -43,7 +47,7 @@ const getValidCursor = (cursor, track) => {
   };
 };
 
-export default function rootReducer(state = {}, action) {
+export default function rootReducer(state: State, action: Object): State {
   switch(action.type) {
     case TOGGLE_METRONOME: {
       return {
@@ -143,10 +147,11 @@ export default function rootReducer(state = {}, action) {
     }
 
     case SET_SELECT_RANGE: {
+      const currentTrack = state.tracks.present[state.currentTrackIndex];
       return {
         ...state,
         selectRange: action.range,
-        cursor: cursorReducer(state.cursor, action)
+        cursor: cursorReducer(state.cursor, action, currentTrack.measures, currentTrack.tuning)
       };
     }
 

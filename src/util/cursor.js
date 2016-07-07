@@ -1,8 +1,8 @@
 /* @flow */
 
-type Cursor = { measureIndex: number; noteIndex: number, stringIndex: number };
+import type { Cursor, Measure } from './stateTypes';
 
-export const getNextNote = (measures: Array<Object>, { stringIndex, measureIndex, noteIndex }: Cursor): Cursor => {
+export const getNextNote = (measures: Array<Measure>, { stringIndex, measureIndex, noteIndex }: Cursor): Cursor => {
   if(noteIndex >= measures[measureIndex].notes.length - 1) {
     return {
       measureIndex: measureIndex + 1,
@@ -18,7 +18,7 @@ export const getNextNote = (measures: Array<Object>, { stringIndex, measureIndex
   }
 };
 
-export const getPrevNote = (measures: Array<Object>, { stringIndex, measureIndex, noteIndex }: Cursor): Cursor => {
+export const getPrevNote = (measures: Array<Measure>, { stringIndex, measureIndex, noteIndex }: Cursor): Cursor => {
   if(measureIndex === 0 && noteIndex === 0) {
     return { measureIndex, noteIndex, stringIndex };
   } else if(noteIndex === 0) {
@@ -53,7 +53,7 @@ export const getLowerString = (stringIndex: number, stringCount: number): number
   return stringIndex === 0 ? stringCount - 1 : stringIndex - 1;
 };
 
-export const cursorAfterCutting = (measures: Array<Object>, selectRange: any, oldCursor: Cursor): Cursor => {
+export const cursorAfterCutting = (measures: Array<Measure>, selectRange: any, oldCursor: Cursor): Cursor => {
   const firstMeasureIndex = parseInt(Object.keys(selectRange)[0]);
 
   let measureIndex = firstMeasureIndex;
@@ -79,7 +79,7 @@ export const cursorAfterCutting = (measures: Array<Object>, selectRange: any, ol
   };
 };
 
-export const cursorAfterPasting = (measures: Array<Object>, clipboard: any, oldCursor: Cursor): Cursor => {
+export const cursorAfterPasting = (measures: Array<Measure>, clipboard: any, oldCursor: Cursor): Cursor => {
   if(clipboard.notes) {
     return {
       ...oldCursor,
@@ -103,7 +103,7 @@ export const cursorAfterPasting = (measures: Array<Object>, clipboard: any, oldC
   }
 };
 
-export const getNotesFromSelection = (measures: Array<Object>, { measureIndex, noteIndex }: Cursor, selectRange: Object): Array<Object> | Object => {
+export const getNotesFromSelection = (measures: Array<Measure>, { measureIndex, noteIndex }: Cursor, selectRange: Object): Array<Object> | Object => {
   if(selectRange) {
     if(Object.keys(selectRange).length === 1 && selectRange[Object.keys(selectRange)[0]] !== 'all') {
       const measureIndex = Object.keys(selectRange)[0];

@@ -7,19 +7,11 @@ import configureStore from './util/configureStore';
 import { replaceBpm } from './util';
 import track from '../data/song';
 
-const scoreBox = {
-  x: 270,
-  y: 5,
-  width: window.innerWidth - 270
-};
-
-const trackWithBpm = {
-  ...track,
-  measures: replaceBpm(track.measures)
-};
-
-const store = configureStore({
-  tracks: [trackWithBpm],
+const initialState = {
+  tracks: [{
+    ...track,
+    measures: replaceBpm(track.measures)
+  }],
   layout: 'page',
   currentTrackIndex: 0,
   clipboard: null,
@@ -31,8 +23,14 @@ const store = configureStore({
   },
   metronome: false,
   countdown: false,
-  scoreBox
-});
+  scoreBox: {
+    x: 270,
+    y: 5,
+    width: window.innerWidth - 270
+  }
+};
+
+const store = configureStore(initialState);
 
 const rootElement = document.getElementById('root');
 render(<AppContainer component={Root} props={{ store }} />, rootElement);
