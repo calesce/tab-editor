@@ -45,7 +45,6 @@ const play = (startTime, pitch, duration) => {
   if(pitch !== 'rest') {
     oscillator.type = 'square';
     oscillator.detune.value = (pitch - 29) * 100;
-
     gainNode.gain.value = 0.025;
   } else {
     gainNode.gain.value = 0;
@@ -55,42 +54,37 @@ const play = (startTime, pitch, duration) => {
   oscillator.stop(endTime);
 };
 
-const playNoteAtTime = (currentNote, playTime, duration, buffers, tuning) => {
-  if(currentNote === 'rest') {
+const playNoteAtTime = (note, playTime, duration, buffers, tuning) => {
+  if(note === 'rest') {
     return play(playTime, 'rest', duration / 1000);
   }
 
-  for(let i = 0; i < currentNote.string.length; i++) {
-    const openString = tuning[currentNote.string[i]];
-    const noteToPlay = getIndexOfNote(openString) + currentNote.fret[i];
+  for(let i = 0; i < note.string.length; i++) {
+    const openString = tuning[note.string[i]];
+    const noteToPlay = getIndexOfNote(openString) + note.fret[i];
 
-    playWithBuffer(buffers[noteToPlay], duration / 1000, playTime, currentNote.vibrato);
+    playWithBuffer(buffers[noteToPlay], duration / 1000, playTime, note.vibrato);
   }
 };
 
-const playTremolo = (replaySpeed, buffers, tuning, noteToPlay) => {
-  const currentTime = audioContext.currentTime;
-  const n = numberOfTremoloNotesForDuration(noteToPlay.duration);
+const playTremolo = (note, currentTime, replaySpeed, buffers, tuning) => {
+  const n = numberOfTremoloNotesForDuration(note.duration);
 
-  times(n, (i) => {
-    playNoteAtTime(noteToPlay, currentTime + (i * replaySpeed / (n * 1000)), replaySpeed / n, buffers, tuning);
+  times(n, i => {
+    playNoteAtTime(note, currentTime + (i * replaySpeed / (n * 1000)), replaySpeed / n, buffers, tuning);
   });
 };
 
-const playTrill = (replaySpeed, buffers, tuning, noteToPlay) => {
-  const currentTime = audioContext.currentTime;
-  const n = numberOfTremoloNotesForDuration(noteToPlay.duration);
+const playTrill = (note, currentTime, replaySpeed, buffers, tuning) => {
+  const n = numberOfTremoloNotesForDuration(note.duration);
 
-  times(n, (i) => {
-    if(i % 2 === 0) {
-      playNoteAtTime(noteToPlay, currentTime + (i * replaySpeed / (n * 1000)), replaySpeed / n, buffers, tuning);
-    } else {
-      const nextNote = {
-        ...noteToPlay,
-        fret: noteToPlay.fret.map((note) => note + 1)
-      };
-      playNoteAtTime(nextNote, currentTime + (i * replaySpeed / (n * 1000)), replaySpeed / n, buffers, tuning);
-    }
+  times(n, i => {
+    const higherNote = {
+      ...noteToPlay,
+      fret: note.fret.map((note) => note + 1)
+    };
+    const noteToPlay = i % 2 === 0 ? noteToPlay : higherNote;
+    playNoteAtTime(noteToPlay, currentTime + (i * replaySpeed / (n * 1000)), replaySpeed / n, buffers, tuning);
   });
 };
 
@@ -102,9 +96,9 @@ export function playCurrentNoteAtTime(note, time, buffers) {
   } else if(note.fret[0] === 'rest') {
     playNoteAtTime('rest', time || audioContext.currentTime, replaySpeed, buffers, note.tuning);
   } else if(note.tremolo) {
-    playTremolo(replaySpeed, buffers, note.tuning, note);
+    playTremolo(note,  time || audioContext.currentTime, replaySpeed, buffers, note.tuning);
   } else if(note.trill) {
-    playTrill(replaySpeed, buffers, note.tuning, note);
+    playTrill(note, time || audioContext.currentTime, replaySpeed, buffers, note.tuning);
   } else {
     playNoteAtTime(note, time || audioContext.currentTime, replaySpeed, buffers, note.tuning);
   }
