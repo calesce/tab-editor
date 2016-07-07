@@ -180,7 +180,7 @@ class MusicMeasure extends Component {
         }
         { measure.indexOfRow === 0 ? <Clef y={y} strings={5} treble /> : null }
         <TimeSignature yOffset={y} strings={5} measure={measure} />
-        { measure.showBpm ? <Bpm y={y} bpm={measure.bpm} />  : null }
+        { measure.renderBpm ? <Bpm y={y} bpm={measure.bpm} />  : null }
         <text x={0} y={23 + y} style={measureNumberStyle}>{measureIndex + 1}</text>
         { measure.repeatEnd ? <Repeat measureWidth={measure.width} strings={5} y={y} /> : null }
       </svg>

@@ -15,7 +15,7 @@ export default class Bpm extends Component {
   }
 
   render() {
-    if(this.props.tab && (this.props.displayOption !== 'tab' || !this.props.showBpm)) {
+    if(this.props.tab && (this.props.displayOption !== 'tab' || !this.props.renderBpm)) {
       return null;
     }
     const text = `= ${this.props.bpm}`;

@@ -131,7 +131,7 @@ class TabMeasure extends Component {
         {
           measure.notes.map((note, noteIndex) => this.renderTabNote(note, measureIndex, noteIndex, displayOption))
         }
-        <Bpm tab y={0} bpm={measure.bpm} showBpm={measure.showBpm} displayOption={displayOption} />
+        <Bpm tab y={0} bpm={measure.bpm} renderBpm={measure.renderBpm} displayOption={displayOption} />
         { displayOption === 'tab' ? <text x={0} y={23} style={measureIndexStyle}>{measureIndex + 1}</text> : null }
         { measure.indexOfRow === 0 ? <Clef y={25} strings={stringCount} tab /> : null }
         <TimeSignature yOffset={0} strings={stringCount} measure={measure} displayOption={displayOption} />

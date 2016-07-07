@@ -36,26 +36,26 @@ const linearTrack = (track: Array<Object>): Array<Object> => {
 const computeTrackLayout = (measures: Array<Object>): Array<Object> => {
   return measures.map((measure, measureIndex) => {
     let width = 59 * measure.notes.length;
-    let showBpm = false;
+    let renderBpm = false;
     if(measure.notes.length === 0) {
       width = 40;
     }
     if(measureIndex === 0) {
       width += 15;
-      showBpm = true;
+      renderBpm = true;
     }
 
     let prevMeasure = measures[measureIndex - 1];
     if(prevMeasure && shallowEqual(prevMeasure.timeSignature, measure.timeSignature)) {
       if(prevMeasure.bpm !== measure.bpm) {
-        showBpm = true;
+        renderBpm = true;
       }
 
       const newMeasure = {
         ...measure,
         width,
         renderTimeSignature: false,
-        showBpm
+        renderBpm
       };
       return isEqual(newMeasure, measure) ? measure : newMeasure;
     }
@@ -68,7 +68,7 @@ const computeTrackLayout = (measures: Array<Object>): Array<Object> => {
       ...measure,
       width,
       renderTimeSignature: true,
-      showBpm
+      renderBpm
     };
     return isEqual(newMeasure, measure) ? measure : newMeasure;
   });
