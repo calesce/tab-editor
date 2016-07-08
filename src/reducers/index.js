@@ -47,6 +47,10 @@ const getValidCursor = (cursor: Cursor, track: Track): Cursor => {
   };
 };
 
+const getValidTrackIndex = (prevTrackIndex: number, tracks: Array<Track>): number => {
+  return tracks[prevTrackIndex] ? prevTrackIndex : tracks.length - 1;
+};
+
 export default function rootReducer(state: State, action: Object): State {
   switch(action.type) {
     case TOGGLE_METRONOME: {
@@ -183,11 +187,14 @@ export default function rootReducer(state: State, action: Object): State {
     case ActionTypes.UNDO:
     case ActionTypes.REDO: {
       const tracks = tracksReducer(state.tracks, action, state.currentTrackIndex);
+      const trackIndex = getValidTrackIndex(state.currentTrackIndex, tracks.present);
+
       return {
         ...state,
         tracks,
         selectRange: undefined,
-        cursor: getValidCursor(state.cursor, tracks.present[state.currentTrackIndex])
+        currentTrackIndex: trackIndex,
+        cursor: getValidCursor(state.cursor, tracks.present[trackIndex])
       };
     }
 

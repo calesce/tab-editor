@@ -17,6 +17,7 @@ export const playingIndexSelector = state => state.playingIndex;
 export const cursorSelector = state => state.cursor;
 export const tuningSelector = state => state.tracks.present[state.currentTrackIndex].tuning;
 export const measureLengthSelector = state => state.tracks.present[state.currentTrackIndex].measures.length;
+export const trackMeasuresSelector = state =>  state.tracks.present[state.currentTrackIndex].measures;
 export const selectRangeSelector = state => state.selectRange;
 export const layoutSelector = state => state.layout;
 

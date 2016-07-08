@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import { connect } from 'react-redux';
 
-import { scoreSelector } from '../util/layoutSelectors';
+import { makeMapStateToProps } from '../util/selectors';
+import { makeScoreSelector } from '../util/layoutSelectors';
 import { setSelectRange } from '../actions/cursor';
 
 import Measure from './measure/Measure';
@@ -183,4 +184,4 @@ class Score extends Component {
   }
 }
 
-export default connect(scoreSelector, { setSelectRange })(Score);
+export default connect(makeMapStateToProps(makeScoreSelector), { setSelectRange })(Score);

@@ -1,5 +1,5 @@
 [ignore]
-.*react/node_modules/fbjs.*
+.*node_modules/fbjs.*
 
 [include]
 

@@ -8,7 +8,7 @@ const measureIndexSelector = (_, props) => props.measureIndex;
 
 const currentMeasureSelector = createSelector(
   [measureIndexSelector, trackWithLayoutSelector],
-  (measureIndex, measures) => measures[measureIndex]
+  (measureIndex, measures) => measures[measureIndex] || measures[measures.length - 1] // FIXME workaround to score selector not updating
 );
 
 const getPlayingNoteIndex = (playingIndex, measureIndex) => {

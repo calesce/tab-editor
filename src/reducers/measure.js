@@ -1,4 +1,4 @@
-import { flatten, findIndex, cloneDeep } from 'lodash';
+import { flatten, findIndex } from 'lodash';
 import { PASTE_NOTE, CUT_NOTE } from '../actions/cutCopyPaste';
 import { CHANGE_NOTE, DELETE_NOTE, CHANGE_NOTE_LENGTH, INSERT_NOTE, MAKE_NOTE_REST, TOGGLE_NOTE_DOTTED,
   TOGGLE_NOTE_TREMOLO, INCREASE_NOTE_LENGTH, DECREASE_NOTE_LENGTH,
@@ -113,6 +113,49 @@ const decreaseNoteLength = (note) => {
   return newDuration;
 };
 
+const getChangedNote = (oldNote, fret, stringIndex) => {
+  if(fret === 'rest') {
+    return {
+      ...oldNote,
+      fret: ['rest'],
+      string: ['rest']
+    };
+  } else if(!oldNote) {
+    return {
+      fret: [fret],
+      string: [stringIndex],
+      duration: 'q'
+    };
+  }
+
+  const currentStringIndex = findIndex(oldNote.string, (note) => note === stringIndex);
+  if(oldNote.fret[0] === 'rest') {
+    return {
+      ...oldNote,
+      fret: [fret],
+      string: [stringIndex]
+    };
+  } else if(currentStringIndex === -1) {
+    return {
+      ...oldNote,
+      fret: oldNote.fret.concat(fret),
+      string: oldNote.string.concat(stringIndex)
+    };
+  } else {
+    const oldFret = oldNote.fret[currentStringIndex];
+    const newFret = oldFret === 1 ? fret + 10 : (oldFret === 2 && fret <= 5)  ? fret + 20 : fret;
+
+    const newFrets = oldNote.fret.slice(0, currentStringIndex)
+      .concat(newFret)
+      .concat(oldNote.fret.slice(currentStringIndex + 1, oldNote.fret.length));
+
+    return {
+      ...oldNote,
+      fret: newFrets
+    };
+  }
+};
+
 export default function measure(state, action) {
   switch(action.type) {
     case INSERT_NOTE: {
@@ -199,48 +242,7 @@ export default function measure(state, action) {
 
     case CHANGE_NOTE: {
       const { noteIndex, stringIndex } = action.index;
-      const oldNote = state.notes[noteIndex];
-
-      let note;
-      if(action.fret === 'rest') {
-        note = {
-          ...oldNote,
-          fret: ['rest'],
-          string: ['rest']
-        };
-      } else if(!oldNote) {
-        note = {
-          fret: [action.fret],
-          string: [stringIndex],
-          duration: 'q'
-        };
-      } else {
-        let currentStringIndex = findIndex(oldNote.string, (note) => note === stringIndex);
-        if(oldNote.fret[0] === 'rest') {
-          note = {
-            ...oldNote,
-            fret: [action.fret],
-            string: [stringIndex]
-          };
-        } else if(currentStringIndex === -1) {
-          note = {
-            ...oldNote,
-            fret: oldNote.fret.concat(action.fret),
-            string: oldNote.string.concat(stringIndex)
-          };
-        } else {
-          const oldFret = oldNote.fret[currentStringIndex];
-          note = cloneDeep(oldNote);
-          if(oldFret === 1) {
-            note.fret[currentStringIndex] = action.fret + 10;
-          } else if(oldFret === 2 && action.fret <= 5) {
-            note.fret[currentStringIndex] = action.fret + 20;
-          } else {
-            note.fret[currentStringIndex] = action.fret;
-          }
-        }
-      }
-
+      const note = getChangedNote(state.notes[noteIndex], action.fret, stringIndex);
       return replaceNote(state, note, noteIndex);
     }
 

@@ -117,7 +117,7 @@ class App extends Component {
 
   deleteNote() {
     const { measureIndex } = this.props.cursor;
-    let notes = this.props.measures[measureIndex].notes;
+    const notes = this.props.measures[measureIndex].notes;
 
     if(notes.length > 0) {
       this.props.actions.deleteNote(this.props.cursor);
