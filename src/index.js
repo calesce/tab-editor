@@ -33,10 +33,20 @@ const initialState = {
 const store = configureStore(initialState);
 
 const rootElement = document.getElementById('root');
-render(<AppContainer component={Root} props={{ store }} />, rootElement);
+render(
+  <AppContainer>
+    <Root store={store}/>
+  </AppContainer>,
+  rootElement
+);
 
 if(module.hot) {
   module.hot.accept('./containers/Root', () => {
-    render(<AppContainer component={require('./containers/Root').default} props={{ store }} />, rootElement);
+    let NextRoot = require('./containers/Root').default;
+    render(
+      <AppContainer>
+        <NextRoot store={store}/>
+      </AppContainer>,
+      rootElement);
   });
 }
