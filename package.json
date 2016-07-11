@@ -9,6 +9,7 @@
     "start": "node server.js",
     "demo": "npm run build && mv dist dist1 && git checkout gh-pages && rm -rf dist && mv dist1 dist && git commit -a -m 'updated demo' && git push origin gh-pages && git checkout master",
     "lint": "eslint src",
+    "fix": "eslint src --fix",
     "flow": "flow"
   },
   "repository": {

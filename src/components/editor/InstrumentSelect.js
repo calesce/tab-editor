@@ -5,7 +5,7 @@ import shallowCompare from 'react-addons-shallow-compare';
 import { setInstrument } from '../../actions/track';
 import { instrumentNames } from '../../util/instrumentNames';
 
-export default class InstrumentSelect extends Component {
+class InstrumentSelect extends Component {
   constructor() {
     super();
     this.onChange = this.onChange.bind(this);

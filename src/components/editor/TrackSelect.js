@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { selectTrack } from '../../actions/tracks';
 
-export default class TrackSelect extends Component {
+class TrackSelect extends Component {
   constructor() {
     super();
     this.onChange = this.onChange.bind(this);
