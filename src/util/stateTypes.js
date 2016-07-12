@@ -5,6 +5,7 @@ export type PlayingIndex = { measureIndex: number; noteIndex: number };
 export type ScoreBox = { x: number; y: number, width: number };
 export type Tuning = Array<string>;
 export type TimeSignature = { beats: number, beatType: number };
+export type Layout = 'page' | 'linear';
 
 export type Measure = {
   bpm: number,
@@ -29,7 +30,7 @@ export type State = {
   countdown: boolean,
   currentTrackIndex: number,
   cursor: Cursor,
-  layout: 'page' | 'linear',
+  layout: Layout,
   metronome: boolean,
   playingIndex: PlayingIndex,
   scoreBox: ScoreBox,

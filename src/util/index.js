@@ -1,6 +1,8 @@
 /* @flow */
 
-export const replaceBpm = (measures: Array<Object>): Array<Object> => {
+import type { Measure } from './stateTypes';
+
+export const replaceBpm = (measures: Array<Measure>): Array<Measure> => {
   return measures.reduce((endMeasures, measure, i) => {
     if(measure.bpm) {
       return endMeasures.concat(measure);
