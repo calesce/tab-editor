@@ -31,6 +31,8 @@ export const makeMeasureSelector = () => {
         isValid: memoizedValidity(measure),
         tuning,
         measureLength,
+        yTop: measure.yTop,
+        rowHeight: measure.yTop + measure.yBottom + 70,
         selectRange: selectRange ? selectRange[measureIndex] : undefined
       };
     }

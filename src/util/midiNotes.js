@@ -1,5 +1,6 @@
 /* @flow */
 import { indexOf } from 'lodash';
+import type { Tuning } from './stateTypes';
 
 const midis: Array<string> = [
   'c-1', 'c#-1', 'd-1', 'd#-1', 'e-1', 'f-1', 'f#-1', 'g-1', 'g#-1', 'a-1', 'a#-1', 'b-1',
@@ -49,3 +50,20 @@ export function nextOctave(midi: string): string {
   const index = getIndexOfNote(midi);
   return index > midis.length - 13 ? midi : midis[index + 12];
 }
+
+export const getHighestNote = (midiNotes: Array<string>): string => (
+  midis[Math.max(...midiNotes.map(midi => getIndexOfNote(midi)))]
+);
+
+export const getLowestNote = (midiNotes: Array<string>): string => (
+  midis[Math.min(...midiNotes.map(midi => getIndexOfNote(midi)))]
+);
+
+export const getMidiFromNote = (fret: number, string: number, tuning: Tuning) => {
+  const midi = midis[getIndexOfNote(tuning[string]) + fret];
+  return midi ? midi.replace('#', '') : 'c4'; // default to a middle-ish note if it's a rest, this won't work with non-treble clefs
+};
+
+export const midiDiff = (midi1: string, midi2: string): number => {
+  return getStaffPositionOfNote(midi1) - getStaffPositionOfNote(midi2);
+};

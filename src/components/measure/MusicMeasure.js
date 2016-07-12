@@ -38,18 +38,18 @@ class MusicMeasure extends Component {
     return shallowCompare(this, nextProps, nextState);
   }
 
-  annotateNotes(notes) {
+  annotateNotes(notes, yTop) {
     return notes.map((note, noteIndex) => {
       return {
         ...note,
         color: this.props.playingNoteIndex === noteIndex ? '#f9423a' : 'black',
-        y: 5 * 6.5 + 6 + this.props.y,
-        notes: this.annotateNote(note)
+        y: 5 * 6.5 + 6 + yTop,
+        notes: this.annotateNote(note, yTop)
       };
     });
   }
 
-  annotateNote(note) {
+  annotateNote(note, yTop) {
     if(note.string[0] === 'rest') {
       return ['rest'];
     }
@@ -59,7 +59,7 @@ class MusicMeasure extends Component {
       const midiString = midis[midiIndex];
       const staffPosition = getStaffPositionOfNote(midiString.replace('#', ''));
       return {
-        y: this.props.y + 249 - (6.5 * staffPosition),
+        y: yTop + 249 - (6.5 * staffPosition),
         sharp: midiString.charAt(1) === '#',
         midiString
       };
@@ -158,7 +158,7 @@ class MusicMeasure extends Component {
 
     return note.fret.map((fret, i) => {
       const yToUse = note.notes[i].y;
-      const flip = determineFlip(note, yToUse);
+      const flip = determineFlip(note, yToUse, yOffset);
 
       return <MusicNote key={i} x={note.x} y={yToUse} color={note.color} duration={note.duration} dotted={note.dotted}
         sharp={note.notes[i].renderSharp} natural={note.notes[i].renderNatural} measureY={yOffset} flip={flip}
@@ -167,22 +167,22 @@ class MusicMeasure extends Component {
   }
 
   render() {
-    const { measure, measureIndex, measureHeight, y } = this.props;
+    const { measure, measureIndex, rowHeight, yTop } = this.props;
 
     // TODO move this logic to a selector
-    const notes = this.determineAccidentals(this.annotateNotes(measure.notes));
+    const notes = this.determineAccidentals(this.annotateNotes(measure.notes, yTop));
 
     return (
-      <svg style={{ height: measureHeight, width: measure.width, overflow: 'visible' }}>
-        { this.renderBars(0, y, measure.width, 5) }
+      <svg style={{ height: rowHeight, width: measure.width, overflow: 'visible' }}>
+        { this.renderBars(0, yTop, measure.width, 5) }
         {
-          notes.map((note, noteIndex) => this.renderMusicNote(note, measureIndex, noteIndex, y))
+          notes.map((note, noteIndex) => this.renderMusicNote(note, measureIndex, noteIndex, yTop))
         }
-        { measure.indexOfRow === 0 ? <Clef y={y} strings={5} treble /> : null }
-        <TimeSignature yOffset={y} strings={5} measure={measure} />
-        { measure.renderBpm ? <Bpm y={y} bpm={measure.bpm} />  : null }
-        <text x={0} y={23 + y} style={measureNumberStyle}>{measureIndex + 1}</text>
-        { measure.repeatEnd ? <Repeat measureWidth={measure.width} strings={5} y={y} /> : null }
+        { measure.indexOfRow === 0 ? <Clef y={yTop} strings={5} treble /> : null }
+        <TimeSignature yOffset={yTop} strings={5} measure={measure} />
+        { measure.renderBpm ? <Bpm y={yTop} bpm={measure.bpm} />  : null }
+        <text x={0} y={23 + yTop} style={measureNumberStyle}>{measureIndex + 1}</text>
+        { measure.repeatEnd ? <Repeat measureWidth={measure.width} strings={5} y={yTop} /> : null }
       </svg>
     );
   }

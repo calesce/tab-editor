@@ -9,23 +9,22 @@ import MusicMeasure from './MusicMeasure';
 import TabMeasure from './TabMeasure';
 import MeasureSelectBox from './MeasureSelectBox';
 
-const MEASURE_HEIGHT = 210;
-
 class Measure extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     return shallowCompare(this, nextProps, nextState);
   }
 
   render() {
-    const { playingNoteIndex, measureLength, measureIndex, measure, tuning, isValid, selectRange } = this.props;
+    const { playingNoteIndex, measureLength, measureIndex, measure,
+      tuning, isValid, selectRange, rowHeight } = this.props;
 
     return (
-      <svg style={{ height: MEASURE_HEIGHT + (tuning.length * 20), width: measure.width }}>
-        <MusicMeasure {...this.props} measureHeight={MEASURE_HEIGHT} y={65} />
+      <svg style={{ height: rowHeight + (tuning.length * 20), width: measure.width }}>
+        <MusicMeasure {...this.props} />
         <TabMeasure measure={measure} playingNoteIndex={playingNoteIndex} measureIndex={measureIndex}
           measureLength={measureLength} isValid={isValid} stringCount={tuning.length} displayOption='both'
-          y={MEASURE_HEIGHT} />
-        <MeasureSelectBox measure={measure} selected={selectRange} height={MEASURE_HEIGHT + (tuning.length * 20)}/>
+          y={rowHeight} />
+        <MeasureSelectBox measure={measure} selected={selectRange} height={rowHeight + (tuning.length * 20)}/>
       </svg>
     );
   }

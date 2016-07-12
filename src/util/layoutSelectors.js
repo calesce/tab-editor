@@ -3,7 +3,13 @@ import { prepareRowLayout } from './scoreLayout';
 import { scoreBoxSelector, layoutSelector, tuningSelector, trackMeasuresSelector } from './selectors';
 
 const calcHeight = (measures, tuning) => {
-  return (measures[measures.length - 1].rowIndex + 1) * (210 + 20 * tuning.length);
+  const rows = measures.reduce((rows, measure) => {
+    return measure.indexOfRow === 0 ? rows.concat(measure) : rows;
+  }, []);
+
+  return rows.reduce((sum, measure) => {
+    return sum + (20 * tuning.length) + (measure.yTop + measure.yBottom + 70);
+  }, 0);
 };
 
 const calcWidth = (measures) => {
@@ -13,8 +19,8 @@ const calcWidth = (measures) => {
 };
 
 export const trackWithLayoutSelector = createSelector(
-  [ layoutSelector, trackMeasuresSelector, scoreBoxSelector ],
-  (layout, measures, scoreBox) => prepareRowLayout(measures, layout, scoreBox)
+  [ layoutSelector, trackMeasuresSelector, scoreBoxSelector, tuningSelector ],
+  (layout, measures, scoreBox, tuning) => prepareRowLayout(measures, layout, scoreBox, tuning)
 );
 
 export const makeScoreSelector = () => {

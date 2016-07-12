@@ -1,7 +1,9 @@
 /* @flow */
 import shallowEqual from '../util/shallowEqual';
-import { isEqual } from 'lodash';
-import type { ScoreBox } from './stateTypes';
+import { isEqual, flatten, last } from 'lodash';
+import { getHighestNote, getLowestNote, getMidiFromNote, midiDiff } from './midiNotes';
+
+import type { ScoreBox, Tuning } from './stateTypes';
 
 const calcXForNote = (measure: Object, noteIndex: number, indexOfRow: ?number): number => {
   let x = 0 + (noteIndex * 53 + 33);
@@ -15,22 +17,6 @@ const calcXForNote = (measure: Object, noteIndex: number, indexOfRow: ?number): 
     x -= measure.renderTimeSignature ? 0 : 25;
   }
   return x;
-};
-
-const linearTrack = (track: Array<Object>): Array<Object> => {
-  return track.map((measure, i) => {
-    const indexOfRow = i === 0 ? 0 : undefined;
-    const newMeasure = {
-      ...measure,
-      notes: measure.notes.map((note, noteIndex) => ({
-        ...note,
-        x: calcXForNote(measure, noteIndex, indexOfRow)
-      })),
-      rowIndex: 0,
-      indexOfRow
-    };
-    return isEqual(newMeasure, measure) ? measure : newMeasure;
-  });
 };
 
 const computeTrackLayout = (measures: Array<Object>): Array<Object> => {
@@ -123,8 +109,76 @@ const trackWithRows = (measures: Array<Object>, scoreBox: ScoreBox): Array<Objec
   }, []);
 };
 
-export const prepareRowLayout = (measures: Array<Object>, layout: string, scoreBox: ScoreBox): Array<Object> => {
-  return layout === 'page' ?
+const linearTrack = (track: Array<Object>): Array<Object> => {
+  return track.map((measure, i) => {
+    const indexOfRow = i === 0 ? 0 : undefined;
+    const newMeasure = {
+      ...measure,
+      notes: measure.notes.map((note, noteIndex) => ({
+        ...note,
+        x: calcXForNote(measure, noteIndex, indexOfRow)
+      })),
+      rowIndex: 0,
+      indexOfRow
+    };
+    return isEqual(newMeasure, measure) ? measure : newMeasure;
+  });
+};
+
+const midiNotesForMeasure = (measure: Object, tuning: Tuning): Array<string> => {
+  return flatten(measure.notes.map(note => {
+    return note.fret.map((fret, i) => getMidiFromNote(fret, note.string[i], tuning));
+  }));
+};
+
+const getYTop = (midi: String): number => {
+  return midiDiff(midi, 'g4');
+};
+
+const getYBottom = (midi: String): number => {
+  return midiDiff('f3', midi);
+};
+
+const getRowHeights = (measures: Array<Object>, tuning: Tuning): Array<Object> => {
+  const rows = measures.reduce((rowGroups, measure) => {
+    const midiNotes = midiNotesForMeasure(measure, tuning);
+    const highest = getHighestNote(midiNotes);
+    const lowest = getLowestNote(midiNotes);
+
+    if(measure.indexOfRow === 0) { // new row
+      return rowGroups.concat({ highest, lowest });
+    } else {
+      return rowGroups.slice(0, rowGroups.length - 1).concat({
+        highest: getHighestNote([last(rowGroups).highest, highest]),
+        lowest: getLowestNote([last(rowGroups).lowest, lowest])
+      });
+    }
+  }, []);
+
+  const rowsWithY = rows.map(row => {
+    const yTop = getYTop(row.highest) * 6.5; // 6.5 is about half of the distance between bars on the staff
+    const yBottom = getYBottom(row.lowest) * 6.5;
+    return {
+      yTop: yTop > 0 ? yTop : 0,
+      yBottom: yBottom > 0 ? yBottom : 0
+     };
+  });
+
+  return measures.map(measure => {
+    return {
+      ...measure,
+      yTop: rowsWithY[measure.rowIndex].yTop,
+      yBottom: rowsWithY[measure.rowIndex].yBottom
+    };
+  });
+};
+
+export const prepareRowLayout = (
+  measures: Array<Object>, layout: string, scoreBox: ScoreBox, tuning: Tuning
+): Array<Object> => {
+  const newMeasures = layout === 'page' ?
     trackWithRows(computeTrackLayout(measures), scoreBox) :
     linearTrack(computeTrackLayout(measures));
+
+  return getRowHeights(newMeasures, tuning);
 };
