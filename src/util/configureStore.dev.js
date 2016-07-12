@@ -1,17 +1,8 @@
-import { createStore, compose } from 'redux';
-import { persistState } from 'redux-devtools';
+import { createStore } from 'redux';
 import rootReducer from '../reducers';
 
-const finalCreateStore = compose(
-  persistState(
-    window.location.href.match(
-      /[?&]debug_session=([^&]+)\b/
-    )
-  )
-)(createStore);
-
 export default function configureStore(initialState) {
-  const store = finalCreateStore(rootReducer, initialState);
+  const store = createStore(rootReducer, initialState);
 
   if(module.hot) {
     module.hot.accept('../reducers', () => {
