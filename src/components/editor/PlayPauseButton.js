@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import shallowCompare from 'react-addons-shallow-compare';
 
 import { setCursor } from '../../actions/cursor';
 import { setPlayingIndex } from '../../actions/playingIndex';
@@ -28,6 +29,10 @@ class PlayPauseButton extends Component {
 
     this.onPlayClick = this.onPlayClick.bind(this);
     this.onPauseClick = this.onPauseClick.bind(this);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return shallowCompare(this, nextProps, nextState);
   }
 
   onPlayClick() {

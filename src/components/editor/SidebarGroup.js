@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import shallowCompare from 'react-addons-shallow-compare';
 
 const groupStyle = {
   width: '100%'
@@ -21,6 +22,10 @@ const flexStyle = {
 };
 
 class SidebarGroup extends Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return shallowCompare(this, nextProps, nextState);
+  }
+
   render() {
     return (
       <div style={groupStyle}>

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import shallowCompare from 'react-addons-shallow-compare';
 
 const selectedColor = '#b3caf5';
 
@@ -8,6 +9,8 @@ const hoverStyle = {
   msUserSelect: 'none',
   cursor: 'pointer'
 };
+
+const defaultStyle = {};
 
 export default function hover() {
   return function(WrappedComponent) {
@@ -21,6 +24,10 @@ export default function hover() {
         this.onMouseLeave = this.onMouseLeave.bind(this);
       }
 
+      shouldComponentUpdate(nextProps, nextState) {
+        return shallowCompare(this, nextProps, nextState);
+      }
+
       onMouseEnter() {
         this.setState({ hover: true });
       }
@@ -30,12 +37,13 @@ export default function hover() {
       }
 
       render() {
-        const style = this.state.hover ? hoverStyle : {};
+        const style = this.state.hover ? hoverStyle : defaultStyle;
         const color = (this.props.selected || this.state.hover) ? selectedColor : 'black';
+        const styleToUse = this.props.style ? { ...this.props.style, ...style } : style;
 
         return (
           <div onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
-            <WrappedComponent {...this.props} color={color} style={{ ...this.props.style, ...style }} />
+            <WrappedComponent {...this.props} color={color} style={styleToUse} />
           </div>
         );
       }

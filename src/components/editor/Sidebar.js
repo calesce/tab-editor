@@ -72,12 +72,12 @@ export default class Sidebar extends Component {
         </SidebarGroup>
         <SidebarGroup title='Measure'>
           <TimeSignature />
-          <BpmButton onClick={this.openBpm} onClose={togglePopover} popoverOpen={popoverOpen === 'bpm'} />
+          <BpmButton onClick={this.openBpm} onClose={togglePopover} popoverOpen={popoverOpen} />
           <RepeatStart />
           <RepeatEnd />
         </SidebarGroup>
         <SidebarGroup title='Track'>
-          <TuningButton onClick={this.openTuning} onClose={togglePopover} popoverOpen={popoverOpen === 'tuning'} />
+          <TuningButton onClick={this.openTuning} onClose={togglePopover} popoverOpen={popoverOpen} />
           <InstrumentSelect />
           <InsertTrackButton />
           <DeleteTrackButton />

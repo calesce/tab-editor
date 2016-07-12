@@ -10,8 +10,8 @@ const style = {
 };
 
 export default class Bpm extends Component {
-  shouldComponentUpdate(nextProps) {
-    return shallowCompare(this, nextProps);
+  shouldComponentUpdate(nextProps, nextState) {
+    return shallowCompare(this, nextProps, nextState);
   }
 
   render() {
