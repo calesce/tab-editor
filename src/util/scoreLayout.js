@@ -131,11 +131,11 @@ const midiNotesForMeasure = (measure: Object, tuning: Tuning): Array<string> => 
   }));
 };
 
-const getYTop = (midi: String): number => {
+const getYTop = (midi: string): number => {
   return midiDiff(midi, 'g4');
 };
 
-const getYBottom = (midi: String): number => {
+const getYBottom = (midi: string): number => {
   return midiDiff('f3', midi);
 };
 
