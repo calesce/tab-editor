@@ -4,7 +4,7 @@ export const CUT_NOTE = 'CUT_NOTE';
 export const COPY_NOTE = 'COPY_NOTE';
 export const PASTE_NOTE = 'PASTE_NOTE';
 
-import type { PlayingIndex } from '../util/stateTypes';
+import type { PlayingIndex, Clipboard } from '../util/stateTypes';
 
 export function copyNote(selection: any): Object {
   return {
@@ -22,7 +22,7 @@ export function cutNote(index: PlayingIndex, selection: any, range: any): Object
   };
 }
 
-export function pasteNote(index: PlayingIndex, clipboard: any): Object {
+export function pasteNote(index: PlayingIndex, clipboard: Clipboard): Object {
   return {
     type: PASTE_NOTE,
     index,

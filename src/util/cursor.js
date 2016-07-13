@@ -1,6 +1,6 @@
 /* @flow */
 
-import type { Cursor, Measure } from './stateTypes';
+import type { Cursor, Measure, Clipboard } from './stateTypes';
 
 export const getNextNote = (measures: Array<Measure>, { stringIndex, measureIndex, noteIndex }: Cursor): Cursor => {
   if(noteIndex >= measures[measureIndex].notes.length - 1) {
@@ -79,7 +79,7 @@ export const cursorAfterCutting = (measures: Array<Measure>, selectRange: any, o
   };
 };
 
-export const cursorAfterPasting = (measures: Array<Measure>, clipboard: any, oldCursor: Cursor): Cursor => {
+export const cursorAfterPasting = (measures: Array<Measure>, clipboard: Clipboard, oldCursor: Cursor): Cursor => {
   if(clipboard.notes) {
     return {
       ...oldCursor,
@@ -103,7 +103,8 @@ export const cursorAfterPasting = (measures: Array<Measure>, clipboard: any, old
   }
 };
 
-export const getNotesFromSelection = (measures: Array<Measure>, { measureIndex, noteIndex }: Cursor, selectRange: Object): Array<Object> | Object => {
+export const getNotesFromSelection =
+  (measures: Array<Measure>, { measureIndex, noteIndex }: Cursor, selectRange: Object): Array<Object> | Object => {
   if(selectRange) {
     if(Object.keys(selectRange).length === 1 && selectRange[Object.keys(selectRange)[0]] !== 'all') {
       const measureIndex = Object.keys(selectRange)[0];

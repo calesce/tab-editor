@@ -7,6 +7,12 @@ export type Tuning = Array<string>;
 export type TimeSignature = { beats: number, beatType: number };
 export type Layout = 'page' | 'linear';
 
+export type Note = {
+  string: Array<number>,
+  fret: Array<number>,
+  duration: string
+};
+
 export type Measure = {
   bpm: number,
   timeSignature: TimeSignature,
@@ -25,8 +31,10 @@ export type UndoableTracks = {
   future: Array<Array<Track>>
 };
 
+export type Clipboard = Note | { notes: Array<Note> } | Array<Measure>;
+
 export type State = {
-  clipboard: any,
+  clipboard?: Clipboard,
   countdown: boolean,
   currentTrackIndex: number,
   cursor: Cursor,

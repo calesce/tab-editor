@@ -1,10 +1,12 @@
+/* @flow */
+
 import { createStore } from 'redux';
 import rootReducer from '../reducers';
 
-export default function configureStore(initialState) {
-  const store = createStore(rootReducer, initialState,
-    window.devToolsExtension ? window.devToolsExtension() : f => f
-  );
+import type { State } from './stateTypes';
+
+export default function configureStore(initialState: State) {
+  const store = createStore(rootReducer, initialState);
 
   if(module.hot) {
     module.hot.accept('../reducers', () => {

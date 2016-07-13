@@ -121,6 +121,7 @@ class Score extends Component {
 
     let selectedRows;
     if(dragWidth > 5 && dragHeight > 5) {
+      // FIXME
       const startRow = Math.floor(dragY / this.props.rowHeight);
       const endRow = Math.floor((dragY + dragHeight) / this.props.rowHeight);
       selectedRows = Array.from({ length: endRow - startRow + 1 }, (_, k) => k + startRow);

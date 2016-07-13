@@ -1,16 +1,18 @@
-import { flatten, findIndex } from 'lodash';
+import { findIndex } from 'lodash';
 import { PASTE_NOTE, CUT_NOTE } from '../actions/cutCopyPaste';
 import { CHANGE_NOTE, DELETE_NOTE, CHANGE_NOTE_LENGTH, INSERT_NOTE, MAKE_NOTE_REST, TOGGLE_NOTE_DOTTED,
   TOGGLE_NOTE_TREMOLO, INCREASE_NOTE_LENGTH, DECREASE_NOTE_LENGTH,
   TOGGLE_NOTE_VIBRATO, ADD_REPEAT_END, TOGGLE_NOTE_TRILL, SET_NOTE_TUPLET
 } from '../actions/measure';
 
-const replaceNote = (state, note, noteIndex) => {
-  const notes = flatten([state.notes.slice(0, noteIndex), note, state.notes.slice(noteIndex + 1, state.notes.length)]);
+import type { Measure, Note } from '../util/stateTypes';
+
+const replaceNote = (state: Measure, note: Note, noteIndex: number): Measure => {
+  const notes = state.notes.slice(0, noteIndex).concat(note).concat(state.notes.slice(noteIndex + 1, state.notes.length));
   return { ...state, notes };
 };
 
-const insertNote = (state, action) => {
+const insertNote = (state: Measure, action: Object): Measure => {
   if(state.notes.length === 0) {
     const notes = [{
       duration: 'q',
@@ -29,20 +31,20 @@ const insertNote = (state, action) => {
     fret: ['rest'],
     string: ['rest']
   };
-  const notes = flatten([state.notes.slice(0, noteIndex + 1), note, state.notes.slice(noteIndex + 1, state.notes.length)]);
+  const notes = state.notes.slice(0, noteIndex + 1).concat(note).concat(state.notes.slice(noteIndex + 1, state.notes.length));
   return{
     ...state,
     notes
   };
 };
 
-const deleteNote = (state, action) => {
+const deleteNote = (state: Measure, action: Object): Measure => {
   const { noteIndex, stringIndex } = action.index;
   const note = state.notes[noteIndex];
   const currentStringIndex = findIndex(note.string, (note) => note === stringIndex);
 
   if(note.fret[0] === 'rest') {
-    const notes = flatten([state.notes.slice(0, noteIndex), state.notes.slice(noteIndex + 1, state.notes.length)]);
+    const notes = state.notes.slice(0, noteIndex).concat(state.notes.slice(noteIndex + 1, state.notes.length));
     return { ...state, notes };
   } else if(currentStringIndex === -1) {
     return state;
@@ -65,7 +67,7 @@ const deleteNote = (state, action) => {
   }
 };
 
-const increaseNoteLength = (note) => {
+const increaseNoteLength = (note: Note): string => {
   let newDuration;
   switch(note.duration) {
     case 'w':
@@ -89,7 +91,7 @@ const increaseNoteLength = (note) => {
   return newDuration;
 };
 
-const decreaseNoteLength = (note) => {
+const decreaseNoteLength = (note: Note): string => {
   let newDuration;
   switch(note.duration) {
     case 't':
@@ -113,7 +115,7 @@ const decreaseNoteLength = (note) => {
   return newDuration;
 };
 
-const getChangedNote = (oldNote, fret, stringIndex) => {
+const getChangedNote = (oldNote: Note, fret: number, stringIndex: number): Note => {
   if(fret === 'rest') {
     return {
       ...oldNote,
@@ -156,7 +158,7 @@ const getChangedNote = (oldNote, fret, stringIndex) => {
   }
 };
 
-export default function measure(state, action) {
+export default function measure(state: Measure, action: Object): Measure {
   switch(action.type) {
     case INSERT_NOTE: {
       return insertNote(state, action);
@@ -259,10 +261,14 @@ export default function measure(state, action) {
     case PASTE_NOTE: {
       const { noteIndex } = action.index;
       if(action.clipboard.notes) {
-        const notes = flatten([state.notes.slice(0, noteIndex + 1), action.clipboard.notes, state.notes.slice(noteIndex + 1, state.notes.length)]);
+        const notes = state.notes.slice(0, noteIndex + 1)
+          .concat(action.clipboard.notes)
+          .concat(state.notes.slice(noteIndex + 1, state.notes.length));
         return { ...state, notes };
       } else if(!Array.isArray(action.clipboard)) {
-        const notes = flatten([state.notes.slice(0, noteIndex + 1), action.clipboard, state.notes.slice(noteIndex + 1, state.notes.length)]);
+        const notes = state.notes.slice(0, noteIndex + 1)
+          .concat(action.clipboard)
+          .concat(state.notes.slice(noteIndex + 1, state.notes.length));
         return { ...state, notes };
       }
 
@@ -279,7 +285,7 @@ export default function measure(state, action) {
         });
         return { ...state, notes };
       } else if(!Array.isArray(action.selection)) {
-        const notes = flatten([state.notes.slice(0, noteIndex), state.notes.slice(noteIndex + 1, state.notes.length)]);
+        const notes = state.notes.slice(0, noteIndex).concat(state.notes.slice(noteIndex + 1, state.notes.length));
         return { ...state, notes };
       }
 
