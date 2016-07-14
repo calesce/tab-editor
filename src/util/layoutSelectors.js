@@ -28,8 +28,7 @@ export const makeScoreSelector = () => {
     [ trackWithLayoutSelector, layoutSelector, tuningSelector, scoreBoxSelector ],
     (measures, layout, tuning, { x, y, width }) => {
       return {
-        measures,
-        rowHeight: 20 * tuning.length + 210,
+        measures, tuning,
         height: layout === 'linear' ? '99%' : calcHeight(measures, tuning),
         width: layout === 'linear' ? calcWidth(measures) : width,
         x, y

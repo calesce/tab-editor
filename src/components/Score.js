@@ -102,6 +102,22 @@ class Score extends Component {
     }
   }
 
+  rowFromY(dragY, measures, tuning) {
+    const rowHeights = measures.reduce((accum, measure) => {
+      if(!accum[measure.rowIndex]) {
+        return accum.concat(
+          (accum.length > 0 ? accum[accum.length - 1] : 0) +
+          measure.yTop + measure.yBottom + 70 + tuning.length * 20
+        );
+      }
+      return accum;
+    }, []);
+
+    return rowHeights ?
+      rowHeights.reduce((accum, row, i) => accum === -1 && dragY < row ? i : accum, -1):
+      0;
+  }
+
   onMouseDown(e) {
     e.preventDefault();
 
@@ -121,9 +137,8 @@ class Score extends Component {
 
     let selectedRows;
     if(dragWidth > 5 && dragHeight > 5) {
-      // FIXME
-      const startRow = Math.floor(dragY / this.props.rowHeight);
-      const endRow = Math.floor((dragY + dragHeight) / this.props.rowHeight);
+      const startRow = this.rowFromY(dragY, this.props.measures, this.props.tuning);
+      const endRow = this.rowFromY(dragY + dragHeight, this.props.measures, this.props.tuning);
       selectedRows = Array.from({ length: endRow - startRow + 1 }, (_, k) => k + startRow);
     }
 
