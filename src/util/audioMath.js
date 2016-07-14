@@ -1,10 +1,10 @@
 /* @flow */
 
-import { orderBy } from 'lodash';
-import { memoize } from 'lodash';
-import Fraction from 'fraction.js';
+import { orderBy, memoize } from 'lodash';
 
-import type { TimeSignature } from './stateTypes';
+import type { TimeSignature, Measure } from './stateTypes';
+
+const roundToFour = num => Number(Math.round(Number(num + 'e+3'))  + 'e-3');
 
 const durations = {
   w: 1,
@@ -15,15 +15,15 @@ const durations = {
   t: 32
 };
 
-export const getPercentageOfNote = (duration: string, timeSignature: TimeSignature, dotted: boolean, tuplet: boolean): number => {
+export const getPercentageOfNote = (duration: string, timeSignature: TimeSignature, dotted: boolean, tuplet: string): number => {
   const numBeats = timeSignature.beatType / durations[duration];
-  let percentage = Fraction(numBeats / timeSignature.beats);
+  let percentage = numBeats / timeSignature.beats;
 
-  percentage = dotted ? percentage.mul(Fraction(1.5)) : percentage;
+  percentage = dotted ? percentage * 1.5 : percentage;
   if(tuplet) {
-    percentage = percentage.mul(Fraction(tuplet));
+    percentage = percentage * (parseInt(tuplet[0]) / parseInt(tuplet[2]));
   }
-  return percentage.n / percentage.d;
+  return percentage;
 };
 
 export const getDurationFromPercentage = (percentage: number, timeSignature: TimeSignature): number => {
@@ -45,35 +45,35 @@ export const numberOfTremoloNotesForDuration = (duration: string): number => {
   return durations[sortedDurations[sortedDurations.length - 1 - index]];
 };
 
-const getDurationFraction = (duration: string): any => {
+const getDurationValue = (duration: string): number => {
   switch(duration) {
     case 'q':
-      return Fraction(0.25);
+      return 0.25;
     case 'e':
-      return Fraction(0.125);
+      return 0.125;
     case 's':
-      return Fraction(0.0625);
+      return 0.0625;
     case 'h':
-     return Fraction(0.5);
+     return 0.5;
     default:
-     return Fraction(1.0);
+     return 1.0;
   }
 };
 
-const calcMeasureValidity = (measure: Object): boolean => {
-  const timeSig = Fraction(measure.timeSignature.beats / measure.timeSignature.beatType);
+const calcMeasureValidity = (measure: Measure): boolean => {
+  const timeSig = measure.timeSignature.beats / measure.timeSignature.beatType;
   const totalDuration = measure.notes.reduce((total, note) => {
-    let duration = getDurationFraction(note.duration);
+    let duration = getDurationValue(note.duration);
     if(note.dotted) {
-      duration = duration.mul(Fraction(1.5));
+      duration *= 1.5;
     }
     if(note.tuplet) {
-      duration = duration.mul(Fraction(note.tuplet));
+      duration = duration * (parseInt(note.tuplet[0]) / parseInt(note.tuplet[2]));
     }
 
     return total + duration;
-  }, Fraction(0));
+  }, 0);
 
-  return timeSig.equals(totalDuration);
+  return roundToFour(timeSig) === roundToFour(totalDuration);
 };
 export const memoizedValidity = memoize(calcMeasureValidity);

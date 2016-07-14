@@ -212,7 +212,7 @@ class App extends Component {
       if(note.tuplet) {
         this.props.actions.setNoteTuplet(this.props.cursor, undefined);
       } else {
-        this.props.actions.setNoteTuplet(this.props.cursor, '2/3'); // store string representation of multiplier, use with fractionjs
+        this.props.actions.setNoteTuplet(this.props.cursor, '2/3'); // store string representation of multiplier for now
       }
     } else if(event.keyCode >= 37 && event.keyCode <= 40) {
       return this.navigateCursor(event);
