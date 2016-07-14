@@ -2,7 +2,7 @@
 
 import { orderBy, memoize } from 'lodash';
 
-import type { TimeSignature, Measure } from './stateTypes';
+import type { TimeSignature, Measure, Duration } from './stateTypes';
 
 const roundToFour = num => Number(Math.round(Number(num + 'e+3'))  + 'e-3');
 
@@ -15,7 +15,7 @@ const durations = {
   t: 32
 };
 
-export const getPercentageOfNote = (duration: string, timeSignature: TimeSignature, dotted: boolean, tuplet: string): number => {
+export const getPercentageOfNote = (duration: Duration, timeSignature: TimeSignature, dotted: boolean, tuplet: ?string): number => {
   const numBeats = timeSignature.beatType / durations[duration];
   let percentage = numBeats / timeSignature.beats;
 
@@ -39,13 +39,13 @@ export const getBpmForNote = (note: number, bpm: number): number => (
   bpm * (note / 4)
 );
 
-export const numberOfTremoloNotesForDuration = (duration: string): number => {
+export const numberOfTremoloNotesForDuration = (duration: Duration): number => {
   const sortedDurations = orderBy(Object.keys(durations), d => durations[d]);
   const index = sortedDurations.indexOf(duration);
   return durations[sortedDurations[sortedDurations.length - 1 - index]];
 };
 
-const getDurationValue = (duration: string): number => {
+const getDurationValue = (duration: Duration): number => {
   switch(duration) {
     case 'q':
       return 0.25;
@@ -53,6 +53,8 @@ const getDurationValue = (duration: string): number => {
       return 0.125;
     case 's':
       return 0.0625;
+    case 't':
+      return 0.003125;
     case 'h':
      return 0.5;
     default:
@@ -68,7 +70,8 @@ const calcMeasureValidity = (measure: Measure): boolean => {
       duration *= 1.5;
     }
     if(note.tuplet) {
-      duration = duration * (parseInt(note.tuplet[0]) / parseInt(note.tuplet[2]));
+      const { tuplet } = note;
+      duration = duration * (parseInt(tuplet[0]) / parseInt(tuplet[2]));
     }
 
     return total + duration;

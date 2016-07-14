@@ -6,17 +6,23 @@ export type ScoreBox = { x: number; y: number, width: number };
 export type Tuning = Array<string>;
 export type TimeSignature = { beats: number, beatType: number };
 export type Layout = 'page' | 'linear';
+export type Duration = 'w' | 'h' | 'q' | 'e' | 's' | 't';
 
 export type Note = {
   string: Array<number>,
   fret: Array<number>,
-  duration: string
+  duration: Duration,
+  dotted?: boolean,
+  tremolo?: boolean,
+  trill?: boolean,
+  vibrato?: boolean,
+  tuplet?: string
 };
 
 export type Measure = {
   bpm: number,
   timeSignature: TimeSignature,
-  notes: Array<Object>
+  notes: Array<Note>
 };
 
 export type Track = {
