@@ -3,6 +3,7 @@ import { trackWithLayoutSelector } from './layoutSelectors';
 import { cursorSelector, playingIndexSelector, selectRangeSelector,
   tuningSelector, measureLengthSelector } from './selectors';
 import { memoizedValidity } from './audioMath';
+import { annotateNotes, determineAccidentals } from './accidentals';
 
 const measureIndexSelector = (_, props) => props.measureIndex;
 
@@ -25,13 +26,15 @@ export const makeMeasureSelector = () => {
       measureLengthSelector, selectRangeSelector
     ],
     (measure, measureIndex, playingIndex, tuning, measureLength, selectRange) => {
+      const playingNoteIndex = getPlayingNoteIndex(playingIndex, measureIndex);
       return {
         measure,
-        playingNoteIndex: getPlayingNoteIndex(playingIndex, measureIndex),
+        playingNoteIndex,
         isValid: memoizedValidity(measure),
         tuning,
         measureLength,
         yTop: measure.yTop,
+        notesWithAccidentals: determineAccidentals(annotateNotes(measure.notes, measure.yTop, playingNoteIndex, tuning)),
         rowHeight: measure.yTop + measure.yBottom + 70,
         selectRange: selectRange ? selectRange[measureIndex] : undefined
       };

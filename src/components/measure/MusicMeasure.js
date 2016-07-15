@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 
-import { getIndexOfNote, getStaffPositionOfNote, midiNotes } from '../../util/midiNotes';
 import { determineFlip } from '../../util/notationMath';
 
 import MusicNote from './MusicNote';
@@ -11,8 +10,6 @@ import Clef from './Clef';
 import TimeSignature from './TimeSignature';
 import Bpm from './Bpm';
 import Repeat from './Repeat';
-
-const midis = midiNotes();
 
 const measureNumberStyle = {
   MozUserSelect: 'none',
@@ -27,109 +24,12 @@ class MusicMeasure extends Component {
   constructor() {
     super();
 
-    this.annotateNotes = this.annotateNotes.bind(this);
-    this.annotateNote = this.annotateNote.bind(this);
-    this.determineAccidentals = this.determineAccidentals.bind(this);
     this.renderBars = this.renderBars.bind(this);
     this.renderMusicNote = this.renderMusicNote.bind(this);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     return shallowCompare(this, nextProps, nextState);
-  }
-
-  annotateNotes(notes, yTop) {
-    return notes.map((note, noteIndex) => {
-      return {
-        ...note,
-        color: this.props.playingNoteIndex === noteIndex ? '#f9423a' : 'black',
-        y: 5 * 6.5 + 6 + yTop,
-        notes: this.annotateNote(note, yTop)
-      };
-    });
-  }
-
-  annotateNote(note, yTop) {
-    if(note.string[0] === 'rest') {
-      return ['rest'];
-    }
-
-    return note.fret.map((fret, i) => {
-      const midiIndex = getIndexOfNote(this.props.tuning[note.string[i]]) + fret;
-      const midiString = midis[midiIndex];
-      const staffPosition = getStaffPositionOfNote(midiString.replace('#', ''));
-      return {
-        y: yTop + 249 - (6.5 * staffPosition),
-        sharp: midiString.charAt(1) === '#',
-        midiString
-      };
-    });
-  }
-
-  determineAccidentals(notes) {
-    return notes.map((note, i) => {
-      return {
-        ...note,
-        notes: note.notes.map((anote) => {
-          if(i === 0) {
-            return {
-              ...anote,
-              renderSharp: anote.sharp ? anote.sharp : false
-            };
-          } else if(anote === 'rest') {
-            return anote;
-          }
-
-          if(anote.sharp) {
-            let renderSharp;
-            Array.from({ length: i }, (_, index) => {
-              const noteBefore = notes[index];
-
-              noteBefore.notes.forEach((beforeNote) => {
-                if(beforeNote === 'rest') {
-                  if(renderSharp === undefined) {
-                    renderSharp = true;
-                  }
-                } else {
-                  const isSameMidi = beforeNote.midiString.replace('#', '') === anote.midiString.replace('#', '');
-                  const isBeforeNoteSharp = beforeNote.midiString.charAt(1) === '#';
-                  if(isSameMidi) {
-                    renderSharp = isBeforeNoteSharp ? false : true;
-                  } else {
-                    if(renderSharp === undefined) {
-                      renderSharp = true;
-                    }
-                  }
-                }
-              });
-            });
-
-            return {
-              ...anote,
-              renderSharp
-            };
-          } else {
-            let renderNatural;
-            Array.from({ length: i }, (_, index) => {
-              const noteBefore = notes[index];
-
-              noteBefore.notes.forEach((beforeNote) => {
-                if(beforeNote !== 'rest') {
-                  if(beforeNote.midiString.replace('#', '') === anote.midiString.replace('#', '')) {
-                    renderNatural = beforeNote.midiString.charAt(1) === '#';
-                  }
-                }
-              });
-            });
-
-            return {
-              ...anote,
-              renderNatural
-            };
-          }
-        })
-      };
-    });
   }
 
   renderBars(x, y, measureWidth, strings) {
@@ -167,16 +67,13 @@ class MusicMeasure extends Component {
   }
 
   render() {
-    const { measure, measureIndex, rowHeight, yTop } = this.props;
-
-    // TODO move this logic to a selector
-    const notes = this.determineAccidentals(this.annotateNotes(measure.notes, yTop));
+    const { measure, measureIndex, rowHeight, yTop, notesWithAccidentals } = this.props;
 
     return (
       <svg style={{ height: rowHeight, width: measure.width, overflow: 'visible' }}>
         { this.renderBars(0, yTop, measure.width, 5) }
         {
-          notes.map((note, noteIndex) => this.renderMusicNote(note, measureIndex, noteIndex, yTop))
+          notesWithAccidentals.map((note, noteIndex) => this.renderMusicNote(note, measureIndex, noteIndex, yTop))
         }
         { measure.indexOfRow === 0 ? <Clef y={yTop} strings={5} treble /> : null }
         <TimeSignature yOffset={yTop} strings={5} measure={measure} />
