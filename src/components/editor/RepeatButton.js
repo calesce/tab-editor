@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { addRepeatEnd } from '../../actions/measure';
+import { toggleRepeatEnd } from '../../actions/measure';
 
 import hover from './hoverContainer';
 
@@ -12,13 +12,13 @@ const isSelected = state => {
 };
 
 export const RepeatEnd = connect(
-  isSelected, { addRepeatEnd }
-)(hover()(({ style, color, cursor, selected, addRepeatEnd }) => {
+  isSelected, { toggleRepeatEnd }
+)(hover()(({ style, color, cursor, selected, toggleRepeatEnd }) => {
   if(selected) {
     color = '#b3caf5';
   }
   const onClick = () => {
-    addRepeatEnd(cursor);
+    toggleRepeatEnd(cursor);
   };
 
   return (

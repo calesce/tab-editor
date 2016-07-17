@@ -12,7 +12,7 @@ export const TOGGLE_NOTE_TRILL = 'TOGGLE_NOTE_TRILL';
 export const CHANGE_NOTE_LENGTH = 'CHANGE_NOTE_LENGTH';
 export const INCREASE_NOTE_LENGTH = 'INCREASE_NOTE_LENGTH';
 export const DECREASE_NOTE_LENGTH = 'DECREASE_NOTE_LENGTH';
-export const ADD_REPEAT_END = 'ADD_REPEAT_END';
+export const TOGGLE_REPEAT_END = 'TOGGLE_REPEAT_END';
 
 import type { PlayingIndex } from '../util/stateTypes';
 
@@ -103,9 +103,9 @@ export function decreaseNoteLength(index: PlayingIndex) {
   };
 }
 
-export function addRepeatEnd(index: PlayingIndex) {
+export function toggleRepeatEnd(index: PlayingIndex) {
   return {
-    type: ADD_REPEAT_END,
+    type: TOGGLE_REPEAT_END,
     index
   };
 }
