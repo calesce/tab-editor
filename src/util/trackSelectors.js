@@ -1,16 +1,16 @@
 import { createSelector } from 'reselect';
-import { findIndex } from 'lodash';
-import { playingIndexSelector, selectRangeSelector } from './selectors';
+import { findIndex, omit } from 'lodash';
+import { playingIndexSelector } from './selectors';
 
 export const getTracksSelector = state => ({ tracks: state.tracks.present });
 const tracksSelector = state => state.tracks.present;
 const currentTrackIndexSelector = state => state.currentTrackIndex;
 
-const getRepeatingSection = (measures, repeatIndex) => {
-  return repeatIndex === -1 ? [] : measures.slice(0, repeatIndex + 1);
+const getRepeatingSection = (measures, repeatBegin, repeatEnd) => {
+  return measures.slice(0, repeatBegin).concat(omit(measures[repeatEnd], 'repeatEnd'));
 };
 
-const mapMeasureIndices = (measures) => {
+const mapMeasureIndices = measures => {
   return measures.map((measure, i) => {
     return {
       ...measure,
@@ -21,66 +21,54 @@ const mapMeasureIndices = (measures) => {
 
 const tracksWithMeasuresSelector = createSelector(
   tracksSelector,
-  (tracks) => {
-    return tracks.map((track) => {
-      return {
-        ...track,
-        measures: mapMeasureIndices(track.measures)
-      };
-    });
+  tracks => {
+    return tracks.map((track) => ({
+      ...track,
+      measures: mapMeasureIndices(track.measures)
+    }));
   }
 );
 
-const expandedTracksFromMeasures = (tracks, repeatIndex) => {
+// recursive function to "unwind" all of the repeat signs in a song to give the actual notes to be played
+const expandedTracksFromMeasures = tracks => {
+  const repeatIndex = findIndex(tracks[0].measures, (measure) => measure.repeatEnd === true);
   if(repeatIndex === -1) {
     return tracks;
   }
-  return tracks.map((track) => {
+  const expandedTracks = tracks.map(track => {
     const { measures } = track;
     const repeatSection = getRepeatingSection(measures, repeatIndex);
-    const newMeasures = measures.slice(0, repeatIndex + 1).concat(repeatSection).concat(measures.slice(repeatIndex + 1, measures.length));
+    const newMeasures = measures.slice(0, repeatIndex)
+      .concat(omit(measures[repeatIndex], 'repeatEnd'))
+      .concat(repeatSection)
+      .concat(measures.slice(repeatIndex + 1, measures.length));
+
     return {
       ...track,
       measures: newMeasures
     };
   });
+  return expandedTracksFromMeasures(expandedTracks);
 };
 
-const getSectionOfTrack = (selection, tracks) => {
-  return tracks.map((track) => {
-    return track.measures.filter(measure => {
-      if(selection[measure.measureIndex]) {
-        return true;
-      }
-      return false;
-    });
-  });
+const getExpandedPlayingIndex = (measures, originalPlayingIndex) => {
+  return {
+    ...originalPlayingIndex,
+    measureIndex: findIndex(measures, measure =>
+      measure.measureIndex === originalPlayingIndex.measureIndex
+    )
+  };
 };
 
 export const expandedTracksSelector = createSelector(
-  tracksWithMeasuresSelector,
-  playingIndexSelector,
-  currentTrackIndexSelector,
-  selectRangeSelector,
-  (tracksWithMeasures, playingIndex, currentTrackIndex, selectRange) => {
-    const repeatIndex = findIndex(tracksWithMeasures[0].measures, (measure) => measure.repeatEnd === true);
-    const expandedTracks = expandedTracksFromMeasures(tracksWithMeasures, repeatIndex);
-
-    const newMeasureIndex = findIndex(expandedTracks[currentTrackIndex].measures, (measure) =>
-      measure.measureIndex === playingIndex.measureIndex
-    );
-    const newPlayingIndex = {
-      measureIndex: newMeasureIndex,
-      noteIndex: playingIndex.noteIndex
-    };
-
-    const slicedTracks = selectRange ? getSectionOfTrack(selectRange, expandedTracks, currentTrackIndex) : undefined;
+  [tracksWithMeasuresSelector, playingIndexSelector, currentTrackIndexSelector],
+  (tracks, playingIndex, currentTrackIndex) => {
+    const expandedTracks = expandedTracksFromMeasures(tracks);
 
     return {
-      playingIndex: newPlayingIndex,
+      playingIndex: getExpandedPlayingIndex(expandedTracks[currentTrackIndex].measures, playingIndex),
       currentTrackIndex,
-      expandedTracks,
-      slicedTracks
+      expandedTracks
     };
   }
 );
