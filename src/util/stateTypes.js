@@ -38,6 +38,8 @@ export type UndoableTracks = {
 };
 
 export type Clipboard = Note | { notes: Array<Note> } | Array<Measure>;
+export type Range = { [key: string]: number | 'all' | Array<number> };
+export type SelectRange = { [key: number]: 'all' | Array<number> };
 
 export type State = {
   clipboard?: Clipboard,

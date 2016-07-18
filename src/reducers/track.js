@@ -3,7 +3,6 @@
 import { PASTE_NOTE, CUT_NOTE } from '../actions/cutCopyPaste';
 import { INSERT_MEASURE, DELETE_MEASURE, CHANGE_TUNING,
   CHANGE_BPM, SET_INSTRUMENT, CHANGE_TIME_SIGNATURE } from '../actions/track';
-import { REPLACE_SONG } from '../actions/tracks';
 import measure from './measure';
 
 import type { Track, Measure, TimeSignature } from '../util/stateTypes';
@@ -85,11 +84,12 @@ const changeSingleTimeSigMeasure = (measures: Array<Measure>, timeSignature: Tim
 
 export default function track(state: Track, action: Object): Track {
   switch(action.type) {
-    case DELETE_MEASURE:
+    case DELETE_MEASURE: {
       return {
         ...state,
         measures: state.measures.filter((_, index) => index !== action.measureIndex)
       };
+    }
 
     case INSERT_MEASURE: {
       const lastMeasure = state.measures[state.measures.length - 1];
@@ -104,20 +104,19 @@ export default function track(state: Track, action: Object): Track {
       };
     }
 
-    case REPLACE_SONG:
-      return action.track;
-
-    case SET_INSTRUMENT:
+    case SET_INSTRUMENT: {
       return {
         ...state,
         instrument: action.instrument
       };
+    }
 
-    case CHANGE_TUNING:
+    case CHANGE_TUNING: {
       return {
         ...state,
         tuning: action.tuning
       };
+    }
 
     case CHANGE_BPM: {
       let newMeasures;

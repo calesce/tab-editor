@@ -7,6 +7,7 @@ import { DELETE_NOTE, INSERT_NOTE } from '../actions/measure';
 
 import { getNextNote, getPrevNote, getUpperString, getLowerString } from '../util/cursor';
 import type { Cursor, Measure, Tuning } from '../util/stateTypes';
+import type { Action } from '../actions/types';
 
 const initialState = {
   measureIndex: 0,
@@ -14,12 +15,13 @@ const initialState = {
   stringIndex: 0
 };
 
-export default function cursor(state: Cursor = initialState, action: Object, measures: Array<Measure>, tuning: Tuning): Cursor {
+export default function cursor(state: Cursor = initialState, action: Action, measures: Array<Measure>, tuning: Tuning): Cursor {
   const { noteIndex, measureIndex } = state;
 
   switch(action.type) {
-    case SET_CURSOR:
+    case SET_CURSOR: {
       return action.index;
+    }
     case MOVE_CURSOR_LEFT:
       return getPrevNote(measures, state);
     case MOVE_CURSOR_RIGHT:

@@ -7,40 +7,41 @@ export const MOVE_CURSOR_UP= 'MOVE_CURSOR_UP';
 export const MOVE_CURSOR_DOWN = 'MOVE_CURSOR_DOWN';
 export const SET_SELECT_RANGE = 'SET_SELECT_RANGE';
 
-import type { PlayingIndex } from '../util/stateTypes';
+import type { Cursor, SelectRange } from '../util/stateTypes';
+import type { Action } from './types';
 
-export function setCursor(index: PlayingIndex): Object {
+export function setCursor(index: Cursor): Action {
   return {
     type: SET_CURSOR,
     index
   };
 }
 
-export function moveCursorLeft() {
+export function moveCursorLeft(): Action {
   return {
     type: MOVE_CURSOR_LEFT
   };
 }
 
-export function moveCursorRight() {
+export function moveCursorRight(): Action {
   return {
     type: MOVE_CURSOR_RIGHT
   };
 }
 
-export function moveCursorUp() {
+export function moveCursorUp(): Action {
   return {
     type: MOVE_CURSOR_UP
   };
 }
 
-export function moveCursorDown() {
+export function moveCursorDown(): Action {
   return {
     type: MOVE_CURSOR_DOWN
   };
 }
 
-export function setSelectRange(range: any) {
+export function setSelectRange(range: SelectRange): Action {
   return {
     type: SET_SELECT_RANGE,
     range

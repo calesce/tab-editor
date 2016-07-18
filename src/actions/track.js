@@ -8,43 +8,44 @@ export const CHANGE_TIME_SIGNATURE = 'CHANGE_TIME_SIGNATURE';
 export const SET_INSTRUMENT = 'SET_INSTRUMENT';
 
 import type { PlayingIndex, TimeSignature, Tuning } from '../util/stateTypes';
+import type { Action } from './types';
 
-export function insertMeasure(index: PlayingIndex) {
+export function insertMeasure(index: PlayingIndex): Action {
   return {
     type: INSERT_MEASURE,
     index
   };
 }
 
-export function deleteMeasure(measureIndex: number) {
+export function deleteMeasure(measureIndex: number): Action {
   return {
     type: DELETE_MEASURE,
     measureIndex
   };
 }
 
-export function changeTuning(tuning: Tuning) {
+export function changeTuning(tuning: Tuning): Action {
   return {
     type: CHANGE_TUNING,
     tuning
   };
 }
 
-export function changeBpm(index: PlayingIndex, bpm: number, toEnd: boolean, all: boolean) {
+export function changeBpm(index: PlayingIndex, bpm: number, toEnd: boolean, all: boolean): Action {
   return {
     type: CHANGE_BPM,
     index, bpm, toEnd, all
   };
 }
 
-export function changeTimeSignature(index: PlayingIndex, timeSignature: TimeSignature, toEnd: boolean, all: boolean) {
+export function changeTimeSignature(index: PlayingIndex, timeSignature: TimeSignature, toEnd: boolean, all: boolean): Action {
   return {
     type: CHANGE_TIME_SIGNATURE,
     index, timeSignature, toEnd, all
   };
 }
 
-export function setInstrument(instrument: string) {
+export function setInstrument(instrument: string): Action {
   return {
     type: SET_INSTRUMENT,
     instrument
