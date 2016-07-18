@@ -13,7 +13,7 @@ import Clef from './Clef';
 import TimeSignature from './TimeSignature';
 import Cursor from './Cursor';
 import Bpm from './Bpm';
-import Repeat from './Repeat';
+import RepeatSign from './RepeatSign';
 
 import { setCursor } from '../../actions/cursor';
 
@@ -133,10 +133,13 @@ class TabMeasure extends Component {
         }
         <Bpm tab y={0} bpm={measure.bpm} renderBpm={measure.renderBpm} displayOption={displayOption} />
         { displayOption === 'tab' ? <text x={0} y={23} style={measureIndexStyle}>{measureIndex + 1}</text> : null }
-        { measure.indexOfRow === 0 ? <Clef y={25} strings={stringCount} tab /> : null }
-        <TimeSignature yOffset={0} strings={stringCount} measure={measure} displayOption={displayOption} />
+        { measure.indexOfRow === 0 ? <Clef y={25} strings={stringCount} repeatBegin={measure.repeatBegin} tab /> : null }
+        <TimeSignature yOffset={0} strings={stringCount} measure={measure} displayOption={displayOption} repeatBegin={measure.repeatBegin} />
         { this.renderCursor() }
-        { measure.repeatEnd ? <Repeat measureWidth={measure.width} strings={stringCount} y={0} /> : null }
+        { measure.repeatEnd ? <RepeatSign measureWidth={measure.width} strings={stringCount} y={25} repeatEnd={measure.repeatEnd} />
+        : null }
+        { measure.repeatBegin ? <RepeatSign measureWidth={measure.width} strings={stringCount} y={25} repeatEnd={false} />
+        : null }
       </svg>
     );
   }

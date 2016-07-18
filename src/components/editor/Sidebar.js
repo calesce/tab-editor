@@ -7,7 +7,7 @@ import SidebarGroup from './SidebarGroup';
 import SidebarButton from './SidebarButton';
 import TimeSignature from './TimeSignatureButton';
 import BpmButton from './BpmButton';
-import { RepeatStart, RepeatEnd } from './RepeatButton';
+import { RepeatBegin, RepeatEnd } from './RepeatButton';
 import PlayPauseButton from './PlayPauseButton';
 import { MetronomeButton, CountdownButton } from './MetronomeButton';
 import { InsertTrackButton, DeleteTrackButton } from './TrackButton';
@@ -73,7 +73,7 @@ export default class Sidebar extends Component {
         <SidebarGroup title='Measure'>
           <TimeSignature />
           <BpmButton onClick={this.openBpm} onClose={togglePopover} popoverOpen={popoverOpen} />
-          <RepeatStart />
+          <RepeatBegin />
           <RepeatEnd />
         </SidebarGroup>
         <SidebarGroup title='Track'>

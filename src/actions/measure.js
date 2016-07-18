@@ -13,6 +13,7 @@ export const CHANGE_NOTE_LENGTH = 'CHANGE_NOTE_LENGTH';
 export const INCREASE_NOTE_LENGTH = 'INCREASE_NOTE_LENGTH';
 export const DECREASE_NOTE_LENGTH = 'DECREASE_NOTE_LENGTH';
 export const TOGGLE_REPEAT_END = 'TOGGLE_REPEAT_END';
+export const TOGGLE_REPEAT_BEGIN = 'TOGGLE_REPEAT_BEGIN';
 
 import type { PlayingIndex } from '../util/stateTypes';
 
@@ -99,6 +100,13 @@ export function increaseNoteLength(index: PlayingIndex) {
 export function decreaseNoteLength(index: PlayingIndex) {
   return {
     type: DECREASE_NOTE_LENGTH,
+    index
+  };
+}
+
+export function toggleRepeatBegin(index: PlayingIndex) {
+  return {
+    type: TOGGLE_REPEAT_BEGIN,
     index
   };
 }

@@ -9,7 +9,7 @@ import Rest from './Rest';
 import Clef from './Clef';
 import TimeSignature from './TimeSignature';
 import Bpm from './Bpm';
-import Repeat from './Repeat';
+import RepeatSign from './RepeatSign';
 
 const measureNumberStyle = {
   MozUserSelect: 'none',
@@ -75,11 +75,15 @@ class MusicMeasure extends Component {
         {
           notesWithAccidentals.map((note, noteIndex) => this.renderMusicNote(note, measureIndex, noteIndex, yTop))
         }
-        { measure.indexOfRow === 0 ? <Clef y={yTop} strings={5} treble /> : null }
-        <TimeSignature yOffset={yTop} strings={5} measure={measure} />
+        { measure.indexOfRow === 0 ? <Clef y={yTop} strings={5} treble repeatBegin={measure.repeatBegin} /> : null }
+        <TimeSignature yOffset={yTop} strings={5} measure={measure} repeatBegin={measure.repeatBegin} />
         { measure.renderBpm ? <Bpm y={yTop} bpm={measure.bpm} />  : null }
         <text x={0} y={23 + yTop} style={measureNumberStyle}>{measureIndex + 1}</text>
-        { measure.repeatEnd ? <Repeat measureWidth={measure.width} strings={5} y={yTop} /> : null }
+        { measure.repeatEnd ?
+          <RepeatSign measureWidth={measure.width} strings={5} y={yTop + 25} repeatEnd={measure.repeatEnd} />
+          : null }
+        { measure.repeatBegin ? <RepeatSign measureWidth={measure.width} strings={5} y={yTop + 25} repeatEnd={false} />
+          : null }
       </svg>
     );
   }

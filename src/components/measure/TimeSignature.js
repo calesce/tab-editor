@@ -48,15 +48,19 @@ export default class TimeSignature extends Component {
     );
   }
 
+  getX(repeatBegin, firstMeasureOfRow) {
+    return (repeatBegin ? 15 : 0) + (firstMeasureOfRow ? 36 : 20);
+  }
+
   render() {
-    const { strings, yOffset, measure, displayOption } = this.props;
+    const { strings, yOffset, measure, displayOption, repeatBegin } = this.props;
     const { beats, beatType } = measure.timeSignature;
 
     if((displayOption && displayOption !== 'tab') || !measure.renderTimeSignature) {
       return null;
     }
 
-    const x = measure.indexOfRow === 0 ? 36 : 20;
+    const x = this.getX(repeatBegin, measure.indexOfRow === 0);
     const y = (strings * 6 - 6) + yOffset;
 
     if(beats === 4 && beatType === 4) {

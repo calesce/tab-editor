@@ -16,6 +16,9 @@ const calcXForNote = (measure: Object, noteIndex: number, indexOfRow: ?number): 
   if(measure.notes.length === 0 && measure.indexOfRow !== 0) {
     x -= measure.renderTimeSignature ? 0 : 25;
   }
+  if(measure.repeatBegin) {
+    x += 15;
+  }
   return x;
 };
 
@@ -29,6 +32,12 @@ const computeTrackLayout = (measures: Array<Object>): Array<Object> => {
     if(measureIndex === 0) {
       width += 15;
       renderBpm = true;
+    }
+    if(measure.repeatEnd) {
+      width += 15;
+    }
+    if(measure.repeatBegin) {
+      width += 15;
     }
 
     let prevMeasure = measures[measureIndex - 1];

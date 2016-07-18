@@ -1,18 +1,19 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { toggleRepeatEnd } from '../../actions/measure';
+import { toggleRepeatEnd, toggleRepeatBegin } from '../../actions/measure';
 
 import hover from './hoverContainer';
 
-const isSelected = state => {
+const isSelected = repeatEnd => state => {
+  const measure = state.tracks.present[state.currentTrackIndex].measures[state.cursor.measureIndex];
   return {
     cursor: state.cursor,
-    selected: state.tracks.present[state.currentTrackIndex].measures[state.cursor.measureIndex].repeatEnd
+    selected: repeatEnd ? measure.repeatEnd : measure.repeatBegin
   };
 };
 
 export const RepeatEnd = connect(
-  isSelected, { toggleRepeatEnd }
+  isSelected(true), { toggleRepeatEnd }
 )(hover()(({ style, color, cursor, selected, toggleRepeatEnd }) => {
   if(selected) {
     color = '#b3caf5';
@@ -31,13 +32,22 @@ export const RepeatEnd = connect(
   );
 }));
 
-export const RepeatStart = hover()(({ style, color }) => {
+export const RepeatBegin = connect(
+  isSelected(false), { toggleRepeatBegin }
+)(hover()(({ style, color, cursor, selected, toggleRepeatBegin }) => {
+  if(selected) {
+    color = '#b3caf5';
+  }
+  const onClick = () => {
+    toggleRepeatBegin(cursor);
+  };
+
   return (
-    <svg width='40' height='50' style={style}>
+    <svg onClick={onClick} width='40' height='50' style={style}>
       <rect x={14} y={3} height={38} width={3} strokeWidth={0.1} fill={color}></rect>
       <rect x={19.5} y={3} height={38} width={0.8} strokeWidth={0.1} fill={color}></rect>
       <circle cx={25} cy={18} r={2} fill={color }/>
       <circle cx={25} cy={28} r={2} fill={color} />
     </svg>
   );
-});
+}));
