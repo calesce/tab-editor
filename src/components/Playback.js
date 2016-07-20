@@ -18,7 +18,6 @@ class Playback extends Component {
     this.advanceNote = this.advanceNote.bind(this);
     this.startPlayback = this.startPlayback.bind(this);
     this.startCountdown = this.startCountdown.bind(this);
-    this.updateNote = this.updateNote.bind(this);
   }
 
   shouldComponentUpdate() {
@@ -71,7 +70,7 @@ class Playback extends Component {
 
     measure[noteIndex].forEach(note => {
       if(note.trackIndex === visibleTrackIndex) {
-        this.updateNote({
+        this.props.setPlayingIndex({
           measureIndex: note.originalMeasureIndex,
           noteIndex: note.originalNoteIndex
         });
@@ -109,17 +108,13 @@ class Playback extends Component {
   startCountdown() {
     const { playingIndex, expandedTracks } = this.props;
     this.playingIndexCopy = { measureIndex: playingIndex.measureIndex, noteIndex: playingIndex.noteIndex };
-    this.updateNote({ measureIndex: playingIndex.measureIndex, noteIndex: -1 });
+    this.props.setPlayingIndex({ measureIndex: playingIndex.measureIndex, noteIndex: -1 });
 
     const countdownTrack = createCountdownSchedule(expandedTracks, playingIndex.measureIndex);
 
     this.requestId = requestAnimationFrame(() => {
       this.schedule(countdownTrack, { noteIndex: 0, measureIndex: 0 }, -1, true);
     });
-  }
-
-  updateNote(playingIndex) {
-    this.props.setPlayingIndex(playingIndex);
   }
 
   render() {
