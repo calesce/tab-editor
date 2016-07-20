@@ -13,7 +13,8 @@ import * as CopyPasteActions from '../actions/cutCopyPaste';
 import { cursorAfterCutting, cursorAfterPasting, getNotesFromSelection } from '../util/cursor';
 import { updateScrollPosition } from '../util/updateScroll';
 import { loadSoundfonts } from '../util/soundfonts';
-import { makeMapStateToProps, makeAppSelector } from '../util/selectors';
+import { makeMapStateToProps } from '../util/selectors';
+import { makeAppSelector } from '../util/appSelector';
 import shallowEqual from '../util/shallowEqual';
 
 import Score from '../components/Score';
@@ -56,14 +57,14 @@ class App extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { playingIndex } = nextProps;
+    const { playingIndex, measures, layout, tuning, scoreBox, instruments } = nextProps;
 
     if(this.props.playingIndex && playingIndex) {
       if(playingIndex.noteIndex !== this.props.playingIndex.noteIndex
           || playingIndex.measureIndex !== this.props.playingIndex.measureIndex) {
-        updateScrollPosition(nextProps.playingIndex, nextProps.measures, nextProps.layout, nextProps.tuning.length);
+        updateScrollPosition(playingIndex, measures, layout, tuning.length, scoreBox);
       }
-    } else if(!shallowEqual(this.props.instruments, nextProps.instruments)) {
+    } else if(!shallowEqual(this.props.instruments, instruments)) {
       this.setState({
         buffers: undefined
       }, () => {
