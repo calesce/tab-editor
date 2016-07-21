@@ -214,34 +214,39 @@ export default class MusicNote extends Component {
     );
   }
 
-  renderLedgerLines(x, direction, numLines) {
+  renderLedgerLines(x, direction, numLines, y) {
     if(direction === 'above') {
       return Array.from({ length: numLines}).map((_, i) =>
-        <rect key={i} x={x - 2} y={90 - 13 * (i + 1)} width={20} height={0.5} fill='#999999'
+        <rect key={i} x={x - 2} y={y - 13 * (i + 2)} width={20} height={0.5} fill='#999999'
           strokeWidth={0.1}></rect>
       );
     } else {
       return Array.from({ length: numLines}).map((_, i) =>
-        <rect key={i} x={x - 2} y={90 + 4 * 13 + 13 * (i + 1)} width={20} height={0.5} fill='#999999'
+        <rect key={i} x={x - 2} y={y + 13 * i} width={20} height={0.5} fill='#999999'
           strokeWidth={0.1}></rect>
       );
     }
   }
 
   render() {
-    const { x, y, color, sharp, natural, dotted, tremolo, vibrato, trill, tuplet, flip } = this.props;
+    const { x, y, color, sharp, natural, dotted, tremolo, vibrato, trill, tuplet, flip, yTop } = this.props;
+
+    const topNoteY = yTop - 11;
+    const bottomNoteY = topNoteY + (11.7 * 5) + 13;
+    const topStaffY = yTop + 38;
+    const bottomStaffY = yTop + 38 + (10.4 * 5);
 
     let ledgerLinesAbove, ledgerLinesBelow;
-    if(y >= 125.5) {
-      ledgerLinesBelow = Math.round((y - 125.5) / 13 + 1) - 1;
-    } else if(y <= 60.5) {
-      ledgerLinesAbove = Math.round((60.5 - y) / 13 + 1) - 1;
+    if(y >= bottomNoteY) {
+      ledgerLinesBelow = Math.round((y - bottomNoteY) / 13) + 1;
+    } else if(y <= topNoteY) {
+      ledgerLinesAbove = Math.round((topNoteY - y) / 13 + 1) - 1;
     }
 
     return (
       <g>
-        { ledgerLinesBelow ? this.renderLedgerLines(x, 'below', ledgerLinesBelow) : null }
-        { ledgerLinesAbove ? this.renderLedgerLines(x, 'above', ledgerLinesAbove) : null }
+        { ledgerLinesBelow ? this.renderLedgerLines(x, 'below', ledgerLinesBelow, bottomStaffY) : null }
+        { ledgerLinesAbove ? this.renderLedgerLines(x, 'above', ledgerLinesAbove, topStaffY) : null }
         { this.renderNote(x, y, color) }
         { sharp ? this.renderSharp(x, y, color) : null }
         { natural ? this.renderNatural(x, y, color) : null }

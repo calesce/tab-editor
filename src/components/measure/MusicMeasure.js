@@ -51,17 +51,17 @@ class MusicMeasure extends Component {
     />;
   }
 
-  renderMusicNote(note, measureIndex, noteIndex, yOffset) {
+  renderMusicNote(note, measureIndex, noteIndex, yTop) {
     if(note.string[0] === 'rest') {
       return <Rest key={noteIndex} color={note.color} x={note.x} y={note.y} note={note} />;
     }
 
     return note.fret.map((fret, i) => {
       const yToUse = note.notes[i].y;
-      const flip = determineFlip(note, yToUse, yOffset);
+      const flip = determineFlip(note, yToUse, yTop);
 
       return <MusicNote key={i} x={note.x} y={yToUse} color={note.color} duration={note.duration} dotted={note.dotted}
-        sharp={note.notes[i].renderSharp} natural={note.notes[i].renderNatural} measureY={yOffset} flip={flip}
+        sharp={note.notes[i].renderSharp} natural={note.notes[i].renderNatural} yTop={yTop} flip={flip}
         tremolo={note.tremolo} vibrato={note.vibrato} trill={note.trill} tuplet={note.tuplet} />;
     });
   }
