@@ -12,21 +12,22 @@ const currentMeasureSelector = createSelector(
   (measureIndex, measures) => measures[measureIndex] || measures[measures.length - 1] // FIXME workaround to score selector not updating
 );
 
-const getPlayingNoteIndex = (playingIndex, measureIndex) => {
-  if(playingIndex) {
-    return playingIndex.measureIndex === measureIndex ? playingIndex.noteIndex : undefined;
+const playingNoteIndexSelector = createSelector([playingIndexSelector, measureIndexSelector],
+  (playingIndex, measureIndex) => {
+    if(playingIndex) {
+      return playingIndex.measureIndex === measureIndex ? playingIndex.noteIndex : undefined;
+    }
+    return undefined;
   }
-  return undefined;
-};
+);
 
 export const makeMeasureSelector = () => {
   return createSelector(
     [
-      currentMeasureSelector, measureIndexSelector, playingIndexSelector, tuningSelector,
+      currentMeasureSelector, measureIndexSelector, playingNoteIndexSelector, tuningSelector,
       measureLengthSelector, selectRangeSelector
     ],
-    (measure, measureIndex, playingIndex, tuning, measureLength, selectRange) => {
-      const playingNoteIndex = getPlayingNoteIndex(playingIndex, measureIndex);
+    (measure, measureIndex, playingNoteIndex, tuning, measureLength, selectRange) => {
       return {
         measure,
         playingNoteIndex,
