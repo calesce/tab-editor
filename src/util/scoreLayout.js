@@ -28,6 +28,8 @@ const computeTrackLayout = (measures: Array<Object>): Array<Object> => {
     let renderBpm = false;
     if(measure.notes.length === 0) {
       width = 40;
+    } else if(measure.notes.length === 1) {
+      width = 80;
     }
     if(measureIndex === 0) {
       width += 15;
