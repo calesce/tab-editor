@@ -153,6 +153,9 @@ const getYBottom = (midi: string): number => {
 const getRowHeights = (measures: Array<Object>, tuning: Tuning): Array<Object> => {
   const rows = measures.reduce((rowGroups, measure) => {
     const midiNotes = midiNotesForMeasure(measure, tuning);
+    if(midiNotes.length === 0) {
+      return rowGroups;
+    }
     const highest = getHighestNote(midiNotes);
     const lowest = getLowestNote(midiNotes);
 
