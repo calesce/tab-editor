@@ -178,9 +178,10 @@ const getRowHeights = (measures: Array<Object>, tuning: Tuning): Array<Object> =
      };
   });
 
-  return measures.map(measure => {
+  return measures.map((measure, i) => {
     return {
       ...measure,
+      measureIndex: i,
       yTop: rowsWithY[measure.rowIndex].yTop,
       yBottom: rowsWithY[measure.rowIndex].yBottom
     };
