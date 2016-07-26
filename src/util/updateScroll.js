@@ -38,7 +38,7 @@ export function updateScrollPosition(
     const y = getYOfCurrentNote(playingIndex, measures, stringCount);
 
     if(y > window.innerHeight + window.scrollY - 270) {
-      window.scroll(0, y - 100);
+      window.scroll(0, y - 250);
     }
   }
 }
