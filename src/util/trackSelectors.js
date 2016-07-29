@@ -6,6 +6,25 @@ export const getTracksSelector = state => ({ tracks: state.tracks.present });
 const tracksSelector = state => state.tracks.present;
 const currentTrackIndexSelector = state => state.currentTrackIndex;
 
+const mapMeasureIndices = measures => {
+  return measures.map((measure, i) => {
+    return {
+      ...measure,
+      measureIndex: i
+    };
+  });
+};
+
+const tracksWithMeasuresSelector = createSelector(
+  tracksSelector,
+  tracks => {
+    return tracks.map((track) => ({
+      ...track,
+      measures: mapMeasureIndices(track.measures)
+    }));
+  }
+);
+
 const getRepeatingSection = (measures, repeatBegin, repeatEnd) => {
   if(repeatBegin === repeatEnd) {
     const repeatedMeasure = omit(measures[repeatEnd], ['repeatBegin', 'repeatEnd']);
@@ -55,7 +74,7 @@ const getExpandedPlayingIndex = (measures, originalPlayingIndex) => {
 };
 
 export const expandedTracksSelector = createSelector(
-  [tracksSelector, playingIndexSelector, currentTrackIndexSelector],
+  [tracksWithMeasuresSelector, playingIndexSelector, currentTrackIndexSelector],
   (tracks, playingIndex, currentTrackIndex) => {
     const expandedTracks = expandedTracksFromMeasures(tracks);
 
