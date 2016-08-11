@@ -16,13 +16,47 @@ const playVibrato = (source, startTime, endTime) => {
   lfo.stop(endTime);
 };
 
+// NOTE slur:
+// const halfwayBetween = startTime + (endTime - startTime) / 2;
+// source.detune.setValueCurveAtTime(100.0, halfwayBetween, halfwayBetween);
+
+const extendBuffer = (buffer) => {
+  const newBuffer = audioContext.createBuffer(
+    buffer.numberOfChannels,
+    buffer.length + (0.75 * buffer.length),
+    buffer.sampleRate
+  );
+  for(let i = 0; i < buffer.numberOfChannels; i++) {
+    const bufferChannel = buffer.getChannelData(i);
+    const newChannel = newBuffer.getChannelData(i);
+
+    const chunkLength = Math.round(buffer.length / 4);
+    const startIndex = Math.round(buffer.length / 2) + chunkLength;
+
+    const copiedChunk = bufferChannel.slice(startIndex, startIndex + chunkLength);
+
+    newChannel.set(bufferChannel, 0);
+    newChannel.set(copiedChunk, startIndex + chunkLength);
+    newChannel.set(copiedChunk, startIndex + chunkLength + chunkLength);
+    newChannel.set(copiedChunk, startIndex + 3 * chunkLength);
+  }
+  return newBuffer;
+};
+
 export function playWithBuffer(buffer, duration, startTime = audioContext.currentTime, vibrato) {
   let endTime = startTime + duration;
 
   let source = audioContext.createBufferSource();
-  source.buffer = buffer;
+
   let gainNode = audioContext.createGain();
-  gainNode.gain.setTargetAtTime(0, endTime, 0.015); // remove clicking noise between notes
+  if(buffer.duration < duration) {
+    source.buffer = extendBuffer(buffer);
+    gainNode.gain.linearRampToValueAtTime(0.01, endTime + 0.015);
+  } else {
+    source.buffer = buffer;
+    gainNode.gain.setTargetAtTime(0, endTime, 0.015); // remove clicking noise between notes
+  }
+
   gainNode.connect(audioContext.destination);
   source.connect(gainNode);
 
