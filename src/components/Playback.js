@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { setPlayingIndex } from '../actions/playingIndex';
 import { setCursor } from '../actions/cursor';
 
-import { playCurrentNoteAtTime} from '../util/audio';
+import { playCurrentNoteAtTime } from '../util/audio';
 import { createScheduleForSong, getReplaySpeed,
   getRealPlayingIndex, createCountdownSchedule } from '../util/playbackSchedule';
 import { expandedTracksSelector } from '../util/trackSelectors';
@@ -39,6 +39,9 @@ class Playback extends Component {
       this.props.setCursor({ ...this.playingIndexCopy, stringIndex: 0 });
     }
     cancelAnimationFrame(this.requestId);
+    if(this.lastBuffers) {
+      this.lastBuffers.forEach(buffer => buffer.stop());
+    }
   }
 
   schedule(measures, playingIndex, visibleTrackIndex, countdown) {
@@ -55,7 +58,7 @@ class Playback extends Component {
       const { measureIndex, noteIndex } = playingIndex;
 
       measures[measureIndex][noteIndex].forEach(note => {
-        playCurrentNoteAtTime(note, contextPlayTime, this.props.buffers[note.instrument]);
+        this.lastBuffers = playCurrentNoteAtTime(note, contextPlayTime, this.props.buffers[note.instrument]);
       });
       playingIndex = this.advanceNote(playingIndex, measures, visibleTrackIndex);
     }
