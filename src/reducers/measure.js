@@ -160,6 +160,7 @@ const getChangedNote = (oldNote: Note, fret: number, stringIndex: number): Note 
 };
 
 export default function measure(state: Measure, action: Object): Measure {
+  console.log(action.type);
   switch(action.type) {
     case INSERT_NOTE: {
       return insertNote(state, action);
@@ -254,7 +255,10 @@ export default function measure(state: Measure, action: Object): Measure {
       const note = {
         ...state.notes[noteIndex],
         fret: ['rest'],
-        string: ['rest']
+        string: ['rest'],
+        trill: false,
+        tremolo: false,
+        vibrato: false
       };
       return replaceNote(state, note, noteIndex);
     }

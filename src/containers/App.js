@@ -186,7 +186,7 @@ class App extends Component {
     if(event.keyCode <= 57 && event.keyCode >= 48 && !event.metaKey) {
       return this.props.actions.changeNote(this.props.cursor, event.keyCode - 48);
     } else if(event.keyCode === 82 && !event.metaKey && !event.ctrlKey) {
-      this.props.actions.changeNote(this.props.cursor, 'rest');
+      this.props.actions.makeNoteRest(this.props.cursor);
     } else if(event.keyCode === 8) { // delete
       event.preventDefault();
       this.deleteNote();
