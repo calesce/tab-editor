@@ -1,3 +1,4 @@
+import { memoize } from 'lodash';
 import { getIndexOfNote, getStaffPositionOfNote, midiNotes } from './midiNotes';
 
 const midis = midiNotes();
@@ -95,3 +96,7 @@ export const determineAccidentals = (notes) => {
     };
   });
 };
+
+export const getAccidentals = memoize((notes, yTop, playingNoteIndex, tuning) => {
+  return determineAccidentals(annotateNotes(notes, yTop, playingNoteIndex, tuning));
+});

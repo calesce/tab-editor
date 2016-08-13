@@ -2,12 +2,13 @@ import React, { PureComponent } from 'react';
 
 export default class SelectBox extends PureComponent {
   render() {
-    const { height, selected, measure } = this.props;
-    const { notes, width } = measure;
+    const { height, selectRange, measure } = this.props;
+    const { notes, width, measureIndex } = measure;
 
-    if(!selected) {
+    if(!selectRange || !selectRange[measureIndex]) {
       return null;
     }
+    const selected = selectRange[measureIndex];
 
     let x, boxWidth;
     if(selected === 'all') {

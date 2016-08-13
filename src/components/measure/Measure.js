@@ -22,7 +22,7 @@ class Measure extends PureComponent {
         <TabMeasure measure={measure} playingNoteIndex={playingNoteIndex} measureIndex={measureIndex}
           stringCount={tuning.length} displayOption='both' y={rowHeight} isValid={isValid}
         />
-        <MeasureSelectBox measure={measure} selected={selectRange} height={measureHeight} />
+        <MeasureSelectBox measure={measure} selectRange={selectRange} height={measureHeight} />
       </svg>
     );
   }

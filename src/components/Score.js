@@ -122,8 +122,7 @@ class Score extends PureComponent {
     this.setState({
       dragStart: { dragX, dragY },
       dragX,
-      dragY,
-      selectedRanges: undefined
+      dragY
     });
   }
 
@@ -183,12 +182,12 @@ class Score extends PureComponent {
 
   render() {
     const { height, width, measures, x, y } = this.props;
-    const { dragX, dragY, dragWidth, dragHeight, selectRanges } = this.state;
+    const { dragX, dragY, dragWidth, dragHeight } = this.state;
 
     return (
       <div style={{ ...style, height, width, left: x, top: y }}
         onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp} onMouseMove={this.onMouseMove}>
-        { measures.map((_, i) => <Measure key={i} measureIndex={i} selected={selectRanges ? selectRanges[i] : undefined} />) }
+        { measures.map((_, i) => <Measure key={i} measureIndex={i} />) }
         <SelectBox height={height} width={width} x={dragX} y={dragY} dragWidth={dragWidth} dragHeight={dragHeight} />
       </div>
     );
