@@ -21,7 +21,7 @@ export function getYOfCurrentNote(playingIndex: PlayingIndex, measures: Array<Ob
   const rowSamples = uniqBy(measures.slice(0, playingIndex.measureIndex + 1), 'rowIndex');
 
   return rowSamples.reduce((acc, measure) => {
-    return acc + (measure.yTop + measure.yBottom + 70 + (stringCount * 20));
+    return acc + (measure.yTop + measure.yBottom + 75 + (stringCount * 20));
   }, 0);
 }
 

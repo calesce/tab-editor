@@ -102,7 +102,7 @@ class Score extends PureComponent {
       if(!accum[measure.rowIndex]) {
         return accum.concat(
           (accum.length > 0 ? accum[accum.length - 1] : 0) +
-          measure.yTop + measure.yBottom + 70 + tuning.length * 20
+          measure.yTop + measure.yBottom + 75 + tuning.length * 20
         );
       }
       return accum;

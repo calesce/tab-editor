@@ -36,7 +36,7 @@ export const makeMeasureSelector = () => {
         measureLength,
         yTop: measure.yTop,
         notesWithAccidentals: determineAccidentals(annotateNotes(measure.notes, measure.yTop, playingNoteIndex, tuning)),
-        rowHeight: measure.yTop + measure.yBottom + 70,
+        rowHeight: measure.yTop + measure.yBottom + 75,
         selectRange: selectRange ? selectRange[measureIndex] : undefined
       };
     }

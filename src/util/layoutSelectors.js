@@ -8,7 +8,7 @@ const calcHeight = (measures, tuning) => {
   }, []);
 
   return rows.reduce((sum, measure) => {
-    return sum + (20 * tuning.length) + (measure.yTop + measure.yBottom + 70);
+    return sum + (20 * tuning.length) + (measure.yTop + measure.yBottom + 75);
   }, 0);
 };
 

@@ -154,8 +154,8 @@ export default class MusicNote extends PureComponent {
   }
 
   renderTuplet(x, y, flip, color) {
-    const yToUse = flip ? y + 15 : y + 51;
-    const xToUse = flip ? x + 9 : x + 6;
+    const yToUse = flip ? y + 17 : y + 49;
+    const xToUse = flip ? x + 9 : x + 5;
     return (
       <svg x={xToUse} y={yToUse} style={overflow}>
         <text color={color} y={0} style={tupletStyle}>3</text>
