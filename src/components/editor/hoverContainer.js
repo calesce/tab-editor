@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import React, { PureComponent } from 'react';
 
 const selectedColor = '#b3caf5';
 
@@ -14,7 +13,7 @@ const defaultStyle = {};
 
 export default function hover() {
   return function(WrappedComponent) {
-    return class HoverContainer extends Component {
+    return class HoverContainer extends PureComponent {
       constructor(props) {
         super(props);
 
@@ -22,10 +21,6 @@ export default function hover() {
 
         this.onMouseEnter = this.onMouseEnter.bind(this);
         this.onMouseLeave = this.onMouseLeave.bind(this);
-      }
-
-      shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
       }
 
       onMouseEnter() {

@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { changeNoteLength, makeNoteRest, toggleNoteDotted, setNoteTuplet,
   toggleNoteTremolo, toggleNoteTrill, toggleNoteVibrato } from '../../actions/measure';
@@ -100,7 +99,7 @@ const VibratoButton = ({ color }) => (
   </g>
 );
 
-class SidebarButton extends Component {
+class SidebarButton extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -109,11 +108,6 @@ class SidebarButton extends Component {
     this.onMouseEnter = this.onMouseEnter.bind(this);
     this.onMouseLeave = this.onMouseLeave.bind(this);
     this.onClick = this.onClick.bind(this);
-    this.getSvgForType = this.getSvgForType.bind(this);
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return shallowCompare(this, nextProps, nextState);
   }
 
   onMouseEnter() {

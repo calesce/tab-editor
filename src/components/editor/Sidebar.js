@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import React, { PureComponent } from 'react';
 
 import InstrumentSelect from './InstrumentSelect';
 import TrackSelect from './TrackSelect';
@@ -31,16 +30,12 @@ const style = {
   boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.1)'
 };
 
-export default class Sidebar extends Component {
+export default class Sidebar extends PureComponent {
   constructor() {
     super();
 
     this.openBpm = this.openBpm.bind(this);
     this.openTuning = this.openTuning.bind(this);
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return shallowCompare(this, nextProps, nextState);
   }
 
   openBpm() {

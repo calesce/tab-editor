@@ -1,18 +1,13 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import shallowCompare from 'react-addons-shallow-compare';
 
 import { setInstrument } from '../../actions/track';
 import { instrumentNames } from '../../util/instrumentNames';
 
-class InstrumentSelect extends Component {
+class InstrumentSelect extends PureComponent {
   constructor() {
     super();
     this.onChange = this.onChange.bind(this);
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return shallowCompare(this, nextProps, nextState);
   }
 
   onChange(e) {
