@@ -1,19 +1,6 @@
-import React, { Component } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import React, { PureComponent } from 'react';
 
-export default class TimeSignature extends Component {
-  constructor() {
-    super();
-
-    this.renderCommonTimeSignature = this.renderCommonTimeSignature.bind(this);
-    this.renderCutTimeSignature = this.renderCutTimeSignature.bind(this);
-    this.renderNumberedTimeSignature = this.renderNumberedTimeSignature.bind(this);
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return shallowCompare(this, nextProps, nextState);
-  }
-
+export default class TimeSignature extends PureComponent {
   renderCommonTimeSignature(x, y) {
     return (
       <svg x={x} y={y}>

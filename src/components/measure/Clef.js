@@ -1,27 +1,15 @@
-import React, { Component } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import React, { PureComponent } from 'react';
 
-export default class Clef extends Component {
-  constructor() {
-    super();
+const style = {
+  MozUserSelect: 'none',
+  WebkitUserSelect: 'none',
+  msUserSelect: 'none',
+  cursor: 'default'
+};
 
-    this.renderTabClef = this.renderTabClef.bind(this);
-    this.renderTrebleClef = this.renderTrebleClef.bind(this);
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return shallowCompare(this, nextProps, nextState);
-  }
-
-  renderTabClef(x) {
-    const style = {
-      MozUserSelect: 'none',
-      WebkitUserSelect: 'none',
-      msUserSelect: 'none',
-      cursor: 'default'
-    };
-
-    const { strings, y } = this.props;
+export default class Clef extends PureComponent {
+  renderTabClef(x, y) {
+    const { strings } = this.props;
     const baseY = strings * (3 + 1 / 3) + y; // start closer to top for lower number of strings
     const interval = strings * 4 - 4; // more spaced out for more strings
     const fontSize = strings * 2 + 6; // the more strings, the larger the font default 18
@@ -48,7 +36,8 @@ export default class Clef extends Component {
   }
 
   render() {
-    const x = this.props.repeatBegin ? 15 : 0;
-    return this.props.treble ? this.renderTrebleClef(x, this.props.y) : this.renderTabClef(x);
+    const { y, repeatBegin, treble } = this.props;
+    const x = repeatBegin ? 15 : 0;
+    return treble ? this.renderTrebleClef(x, y) : this.renderTabClef(x, y);
   }
 }

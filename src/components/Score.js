@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 
 import { makeMapStateToProps } from '../util/selectors';
@@ -22,7 +21,7 @@ const style = {
   flex: 1
 };
 
-class Score extends Component {
+class Score extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -37,10 +36,6 @@ class Score extends Component {
       dragStart: undefined,
       dragEnd: undefined
     };
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return shallowCompare(this, nextProps, nextState);
   }
 
   getNoteRangeForMeasure(measure, xStart, xEnd) {

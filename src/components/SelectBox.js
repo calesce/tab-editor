@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import React, { PureComponent } from 'react';
 
 const SVG_TOP = 5;
 
@@ -11,11 +10,7 @@ const svgStyle = {
   pointerEvents: 'none'
 };
 
-export default class SelectBox extends Component {
-  shouldComponentUpdate(nextProps, nextState) {
-    return shallowCompare(this, nextProps, nextState);
-  }
-
+export default class SelectBox extends PureComponent {
   render() {
     const { height, width, x, y, dragWidth, dragHeight } = this.props;
 
