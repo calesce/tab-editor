@@ -1,30 +1,42 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { range } from 'lodash';
-import shallowCompare from 'react-addons-shallow-compare';
 
-export default class Bars extends Component {
-  constructor() {
-    super();
+const SPACE_BETWEEN_BARS = 13;
 
-    this.renderBar = this.renderBar.bind(this);
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return shallowCompare(this, nextProps, nextState);
+export default class Staff extends PureComponent {
+  getStyle(playingNoteIndex, isValid) {
+    if(playingNoteIndex !== undefined) {
+      return {
+        color: '#267754',
+        strokeWidth: 1
+      };
+    } else if(!isValid) {
+      return {
+        color: 'red',
+        strokeWidth: 1
+      };
+    } else {
+      return {
+        color: '#999999',
+        strokeWidth: 0.1
+      };
+    }
   }
 
   renderBar(i, y, color, stringCount, strokeWidth, measureWidth) {
     const c = i === 0 || i === stringCount - 1 ? color : '#999999';
     const width = i === 0 || i === stringCount - 1 ? strokeWidth : '0.1';
 
-    return <rect key={i} y={y + i * this.props.spaceBetweenBars} width={measureWidth} height={0.5}
+    return <rect key={i} y={y + i * SPACE_BETWEEN_BARS} width={measureWidth} height={0.5}
       fill={c} stroke={c} strokeWidth={width}></rect>;
   }
 
   render() {
-    const { measureWidth, color, strokeWidth, strings, lastMeasure, y, spaceBetweenBars } = this.props;
+    const { measureWidth, strings, lastMeasure, y, playingNoteIndex, isValid } = this.props;
+
+    const { strokeWidth, color } = this.getStyle(playingNoteIndex, isValid);
     const startY = 25 + y;
-    const height = 25 + (strings - 3) * spaceBetweenBars + 1;
+    const height = 25 + (strings - 3) * SPACE_BETWEEN_BARS + 1;
 
     const x = lastMeasure ? measureWidth - 1 : measureWidth - 0.5;
     const width = lastMeasure ? 1.0 : 0.5;

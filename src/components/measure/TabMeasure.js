@@ -1,13 +1,12 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { findIndex } from 'lodash';
-import shallowCompare from 'react-addons-shallow-compare';
 
 import { makeMapStateToProps } from '../../util/selectors';
 import { makeTabMeasureSelector } from '../../util/measureSelectors';
 
 import TabNote from './TabNote';
-import Bars from './Bars';
+import Staff from './Staff';
 import Rest from './Rest';
 import Clef from './Clef';
 import TimeSignature from './TimeSignature';
@@ -22,18 +21,11 @@ const measureIndexStyle = {
   fill: 'tomato'
 };
 
-class TabMeasure extends Component {
+class TabMeasure extends PureComponent {
   constructor() {
     super();
 
     this.onClick = this.onClick.bind(this);
-    this.renderCursor = this.renderCursor.bind(this);
-    this.renderBars = this.renderBars.bind(this);
-    this.renderTabNote = this.renderTabNote.bind(this);
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return shallowCompare(this, nextProps, nextState);
   }
 
   onClick(noteIndex, stringIndex) {
@@ -73,24 +65,6 @@ class TabMeasure extends Component {
     return <Cursor x={x} y={y} fret={fret} />;
   }
 
-  renderBars(x, y, measureWidth, stringCount) {
-    const { playingNoteIndex, isValid, measureIndex, measureLength } = this.props;
-
-    let color = '#999999';
-    let strokeWidth = 0.1;
-    if(playingNoteIndex !== undefined) {
-      color = '#267754';
-      strokeWidth = 1;
-    } else if(!isValid) {
-      color = 'red';
-      strokeWidth = 1;
-    }
-
-    return <Bars measureWidth={measureWidth} color={color} y={y} spaceBetweenBars={13}
-      strokeWidth={strokeWidth} strings={stringCount} lastMeasure={measureIndex === measureLength - 1}
-    />;
-  }
-
   renderTabNote(note, measureIndex, noteIndex, displayOption) {
     const { playingNoteIndex, stringCount } = this.props;
     const stringOffset = (6 - stringCount);
@@ -123,11 +97,16 @@ class TabMeasure extends Component {
   }
 
   render() {
-    const { stringCount, measure, measureIndex, displayOption, y } = this.props;
+    const {
+      stringCount, measure, measureIndex, displayOption, y,
+      playingNoteIndex, isValid, measureLength
+    } = this.props;
 
     return (
       <svg y={y} style={{ height: (stringCount * 25), width: measure.width }}>
-        { this.renderBars(0, 0, measure.width, stringCount) }
+        <Staff measureWidth={measure.width} y={0} playingNoteIndex={playingNoteIndex}
+          strings={stringCount} lastMeasure={measureIndex === measureLength - 1} isValid={isValid}
+        />
         {
           measure.notes.map((note, noteIndex) => this.renderTabNote(note, measureIndex, noteIndex, displayOption))
         }

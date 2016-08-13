@@ -1,10 +1,9 @@
-import React, { Component } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import React, { PureComponent } from 'react';
 
 import { determineFlip } from '../../util/notationMath';
 
 import MusicNote from './MusicNote';
-import Bars from './Bars';
+import Staff from './Staff';
 import Rest from './Rest';
 import Clef from './Clef';
 import TimeSignature from './TimeSignature';
@@ -20,37 +19,7 @@ const measureNumberStyle = {
   fill: 'tomato'
 };
 
-class MusicMeasure extends Component {
-  constructor() {
-    super();
-
-    this.renderBars = this.renderBars.bind(this);
-    this.renderMusicNote = this.renderMusicNote.bind(this);
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return shallowCompare(this, nextProps, nextState);
-  }
-
-  renderBars(x, y, measureWidth, strings) {
-    const { playingNoteIndex, isValid, measureIndex, measureLength } = this.props;
-
-    const lastMeasure = measureIndex === measureLength - 1;
-    let color = '#999999';
-    let strokeWidth = 0.1;
-    if(playingNoteIndex !== undefined) {
-      color = '#267754';
-      strokeWidth = 1;
-    } else if(!isValid) {
-      color = 'red';
-      strokeWidth = 1;
-    }
-
-    return <Bars measureWidth={measureWidth} color={color} y={y} spaceBetweenBars={13}
-      strokeWidth={strokeWidth} strings={strings} lastMeasure={lastMeasure}
-    />;
-  }
-
+class MusicMeasure extends PureComponent {
   renderMusicNote(note, measureIndex, noteIndex, yTop) {
     if(note.string[0] === 'rest') {
       return <Rest key={noteIndex} color={note.color} x={note.x} y={note.y} note={note} />;
@@ -67,11 +36,15 @@ class MusicMeasure extends Component {
   }
 
   render() {
-    const { measure, measureIndex, rowHeight, yTop, notesWithAccidentals } = this.props;
+    const { measure, measureIndex, rowHeight, yTop, notesWithAccidentals,
+      playingNoteIndex, measureLength, isValid
+    } = this.props;
 
     return (
       <svg style={{ height: rowHeight, width: measure.width, overflow: 'visible' }}>
-        { this.renderBars(0, yTop, measure.width, 5) }
+        <Staff measureWidth={measure.width} y={yTop} playingNoteIndex={playingNoteIndex}
+          strings={5} lastMeasure={measureIndex === measureLength - 1} isValid={isValid}
+        />
         {
           notesWithAccidentals.map((note, noteIndex) => this.renderMusicNote(note, measureIndex, noteIndex, yTop))
         }
