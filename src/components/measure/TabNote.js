@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import React, { PureComponent } from 'react';
 
 const style = {
   MozUserSelect: 'none',
@@ -9,23 +8,11 @@ const style = {
   fontSize: 14
 };
 
-export default class TabNote extends Component {
+export default class TabNote extends PureComponent {
   constructor() {
     super();
 
     this.onClick = this.onClick.bind(this);
-    this.renderQuarterStem = this.renderQuarterStem.bind(this);
-    this.renderEighthStem = this.renderEighthStem.bind(this);
-    this.renderSixteenthStem = this.renderSixteenthStem.bind(this);
-    this.renderStem = this.renderStem.bind(this);
-    this.renderDot = this.renderDot.bind(this);
-    this.renderTremolo = this.renderTremolo.bind(this);
-    this.renderVibrato = this.renderVibrato.bind(this);
-    this.renderTrill = this.renderTrill.bind(this);
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return shallowCompare(this, nextProps, nextState);
   }
 
   onClick() {
@@ -59,9 +46,9 @@ export default class TabNote extends Component {
   }
 
   renderStem() {
-    const { x, color, stringOffset } = this.props;
+    const { x, color, stringOffset, note } = this.props;
 
-    switch(this.props.duration) {
+    switch(note.duration) {
       case 'q':
         return this.renderQuarterStem(x + 1, color, stringOffset);
       case 'e':
@@ -129,7 +116,8 @@ export default class TabNote extends Component {
   }
 
   render() {
-    const { x, y, fret, color, stringOffset, displayOption, dotted, tremolo, vibrato, trill } = this.props;
+    const { y, fret, color, stringOffset, displayOption, note } = this.props;
+    const { x, dotted, tremolo, vibrato, trill } = note;
     const clickArea = <rect onClick={this.onClick} x={x-14} y={y-11} height={15} width={45} opacity={0}></rect>;
     if(fret === undefined) {
       return clickArea;

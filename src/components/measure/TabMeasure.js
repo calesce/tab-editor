@@ -76,7 +76,9 @@ class TabMeasure extends PureComponent {
 
     const y = stringCount * 6.5 + 6; // 45 for 6 strings
     if(note.string[0] === 'rest') {
-      return <Rest onClick={this.onClick} key={noteIndex} noteIndex={noteIndex} color={color} x={note.x} y={y} note={note} />;
+      return <Rest onClick={this.onClick} key={noteIndex} noteIndex={noteIndex}
+        color={color} x={note.x} y={y} note={note}
+      />;
     }
 
     return [0, 1, 2, 3, 4, 5].map((_, i) => {
@@ -86,10 +88,9 @@ class TabMeasure extends PureComponent {
       const y = 95 - (13 * (i + stringOffset));
       return (
         <g>
-          <TabNote onClick={this.onClick} key={i} x={note.x} y={y} color={color}
-            fret={fret} stringOffset={stringOffset} displayOption={displayOption} dotted={note.dotted}
-            tremolo={note.tremolo} vibrato={note.vibrato} trill={note.trill} duration={note.duration}
-            stringIndex={string} noteIndex={noteIndex}
+          <TabNote onClick={this.onClick} key={i} y={y} color={color} noteIndex={noteIndex}
+            fret={fret} stringOffset={stringOffset} displayOption={displayOption} note={note}
+            stringIndex={string}
           />
         </g>
       );

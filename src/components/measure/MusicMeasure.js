@@ -26,17 +26,14 @@ class MusicMeasure extends PureComponent {
     }
 
     return note.fret.map((fret, i) => {
-      const yToUse = note.notes[i].y;
-      const flip = determineFlip(note, yToUse, yTop);
+      const flip = determineFlip(note, note.notes[i].y, yTop);
 
-      return <MusicNote key={i} x={note.x} y={yToUse} color={note.color} duration={note.duration} dotted={note.dotted}
-        sharp={note.notes[i].renderSharp} natural={note.notes[i].renderNatural} yTop={yTop} flip={flip}
-        tremolo={note.tremolo} vibrato={note.vibrato} trill={note.trill} tuplet={note.tuplet} />;
+      return <MusicNote key={i} note={note} y={note.notes[i].y} chordIndex={i} yTop={yTop} flip={flip} />;
     });
   }
 
   render() {
-    const { measure, measureIndex, rowHeight, yTop, notesWithAccidentals,
+    const { measure, measureIndex, rowHeight, yTop, notes,
       playingNoteIndex, measureLength, isValid
     } = this.props;
 
@@ -46,7 +43,7 @@ class MusicMeasure extends PureComponent {
           strings={5} lastMeasure={measureIndex === measureLength - 1} isValid={isValid}
         />
         {
-          notesWithAccidentals.map((note, noteIndex) => this.renderMusicNote(note, measureIndex, noteIndex, yTop))
+          notes.map((note, noteIndex) => this.renderMusicNote(note, measureIndex, noteIndex, yTop))
         }
         { measure.indexOfRow === 0 ? <Clef y={yTop} strings={5} treble repeatBegin={measure.repeatBegin} /> : null }
         <TimeSignature yOffset={yTop} strings={5} measure={measure} repeatBegin={measure.repeatBegin} />

@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import shallowCompare from 'react-addons-shallow-compare';
 
 import { makeMapStateToProps } from '../../util/selectors';
 import { makeMeasureSelector } from '../../util/measureSelectors';
@@ -9,22 +8,22 @@ import MusicMeasure from './MusicMeasure';
 import TabMeasure from './TabMeasure';
 import MeasureSelectBox from './MeasureSelectBox';
 
-class Measure extends Component {
-  shouldComponentUpdate(nextProps, nextState) {
-    return shallowCompare(this, nextProps, nextState);
-  }
-
+class Measure extends PureComponent {
   render() {
-    const { playingNoteIndex, measureLength, measureIndex, measure,
+    const { playingNoteIndex, measureLength, measureIndex, measure, yTop, notesWithAccidentals,
       tuning, isValid, selectRange, rowHeight } = this.props;
 
+    const measureHeight = rowHeight + (tuning.length * 20);
+
     return (
-      <svg style={{ height: rowHeight + (tuning.length * 20), width: measure.width }}>
-        <MusicMeasure {...this.props} />
+      <svg style={{ height: measureHeight, width: measure.width }}>
+        <MusicMeasure measure={measure} playingNoteIndex={playingNoteIndex} measureIndex={measureIndex}
+          measureLength={measureLength} isValid={isValid} rowHeight={rowHeight} yTop={yTop}
+          notes={notesWithAccidentals} />
         <TabMeasure measure={measure} playingNoteIndex={playingNoteIndex} measureIndex={measureIndex}
           measureLength={measureLength} isValid={isValid} stringCount={tuning.length} displayOption='both'
           y={rowHeight} />
-        <MeasureSelectBox measure={measure} selected={selectRange} height={rowHeight + (tuning.length * 20)}/>
+        <MeasureSelectBox measure={measure} selected={selectRange} height={measureHeight} />
       </svg>
     );
   }

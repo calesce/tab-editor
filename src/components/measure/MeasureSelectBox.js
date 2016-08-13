@@ -1,11 +1,6 @@
-import React, { Component } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import React, { PureComponent } from 'react';
 
-export default class SelectBox extends Component {
-  shouldComponentUpdate(nextProps, nextState) {
-    return shallowCompare(this, nextProps, nextState);
-  }
-
+export default class SelectBox extends PureComponent {
   render() {
     const { height, selected, measure } = this.props;
     const { notes, width } = measure;
@@ -33,6 +28,7 @@ export default class SelectBox extends Component {
       }
     }
 
-    return <rect fill='blue' fillOpacity={0.2} x={x} y={0} width={boxWidth} height={height} />;
+    return <rect fill='blue' fillOpacity={0.2} x={x} y={0} width={boxWidth} height={height}
+    />;
   }
 }

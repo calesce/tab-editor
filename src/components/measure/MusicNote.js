@@ -1,36 +1,11 @@
-import React, { Component } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import React, { PureComponent } from 'react';
 
 const overflow = { overflow: 'visible' };
 const tupletStyle = { fontSize: 13, fontWeight: 500, fontStyle: 'italic' };
 
-export default class MusicNote extends Component {
-  constructor() {
-    super();
-
-    this.renderQuarterNote = this.renderQuarterNote.bind(this);
-    this.renderHalfNote = this.renderHalfNote.bind(this);
-    this.renderWholeNote = this.renderWholeNote.bind(this);
-    this.renderEighthNote = this.renderEighthNote.bind(this);
-    this.renderSixteenthNote = this.renderSixteenthNote.bind(this);
-    this.renderThirtySecondNote = this.renderThirtySecondNote.bind(this);
-    this.renderNote = this.renderNote.bind(this);
-    this.renderDot = this.renderDot.bind(this);
-    this.renderTremolo = this.renderTremolo.bind(this);
-    this.renderVibrato = this.renderVibrato.bind(this);
-    this.renderTrill = this.renderTrill.bind(this);
-    this.renderSharp = this.renderSharp.bind(this);
-    this.renderNatural = this.renderNatural.bind(this);
-    this.renderFlat = this.renderFlat.bind(this);
-    this.renderLedgerLines = this.renderLedgerLines.bind(this);
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return shallowCompare(this, nextProps, nextState);
-  }
-
-  renderQuarterNote(x, y, color) {
-    if(this.props.flip) {
+export default class MusicNote extends PureComponent {
+  renderQuarterNote(x, y, color, flip) {
+    if(flip) {
       return (
         <svg x={x} y={y} style={overflow}>
           <path fill={color} d='M7.33992 24.843956c-3.728633 1.998327-5.715398 5.615776-4.49326 8.33707 1.303612 2.902716 5.783177 3.721912 9.999024 1.828576 4.215838-1.893346 6.579393-5.7858 5.27578-8.688506-1.30362-2.902716-5.783176-3.721912-9.999022-1.828576-.26349.118333-.533937.218218-.782524 1.449438zM3.226327 29.96113v45.414904'/>
@@ -47,8 +22,8 @@ export default class MusicNote extends Component {
     );
   }
 
-  renderHalfNote(x, y, color) {
-    if(this.props.flip) {
+  renderHalfNote(x, y, color, flip) {
+    if(flip) {
       return (
         <svg x={x} y={y} style={overflow}>
           <path fill={color} d='M7.23 24.92c-3.668 1.964-5.622 5.522-4.42 8.198 1.282 2.856 5.69 3.66 9.835 1.8 4.147-1.863 6.47-5.692 5.188-8.547-1.282-2.855-5.688-3.66-9.834-1.8-.26.118-.527.217-.77.347zm1.2 2.42c.258-.135.522-.235.798-.36 3.536-1.587 6.95-1.663 7.62-.166.673 1.494-1.65 3.996-5.186 5.584-3.536 1.587-6.95 1.663-7.62.166-.62-1.378 1.31-3.64 4.386-5.225z'/>
@@ -73,8 +48,8 @@ export default class MusicNote extends Component {
     );
   }
 
-  renderEighthNote(x, y, color) {
-    if(this.props.flip) {
+  renderEighthNote(x, y, color, flip) {
+    if(flip) {
       return (
         <svg x={x} y={y} style={overflow}>
           <path fill={color} d='M16.968 24.49c3.353 3.01 1.52 7.917-4.016 10.74-1.846.942-3.208 1.35-5.643 1.278-1.478-.038-3.177-.89-3.177-.89 0 10.834.04 31.37.04 41.49-.6-.002-.984.005-1.824.005 0-.595.007-1.023.007-1.55 0-.516-.036-.85-.086-1.173-.58-3.78-1.427-5.267-5.652-9.938-5.345-5.908-6.897-9.466-6.865-14.19.03-4.434 3.93-13.93 4.815-13.535-1.233 3.322-2.895 6.905-3.337 9.904-.54 3.665.95 8.837 3.345 11.565 1.97 2.244 6.508 4.25 7.746 4.25 0 0 .053-21.822.053-30.096 0-1.426 1.29-3.842 2.018-4.71 3.317-3.96 9.68-5.754 12.578-3.15z'/>
@@ -89,8 +64,8 @@ export default class MusicNote extends Component {
     );
   }
 
-  renderSixteenthNote(x, y, color) {
-    if(this.props.flip) {
+  renderSixteenthNote(x, y, color, flip) {
+    if(flip) {
       return (
         <svg x={x} y={y} style={overflow}>
           <g transform='rotate(180 7 30), matrix(.125 0 0 .125 -4 -12.5)'>
@@ -125,18 +100,18 @@ export default class MusicNote extends Component {
     );
   }
 
-  renderNote(x, y, color) {
-    switch(this.props.duration) {
+  renderNote(x, y, color, flip) {
+    switch(this.props.note.duration) {
       case 'q':
-        return this.renderQuarterNote(x + 1, y, color);
+        return this.renderQuarterNote(x + 1, y, color, flip);
       case 'h':
-        return this.renderHalfNote(x + 1, y, color);
+        return this.renderHalfNote(x + 1, y, color, flip);
       case 'w':
         return this.renderWholeNote(x + 1, y, color);
       case 'e':
-        return this.renderEighthNote(x + 1, y, color);
+        return this.renderEighthNote(x + 1, y, color, flip);
       case 's':
-        return this.renderSixteenthNote(x + 1, y, color);
+        return this.renderSixteenthNote(x + 1, y, color, flip);
       case 't':
         return this.renderThirtySecondNote(x + 1, y, color);
       default:
@@ -229,7 +204,8 @@ export default class MusicNote extends Component {
   }
 
   render() {
-    const { x, y, color, sharp, natural, dotted, tremolo, vibrato, trill, tuplet, flip, yTop } = this.props;
+    const { y, note, flip, yTop, chordIndex } = this.props;
+    const { x, color, dotted, tremolo, vibrato, trill, tuplet } = note;
 
     const topNoteY = yTop - 11;
     const bottomNoteY = topNoteY + (11.7 * 5) + 13;
@@ -247,9 +223,9 @@ export default class MusicNote extends Component {
       <g>
         { ledgerLinesBelow ? this.renderLedgerLines(x, 'below', ledgerLinesBelow, bottomStaffY) : null }
         { ledgerLinesAbove ? this.renderLedgerLines(x, 'above', ledgerLinesAbove, topStaffY) : null }
-        { this.renderNote(x, y, color) }
-        { sharp ? this.renderSharp(x, y, color) : null }
-        { natural ? this.renderNatural(x, y, color) : null }
+        { this.renderNote(x, y, color, flip) }
+        { note.notes[chordIndex].renderSharp ? this.renderSharp(x, y, color) : null }
+        { note.notes[chordIndex].renderNatural ? this.renderNatural(x, y, color) : null }
         { dotted ? this.renderDot(x, y, color) : null }
         { tremolo ? this.renderTremolo(x, y, color) : null }
         { vibrato ? this.renderVibrato(x, y, color) : null }
