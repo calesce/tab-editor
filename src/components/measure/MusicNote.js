@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { determineFlip } from '../../util/notationMath';
 
 const overflow = { overflow: 'visible' };
 const tupletStyle = { fontSize: 13, fontWeight: 500, fontStyle: 'italic' };
@@ -204,8 +205,11 @@ export default class MusicNote extends PureComponent {
   }
 
   render() {
-    const { y, note, flip, yTop, chordIndex } = this.props;
+    const { note, yTop, chordIndex } = this.props;
     const { x, color, dotted, tremolo, vibrato, trill, tuplet } = note;
+
+    const y = note.notes[chordIndex].y;
+    const flip = determineFlip(note, y, yTop);
 
     const topNoteY = yTop - 11;
     const bottomNoteY = topNoteY + (11.7 * 5) + 13;

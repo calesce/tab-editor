@@ -116,24 +116,20 @@ export default class TabNote extends PureComponent {
   }
 
   render() {
-    const { y, fret, color, stringOffset, displayOption, note } = this.props;
+    const { y, fret, color, displayOption, note } = this.props;
     const { x, dotted, tremolo, vibrato, trill } = note;
-    const clickArea = <rect onClick={this.onClick} x={x-14} y={y-11} height={15} width={45} opacity={0}></rect>;
-    if(fret === undefined) {
-      return clickArea;
-    }
-    const width = fret > 9 ? 18 : 12;
 
+    if(displayOption !== 'tab') {
+      return <text onClick={this.onClick} x={x+2} y={y} fill={color} style={style}>{fret}</text>;
+    }
     return (
       <g>
-        {clickArea}
-        <rect x={x} y={y-7} height={5.5} width={width} fill='#ffffff' stroke='#ffffff'></rect>
         <text onClick={this.onClick} x={x+2} y={y} fill={color} style={style}>{fret}</text>
         {displayOption === 'tab' ? this.renderStem() : null}
-        {dotted ? this.renderDot(x, stringOffset, color) : null}
-        {tremolo && displayOption === 'tab' ? this.renderTremolo(x, stringOffset, color): null}
+        {dotted ? this.renderDot(x, y, color) : null}
+        {tremolo && displayOption === 'tab' ? this.renderTremolo(x, y, color): null}
         {vibrato && displayOption === 'tab' ? this.renderVibrato(x, color): null}
-        {trill && displayOption === 'tab' ? this.renderTrill(x, stringOffset, color): null}
+        {trill && displayOption === 'tab' ? this.renderTrill(x, y, color): null}
       </g>
     );
   }
