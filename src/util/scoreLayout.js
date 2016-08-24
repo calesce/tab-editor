@@ -142,26 +142,21 @@ const midiNotesForMeasure = (measure: Object, tuning: Tuning): Array<string> => 
   }));
 };
 
-const getYTop = (midi: string): number => {
-  return midiDiff(midi, 'g4');
-};
-
-const getYBottom = (midi: string): number => {
-  return midiDiff('f3', midi);
-};
+const getYTop = (midi: string): number => midi ? midiDiff(midi, 'g4') : 0;
+const getYBottom = (midi: string): number => midi ? midiDiff('f3', midi) : 0;
 
 const getRowHeights = (measures: Array<Object>, tuning: Tuning): Array<Object> => {
   const rows = measures.reduce((rowGroups, measure) => {
     const midiNotes = midiNotesForMeasure(measure, tuning);
-    if(midiNotes.length === 0) {
-      return rowGroups;
-    }
     const highest = getHighestNote(midiNotes);
     const lowest = getLowestNote(midiNotes);
 
     if(measure.indexOfRow === 0) { // new row
       return rowGroups.concat({ highest, lowest });
     } else {
+      if(midiNotes.length === 0) {
+        return rowGroups;
+      }
       return rowGroups.slice(0, rowGroups.length - 1).concat({
         highest: getHighestNote([last(rowGroups).highest, highest]),
         lowest: getLowestNote([last(rowGroups).lowest, lowest])
