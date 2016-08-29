@@ -1,8 +1,22 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
+import Select from 'react-select';
 
 import { setInstrument } from '../../actions/track';
 import { instrumentNames } from '../../util/instrumentNames';
+
+const toTitleSpaceCase = str => (
+  str.replace(/_/g, ' ').replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())
+);
+
+const selectStyle = {
+  fontFamily: 'Optima, Segoe, Segoe UI, Candara, Calibri, Arial, sans-serif', fontSize: 13, fontWeight: 600
+};
+
+const formattedInstruments = instrumentNames.map(instrument => ({
+  label: toTitleSpaceCase(instrument),
+  value: instrument
+}));
 
 class InstrumentSelect extends PureComponent {
   constructor() {
@@ -10,18 +24,18 @@ class InstrumentSelect extends PureComponent {
     this.onChange = this.onChange.bind(this);
   }
 
-  onChange(e) {
-    const instrument = e.target.value;
-    this.props.setInstrument(instrument);
+  onChange(option) {
+    if(option) {
+      this.props.setInstrument(option.value);
+    }
   }
 
   render() {
     return (
-      <select style={{ width: 180 }} onChange={this.onChange} value={this.props.instrument}>
-        { instrumentNames.map((instrument) => {
-          return <option key={instrument} value={instrument}>{instrument}</option>;
-        })}
-      </select>
+      <Select onChange={this.onChange} value={this.props.instrument} options={formattedInstruments}
+        wrapperStyle={{ marginTop: 5, width: 180 }} clearable={false}
+        style={selectStyle} menuStyle={selectStyle}
+      />
     );
   }
 }

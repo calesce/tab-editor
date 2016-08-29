@@ -7,6 +7,8 @@ import configureStore from './util/configureStore';
 import { replaceBpm } from './util';
 import track from '../data/song';
 
+import 'react-select/dist/react-select.css';
+
 const initialState = {
   tracks: [{
     ...track,
