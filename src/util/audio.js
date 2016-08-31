@@ -117,7 +117,7 @@ const playTrill = (note, currentTime, replaySpeed, buffers, tuning) => {
 };
 
 export function playCurrentNoteAtTime(note, time, buffers) {
-  const replaySpeed = getReplaySpeedFromPercentage(note.percentage, note.timeSignature, note.bpm);
+  const replaySpeed = getReplaySpeedFromPercentage(note.percentage, note.timeSignature, note.tempo);
 
   if(note.metronome) {
     return playWithBuffer(buffers[60], replaySpeed / 1000, time);

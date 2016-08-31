@@ -2,7 +2,7 @@ import undoable from 'redux-undo';
 
 import { ActionTypes } from 'redux-undo';
 import { REPLACE_SONG, INSERT_TRACK, DELETE_TRACK } from '../actions/tracks';
-import { INSERT_MEASURE, DELETE_MEASURE, CHANGE_BPM, CHANGE_TIME_SIGNATURE } from '../actions/track';
+import { INSERT_MEASURE, DELETE_MEASURE, CHANGE_TEMPO, CHANGE_TIME_SIGNATURE } from '../actions/track';
 import { TOGGLE_REPEAT_BEGIN, TOGGLE_REPEAT_END } from '../actions/measure';
 
 import trackReducer from './track';
@@ -42,7 +42,7 @@ const tracks = (tracks, action, currentTrackIndex, newTracks) => {
 
     case INSERT_MEASURE:
     case DELETE_MEASURE:
-    case CHANGE_BPM:
+    case CHANGE_TEMPO:
     case CHANGE_TIME_SIGNATURE:
     case TOGGLE_REPEAT_BEGIN:
     case TOGGLE_REPEAT_END: {

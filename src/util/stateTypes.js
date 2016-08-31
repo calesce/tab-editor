@@ -20,7 +20,7 @@ export type Note = {
 };
 
 export type Measure = {
-  bpm: number,
+  tempo: number,
   timeSignature: TimeSignature,
   notes: Array<Note>
 };

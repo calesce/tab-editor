@@ -7,7 +7,7 @@ import type { State, Track } from '../../util/stateTypes';
 
 const selectStyle = {
   fontFamily: 'Optima, Segoe, Segoe UI, Candara, Calibri, Arial, sans-serif',
-  fontSize: 13, fontWeight: 600
+  fontSize: 13, fontWeight: 600, width: 140
 };
 
 class TrackSelect extends Component {

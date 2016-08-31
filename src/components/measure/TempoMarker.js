@@ -8,12 +8,12 @@ const style = {
   fontSize: 9
 };
 
-export default class Bpm extends PureComponent {
+export default class Tempo extends PureComponent {
   render() {
-    if(this.props.tab && (this.props.displayOption !== 'tab' || !this.props.renderBpm)) {
+    if(this.props.tab && (this.props.displayOption !== 'tab' || !this.props.renderTempo)) {
       return null;
     }
-    const text = `= ${this.props.bpm}`;
+    const text = `= ${this.props.tempo}`;
 
     return (
       <svg x={5} y={this.props.y}>

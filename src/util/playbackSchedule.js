@@ -1,5 +1,5 @@
 import { range, findIndex } from 'lodash';
-import { getBpmForNote, getPercentageOfNote, getDurationFromPercentage } from '../util/audioMath';
+import { getTempoForNote, getPercentageOfNote, getDurationFromPercentage } from '../util/audioMath';
 
 export const getRealPlayingIndex = (playingIndex, scheduledSong, currentTrackIndex) => {
   const { measureIndex, noteIndex } = playingIndex;
@@ -18,14 +18,14 @@ export const getRealPlayingIndex = (playingIndex, scheduledSong, currentTrackInd
 
 export const getReplaySpeed = (measure, noteIndex, lastNoteIndex) => {
   if(noteIndex === lastNoteIndex) {
-    const speeds = measure[noteIndex].map(note => getBpmForNote(getDurationFromPercentage(1 - note.position, note.timeSignature), note.bpm));
+    const speeds = measure[noteIndex].map(note => getTempoForNote(getDurationFromPercentage(1 - note.position, note.timeSignature), note.tempo));
     return Math.max(...speeds);
   }
 
   const nextPosition = Math.min(...measure[noteIndex + 1].map(note => note.position));
   const positionDiff = nextPosition - measure[noteIndex][0].position;
 
-  const speeds = measure[noteIndex].map(note => getBpmForNote(getDurationFromPercentage(positionDiff, note.timeSignature), note.bpm));
+  const speeds = measure[noteIndex].map(note => getTempoForNote(getDurationFromPercentage(positionDiff, note.timeSignature), note.tempo));
   return Math.max(...speeds);
 };
 
@@ -48,7 +48,7 @@ const measureWithTimeslots = (tracks, measureIndex) => {
         originalNoteIndex: noteIndex,
         instrument: track.instrument,
         tuning: track.tuning,
-        bpm: measure.bpm,
+        tempo: measure.tempo,
         timeSignature: measure.timeSignature,
         trackIndex,
         position: bucket.totalDuration,
@@ -116,7 +116,7 @@ const metronomeTrackForMeasure = (tracks, measureIndex) => {
       trackIndex: tracks.length,
       instrument: 'woodblock',
       tuning: tracks[0].tuning,
-      bpm: measure.bpm,
+      tempo: measure.tempo,
       timeSignature: measure.timeSignature,
       position: bucket.totalDuration,
       percentage,

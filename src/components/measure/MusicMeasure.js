@@ -5,7 +5,7 @@ import Staff from './Staff';
 import Rest from './Rest';
 import Clef from './Clef';
 import TimeSignature from './TimeSignature';
-import Bpm from './Bpm';
+import TempoMarker from './TempoMarker';
 import RepeatSign from './RepeatSign';
 
 const measureNumberStyle = {
@@ -37,7 +37,7 @@ class MusicMeasure extends PureComponent {
         { notes.map((note, noteIndex) => this.renderMusicNote(note, noteIndex, yTop)) }
         { measure.indexOfRow === 0 ? <Clef y={yTop} strings={5} treble repeatBegin={measure.repeatBegin} /> : null }
         <TimeSignature yOffset={yTop} strings={5} measure={measure} repeatBegin={measure.repeatBegin} />
-        { measure.renderBpm ? <Bpm y={yTop} bpm={measure.bpm} /> : null }
+        { measure.renderTempo ? <TempoMarker y={yTop} tempo={measure.tempo} /> : null }
         <text x={0} y={23 + yTop} style={measureNumberStyle}>{measure.measureIndex + 1}</text>
         { measure.repeatEnd ?
           <RepeatSign measureWidth={measure.width} strings={5} y={yTop + 25} repeatEnd={measure.repeatEnd} />

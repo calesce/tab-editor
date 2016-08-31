@@ -21,15 +21,15 @@ const getTuning = (part, maker) => {
   });
 };
 
-const getBpmForMeasure = (measures, measure, index, parts) => {
+const getTempoForMeasure = (measures, measure, index, parts) => {
   const direction = measure.childNamed('direction');
 
   if(direction) {
     return parseInt(direction.childNamed('sound').attr.tempo);
   } else if(measures[index - 1]) {
-    return measures[index - 1].bpm ? measures[index - 1].bpm : 120;
+    return measures[index - 1].tempo ? measures[index - 1].tempo : 120;
   } else {
-    return parts[parts.length - 1].measures[0].bpm;
+    return parts[parts.length - 1].measures[0].tempo;
   }
 };
 
@@ -114,12 +114,12 @@ const getNotesForMeasure = (notes, stringCount) => {
 
 const measuresFromMusicXml = (measures, stringCount, parts) => {
   return measures.reduce((finalMeasures, measure, i) => {
-    const bpm = getBpmForMeasure(finalMeasures, measure, i, parts);
+    const tempo = getTempoForMeasure(finalMeasures, measure, i, parts);
     const timeSignature = getTimeSignatureForMeasure(finalMeasures, measure, i);
     const notes = getNotesForMeasure(measure.childrenNamed('note'), stringCount);
 
     return finalMeasures.concat({
-      bpm,
+      tempo,
       timeSignature,
       notes
     });

@@ -16,7 +16,7 @@ This uses the Web Audio API for playback. Thanks to [soundfont-player](https://g
 * Edit time signature
 * Page and Linear layout
 * Edit tuning
-* Edit BPM
+* Edit tempo
 * Add/remove/select different tracks
 * Select different instruments per track
 * Repeats

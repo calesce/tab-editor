@@ -2,14 +2,14 @@
 
 import type { Measure } from './stateTypes';
 
-export const replaceBpm = (measures: Array<Measure>): Array<Measure> => {
+export const replaceTempo = (measures: Array<Measure>): Array<Measure> => {
   return measures.reduce((endMeasures, measure, i) => {
-    if(measure.bpm) {
+    if(measure.tempo) {
       return endMeasures.concat(measure);
     } else if(i === 0) {
       measure = {
         ...measure,
-        bpm: 120
+        tempo: 120
       };
       return endMeasures.concat(measure);
     }
@@ -17,7 +17,7 @@ export const replaceBpm = (measures: Array<Measure>): Array<Measure> => {
     const prevMeasure = endMeasures[i - 1];
     measure = {
       ...measure,
-      bpm: prevMeasure.bpm
+      tempo: prevMeasure.tempo
     };
     return endMeasures.concat(measure);
   }, []);

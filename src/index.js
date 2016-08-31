@@ -4,7 +4,7 @@ import { AppContainer } from 'react-hot-loader';
 
 import Root from './containers/Root';
 import configureStore from './util/configureStore';
-import { replaceBpm } from './util';
+import { replaceTempo } from './util';
 import track from '../data/song';
 
 import 'react-select/dist/react-select.css';
@@ -12,7 +12,7 @@ import 'react-select/dist/react-select.css';
 const initialState = {
   tracks: [{
     ...track,
-    measures: replaceBpm(track.measures)
+    measures: replaceTempo(track.measures)
   }],
   layout: 'page',
   currentTrackIndex: 0,

@@ -10,7 +10,8 @@ const toTitleSpaceCase = str => (
 );
 
 const selectStyle = {
-  fontFamily: 'Optima, Segoe, Segoe UI, Candara, Calibri, Arial, sans-serif', fontSize: 13, fontWeight: 600
+  fontFamily: 'Optima, Segoe, Segoe UI, Candara, Calibri, Arial, sans-serif', fontSize: 13, fontWeight: 600,
+  width: 180
 };
 
 const formattedInstruments = instrumentNames.map(instrument => ({

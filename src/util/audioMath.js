@@ -31,12 +31,12 @@ export const getDurationFromPercentage = (percentage: number, timeSignature: Tim
   return timeSignature.beatType / numBeats;
 };
 
-export const getReplaySpeedFromPercentage = (percentage: number, timeSignature: TimeSignature, bpm: number): number => {
-  return 240000 / (bpm  * getDurationFromPercentage(percentage, timeSignature));
+export const getReplaySpeedFromPercentage = (percentage: number, timeSignature: TimeSignature, tempo: number): number => {
+  return 240000 / (tempo  * getDurationFromPercentage(percentage, timeSignature));
 };
 
-export const getBpmForNote = (note: number, bpm: number): number => (
-  bpm * (note / 4)
+export const getTempoForNote = (note: number, tempo: number): number => (
+  tempo * (note / 4)
 );
 
 export const numberOfTremoloNotesForDuration = (duration: Duration): number => {

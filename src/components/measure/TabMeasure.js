@@ -12,7 +12,7 @@ import Rest from './Rest';
 import Clef from './Clef';
 import TimeSignature from './TimeSignature';
 import Cursor from './Cursor';
-import Bpm from './Bpm';
+import TempoMarker from './TempoMarker';
 import RepeatSign from './RepeatSign';
 
 import { setCursor } from '../../actions/cursor';
@@ -117,7 +117,7 @@ class TabMeasure extends PureComponent {
         {
           measure.notes.map((note, noteIndex) => this.renderTabNote(note, measure.measureIndex, noteIndex, displayOption))
         }
-        <Bpm tab y={0} bpm={measure.bpm} renderBpm={measure.renderBpm} displayOption={displayOption} />
+        <TempoMarker tab y={0} tempo={measure.tempo} renderTempo={measure.renderTempo} displayOption={displayOption} />
         { displayOption === 'tab' ? <text x={0} y={23} style={measureIndexStyle}>{measure.measureIndex + 1}</text> : null }
         { measure.indexOfRow === 0 ? <Clef y={25} strings={stringCount} repeatBegin={measure.repeatBegin} tab /> : null }
         <TimeSignature yOffset={0} strings={stringCount} measure={measure} displayOption={displayOption} repeatBegin={measure.repeatBegin} />

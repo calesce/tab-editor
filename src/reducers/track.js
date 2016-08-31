@@ -2,7 +2,7 @@
 
 import { PASTE_NOTE, CUT_NOTE } from '../actions/cutCopyPaste';
 import { INSERT_MEASURE, DELETE_MEASURE, CHANGE_TUNING,
-  CHANGE_BPM, SET_INSTRUMENT, CHANGE_TIME_SIGNATURE } from '../actions/track';
+  CHANGE_TEMPO, SET_INSTRUMENT, CHANGE_TIME_SIGNATURE } from '../actions/track';
 import measure from './measure';
 
 import type { Track, Measure, TimeSignature } from '../util/stateTypes';
@@ -20,31 +20,31 @@ const replaceMeasure = (state: Array<Measure>, action: Object): Array<Measure> =
   });
 };
 
-const changeBpmAllMeasures = (measures: Array<Measure>, bpm: number): Array<Measure> => {
+const changeTempoAllMeasures = (measures: Array<Measure>, tempo: number): Array<Measure> => {
   return measures.map((measure) => ({
     ...measure,
-    bpm
+    tempo
   }));
 };
 
-const changeBpmMeasuresAfterCurrent = (measures: Array<Measure>, bpm: number, measureIndex: number): Array<Measure> => {
+const changeTempoMeasuresAfterCurrent = (measures: Array<Measure>, tempo: number, measureIndex: number): Array<Measure> => {
   return measures.map((measure, i) => {
     if(measureIndex > i) {
       return measure;
     }
     return {
       ...measure,
-      bpm
+      tempo
     };
   });
 };
 
-const changeSingleBpmMeasure = (measures: Array<Measure>, bpm: number, measureIndex: number): Array<Measure> => {
+const changeSingleTempoMeasure = (measures: Array<Measure>, tempo: number, measureIndex: number): Array<Measure> => {
   return measures.map((measure, i) => {
     if(measureIndex === i) {
       return {
         ...measure,
-        bpm
+        tempo
       };
     }
     return measure;
@@ -98,7 +98,7 @@ export default function track(state: Track, action: Object): Track {
         ...state,
         measures: state.measures.concat({
           timeSignature: lastMeasure.timeSignature,
-          bpm: lastMeasure.bpm,
+          tempo: lastMeasure.tempo,
           notes: []
         })
       };
@@ -118,14 +118,14 @@ export default function track(state: Track, action: Object): Track {
       };
     }
 
-    case CHANGE_BPM: {
+    case CHANGE_TEMPO: {
       let newMeasures;
       if(action.all) {
-        newMeasures = changeBpmAllMeasures(state.measures, action.bpm);
+        newMeasures = changeTempoAllMeasures(state.measures, action.tempo);
       } else if(action.toEnd) {
-        newMeasures = changeBpmMeasuresAfterCurrent(state.measures, action.bpm, action.index.measureIndex);
+        newMeasures = changeTempoMeasuresAfterCurrent(state.measures, action.tempo, action.index.measureIndex);
       } else {
-        newMeasures = changeSingleBpmMeasure(state.measures, action.bpm, action.index.measureIndex);
+        newMeasures = changeSingleTempoMeasure(state.measures, action.tempo, action.index.measureIndex);
       }
       return {
         ...state,

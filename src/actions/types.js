@@ -34,7 +34,7 @@ export type Action =
   | { type: 'INSERT_MEASURE', index: PlayingIndex }
   | { type: 'DELETE_MEASURE', measureIndex: number }
   | { type: 'CHANGE_TUNING', tuning: Tuning }
-  | { type: 'CHANGE_BPM', index: PlayingIndex, bpm: number, toEnd: boolean, all: boolean }
+  | { type: 'CHANGE_TEMPO', index: PlayingIndex, tempo: number, toEnd: boolean, all: boolean }
   | { type: 'CHANGE_TIME_SIGNATURE', index: PlayingIndex, timeSignature: TimeSignature, toEnd: boolean, all: boolean }
   | { type: 'SET_INSTRUMENT', instrument: string }
   | { type: 'INSERT_TRACK' }

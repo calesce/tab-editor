@@ -5,7 +5,7 @@ import TrackSelect from './TrackSelect';
 import SidebarGroup from './SidebarGroup';
 import SidebarButton from './SidebarButton';
 import TimeSignature from './TimeSignatureButton';
-import BpmButton from './BpmButton';
+import TempoButton from './TempoButton';
 import { RepeatBegin, RepeatEnd } from './RepeatButton';
 import PlayPauseButton from './PlayPauseButton';
 import { MetronomeButton, CountdownButton } from './MetronomeButton';
@@ -34,15 +34,15 @@ export default class Sidebar extends PureComponent {
   constructor() {
     super();
 
-    this.openBpm = this.openBpm.bind(this);
-    this.openTuning = this.openTuning.bind(this);
+    this.openTempoPopover = this.openTempoPopover.bind(this);
+    this.openTuningPopover = this.openTuningPopover.bind(this);
   }
 
-  openBpm() {
-    this.props.togglePopover('bpm');
+  openTempoPopover() {
+    this.props.togglePopover('tempo');
   }
 
-  openTuning() {
+  openTuningPopover() {
     this.props.togglePopover('tuning');
   }
 
@@ -67,12 +67,12 @@ export default class Sidebar extends PureComponent {
         </SidebarGroup>
         <SidebarGroup title='Measure'>
           <TimeSignature />
-          <BpmButton onClick={this.openBpm} onClose={togglePopover} popoverOpen={popoverOpen} />
+          <TempoButton onClick={this.openTempoPopover} onClose={togglePopover} popoverOpen={popoverOpen} />
           <RepeatBegin />
           <RepeatEnd />
         </SidebarGroup>
         <SidebarGroup title='Track'>
-          <TuningButton onClick={this.openTuning} onClose={togglePopover} popoverOpen={popoverOpen} />
+          <TuningButton onClick={this.openTuningPopover} onClose={togglePopover} popoverOpen={popoverOpen} />
           <InstrumentSelect />
           <InsertTrackButton />
           <DeleteTrackButton />

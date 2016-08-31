@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Popover from 'react-popover-fork';
 
-import { changeBpm } from '../../actions/track';
+import { changeTempo } from '../../actions/track';
 import hover from './hoverContainer';
 
 const textStyle = {
@@ -29,7 +29,7 @@ const textInputStyle = {
   marginTop: 5, marginLeft: 15, marginRight: 15, width: 70
 };
 
-const BpmButton = hover()(({ bpm, style, onClick, color}) => (
+const TempoButton = hover()(({ tempo, style, onClick, color}) => (
   <svg onClick={onClick} width='80' height='50' style={style}>
     <g transform='translate(25, 12)'>
       <g transform='scale(0.5)'>
@@ -40,14 +40,14 @@ const BpmButton = hover()(({ bpm, style, onClick, color}) => (
       </g>
       <g transform='translate(10, 17)'>
         <text fill={color} style={textStyle}>
-          ={bpm}
+          ={tempo}
         </text>
       </g>
     </g>
   </svg>
 ));
 
-class BpmPopover extends Component {
+class TempoPopover extends Component {
   constructor(props) {
     super(props);
 
@@ -57,7 +57,7 @@ class BpmPopover extends Component {
     this.setInputRef = this.setInputRef.bind(this);
 
     this.state = {
-      bpm: props.bpm,
+      tempo: props.tempo,
       toEndChecked: false,
       allChecked: false
     };
@@ -70,13 +70,13 @@ class BpmPopover extends Component {
   }
 
   componentWillUnmount() {
-    const { bpm, toEndChecked, allChecked } = this.state;
-    this.props.changeBpm(this.props.cursor, bpm, toEndChecked, allChecked);
+    const { tempo, toEndChecked, allChecked } = this.state;
+    this.props.changeTempo(this.props.cursor, tempo, toEndChecked, allChecked);
   }
 
   onTextChanged(e) {
     if(!isNaN(parseInt(e.target.value)) || e.target.value === '') {
-      this.setState({ bpm: e.target.value });
+      this.setState({ tempo: e.target.value });
     }
   }
 
@@ -96,7 +96,7 @@ class BpmPopover extends Component {
     return (
       <div style={flexStyle}>
         <input ref={this.setInputRef} style={textInputStyle} type='text'
-          value={this.state.bpm} onChange={this.onTextChanged} />
+          value={this.state.tempo} onChange={this.onTextChanged} />
         <span style={{ display: 'flex', justifyContent: 'flex-end', paddingRight: 12 }}>
           <small style={{ textStyle, fontWeight: 300, fontSize: 12, paddingTop: 3 }}>To End</small>
           <input type='checkbox' value={this.state.toEndChecked} onChange={this.toEndChanged} />
@@ -110,9 +110,9 @@ class BpmPopover extends Component {
   }
 }
 
-const ConnectedPopover = connect(null, { changeBpm })(BpmPopover);
+const ConnectedPopover = connect(null, { changeTempo })(TempoPopover);
 
-class Bpm extends Component {
+class Tempo extends Component {
   constructor() {
     super();
 
@@ -139,14 +139,14 @@ class Bpm extends Component {
   }
 
   render() {
-    const { bpm, style, color, cursor } = this.props;
-    const body = <ConnectedPopover cursor={cursor} bpm={bpm} />;
+    const { tempo, style, color, cursor } = this.props;
+    const body = <ConnectedPopover cursor={cursor} tempo={tempo} />;
 
     return (
       <div>
         <Popover preferPlace='right' style={popoverStyle} isOpen={this.state.popoverOpen}
           onOuterAction={this.onPopoverClose} body={body}>
-          <BpmButton onClick={this.onClick} bpm={bpm} style={style} color={color} />
+          <TempoButton onClick={this.onClick} tempo={tempo} style={style} color={color} />
         </Popover>
       </div>
     );
@@ -155,7 +155,7 @@ class Bpm extends Component {
 
 export default connect(
   state => ({
-    bpm: state.tracks.present[state.currentTrackIndex].measures[state.cursor.measureIndex].bpm,
+    tempo: state.tracks.present[state.currentTrackIndex].measures[state.cursor.measureIndex].tempo,
     cursor: state.cursor
   })
-)(Bpm);
+)(Tempo);
