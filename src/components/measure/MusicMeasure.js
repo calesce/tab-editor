@@ -18,12 +18,15 @@ const measureNumberStyle = {
 };
 
 class MusicMeasure extends PureComponent {
-  renderMusicNote(note, noteIndex, yTop) {
+  renderMusicNote(note, noteIndex, yTop, playingNoteIndex) {
+    const color = playingNoteIndex === noteIndex ? '#f9423a' : 'black';
     if(note.string[0] === 'rest') {
-      return <Rest key={noteIndex} x={note.x} y={note.y} note={note} />;
+      return <Rest key={noteIndex} x={note.x} y={note.y} note={note} color={color} />;
     }
 
-    return note.fret.map((fret, i) => <MusicNote key={i} note={note} chordIndex={i} yTop={yTop} />);
+    return note.fret.map((fret, i) =>
+      <MusicNote key={i} note={note} chordIndex={i} yTop={yTop} color={color} />
+    );
   }
 
   render() {
@@ -34,7 +37,7 @@ class MusicMeasure extends PureComponent {
         <Staff measureWidth={measure.width} y={yTop} playingNoteIndex={playingNoteIndex}
           strings={5} lastMeasure={measure.measureIndex === measureLength - 1} isValid={isValid}
         />
-        { notes.map((note, noteIndex) => this.renderMusicNote(note, noteIndex, yTop)) }
+        { notes.map((note, noteIndex) => this.renderMusicNote(note, noteIndex, yTop, playingNoteIndex)) }
         { measure.indexOfRow === 0 ? <Clef y={yTop} strings={5} treble repeatBegin={measure.repeatBegin} /> : null }
         <TimeSignature yOffset={yTop} strings={5} measure={measure} repeatBegin={measure.repeatBegin} />
         { measure.renderTempo ? <TempoMarker y={yTop} tempo={measure.tempo} /> : null }

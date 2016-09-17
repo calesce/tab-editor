@@ -205,8 +205,8 @@ export default class MusicNote extends PureComponent {
   }
 
   render() {
-    const { note, yTop, chordIndex } = this.props;
-    const { x, color, dotted, tremolo, vibrato, trill, tuplet } = note;
+    const { note, yTop, chordIndex, color } = this.props;
+    const { x, dotted, tremolo, vibrato, trill, tuplet } = note;
 
     const y = note.notes[chordIndex].y;
     const flip = determineFlip(note, y, yTop);
