@@ -8,6 +8,7 @@ import { replaceTempo } from './util';
 import track from '../data/song';
 
 import 'react-select/dist/react-select.css';
+import 'babel-polyfill';
 
 const initialState = {
   tracks: [{
