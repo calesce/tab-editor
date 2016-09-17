@@ -3,26 +3,18 @@ import { range } from 'lodash';
 
 const SPACE_BETWEEN_BARS = 13;
 
-export default class Staff extends PureComponent {
-  getStyle(playingNoteIndex, isValid) {
-    if(playingNoteIndex !== undefined) {
-      return {
-        color: '#267754',
-        strokeWidth: 1
-      };
-    } else if(!isValid) {
-      return {
-        color: 'red',
-        strokeWidth: 1
-      };
-    } else {
-      return {
-        color: '#999999',
-        strokeWidth: 0.1
-      };
-    }
+const style = {
+  true: {
+    color: '#999999',
+    strokeWidth: 0.1
+  },
+  false: {
+    color: 'red',
+    strokeWidth: 1
   }
+};
 
+export default class Staff extends PureComponent {
   renderBar(i, y, color, stringCount, strokeWidth, measureWidth) {
     const c = i === 0 || i === stringCount - 1 ? color : '#999999';
     const width = i === 0 || i === stringCount - 1 ? strokeWidth : '0.1';
@@ -32,9 +24,8 @@ export default class Staff extends PureComponent {
   }
 
   render() {
-    const { measureWidth, strings, lastMeasure, y, playingNoteIndex, isValid } = this.props;
-
-    const { strokeWidth, color } = this.getStyle(playingNoteIndex, isValid);
+    const { measureWidth, strings, lastMeasure, y, isValid } = this.props;
+    const { strokeWidth, color } = style[isValid];
     const startY = 25 + y;
     const height = 25 + (strings - 3) * SPACE_BETWEEN_BARS + 1;
 
@@ -54,3 +45,7 @@ export default class Staff extends PureComponent {
     );
   }
 }
+
+Staff.defaultProps = {
+  isValid: true
+};

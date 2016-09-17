@@ -34,8 +34,8 @@ class MusicMeasure extends PureComponent {
 
     return (
       <svg style={{ height: rowHeight, width: measure.width, overflow: 'visible' }}>
-        <Staff measureWidth={measure.width} y={yTop} playingNoteIndex={playingNoteIndex}
-          strings={5} lastMeasure={measure.measureIndex === measureLength - 1} isValid={isValid}
+        <Staff measureWidth={measure.width} y={yTop} strings={5} isValid={isValid}
+          lastMeasure={measure.measureIndex === measureLength - 1}
         />
         { notes.map((note, noteIndex) => this.renderMusicNote(note, noteIndex, yTop, playingNoteIndex)) }
         { measure.indexOfRow === 0 ? <Clef y={yTop} strings={5} treble repeatBegin={measure.repeatBegin} /> : null }

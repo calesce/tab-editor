@@ -104,14 +104,13 @@ class TabMeasure extends PureComponent {
 
   render() {
     const {
-      stringCount, measure, displayOption, y,
-      playingNoteIndex, isValid, measureLength, cursor
+      stringCount, measure, displayOption, y, isValid, measureLength, cursor
     } = this.props;
 
     return (
       <svg y={y} style={{ height: (stringCount * 25), width: measure.width }}>
-        <Staff measureWidth={measure.width} y={0} playingNoteIndex={playingNoteIndex}
-          strings={stringCount} lastMeasure={measure.measureIndex === measureLength - 1} isValid={isValid}
+        <Staff measureWidth={measure.width} y={0} isValid={isValid} strings={stringCount}
+          lastMeasure={measure.measureIndex === measureLength - 1}
         />
         { measure.notes.map((note, i) => this.renderClickArea(note, i, stringCount)) }
         {
