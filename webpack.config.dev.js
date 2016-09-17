@@ -6,6 +6,7 @@ module.exports = {
   entry: [
     'webpack-hot-middleware/client?quiet=true&noInfo=true',
     'react-hot-loader/patch',
+    'babel-polyfill',
     './src/index'
   ],
   output: {
