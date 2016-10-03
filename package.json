@@ -36,6 +36,7 @@
     "css-loader": "^0.23.1",
     "eslint": "^2.8.0",
     "eslint-plugin-babel": "^3.1.0",
+    "eslint-plugin-flowtype": "^2.19.0",
     "eslint-plugin-react": "^5.0.1",
     "express": "^4.13.4",
     "flow-bin": "^0.28.0",
