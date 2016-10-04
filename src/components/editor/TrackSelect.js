@@ -14,15 +14,12 @@ class TrackSelect extends Component {
   props: {
     currentTrackIndex: number,
     tracks: Array<Track>,
-    selectTrack: Function
+    selectTrack: Function,
+    onOpen: Function,
+    onClose: Function
   };
 
-  constructor() {
-    super();
-    this.onChange = this.onChange.bind(this);
-  }
-
-  onChange(option) {
+  onChange = option => {
     const track = option.value;
     this.props.selectTrack(parseInt(track));
   }
@@ -34,6 +31,7 @@ class TrackSelect extends Component {
         disabled={this.props.tracks.length === 1} options={options}
         wrapperStyle={{ width: 140 }}
         style={selectStyle} menuStyle={selectStyle}
+        onOpen={this.props.onOpen} onClose={this.props.onClose}
       />
     );
   }

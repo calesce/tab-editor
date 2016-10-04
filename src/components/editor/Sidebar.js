@@ -31,19 +31,20 @@ const style = {
 };
 
 export default class Sidebar extends PureComponent {
-  constructor() {
-    super();
-
-    this.openTempoPopover = this.openTempoPopover.bind(this);
-    this.openTuningPopover = this.openTuningPopover.bind(this);
-  }
-
-  openTempoPopover() {
+  openTempoPopover = () => {
     this.props.togglePopover('tempo');
   }
 
-  openTuningPopover() {
+  openTuningPopover = () => {
     this.props.togglePopover('tuning');
+  }
+
+  openInstrumentSelect = () => {
+    this.props.togglePopover('instrumentSelect');
+  }
+
+  openTrackSelect = () => {
+    this.props.togglePopover('trackSelect');
   }
 
   render() {
@@ -73,10 +74,10 @@ export default class Sidebar extends PureComponent {
         </SidebarGroup>
         <SidebarGroup title='Track'>
           <TuningButton onClick={this.openTuningPopover} onClose={togglePopover} popoverOpen={popoverOpen} />
-          <InstrumentSelect />
+          <InstrumentSelect onOpen={this.openInstrumentSelect} onClose={togglePopover} popoverOpen={popoverOpen} />
           <InsertTrackButton />
           <DeleteTrackButton />
-          <TrackSelect />
+          <TrackSelect onOpen={this.openTrackSelect} onClose={togglePopover} popoverOpen={popoverOpen} />
         </SidebarGroup>
         <SidebarGroup title='Song'>
           <ExportButton />
