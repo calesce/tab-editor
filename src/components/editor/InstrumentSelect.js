@@ -13,7 +13,11 @@ const selectStyle = {
   fontFamily: 'Optima, Segoe, Segoe UI, Candara, Calibri, Arial, sans-serif', fontSize: 13, fontWeight: 600,
   width: 180
 };
-const wrapperStyle = { marginTop: 5, width: 180 };
+const menuStyle = {
+  fontFamily: 'Optima, Segoe, Segoe UI, Candara, Calibri, Arial, sans-serif', fontSize: 13, fontWeight: 600,
+  width: 170
+};
+const wrapperStyle = { marginTop: 5, width: 180, height: 36 };
 
 const formattedInstruments = instrumentNames.map(instrument => ({
   label: toTitleSpaceCase(instrument),
@@ -31,7 +35,7 @@ class InstrumentSelect extends PureComponent {
     return (
       <Select onChange={this.onChange} value={this.props.instrument} options={formattedInstruments}
         wrapperStyle={wrapperStyle} clearable={false} onClose={this.props.onClose}
-        style={selectStyle} menuStyle={selectStyle} onOpen={this.props.onOpen}
+        style={selectStyle} menuStyle={menuStyle} onOpen={this.props.onOpen}
       />
     );
   }
