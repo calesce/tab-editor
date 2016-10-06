@@ -6,7 +6,6 @@ import { makeMapStateToProps } from '../../util/selectors';
 import { makeTabMeasureSelector } from '../../util/measureSelectors';
 
 import TabNote from './TabNote';
-import ClickArea from './TabClickArea';
 import Staff from './Staff';
 import Rest from './Rest';
 import Clef from './Clef';
@@ -23,18 +22,36 @@ const measureIndexStyle = {
 };
 
 class TabMeasure extends PureComponent {
-  constructor() {
-    super();
-
-    this.onClick = this.onClick.bind(this);
-  }
-
-  onClick(noteIndex, stringIndex) {
+  onClick = (noteIndex, stringIndex) => {
     this.props.setCursor({
       noteIndex,
       stringIndex,
       measureIndex: this.props.measure.measureIndex
     });
+  }
+
+  onSvgClick = e => {
+    const { stringCount, measure } = this.props;
+    const svgRect = this._element.getBoundingClientRect();
+    const relativeX = e.clientX - svgRect.left;
+    const relativeY = e.clientY - svgRect.top - 25;
+
+    const noteIndex = this.getNoteAtX(relativeX, measure.notes);
+    const stringIndex = this.getStringAtY(relativeY, stringCount);
+    this.props.setCursor({
+      noteIndex,
+      stringIndex,
+      measureIndex: measure.measureIndex
+    });
+  }
+
+  getNoteAtX(x, notes) {
+    const noteIndex = findIndex(notes, note => note.x + 38 > x);
+    return noteIndex === -1 ? notes.length - 1 : noteIndex;
+  }
+
+  getStringAtY(y, stringCount) {
+    return Math.floor(-1 * ((y - 95 + 8.5) / 13) - 6 + stringCount) - 1;
   }
 
   renderCursor(cursor, measure, stringCount) {
@@ -64,8 +81,8 @@ class TabMeasure extends PureComponent {
     return <Cursor x={x} y={y} fret={fret} />;
   }
 
-  renderTabNote(note, measureIndex, noteIndex, displayOption) {
-    const { playingNoteIndex, stringCount } = this.props;
+  renderTabNote(note, noteIndex) {
+    const { playingNoteIndex, stringCount, displayOption } = this.props;
 
     const color = playingNoteIndex === noteIndex ? '#f9423a' : 'black';
     const y = stringCount * 6.5 + 6; // 45 for 6 strings
@@ -92,15 +109,7 @@ class TabMeasure extends PureComponent {
     });
   }
 
-  renderClickArea(note, noteIndex, stringCount) {
-    return [0, 1, 2, 3, 4, 5].map((_, i) => {
-      const stringIndex = findIndex(note.string, index => index === i);
-      const string = stringIndex === -1 ? i : note.string[stringIndex];
-
-      const y = 95 - (13 * (i + 6 - stringCount));
-      return <ClickArea x={note.x} y={y} onClick={this.onClick} noteIndex={noteIndex} stringIndex={string} />;
-    });
-  }
+  setRef = e => this._element = e
 
   render() {
     const {
@@ -108,14 +117,12 @@ class TabMeasure extends PureComponent {
     } = this.props;
 
     return (
-      <svg y={y} style={{ height: (stringCount * 25), width: measure.width }}>
+      <svg y={y} ref={this.setRef} style={{ height: (stringCount * 25), width: measure.width }}>
         <Staff measureWidth={measure.width} y={0} isValid={isValid} strings={stringCount}
           lastMeasure={measure.measureIndex === measureLength - 1}
         />
-        { measure.notes.map((note, i) => this.renderClickArea(note, i, stringCount)) }
-        {
-          measure.notes.map((note, noteIndex) => this.renderTabNote(note, measure.measureIndex, noteIndex, displayOption))
-        }
+        <rect onClick={this.onSvgClick} height={stringCount * 25} width={measure.width} opacity={0}></rect>
+        { measure.notes.map((note, noteIndex) => this.renderTabNote(note, noteIndex)) }
         <TempoMarker tab y={0} tempo={measure.tempo} renderTempo={measure.renderTempo} displayOption={displayOption} />
         { displayOption === 'tab' ? <text x={0} y={23} style={measureIndexStyle}>{measure.measureIndex + 1}</text> : null }
         { measure.indexOfRow === 0 ? <Clef y={25} strings={stringCount} repeatBegin={measure.repeatBegin} tab /> : null }
