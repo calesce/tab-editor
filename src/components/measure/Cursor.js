@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 
-export default class TabNote extends PureComponent {
+export default class Cursor extends PureComponent {
   render() {
     const { x, y, fret } = this.props;
 

@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { StyleSheet, css } from 'aphrodite';
 
 import MusicNote from './MusicNote';
 import Staff from './Staff';
@@ -8,14 +9,19 @@ import TimeSignature from './TimeSignature';
 import TempoMarker from './TempoMarker';
 import RepeatSign from './RepeatSign';
 
-const measureNumberStyle = {
-  MozUserSelect: 'none',
-  WebkitUserSelect: 'none',
-  msUserSelect: 'none',
-  cursor: 'default',
-  fontSize: 9,
-  fill: 'tomato'
-};
+const styles = StyleSheet.create({
+  svg: {
+    overflow: 'visible'
+  },
+  measureNumber: {
+    MozUserSelect: 'none',
+    WebkitUserSelect: 'none',
+    msUserSelect: 'none',
+    cursor: 'default',
+    fontSize: 9,
+    fill: 'tomato'
+  }
+});
 
 class MusicMeasure extends PureComponent {
   renderMusicNote(note, noteIndex, yTop, playingNoteIndex) {
@@ -33,7 +39,7 @@ class MusicMeasure extends PureComponent {
     const { measure, rowHeight, yTop, notes, playingNoteIndex, measureLength, isValid } = this.props;
 
     return (
-      <svg style={{ height: rowHeight, width: measure.width, overflow: 'visible' }}>
+      <svg height={rowHeight} width={measure.width} className={css(styles.svg)}>
         <Staff measureWidth={measure.width} y={yTop} strings={5} isValid={isValid}
           lastMeasure={measure.measureIndex === measureLength - 1}
         />
@@ -41,7 +47,7 @@ class MusicMeasure extends PureComponent {
         { measure.indexOfRow === 0 ? <Clef y={yTop} strings={5} treble repeatBegin={measure.repeatBegin} /> : null }
         <TimeSignature yOffset={yTop} strings={5} measure={measure} repeatBegin={measure.repeatBegin} />
         { measure.renderTempo ? <TempoMarker y={yTop} tempo={measure.tempo} /> : null }
-        <text x={0} y={23 + yTop} style={measureNumberStyle}>{measure.measureIndex + 1}</text>
+        <text x={0} y={23 + yTop} className={css(styles.measureNumber)}>{measure.measureIndex + 1}</text>
         { measure.repeatEnd ?
           <RepeatSign measureWidth={measure.width} strings={5} y={yTop + 25} repeatEnd={measure.repeatEnd} />
           : null }

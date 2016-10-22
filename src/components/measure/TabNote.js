@@ -1,12 +1,16 @@
 import React, { PureComponent } from 'react';
+import { StyleSheet, css } from 'aphrodite';
 
-const style = {
-  MozUserSelect: 'none',
-  WebkitUserSelect: 'none',
-  msUserSelect: 'none',
-  cursor: 'crosshair',
-  fontSize: 14
-};
+const styles = StyleSheet.create({
+  cursor: {
+    MozUserSelect: 'none',
+    WebkitUserSelect: 'none',
+    msUserSelect: 'none',
+    cursor: 'crosshair',
+    fontSize: 14
+  },
+  trill: { fontSize: 12 }
+});
 
 export default class TabNote extends PureComponent {
   constructor() {
@@ -104,7 +108,7 @@ export default class TabNote extends PureComponent {
   renderTrill(x, color) {
     return (
       <svg x={x + 1.5} y={10}>
-        <text y={7} style={{ fontSize: 12 }}>tr</text>
+        <text y={7} className={css(styles.trill)}>tr</text>
         <g transform='translate(11.0, 0.0)'>
           <g transform='scale(8.00, 6.00)'>
             <path fill={color}
@@ -120,16 +124,16 @@ export default class TabNote extends PureComponent {
     const { x, dotted, tremolo, vibrato, trill } = note;
 
     if(displayOption !== 'tab') {
-      return <text onClick={this.onClick} x={x+2} y={y} fill={color} style={style}>{fret}</text>;
+      return <text onClick={this.onClick} x={x+2} y={y} fill={color} className={css(styles.cursor)}>{fret}</text>;
     }
     return (
       <g>
-        <text onClick={this.onClick} x={x+2} y={y} fill={color} style={style}>{fret}</text>
-        {displayOption === 'tab' ? this.renderStem() : null}
-        {dotted ? this.renderDot(x, y, color) : null}
-        {tremolo && displayOption === 'tab' ? this.renderTremolo(x, y, color): null}
-        {vibrato && displayOption === 'tab' ? this.renderVibrato(x, color): null}
-        {trill && displayOption === 'tab' ? this.renderTrill(x, y, color): null}
+        <text onClick={this.onClick} x={x+2} y={y} fill={color} className={css(styles.cursor)}>{fret}</text>
+        {displayOption === 'tab' && this.renderStem()}
+        {dotted && this.renderDot(x, y, color)}
+        {tremolo && displayOption === 'tab' && this.renderTremolo(x, y, color)}
+        {vibrato && displayOption === 'tab' && this.renderVibrato(x, color)}
+        {trill && displayOption === 'tab' && this.renderTrill(x, y, color)}
       </g>
     );
   }

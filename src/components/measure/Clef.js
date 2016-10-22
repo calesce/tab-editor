@@ -1,11 +1,14 @@
 import React, { PureComponent } from 'react';
+import { StyleSheet, css } from 'aphrodite';
 
-const style = {
-  MozUserSelect: 'none',
-  WebkitUserSelect: 'none',
-  msUserSelect: 'none',
-  cursor: 'default'
-};
+const styles = StyleSheet.create({
+  cursor: {
+    MozUserSelect: 'none',
+    WebkitUserSelect: 'none',
+    msUserSelect: 'none',
+    cursor: 'default'
+  }
+});
 
 export default class Clef extends PureComponent {
   renderTabClef(x, y) {
@@ -17,9 +20,9 @@ export default class Clef extends PureComponent {
     if(this.props.tab) {
       return (
         <g>
-          <text x={x + 10} y={baseY} style={style} fill='#000000' fontSize={fontSize}>T</text>
-          <text x={x + 10} y={baseY + interval} style={style} fill='#000000' fontSize={fontSize}>A</text>
-          <text x={x + 10} y={baseY + (2 * interval)} style={style} fill='#000000' fontSize={fontSize}>B</text>
+          <text x={x + 10} y={baseY} className={css(styles.cursor)} fill='#000000' fontSize={fontSize}>T</text>
+          <text x={x + 10} y={baseY + interval} className={css(styles.cursor)} fill='#000000' fontSize={fontSize}>A</text>
+          <text x={x + 10} y={baseY + (2 * interval)} className={css(styles.cursor)} fill='#000000' fontSize={fontSize}>B</text>
         </g>
       );
     } else {

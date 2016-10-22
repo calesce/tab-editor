@@ -15,7 +15,7 @@ class Measure extends PureComponent {
     const measureHeight = rowHeight + (tuning.length * 20);
 
     return (
-      <svg style={{ height: measureHeight, width: measure.width }}>
+      <svg height={measureHeight} width={measure.width}>
         <MusicMeasure measure={measure} playingNoteIndex={playingNoteIndex} measureIndex={measureIndex}
           measureLength={measureLength} isValid={isValid} rowHeight={rowHeight} yTop={yTop}
           notes={notesWithAccidentals} />

@@ -3,7 +3,7 @@ import { range } from 'lodash';
 
 const SPACE_BETWEEN_BARS = 13;
 
-const style = {
+const styles = {
   true: {
     color: '#999999',
     strokeWidth: 0.1
@@ -25,7 +25,7 @@ export default class Staff extends PureComponent {
 
   render() {
     const { measureWidth, strings, lastMeasure, y, isValid } = this.props;
-    const { strokeWidth, color } = style[isValid];
+    const { strokeWidth, color } = styles[isValid];
     const startY = 25 + y;
     const height = 25 + (strings - 3) * SPACE_BETWEEN_BARS + 1;
 

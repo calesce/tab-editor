@@ -1,12 +1,15 @@
 import React, { PureComponent } from 'react';
+import { StyleSheet, css } from 'aphrodite';
 
-const style = {
-  MozUserSelect: 'none',
-  WebkitUserSelect: 'none',
-  msUserSelect: 'none',
-  cursor: 'default',
-  fontSize: 9
-};
+const styles = StyleSheet.create({
+  cursor: {
+    MozUserSelect: 'none',
+    WebkitUserSelect: 'none',
+    msUserSelect: 'none',
+    cursor: 'default',
+    fontSize: 9
+  }
+});
 
 export default class Tempo extends PureComponent {
   render() {
@@ -24,7 +27,7 @@ export default class Tempo extends PureComponent {
           />
           <path strokeWidth={1.5} d='M 14.72547,29.05645 L 14.72547,0.46888' stroke='#000000' />
         </g>
-        <text x={9} y={10} style={style}>{text}</text>
+        <text x={9} y={10} className={css(styles.cursor)}>{text}</text>
       </svg>
     );
   }

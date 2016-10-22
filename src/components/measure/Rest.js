@@ -1,12 +1,15 @@
 import React, { PureComponent } from 'react';
+import { StyleSheet, css } from 'aphrodite';
 
-const style = {
-  overflow: 'visible',
-  MozUserSelect: 'none',
-  WebkitUserSelect: 'none',
-  msUserSelect: 'none',
-  cursor: 'crosshair'
-};
+const styles = StyleSheet.create({
+  rest: {
+    overflow: 'visible',
+    MozUserSelect: 'none',
+    WebkitUserSelect: 'none',
+    msUserSelect: 'none',
+    cursor: 'crosshair'
+  }
+});
 
 const RestDot = ({ x, y, color, dotted }) => (
   dotted ?
@@ -15,7 +18,7 @@ const RestDot = ({ x, y, color, dotted }) => (
 );
 
 const WholeRest = ({ x, y, color, dotted, onClick }) => (
-  <svg onClick={onClick} style={style} width='30' height='62' x={x - 9} y={y - 5}>
+  <svg onClick={onClick} className={css(styles.rest)} width='30' height='62' x={x - 9} y={y - 5}>
     <g transform='scale(1.2), translate(-2, -15)'>
       <g transform='matrix(1,0,0,-1,0,42.987635)'>
         <rect fill={color} width='9.2204475' height='5.1031408' x='10.902164' y='18.913252' />
@@ -27,7 +30,7 @@ const WholeRest = ({ x, y, color, dotted, onClick }) => (
 );
 
 const HalfRest = ({ x, y, color, dotted, onClick }) => (
-  <svg onClick={onClick} style={style} width='30' height='62' x={x - 9} y={y - 12.5}>
+  <svg onClick={onClick} className={css(styles.rest)} width='30' height='62' x={x - 9} y={y - 12.5}>
     <g transform='scale(1.2), translate(-2, -3)'>
       <g>
         <rect fill={color} width='9.2204475' height='5.1031408' x='10.902164' y='18.913252' />
@@ -39,7 +42,7 @@ const HalfRest = ({ x, y, color, dotted, onClick }) => (
 );
 
 const QuarterRest = ({ x, y, color, dotted, onClick }) => (
-  <svg onClick={onClick} style={style} width='30' height='62' x={x} y={y}>
+  <svg onClick={onClick} className={css(styles.rest)} width='30' height='62' x={x} y={y}>
     <g transform='scale(1.2), translate(0, -2)'>
       <path
         fill={color}
@@ -52,7 +55,7 @@ const QuarterRest = ({ x, y, color, dotted, onClick }) => (
 );
 
 const EighthRest = ({ x, y, color, dotted, onClick }) => (
-  <svg onClick={onClick} style={style} width='30' height='62' x={x} y={y}>
+  <svg onClick={onClick} className={css(styles.rest)} width='30' height='62' x={x} y={y}>
     <g transform='scale(1.4)'>
       <g transform='translate(-482.02112,-143.11753)'>
         <g transform='matrix(1.8,0,0,1.8,-471.40868,9.4615275)'>
@@ -69,7 +72,7 @@ const EighthRest = ({ x, y, color, dotted, onClick }) => (
 );
 
 const SixteenthRest = ({ x, y, color, dotted, onClick }) => (
-  <svg onClick={onClick} style={style} width='30' height='62' x={x} y={y}>
+  <svg onClick={onClick} className={css(styles.rest)} width='30' height='62' x={x} y={y}>
     <g transform='scale(1.2)'>
       <g transform='translate(-481.99253,-146.99198)'>
         <g transform='matrix(1.8,0,0,1.8,-492.20747,10.83713)'>
