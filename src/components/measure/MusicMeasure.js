@@ -44,15 +44,13 @@ class MusicMeasure extends PureComponent {
           lastMeasure={measure.measureIndex === measureLength - 1}
         />
         { notes.map((note, noteIndex) => this.renderMusicNote(note, noteIndex, yTop, playingNoteIndex)) }
-        { measure.indexOfRow === 0 ? <Clef y={yTop} strings={5} treble repeatBegin={measure.repeatBegin} /> : null }
+        { measure.indexOfRow === 0 && <Clef y={yTop} strings={5} treble repeatBegin={measure.repeatBegin} /> }
         <TimeSignature yOffset={yTop} strings={5} measure={measure} repeatBegin={measure.repeatBegin} />
-        { measure.renderTempo ? <TempoMarker y={yTop} tempo={measure.tempo} /> : null }
+        { measure.renderTempo && <TempoMarker y={yTop} tempo={measure.tempo} /> }
         <text x={0} y={23 + yTop} className={css(styles.measureNumber)}>{measure.measureIndex + 1}</text>
-        { measure.repeatEnd ?
-          <RepeatSign measureWidth={measure.width} strings={5} y={yTop + 25} repeatEnd={measure.repeatEnd} />
-          : null }
-        { measure.repeatBegin ? <RepeatSign measureWidth={measure.width} strings={5} y={yTop + 25} repeatEnd={false} />
-          : null }
+        { measure.repeatEnd &&
+          <RepeatSign measureWidth={measure.width} strings={5} y={yTop + 25} repeatEnd={measure.repeatEnd} /> }
+        { measure.repeatBegin && <RepeatSign measureWidth={measure.width} strings={5} y={yTop + 25} repeatEnd={false} /> }
       </svg>
     );
   }

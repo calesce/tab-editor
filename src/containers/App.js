@@ -234,7 +234,7 @@ class App extends Component {
 
     return (
       <div style={style}>
-        { playingIndex ? <Playback buffers={buffers} metronome={metronome} countdown={countdown} /> : null}
+        { playingIndex && <Playback buffers={buffers} metronome={metronome} countdown={countdown} /> }
         <Sidebar canPlay={canPlay} popoverOpen={popover} togglePopover={this.togglePopover} />
         <Score />
       </div>

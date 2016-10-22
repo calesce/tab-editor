@@ -41,7 +41,7 @@ class Score extends PureComponent {
   getNoteRangeForMeasure(measure, xStart, xEnd) {
     const notes = measure.notes.map((note, i) => {
       const noteX = note.x + measure.xOfMeasure;
-      return noteX + SELECT_ERROR > xStart && noteX + SELECT_ERROR < xEnd ? i : null;
+      return (noteX + SELECT_ERROR > xStart && noteX + SELECT_ERROR < xEnd) && i;
     });
     const filteredNotes = notes.filter(note => note !== null);
     return filteredNotes.length === notes.length ? 'all' : filteredNotes;

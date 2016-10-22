@@ -237,16 +237,16 @@ export default class MusicNote extends PureComponent {
 
     return (
       <g>
-        { ledgerLinesBelow ? this.renderLedgerLines(x, 'below', ledgerLinesBelow, bottomStaffY) : null }
-        { ledgerLinesAbove ? this.renderLedgerLines(x, 'above', ledgerLinesAbove, topStaffY) : null }
+        { ledgerLinesBelow && this.renderLedgerLines(x, 'below', ledgerLinesBelow, bottomStaffY) }
+        { ledgerLinesAbove && this.renderLedgerLines(x, 'above', ledgerLinesAbove, topStaffY) }
         { this.renderNote(x, y, color, flip) }
-        { note.notes[chordIndex].renderSharp ? this.renderSharp(x, y, color) : null }
-        { note.notes[chordIndex].renderNatural ? this.renderNatural(x, y, color) : null }
-        { dotted ? this.renderDot(x, y, color) : null }
-        { tremolo ? this.renderTremolo(x, y, color) : null }
-        { vibrato ? this.renderVibrato(x, y, color) : null }
-        { trill ? this.renderTrill(x, color) : null }
-        { tuplet ? this.renderTuplet(x, y, flip, color, tuplet) : null }
+        { note.notes[chordIndex].renderSharp && this.renderSharp(x, y, color) }
+        { note.notes[chordIndex].renderNatural && this.renderNatural(x, y, color) }
+        { dotted && this.renderDot(x, y, color) }
+        { tremolo && this.renderTremolo(x, y, color) }
+        { vibrato && this.renderVibrato(x, y, color) }
+        { trill && this.renderTrill(x, color) }
+        { tuplet && this.renderTuplet(x, y, flip, color, tuplet) }
       </g>
     );
   }

@@ -131,7 +131,7 @@ class TabMeasure extends PureComponent {
         { measure.indexOfRow === 0 && <Clef y={25} strings={stringCount} repeatBegin={measure.repeatBegin} tab /> }
         <TimeSignature yOffset={0} strings={stringCount} measure={measure} displayOption={displayOption} repeatBegin={measure.repeatBegin} />
         { this.renderCursor(cursor, measure, stringCount) }
-        { measure.repeatEnd && <RepeatSign measureWidth={measure.width} strings={stringCount} y={25} repeatEnd={measure.repeatEnd} /> }
+        { measure.repeatEnd && <RepeatSign measureWidth={measure.width} strings={stringCount} y={25} repeatEnd={true} /> }
         { measure.repeatBegin && <RepeatSign measureWidth={measure.width} strings={stringCount} y={25} repeatEnd={false} /> }
       </svg>
     );
