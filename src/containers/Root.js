@@ -1,5 +1,14 @@
-if (process.env.NODE_ENV === 'production') {
-  module.exports = require('./Root.prod');
-} else {
-  module.exports = require('./Root.dev');
+import React, { Component } from 'react';
+import { Provider } from 'react-redux';
+import App from './App';
+
+export default class Root extends Component {
+  render() {
+    const { store } = this.props;
+    return (
+      <Provider store={store}>
+        <App />
+      </Provider>
+    );
+  }
 }
