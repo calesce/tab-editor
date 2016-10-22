@@ -5,28 +5,37 @@ import Popover from 'react-popover-fork';
 import { changeTempo } from '../../actions/track';
 import hover from './hoverContainer';
 
+import { StyleSheet, css } from 'aphrodite';
+
+const styles = StyleSheet.create({
+  text: {
+    fontSize: 12,
+    fontWeight: 600,
+    fontFamily: 'Optima, Segoe, Segoe UI, Candara, Calibri, Arial, sans-serif'
+  },
+  textInput: {
+    marginTop: 5, marginLeft: 15, marginRight: 15, width: 70
+  },
+  popover: {
+    zIndex: 5,
+    fill: '#FEFBF7',
+    marginLeft: -10
+  },
+  popoverContainer: {
+    background: '#FEFBF7',
+    height: 80,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-around'
+  },
+  flexToEnd: { display: 'flex', justifyContent: 'flex-end', paddingRight: 12 },
+  flexAllMeasures: { display: 'flex', justifyContent: 'flex-end', paddingRight: 12 }
+});
+
 const textStyle = {
   fontSize: 12,
   fontWeight: 600,
   fontFamily: 'Optima, Segoe, Segoe UI, Candara, Calibri, Arial, sans-serif'
-};
-
-const popoverStyle = {
-  zIndex: 5,
-  fill: '#FEFBF7',
-  marginLeft: -10
-};
-
-const flexStyle = {
-  background: '#FEFBF7',
-  height: 80,
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'space-around'
-};
-
-const textInputStyle = {
-  marginTop: 5, marginLeft: 15, marginRight: 15, width: 70
 };
 
 const TempoButton = hover()(({ tempo, style, onClick, color}) => (
@@ -94,14 +103,14 @@ class TempoPopover extends Component {
 
   render() {
     return (
-      <div style={flexStyle}>
-        <input ref={this.setInputRef} style={textInputStyle} type='text'
+      <div className={css(styles.popoverContainer)}>
+        <input ref={this.setInputRef} className={css(styles.textInput)} type='text'
           value={this.state.tempo} onChange={this.onTextChanged} />
-        <span style={{ display: 'flex', justifyContent: 'flex-end', paddingRight: 12 }}>
+        <span className={css(styles.flexToEnd)}>
           <small style={{ textStyle, fontWeight: 300, fontSize: 12, paddingTop: 3 }}>To End</small>
           <input type='checkbox' value={this.state.toEndChecked} onChange={this.toEndChanged} />
         </span>
-        <span style={{ display: 'flex', justifyContent: 'flex-end', paddingRight: 12 }}>
+        <span className={css(styles.flexAllMeasures)}>
           <small style={{ textStyle, fontWeight: 300, fontSize: 12, paddingTop: 3 }}>All Measures</small>
           <input type='checkbox' value={this.state.allChecked} onChange={this.allChanged} />
         </span>
@@ -139,14 +148,14 @@ class Tempo extends Component {
   }
 
   render() {
-    const { tempo, style, color, cursor } = this.props;
+    const { tempo, color, cursor } = this.props;
     const body = <ConnectedPopover cursor={cursor} tempo={tempo} />;
 
     return (
       <div>
-        <Popover preferPlace='right' style={popoverStyle} isOpen={this.state.popoverOpen}
+        <Popover preferPlace='right' className={css(styles.popover)} isOpen={this.state.popoverOpen}
           onOuterAction={this.onPopoverClose} body={body}>
-          <TempoButton onClick={this.onClick} tempo={tempo} style={style} color={color} />
+          <TempoButton onClick={this.onClick} tempo={tempo} color={color} />
         </Popover>
       </div>
     );

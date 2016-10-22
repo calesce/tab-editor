@@ -96,7 +96,7 @@ class TuningStringInput extends Component {
       <span style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <input style={textInputStyle} type='text' size={2} value={this.props.string}
           onChange={this.noop} onKeyDown={this.onTextChanged} ref={this.setRef} />
-        <HoverableText onClick={this.removeString} text='x' style={{ fontWeight: 600 }} />
+        <HoverableText onClick={this.removeString} text='x' weight='normal' />
       </span>
     );
   }
@@ -164,9 +164,9 @@ class TuningPopover extends Component {
           <HoverableText onClick={this.decrementAllStrings} text='&#9660;'/>
         </span>
         <div style={flexStyle}>
-          <HoverableText onClick={this.addTopString} text='+' style={{ fontWeight: 800 }}/>
+          <HoverableText onClick={this.addTopString} text='+' weight='heavy' />
           {tuningInputs}
-          <HoverableText onClick={this.addBottomString} text='+' style={{ fontWeight: 800 }}/>
+          <HoverableText onClick={this.addBottomString} text='+' weight='heavy' />
         </div>
       </div>
     );
