@@ -1,12 +1,13 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
+import { Provider } from 'react-redux';
 
-import Root from './containers/Root';
 import configureStore from './util/configureStore';
 import { replaceTempo } from './util';
 import track from '../data/song';
 
+import './default.css';
 import 'react-select/dist/react-select.css';
 import 'babel-polyfill';
 
@@ -34,22 +35,21 @@ const initialState = {
 };
 
 const store = configureStore(initialState);
-
 const rootElement = document.getElementById('root');
-render(
-  <AppContainer>
-    <Root store={store}/>
-  </AppContainer>,
-  rootElement
-);
+
+const renderApp = () => {
+  const App = require('./containers/App').default;
+  render(
+    <AppContainer>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </AppContainer>,
+    rootElement
+  );
+};
+renderApp();
 
 if(module.hot) {
-  module.hot.accept('./containers/Root', () => {
-    let NextRoot = require('./containers/Root').default;
-    render(
-      <AppContainer>
-        <NextRoot store={store}/>
-      </AppContainer>,
-      rootElement);
-  });
+  module.hot.accept('./containers/App', () => renderApp());
 }
