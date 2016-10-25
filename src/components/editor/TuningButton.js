@@ -2,35 +2,62 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { head, last } from 'lodash';
 import Popover from 'react-popover-fork';
+import { StyleSheet, css } from 'aphrodite';
 
 import { tuningSelector } from '../../util/selectors';
 import HoverableText from './HoverableText';
-import hover from './hoverContainer';
 import { changeTuning } from '../../actions/track';
 import { nextNote, previousNote, previousOctave, nextOctave } from '../../util/midiNotes';
 
-const popoverStyle = {
-  zIndex: 5,
-  fill: '#FEFBF7',
-  marginLeft: 0
-};
+const styles = StyleSheet.create({
+  hover: {
+    ':hover' : {
+      MozUserSelect: 'none',
+      WebkitUserSelect: 'none',
+      msUserSelect: 'none',
+      cursor: 'pointer',
+      fill: '#b3caf5'
+    },
+    fill: 'black'
+  },
+  popover: {
+    zIndex: 5,
+    fill: '#FEFBF7',
+    marginLeft: -20
+  },
+  popoverContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    background: '#FEFBF7'
+  },
+  arrowButtons: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    marginLeft: 5
+  },
+  stringsColumn: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginRight: 5
+  },
+  stringRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  textInput: {
+    fontFamily: 'Optima, Segoe, Segoe UI, Candara, Calibri, Arial, sans-serif',
+    margin: 5,
+    width: 25
+  }
+});
 
-const flexStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  marginRight: 5
-};
-
-const textInputStyle = {
-  fontFamily: 'Optima, Segoe, Segoe UI, Candara, Calibri, Arial, sans-serif',
-  marginTop: 5, marginBottom: 5, marginLeft: 5, marginRight: 5, width: 25
-};
-
-const TuningIcon = hover()(({ style, onClick, color}) => (
-  <svg onClick={onClick} width={60} height={50} style={style}>
-    <path fill={color} d='M4.416 21.77c-1.058 0-1.916.858-1.916 1.916v3.704c0 1.058.858 1.917 1.916 1.917 1.058 0 1.916-.858 1.916-1.917v-.468h2.652v1.906c0 .575.367 1.328.82 1.683l5.355 4.185v7.07h9.42v-7.16l5.347-4.102c.457-.35.827-1.1.827-1.675v-1.906h2.65v.468c0 1.058.86 1.917 1.918 1.917 1.058 0 1.916-.858 1.916-1.917v-3.704c0-1.058-.858-1.916-1.916-1.916-1.058 0-1.917.858-1.917 1.916v.57h-2.65v-8.52h2.65v.568c0 1.058.86 1.917 1.917 1.917 1.058 0 1.916-.857 1.916-1.916V12.6c0-1.058-.858-1.916-1.916-1.916-1.058 0-1.917.858-1.917 1.916v.47h-2.65V8.678c0-.575-.43-.855-.955-.624l-9.01 3.945c-.528.23-1.383.23-1.91-.002l-8.943-3.94c-.527-.233-.953.046-.953.62v4.395H6.332v-.47c0-1.058-.858-1.916-1.916-1.916-1.058 0-1.916.858-1.916 1.916v3.705c0 1.058.858 1.916 1.916 1.916 1.058 0 1.916-.857 1.916-1.915v-.57h2.652v8.523H6.332v-.572c0-1.058-.858-1.916-1.916-1.916z' />
+const TuningIcon = (({ onClick }) => (
+  <svg onClick={onClick} width={60} height={50} className={css(styles.hover)}>
+    <path d='M4.416 21.77c-1.058 0-1.916.858-1.916 1.916v3.704c0 1.058.858 1.917 1.916 1.917 1.058 0 1.916-.858 1.916-1.917v-.468h2.652v1.906c0 .575.367 1.328.82 1.683l5.355 4.185v7.07h9.42v-7.16l5.347-4.102c.457-.35.827-1.1.827-1.675v-1.906h2.65v.468c0 1.058.86 1.917 1.918 1.917 1.058 0 1.916-.858 1.916-1.917v-3.704c0-1.058-.858-1.916-1.916-1.916-1.058 0-1.917.858-1.917 1.916v.57h-2.65v-8.52h2.65v.568c0 1.058.86 1.917 1.917 1.917 1.058 0 1.916-.857 1.916-1.916V12.6c0-1.058-.858-1.916-1.916-1.916-1.058 0-1.917.858-1.917 1.916v.47h-2.65V8.678c0-.575-.43-.855-.955-.624l-9.01 3.945c-.528.23-1.383.23-1.91-.002l-8.943-3.94c-.527-.233-.953.046-.953.62v4.395H6.332v-.47c0-1.058-.858-1.916-1.916-1.916-1.058 0-1.916.858-1.916 1.916v3.705c0 1.058.858 1.916 1.916 1.916 1.058 0 1.916-.857 1.916-1.915v-.57h2.652v8.523H6.332v-.572c0-1.058-.858-1.916-1.916-1.916z' />
   </svg>
 ));
 
@@ -93,8 +120,8 @@ class TuningStringInput extends Component {
 
   render() {
     return (
-      <span style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <input style={textInputStyle} type='text' size={2} value={this.props.string}
+      <span className={css(styles.stringRow)}>
+        <input className={css(styles.textInput)} type='text' size={2} value={this.props.string}
           onChange={this.noop} onKeyDown={this.onTextChanged} ref={this.setRef} />
         <HoverableText onClick={this.removeString} text='x' weight='normal' />
       </span>
@@ -158,12 +185,12 @@ class TuningPopover extends Component {
     ));
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'row', background: '#FEFBF7' }}>
-        <span style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', marginLeft: 5 }}>
+      <div className={css(styles.popoverContainer)}>
+        <span className={css(styles.arrowButtons)}>
           <HoverableText onClick={this.incrementAllStrings} text='&#9650;'/>
           <HoverableText onClick={this.decrementAllStrings} text='&#9660;'/>
         </span>
-        <div style={flexStyle}>
+        <div className={css(styles.stringsColumn)}>
           <HoverableText onClick={this.addTopString} text='+' weight='heavy' />
           {tuningInputs}
           <HoverableText onClick={this.addBottomString} text='+' weight='heavy' />
@@ -223,14 +250,14 @@ class TuningButton extends Component {
   }
 
   render() {
-    const { style, color, tuning } = this.props;
+    const { tuning } = this.props;
     const body = <ConnectedPopover tuning={tuning}  />;
 
     return (
       <div>
-        <Popover preferPlace='right' style={popoverStyle} isOpen={this.state.popoverOpen}
+        <Popover preferPlace='right' className={css(styles.popover)} isOpen={this.state.popoverOpen}
           onOuterAction={this.onPopoverClose} body={body}>
-          <TuningIcon onClick={this.onClick} style={style} color={color} />
+          <TuningIcon onClick={this.onClick} />
         </Popover>
       </div>
     );

@@ -1,23 +1,42 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
+import { StyleSheet, css } from 'aphrodite';
 
 import { setCursor } from '../../actions/cursor';
 import { setPlayingIndex } from '../../actions/playingIndex';
-import hover from './hoverContainer';
 
-const PlayButton = ({ onClick, style, color, canPlay }) => (
-  <svg onClick={canPlay && onClick} width={40} height={50} style={style}>
+const styles = StyleSheet.create({
+  disabled: {
+    MozUserSelect: 'none',
+    WebkitUserSelect: 'none',
+    msUserSelect: 'none',
+    fillOpacity: 0.2
+  },
+  hover: {
+    ':hover' : {
+      MozUserSelect: 'none',
+      WebkitUserSelect: 'none',
+      msUserSelect: 'none',
+      cursor: 'pointer',
+      fill: '#b3caf5'
+    },
+    fill: 'black'
+  }
+});
+
+const PlayButton = ({ onClick, canPlay }) => (
+  <svg onClick={canPlay && onClick} width={40} height={50} className={css(canPlay ? styles.hover : styles.disabled)}>
     <g transform='scale(1.5), translate(1.5, 6)'>
-      <path fill={canPlay ? color : 'black'} fillOpacity={canPlay ? 1.0 : 0.1}
+      <path
         d='M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z'></path>
     </g>
   </svg>
 );
 
-const PauseButton = ({ onClick, style, color }) => (
-  <svg onClick={onClick} width='40' height='50' style={style}>
+const PauseButton = ({ onClick }) => (
+  <svg onClick={onClick} width='40' height='50' className={css(styles.hover)} >
     <g transform='scale(1.5), translate(1.5, 6)'>
-      <path fill={color} d='M9 16h2V8H9v8zm3-14C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm1-4h2V8h-2v8z'></path>
+      <path d='M9 16h2V8H9v8zm3-14C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm1-4h2V8h-2v8z'></path>
     </g>
   </svg>
 );
@@ -46,11 +65,11 @@ class PlayPauseButton extends PureComponent {
   }
 
   render() {
-    const { style, color, playingIndex, canPlay } = this.props;
+    const { playingIndex, canPlay } = this.props;
 
     return playingIndex ?
-      <PauseButton onClick={this.onPauseClick} style={style} color={color} /> :
-      <PlayButton onClick={this.onPlayClick} style={style} color={color} canPlay={canPlay} />;
+      <PauseButton onClick={this.onPauseClick} /> :
+      <PlayButton onClick={this.onPlayClick} canPlay={canPlay} />;
   }
 }
 
@@ -60,4 +79,4 @@ export default connect(
     cursor: state.cursor
   }),
   { setPlayingIndex, setCursor }
-)(hover()(PlayPauseButton));
+)(PlayPauseButton);

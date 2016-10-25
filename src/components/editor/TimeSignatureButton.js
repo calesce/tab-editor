@@ -1,27 +1,40 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Popover from 'react-popover-fork';
+import { StyleSheet, css } from 'aphrodite';
 
-import hover from './hoverContainer';
 import { timeSignatureSelector } from '../../util/selectors';
 import TimeSignaturePopover from './TimeSignaturePopover';
 
-const textStyle = {
-  fontSize: 17,
-  fontWeight: 600,
-  fontFamily: 'Optima, Segoe, Segoe UI, Candara, Calibri, Arial, sans-serif'
-};
+const styles = StyleSheet.create({
+  hover: {
+    ':hover' : {
+      MozUserSelect: 'none',
+      WebkitUserSelect: 'none',
+      msUserSelect: 'none',
+      cursor: 'pointer',
+      fill: '#b3caf5',
+      stroke: '#b3caf5'
+    },
+    fill: 'black',
+    stroke: 'black'
+  },
+  text: {
+    fontSize: 17,
+    fontWeight: 600,
+    fontFamily: 'Optima, Segoe, Segoe UI, Candara, Calibri, Arial, sans-serif'
+  },
+  popover: {
+    zIndex: 5,
+    fill: '#FEFBF7',
+    marginLeft: -10
+  }
+});
 
-const popoverStyle = {
-  zIndex: 5,
-  fill: '#FEFBF7',
-  marginLeft: -10
-};
-
-const TimeSignatureButton = hover()(({ timeSignature, style, onClick, color}) => (
-  <svg onClick={onClick} width='40' height='50' style={style}>
+const TimeSignatureButton = (({ timeSignature, onClick}) => (
+  <svg onClick={onClick} width='40' height='50' className={css(styles.hover)}>
     <g transform='translate(6, 30)'>
-      <text fill={color} style={textStyle}>
+      <text strokeWidth={0} className={css(styles.text)}>
         {`${timeSignature.beats}/${timeSignature.beatType}`}
       </text>
     </g>
@@ -53,13 +66,13 @@ class TimeSignature extends Component {
   }
 
   render() {
-    const { timeSignature, style, color } = this.props;
-    const body = <TimeSignaturePopover timeSignature={timeSignature} measureIndex={this.props.measureIndex} />;
+    const { timeSignature, measureIndex } = this.props;
+    const body = <TimeSignaturePopover timeSignature={timeSignature} measureIndex={measureIndex} />;
 
     return (
       <div>
-        <Popover style={popoverStyle} isOpen={this.state.popoverOpen} onOuterAction={this.onPopoverClose} body={body}>
-          <TimeSignatureButton onClick={this.onClick} timeSignature={timeSignature} style={style} color={color} />
+        <Popover className={css(styles.popover)} isOpen={this.state.popoverOpen} onOuterAction={this.onPopoverClose} body={body}>
+          <TimeSignatureButton onClick={this.onClick} timeSignature={timeSignature} />
         </Popover>
       </div>
     );

@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { StyleSheet, css } from 'aphrodite';
 
 import InstrumentSelect from './InstrumentSelect';
 import TrackSelect from './TrackSelect';
@@ -15,20 +16,22 @@ import ImportButton, { ExportButton } from './ImportExportButton';
 import TuningButton from './TuningButton';
 import LayoutButton from './LayoutButton';
 
-const style = {
-  position: 'fixed',
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'flex-start',
-  top: 0,
-  left: 0,
-  height: '100%',
-  zIndex: 3,
-  width: 255,
-  overflow: 'hidden',
-  background: 'wheat', // try sandybrown, peachpuff, moccasin, navajowhite, linen, cornsilk, wheat
-  boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.1)'
-};
+const styles = StyleSheet.create({
+  sidebar: {
+    position: 'fixed',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    top: 0,
+    left: 0,
+    height: '100%',
+    zIndex: 3,
+    width: 255,
+    overflow: 'hidden',
+    background: 'wheat', // try sandybrown, peachpuff, moccasin, navajowhite, linen, cornsilk, wheat
+    boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.1)'
+  }
+});
 
 export default class Sidebar extends PureComponent {
   openTempoPopover = () => {
@@ -51,7 +54,7 @@ export default class Sidebar extends PureComponent {
     const { popoverOpen, togglePopover, canPlay } = this.props;
 
     return (
-      <div style={style}>
+      <div className={css(styles.sidebar)}>
         <SidebarGroup title='Notes'>
           <SidebarButton duration='w'/>
           <SidebarButton duration='h'/>

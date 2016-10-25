@@ -1,20 +1,78 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { StyleSheet, css } from 'aphrodite';
 
 import { changeTimeSignature } from '../../actions/track';
 import HoverableText from './HoverableText';
 
-const textStyle = {
-  fontFamily: 'Optima, Segoe, Segoe UI, Candara, Calibri, Arial, sans-serif'
-};
-
-const flexStyle = {
-  background: '#FEFBF7',
-  height: 200,
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'space-between'
-};
+const styles = StyleSheet.create({
+  text: {
+    fontFamily: 'Optima, Segoe, Segoe UI, Candara, Calibri, Arial, sans-serif'
+  },
+  popoverContainer: {
+    background: '#FEFBF7',
+    height: 200,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between'
+  },
+  templateRow: {
+    display: 'flex',
+    justifyContent: 'space-around',
+    paddingTop: 10
+  },
+  timeSigRow: {
+    display: 'flex',
+    justifyContent: 'center',
+    flexShrink: 10
+  },
+  checkboxRow: {
+    display: 'flex',
+    justifyContent: 'space-around',
+    paddingBottom: 10,
+    paddingLeft: 5,
+    paddingRight: 5
+  },
+  beats: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    paddingTop: 15,
+    alignItems: 'flex-end',
+    flexBasis: '55%'
+  },
+  beatType: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    paddingBottom: 15,
+    alignItems: 'flex-end',
+    flexBasis: '55%'
+  },
+  numberText: {
+    fontSize: 40,
+    paddingRight: 10
+  },
+  topArrows: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    paddingTop: 15,
+    flexBasis: '45%'
+  },
+  bottomArrows: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    paddingBottom: 15,
+    flexBasis: '45%'
+  },
+  checkboxText: {
+    fontWeight: 300,
+    fontSize: 12,
+    paddingTop: 3
+  }
+});
 
 class TimeSignaturePopover extends Component {
   constructor(props) {
@@ -103,34 +161,34 @@ class TimeSignaturePopover extends Component {
 
   render() {
     return (
-      <div style={flexStyle}>
-        <span style={{ display: 'flex', justifyContent: 'space-around', paddingTop: 10 }}>
+      <div className={css(styles.popoverContainer)}>
+        <span className={css(styles.templateRow)}>
           <HoverableText onClick={this.onTwoFourClick} text='2/4'/>
           <HoverableText onClick={this.onFourFourClick} text='4/4'/>
           <HoverableText onClick={this.onSixEightClick} text='6/8'/>
         </span>
-        <div style={{ display: 'flex', justifyContent: 'center', flexShrink: 10 }}>
-          <span style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingTop: 15, alignItems: 'flex-end', flexBasis: '55%' }}>
-            <h3 style={{ textStyle, fontSize: 40, paddingRight: 10 }}>{this.state.timeSignature.beats}</h3>
+        <div className={css(styles.timeSigRow)}>
+          <span className={css(styles.beats)}>
+            <h3 className={css(styles.text, styles.numberText)}>{this.state.timeSignature.beats}</h3>
           </span>
-          <span style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingTop: 15, flexBasis: '45%' }}>
+          <span className={css(styles.topArrows)}>
             <HoverableText onClick={this.onIncrementBeats} text='&#9650;'/>
             <HoverableText onClick={this.onDecrementBeats} text='&#9660;'/>
           </span>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'center', flexShrink: 10 }}>
-          <span style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingBottom: 15, alignItems: 'flex-end', flexBasis: '55%' }}>
-            <h3 style={{ textStyle, fontSize: 40, paddingRight: 10 }}>{this.state.timeSignature.beatType}</h3>
+        <div className={css(styles.timeSigRow)}>
+          <span className={css(styles.beatType)}>
+            <h3 className={css(styles.text, styles.numberText)}>{this.state.timeSignature.beatType}</h3>
           </span>
-          <span style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingBottom: 15, flexBasis: '45%' }}>
+          <span className={css(styles.bottomArrows)}>
             <HoverableText onClick={this.onIncrementBeatType} text='&#9650;'/>
             <HoverableText onClick={this.onDecrementBeatType} text='&#9660;'/>
           </span>
         </div>
-        <span style={{ display: 'flex', justifyContent: 'space-around', paddingBottom: 10, paddingLeft: 5, paddingRight: 5 }}>
-          <small style={{ textStyle, fontWeight: 300, fontSize: 12, paddingTop: 3 }}>To End</small>
+        <span className={css(styles.checkboxRow)}>
+          <small className={css(styles.text, styles.checkboxText)}>To End</small>
           <input type='checkbox' value={this.state.toEndChecked} onChange={this.toEndChanged} />
-          <small style={{ textStyle, fontWeight: 300, fontSize: 12, paddingTop: 3 }}>All Measures</small>
+          <small className={css(styles.text, styles.checkboxText)}>All Measures</small>
           <input type='checkbox' value={this.state.allChecked} onChange={this.allChanged} />
         </span>
       </div>

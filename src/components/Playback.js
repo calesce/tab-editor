@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { StyleSheet, css } from 'aphrodite';
 
 import { setPlayingIndex } from '../actions/playingIndex';
 import { setCursor } from '../actions/cursor';
@@ -9,6 +10,12 @@ import { createScheduleForSong, getReplaySpeed,
   getRealPlayingIndex, createCountdownSchedule } from '../util/playbackSchedule';
 import { expandedTracksSelector } from '../util/trackSelectors';
 import audioContext from '../util/audioContext';
+
+const styles = StyleSheet.create({
+  none: {
+    display: 'none'
+  }
+});
 
 class Playback extends Component {
   constructor(props) {
@@ -121,7 +128,7 @@ class Playback extends Component {
   }
 
   render() {
-    return <div style={{ display: 'none' }}></div>;
+    return <div className={css(styles.none)}></div>;
   }
 }
 

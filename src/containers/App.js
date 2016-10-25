@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from 'redux-undo';
+import { StyleSheet, css } from 'aphrodite';
 
 import * as TracksActions from '../actions/tracks';
 import * as TrackActions from '../actions/track';
@@ -23,7 +24,11 @@ import Playback from '../components/Playback';
 
 const Actions = Object.assign(TracksActions, TrackActions, MeasureActions, PlayingIndexActions, CursorActions, CopyPasteActions);
 
-const style = { width: '100%', height: '100%' };
+const styles = StyleSheet.create({
+  container: {
+    width: '100%', height: '100%'
+  }
+});
 
 class App extends Component {
   constructor(props) {
@@ -233,7 +238,7 @@ class App extends Component {
     const canPlay = buffers && (!(metronome || countdown) || buffers.woodblock);
 
     return (
-      <div style={style}>
+      <div className={css(styles.container)}>
         { playingIndex && <Playback buffers={buffers} metronome={metronome} countdown={countdown} /> }
         <Sidebar canPlay={canPlay} popoverOpen={popover} togglePopover={this.togglePopover} />
         <Score />
