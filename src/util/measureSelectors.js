@@ -29,7 +29,10 @@ export const makeMeasureSelector = () => {
     ],
     (measure, measureIndex, playingNoteIndex, tuning, measureLength, selectRange) => {
       return {
-        measure,
+        measure: {
+          ...measure,
+          notes: getAccidentals(measure.notes, measure.yTop, playingNoteIndex, tuning)
+        },
         playingNoteIndex,
         isValid: memoizedValidity(measure),
         tuning,

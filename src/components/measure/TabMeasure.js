@@ -116,11 +116,11 @@ class TabMeasure extends PureComponent {
 
   render() {
     const {
-      stringCount, measure, displayOption, y, isValid, measureLength, cursor
+      stringCount, measure, displayOption, rowHeight, isValid, measureLength, cursor
     } = this.props;
 
     return (
-      <svg y={y} ref={this.setRef} height={stringCount * 25} width={measure.width}>
+      <svg y={rowHeight} ref={this.setRef} height={stringCount * 25} width={measure.width}>
         <Staff measureWidth={measure.width} y={0} isValid={isValid} strings={stringCount}
           lastMeasure={measure.measureIndex === measureLength - 1}
         />
@@ -137,6 +137,9 @@ class TabMeasure extends PureComponent {
     );
   }
 }
+TabMeasure.defaultProps = {
+  displayOption: 'both'
+};
 
 export default connect(
   makeMapStateToProps(makeTabMeasureSelector),
