@@ -58,9 +58,6 @@ class TabMeasure extends PureComponent {
   }
 
   renderCursor(cursor, measure, stringCount) {
-    if(!cursor) {
-      return null;
-    }
     const { noteIndex, stringIndex } = cursor;
     const y = 95 - (13 * (stringIndex + (6 - stringCount)));
 
@@ -116,21 +113,29 @@ class TabMeasure extends PureComponent {
 
   render() {
     const {
-      stringCount, measure, displayOption, rowHeight, isValid, measureLength, cursor
+      stringCount, measure, displayOption, rowHeight, isValid, isLastMeasure, cursor
     } = this.props;
 
     return (
       <svg y={rowHeight} ref={this.setRef} height={stringCount * 25} width={measure.width}>
-        <Staff measureWidth={measure.width} y={0} isValid={isValid} strings={stringCount}
-          lastMeasure={measure.measureIndex === measureLength - 1}
+        <Staff
+          measureWidth={measure.width}
+          y={0}
+          strings={stringCount}
+          isValid={isValid}
+          lastMeasure={isLastMeasure}
         />
         <rect onClick={this.onSvgClick} height={stringCount * 25} width={measure.width} opacity={0}></rect>
         { measure.notes.map((note, noteIndex) => this.renderTabNote(note, noteIndex)) }
-        <TempoMarker tab y={0} tempo={measure.tempo} renderTempo={measure.renderTempo} displayOption={displayOption} />
+        { displayOption === 'tab' &&
+          <TempoMarker tab y={0} tempo={measure.tempo} renderTempo={measure.renderTempo} displayOption={displayOption} />
+        }
         { displayOption === 'tab' && <text x={0} y={23} className={css(styles.measureNumber)}>{measure.measureIndex + 1}</text> }
         { measure.indexOfRow === 0 && <Clef y={25} strings={stringCount} repeatBegin={measure.repeatBegin} tab /> }
-        <TimeSignature yOffset={0} strings={stringCount} measure={measure} displayOption={displayOption} repeatBegin={measure.repeatBegin} />
-        { this.renderCursor(cursor, measure, stringCount) }
+        { displayOption === 'tab' &&
+          <TimeSignature yOffset={0} strings={stringCount} measure={measure} displayOption={displayOption} repeatBegin={measure.repeatBegin} />
+        }
+        { cursor && this.renderCursor(cursor, measure, stringCount) }
         { measure.repeatEnd && <RepeatSign measureWidth={measure.width} strings={stringCount} y={25} repeatEnd={true} /> }
         { measure.repeatBegin && <RepeatSign measureWidth={measure.width} strings={stringCount} y={25} repeatEnd={false} /> }
       </svg>

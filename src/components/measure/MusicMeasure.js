@@ -36,12 +36,16 @@ class MusicMeasure extends PureComponent {
   }
 
   render() {
-    const { measure, rowHeight, yTop, playingNoteIndex, measureLength, isValid } = this.props;
+    const { measure, rowHeight, yTop, playingNoteIndex, isLastMeasure, isValid } = this.props;
 
     return (
       <svg height={rowHeight} width={measure.width} className={css(styles.svg)}>
-        <Staff measureWidth={measure.width} y={yTop} strings={5} isValid={isValid}
-          lastMeasure={measure.measureIndex === measureLength - 1}
+        <Staff
+          measureWidth={measure.width}
+          y={yTop}
+          strings={5}
+          isValid={isValid}
+          lastMeasure={isLastMeasure}
         />
         { measure.notes.map((note, noteIndex) => this.renderMusicNote(note, noteIndex, yTop, playingNoteIndex)) }
         { measure.indexOfRow === 0 && <Clef y={yTop} strings={5} treble repeatBegin={measure.repeatBegin} /> }

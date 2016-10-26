@@ -10,7 +10,7 @@ import MeasureSelectBox from './MeasureSelectBox';
 
 class Measure extends PureComponent {
   render() {
-    const { measure, playingNoteIndex, measureIndex, measureLength, isValid, yTop,
+    const { measure, playingNoteIndex, isLastMeasure, isValid, yTop,
       tuning, selectRange, rowHeight } = this.props;
     const measureHeight = rowHeight + (tuning.length * 20);
 
@@ -19,8 +19,7 @@ class Measure extends PureComponent {
         <MusicMeasure
           measure={measure}
           playingNoteIndex={playingNoteIndex}
-          measureIndex={measureIndex}
-          measureLength={measureLength}
+          isLastMeasure={isLastMeasure}
           isValid={isValid}
           rowHeight={rowHeight}
           yTop={yTop}
@@ -28,13 +27,14 @@ class Measure extends PureComponent {
         <TabMeasure
           measure={measure}
           playingNoteIndex={playingNoteIndex}
-          measureIndex={measureIndex}
-          measureLength={measureLength}
+          isLastMeasure={isLastMeasure}
           isValid={isValid}
           rowHeight={rowHeight}
           stringCount={tuning.length}
         />
-        <MeasureSelectBox measure={measure} selectRange={selectRange} height={measureHeight} />
+        { selectRange &&
+          <MeasureSelectBox measure={measure} selectRange={selectRange} height={measureHeight} />
+        }
       </svg>
     );
   }

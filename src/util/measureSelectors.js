@@ -36,7 +36,7 @@ export const makeMeasureSelector = () => {
         playingNoteIndex,
         isValid: memoizedValidity(measure),
         tuning,
-        measureLength,
+        isLastMeasure: measureLength - 1 === measure.measureIndex,
         yTop: measure.yTop,
         notesWithAccidentals: getAccidentals(measure.notes, measure.yTop, playingNoteIndex, tuning),
         rowHeight: measure.yTop + measure.yBottom + 75,
