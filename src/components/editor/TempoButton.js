@@ -29,7 +29,11 @@ const styles = StyleSheet.create({
     paddingTop: 3
   },
   textInput: {
-    marginTop: 5, marginLeft: 15, marginRight: 15, width: 70
+    width: 70,
+    margin: '5px 15px 0px 15px',
+    ':focus': {
+      outline: 'none'
+    }
   },
   popover: {
     zIndex: 5,

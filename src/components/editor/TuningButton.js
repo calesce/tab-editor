@@ -51,7 +51,10 @@ const styles = StyleSheet.create({
   textInput: {
     fontFamily: 'Optima, Segoe, Segoe UI, Candara, Calibri, Arial, sans-serif',
     margin: 5,
-    width: 25
+    width: 25,
+    ':focus': {
+      outline: 'none'
+    }
   }
 });
 
