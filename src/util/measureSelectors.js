@@ -6,6 +6,7 @@ import { memoizedValidity } from './audioMath';
 import { getAccidentals } from './accidentals';
 
 const measureIndexSelector = (_, props) => props.measureIndex;
+const otherMeasureIndexSelector = (_, props) => props.measure.measureIndex;
 
 const currentMeasureSelector = createSelector(
   [measureIndexSelector, trackWithLayoutSelector],
@@ -48,7 +49,7 @@ export const makeMeasureSelector = () => {
 
 export const makeTabMeasureSelector = () => {
   return createSelector(
-    [ measureIndexSelector, cursorSelector, playingIndexSelector, selectRangeSelector ],
+    [ otherMeasureIndexSelector, cursorSelector, playingIndexSelector, selectRangeSelector ],
     (measureIndex, cursor, playingIndex, selectRange) => {
       return (!playingIndex && cursor.measureIndex === measureIndex && !selectRange) ? { cursor }: { cursor: undefined };
   });
