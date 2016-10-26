@@ -7,6 +7,9 @@ import configureStore from './util/configureStore';
 import { replaceTempo } from './util';
 import track from '../data/song';
 
+const rootElement = document.createElement('div');
+document.body.appendChild(rootElement);
+
 import './default.css';
 import 'react-select/dist/react-select.css';
 import 'babel-polyfill';
@@ -35,7 +38,6 @@ const initialState = {
 };
 
 const store = configureStore(initialState);
-const rootElement = document.getElementById('root');
 
 const renderApp = () => {
   const App = require('./containers/App').default;
