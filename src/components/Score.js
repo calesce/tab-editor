@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
+import { StyleSheet, css } from 'aphrodite';
 
 import { makeMapStateToProps } from '../util/selectors';
 import { makeScoreSelector } from '../util/layoutSelectors';
@@ -8,29 +9,22 @@ import { setSelectRange } from '../actions/cursor';
 import Measure from './measure/Measure';
 import SelectBox from './SelectBox';
 
-const SVG_LEFT = 265;
+const SVG_LEFT = 270;
 const SVG_TOP = 5;
 const SELECT_ERROR = 6; // Give some room for user error when selecting a range of notes
 
-const style = {
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  display: 'flex',
-  flexWrap: 'wrap',
-  flex: 1
-};
+const styles = StyleSheet.create({
+  score: {
+    position: 'absolute',
+    display: 'flex',
+    flexWrap: 'wrap',
+    flex: 1
+  }
+});
 
 class Score extends PureComponent {
   constructor(props) {
     super(props);
-
-    this.getNoteRangeForMeasure = this.getNoteRangeForMeasure.bind(this);
-    this.getSelectedRangeForSingleRow = this.getSelectedRangeForSingleRow.bind(this);
-    this.getSelectedRange = this.getSelectedRange.bind(this);
-    this.onMouseDown = this.onMouseDown.bind(this);
-    this.onMouseUp = this.onMouseUp.bind(this);
-    this.onMouseMove = this.onMouseMove.bind(this);
 
     this.state = {
       dragStart: undefined,
@@ -41,7 +35,7 @@ class Score extends PureComponent {
   getNoteRangeForMeasure(measure, xStart, xEnd) {
     const notes = measure.notes.map((note, i) => {
       const noteX = note.x + measure.xOfMeasure;
-      return (noteX + SELECT_ERROR > xStart && noteX + SELECT_ERROR < xEnd) && i;
+      return noteX + SELECT_ERROR > xStart && noteX + SELECT_ERROR < xEnd ? i : null;
     });
     const filteredNotes = notes.filter(note => note !== null);
     return filteredNotes.length === notes.length ? 'all' : filteredNotes;
@@ -113,7 +107,7 @@ class Score extends PureComponent {
       0;
   }
 
-  onMouseDown(e) {
+  onMouseDown = (e) => {
     e.preventDefault();
 
     const dragX = e.pageX - SVG_LEFT;
@@ -126,7 +120,7 @@ class Score extends PureComponent {
     });
   }
 
-  onMouseUp() {
+  onMouseUp = () => {
     const { dragX, dragY, dragHeight, dragWidth } = this.state;
 
     let selectedRows;
@@ -164,7 +158,7 @@ class Score extends PureComponent {
     });
   }
 
-  onMouseMove(e) {
+  onMouseMove = (e) => {
     if(this.state.dragStart) {
       e.preventDefault();
 
@@ -185,7 +179,7 @@ class Score extends PureComponent {
     const { dragX, dragY, dragWidth, dragHeight } = this.state;
 
     return (
-      <div style={{ ...style, height, width, left: x, top: y }}
+      <div className={css(styles.score)} style={{ height, width, left: x, top: y }}
         onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp} onMouseMove={this.onMouseMove}>
         { measures.map((_, i) => <Measure key={i} measureIndex={i} />) }
         <SelectBox height={height} width={width} x={dragX} y={dragY} dragWidth={dragWidth} dragHeight={dragHeight} />
