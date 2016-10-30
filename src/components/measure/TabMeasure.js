@@ -41,11 +41,13 @@ class TabMeasure extends PureComponent {
 
     const noteIndex = this.getNoteAtX(relativeX, measure.notes);
     const stringIndex = this.getStringAtY(relativeY, stringCount);
-    this.props.setCursor({
-      noteIndex,
-      stringIndex,
-      measureIndex: measure.measureIndex
-    });
+    if (stringIndex >= 0 && stringIndex < stringCount) {
+      this.props.setCursor({
+        noteIndex,
+        stringIndex,
+        measureIndex: measure.measureIndex
+      });
+    }
   }
 
   getNoteAtX(x, notes) {
