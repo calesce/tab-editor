@@ -1,4 +1,3 @@
-/* @flow */
 import Soundfont from 'soundfont-player';
 import audioContext from '../util/audioContext';
 
@@ -10,25 +9,28 @@ if(!!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/) || !!navigator.userAg
   };
 }
 
-let bufferCache = {};
-
-export function loadSoundfonts(instruments: Array<string>): Promise<Object> {
-  const promises = instruments.map(instrument => {
-    return loadSoundfont(instrument, bufferCache);
-  });
-
-  return Promise.all(promises)
-    .then(instrumentObjects => {
-      instrumentObjects.forEach((instrument, i) => {
-        bufferCache[instruments[i]] = instrument.buffers;
-      });
-      return bufferCache;
-    });
-}
-
-const loadSoundfont = (instrument: string, cache: Object): Promise<Object> => {
-  if(cache[instrument]) {
-    return new Promise(resolve => resolve(cache[instrument]));
+export default class SoundfontLoader {
+  constructor() {
+    this.cache = {};
   }
-  return Soundfont.instrument(audioContext, instrument, options);
-};
+
+  loadSoundfonts = async (instruments) => {
+    const instrumentObjects = await Promise.all(
+      instruments.map(instrument => {
+        return this.loadSoundfont(instrument);
+      })
+    );
+
+    instrumentObjects.forEach((instrument, i) => {
+      this.cache[instruments[i]] = instrument.buffers || instrument;
+    });
+    return this.cache;
+  }
+
+  loadSoundfont = instrument => {
+    if(this.cache[instrument]) {
+      return new Promise(resolve => resolve(this.cache[instrument]));
+    }
+    return Soundfont.instrument(audioContext, instrument, options);
+  }
+}

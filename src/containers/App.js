@@ -13,7 +13,7 @@ import * as CopyPasteActions from '../actions/cutCopyPaste';
 
 import { cursorAfterCutting, cursorAfterPasting, getNotesFromSelection } from '../util/cursor';
 import { updateScrollPosition } from '../util/updateScroll';
-import { loadSoundfonts } from '../util/soundfonts';
+import SoundfontLoader from '../util/soundfonts';
 import { makeMapStateToProps } from '../util/selectors';
 import { makeAppSelector } from '../util/selectors/app';
 import shallowEqual from '../util/shallowEqual';
@@ -39,13 +39,15 @@ class App extends Component {
       window.addEventListener('resize', this.handleResize);
     }
 
+    this.soundfont = new SoundfontLoader();
+
     this.state = {
       openModal: null
     };
   }
 
   componentWillMount() {
-    loadSoundfonts([...this.props.instruments, 'woodblock'])
+    this.soundfont.loadSoundfonts([...this.props.instruments, 'woodblock'])
       .then(buffers => this.setState({ buffers }))
       .catch(err => err);
   }
@@ -62,7 +64,7 @@ class App extends Component {
       this.setState({
         buffers: undefined
       }, () => {
-        loadSoundfonts(this.props.instruments)
+        this.soundfont.loadSoundfonts(this.props.instruments)
           .then(buffers => this.setState({ buffers }))
           .catch(err => err);
       });
