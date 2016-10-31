@@ -42,20 +42,13 @@ const PauseButton = ({ onClick }) => (
 );
 
 class PlayPauseButton extends PureComponent {
-  constructor() {
-    super();
-
-    this.onPlayClick = this.onPlayClick.bind(this);
-    this.onPauseClick = this.onPauseClick.bind(this);
-  }
-
-  onPlayClick() {
+  onPlayClick = () => {
     if(!this.props.playingIndex && this.props.canPlay) {
       this.props.setPlayingIndex(this.props.cursor);
     }
   }
 
-  onPauseClick() {
+  onPauseClick = () => {
     this.props.setCursor({
       measureIndex: this.props.playingIndex.measureIndex,
       noteIndex: this.props.playingIndex.noteIndex,

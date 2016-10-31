@@ -34,17 +34,6 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    this.handleResize = this.handleResize.bind(this);
-    this.handleStop = this.handleStop.bind(this);
-    this.handlePlay = this.handlePlay.bind(this);
-    this.navigateCursor = this.navigateCursor.bind(this);
-    this.deleteNote = this.deleteNote.bind(this);
-    this.pasteNote = this.pasteNote.bind(this);
-    this.cutNote = this.cutNote.bind(this);
-    this.selectAllNotes = this.selectAllNotes.bind(this);
-    this.handleKeyPress = this.handleKeyPress.bind(this);
-    this.togglePopover = this.togglePopover.bind(this);
-
     if (typeof window !== 'undefined') {
       window.addEventListener('keydown', this.handleKeyPress);
       window.addEventListener('resize', this.handleResize);
@@ -80,7 +69,7 @@ class App extends Component {
     }
   }
 
-  handleResize() {
+  handleResize = () => {
     this.props.actions.resize();
   }
 
@@ -167,7 +156,7 @@ class App extends Component {
     this.props.actions.setSelectRange(selection);
   }
 
-  handleKeyPress(event) {
+  handleKeyPress = event => {
     if(this.state.popover || (this.props.playingIndex && event.keyCode !== 32)) {
       return;
     }
@@ -228,7 +217,7 @@ class App extends Component {
     }
   }
 
-  togglePopover(popover) {
+  togglePopover = popover => {
     this.setState({ popover: this.state.popover ? null : popover });
   }
 

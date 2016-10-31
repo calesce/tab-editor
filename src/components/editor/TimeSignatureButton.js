@@ -45,15 +45,12 @@ class TimeSignature extends Component {
   constructor() {
     super();
 
-    this.onClick = this.onClick.bind(this);
-    this.onPopoverClose = this.onPopoverClose.bind(this);
-
     this.state = {
       popoverOpen: false
     };
   }
 
-  onClick() {
+  onClick = () => {
     if(this.state.popoverOpen) {
       this.onPopoverClose();
     } else {
@@ -61,7 +58,7 @@ class TimeSignature extends Component {
     }
   }
 
-  onPopoverClose() {
+  onPopoverClose = () => {
     this.setState({ popoverOpen: false });
   }
 

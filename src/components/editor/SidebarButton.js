@@ -127,13 +127,7 @@ const VibratoButton = () => (
 );
 
 class SidebarButton extends PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.onClick = this.onClick.bind(this);
-  }
-
-  onClick() {
+  onClick = () => {
     if(this.props.duration) {
       this.props.changeNoteLength(this.props.cursor, this.props.duration);
     } else if(this.props.rest) {

@@ -73,11 +73,6 @@ class TempoPopover extends Component {
   constructor(props) {
     super(props);
 
-    this.onTextChanged = this.onTextChanged.bind(this);
-    this.toEndChanged = this.toEndChanged.bind(this);
-    this.allChanged = this.allChanged.bind(this);
-    this.setInputRef = this.setInputRef.bind(this);
-
     this.state = {
       tempo: props.tempo,
       toEndChecked: false,
@@ -96,21 +91,21 @@ class TempoPopover extends Component {
     this.props.changeTempo(this.props.cursor, tempo, toEndChecked, allChecked);
   }
 
-  onTextChanged(e) {
+  onTextChanged = e => {
     if(!isNaN(parseInt(e.target.value)) || e.target.value === '') {
       this.setState({ tempo: e.target.value });
     }
   }
 
-  toEndChanged() {
+  toEndChanged = () => {
     this.setState({ toEndChecked: !this.state.toEndChecked });
   }
 
-  allChanged() {
+  allChanged = () => {
     this.setState({ allChecked: !this.state.allChecked });
   }
 
-  setInputRef(el) {
+  setInputRef = el => {
     this.textInput = el;
   }
 
@@ -138,15 +133,12 @@ class Tempo extends Component {
   constructor() {
     super();
 
-    this.onClick = this.onClick.bind(this);
-    this.onPopoverClose = this.onPopoverClose.bind(this);
-
     this.state = {
       popoverOpen: false
     };
   }
 
-  onClick() {
+  onClick = () => {
     if(this.state.popoverOpen) {
       this.onPopoverClose();
     } else {
@@ -155,7 +147,7 @@ class Tempo extends Component {
     }
   }
 
-  onPopoverClose() {
+  onPopoverClose = () => {
     this.setState({ popoverOpen: false });
     this.props.onClose();
   }

@@ -89,13 +89,7 @@ const SixteenthRest = ({ x, y, color, dotted, onClick }) => (
 );
 
 export default class Rest extends PureComponent {
-  constructor() {
-    super();
-
-    this.restClicked = this.restClicked.bind(this);
-  }
-
-  restClicked() {
+  restClicked = () => {
     this.props.onClick(this.props.noteIndex, 0);
   }
 

@@ -22,31 +22,22 @@ const styles = StyleSheet.create({
 });
 
 class ImportButton extends Component {
-  constructor() {
-    super();
-
-    this.inputRef = this.inputRef.bind(this);
-    this.importClicked = this.importClicked.bind(this);
-    this.onImport = this.onImport.bind(this);
-    this.onFileRead = this.onFileRead.bind(this);
-  }
-
-  inputRef(input) {
+  inputRef = (input) => {
     this._input = input;
   }
 
-  importClicked() {
+  importClicked = () => {
     this._input.click();
   }
 
-  onImport(e) {
+  onImport = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
     reader.onload = this.onFileRead;
     reader.readAsText(file);
   }
 
-  onFileRead(e) {
+  onFileRead = (e) => {
     const tracks = importMusicXml(e.target.result);
     this.props.replaceSong(tracks);
   }

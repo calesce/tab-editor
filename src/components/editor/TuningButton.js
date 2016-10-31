@@ -65,21 +65,13 @@ const TuningIcon = (({ onClick }) => (
 ));
 
 class TuningStringInput extends Component {
-  constructor() {
-    super();
-
-    this.removeString = this.removeString.bind(this);
-    this.onTextChanged = this.onTextChanged.bind(this);
-    this.setRef = this.setRef.bind(this);
-  }
-
   componentDidMount() {
     if(this.props.index === 0) {
       this.input.select();
     }
   }
 
-  removeString() {
+  removeString = () => {
     this.props.removeString(this.props.index);
   }
 
@@ -108,7 +100,7 @@ class TuningStringInput extends Component {
     }
   }
 
-  onTextChanged(e) {
+  onTextChanged = (e) => {
     const newString = this.midiStringFromKeyCode(this.props.string, e.keyCode, e.shiftKey);
     if(newString !== this.props.string) {
       this.props.onChange(newString, this.props.index);
@@ -117,7 +109,7 @@ class TuningStringInput extends Component {
 
   noop() { /* this exists to make React happy */ }
 
-  setRef(el) {
+  setRef = (el) => {
     this.input = el;
   }
 
@@ -139,40 +131,33 @@ class TuningPopover extends Component {
     this.state = {
       tuning: [].concat(props.tuning)
     };
-
-    this.removeString = this.removeString.bind(this);
-    this.incrementAllStrings = this.incrementAllStrings.bind(this);
-    this.decrementAllStrings = this.decrementAllStrings.bind(this);
-    this.addTopString = this.addTopString.bind(this);
-    this.addBottomString = this.addBottomString.bind(this);
-    this.onChange = this.onChange.bind(this);
   }
 
   componentWillUnmount() {
     this.props.changeTuning(this.state.tuning);
   }
 
-  removeString(index) {
+  removeString = index => {
     this.setState({ tuning: this.state.tuning.filter((_, i) => i !== this.state.tuning.length - 1 - index) });
   }
 
-  incrementAllStrings() {
+  incrementAllStrings = () => {
     this.setState({ tuning: this.state.tuning.map(nextNote) });
   }
 
-  decrementAllStrings() {
+  decrementAllStrings = () => {
     this.setState({ tuning: this.state.tuning.map(previousNote) });
   }
 
-  addTopString() {
+  addTopString = () => {
     this.setState({ tuning: this.state.tuning.concat(last(this.state.tuning)) });
   }
 
-  addBottomString() {
+  addBottomString = () => {
     this.setState({ tuning: [head(this.state.tuning)].concat(this.state.tuning) });
   }
 
-  onChange(newString, i) {
+  onChange = (newString, i) => {
     const { tuning } = this.state;
     const { length } = tuning;
     const newTuning = tuning.slice(0, length - 1 - i).concat(newString).concat(tuning.slice(length - i, length));
@@ -208,10 +193,6 @@ class TuningButton extends Component {
   constructor() {
     super();
 
-    this.handleKeyPress = this.handleKeyPress.bind(this);
-    this.onClick = this.onClick.bind(this);
-    this.onPopoverClose = this.onPopoverClose.bind(this);
-
     if (typeof window !== 'undefined') {
       window.addEventListener('keydown', this.handleKeyPress);
     }
@@ -225,7 +206,7 @@ class TuningButton extends Component {
     window.removeEventListener('keywdown', this.handleKeyPress);
   }
 
-  handleKeyPress(e) {
+  handleKeyPress = e => {
     if(this.state.popoverOpen) {
       if(e.keyCode === 13) { // enter
         this.onPopoverClose();
@@ -238,7 +219,7 @@ class TuningButton extends Component {
     }
   }
 
-  onClick() {
+  onClick = () => {
     if(this.state.popoverOpen) {
       this.onPopoverClose();
     } else {
@@ -247,7 +228,7 @@ class TuningButton extends Component {
     }
   }
 
-  onPopoverClose() {
+  onPopoverClose = () => {
     this.setState({ popoverOpen: false });
     this.props.onClose();
   }

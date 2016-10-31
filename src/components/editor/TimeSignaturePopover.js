@@ -78,16 +78,6 @@ class TimeSignaturePopover extends Component {
   constructor(props) {
     super(props);
 
-    this.onTwoFourClick = this.onTwoFourClick.bind(this);
-    this.onFourFourClick = this.onFourFourClick.bind(this);
-    this.onSixEightClick = this.onSixEightClick.bind(this);
-    this.onIncrementBeats = this.onIncrementBeats.bind(this);
-    this.onIncrementBeatType = this.onIncrementBeatType.bind(this);
-    this.onDecrementBeats = this.onDecrementBeats.bind(this);
-    this.onDecrementBeatType = this.onDecrementBeatType.bind(this);
-    this.toEndChanged = this.toEndChanged.bind(this);
-    this.allChanged = this.allChanged.bind(this);
-
     this.state = {
       timeSignature: Object.assign({}, props.timeSignature),
       toEndChecked: false,
@@ -100,26 +90,26 @@ class TimeSignaturePopover extends Component {
     this.props.changeTimeSignature({ measureIndex: this.props.measureIndex }, timeSignature, toEndChecked, allChecked);
   }
 
-  onTwoFourClick() {
+  onTwoFourClick = () => {
     // TODO extract these things into a component
     this.setState({
       timeSignature: { beats: 2, beatType: 4 }
     });
   }
 
-  onFourFourClick() {
+  onFourFourClick = () => {
     this.setState({
       timeSignature: { beats: 4, beatType: 4 }
     });
   }
 
-  onSixEightClick() {
+  onSixEightClick = () => {
     this.setState({
       timeSignature: { beats: 6, beatType: 8 }
     });
   }
 
-  onIncrementBeats() {
+  onIncrementBeats = () => {
     if(this.state.timeSignature.beats < 32) {
       this.setState({
         timeSignature: { beats: this.state.timeSignature.beats + 1, beatType: this.state.timeSignature.beatType }
@@ -127,7 +117,7 @@ class TimeSignaturePopover extends Component {
     }
   }
 
-  onIncrementBeatType() {
+  onIncrementBeatType = () => {
     if(this.state.timeSignature.beatType < 32) {
       this.setState({
         timeSignature: { beats: this.state.timeSignature.beats, beatType: this.state.timeSignature.beatType * 2 }
@@ -135,7 +125,7 @@ class TimeSignaturePopover extends Component {
     }
   }
 
-  onDecrementBeats() {
+  onDecrementBeats = () => {
     if(this.state.timeSignature.beats > 1) {
       this.setState({
         timeSignature: { beats: this.state.timeSignature.beats - 1, beatType: this.state.timeSignature.beatType }
@@ -143,7 +133,7 @@ class TimeSignaturePopover extends Component {
     }
   }
 
-  onDecrementBeatType() {
+  onDecrementBeatType = () => {
     if(this.state.timeSignature.beatType > 1) {
       this.setState({
         timeSignature: { beats: this.state.timeSignature.beats, beatType: this.state.timeSignature.beatType / 2 }
@@ -151,11 +141,11 @@ class TimeSignaturePopover extends Component {
     }
   }
 
-  toEndChanged() {
+  toEndChanged = () => {
     this.setState({ toEndChecked: !this.state.toEndChecked });
   }
 
-  allChanged() {
+  allChanged = () => {
     this.setState({ allChecked: !this.state.allChecked });
   }
 

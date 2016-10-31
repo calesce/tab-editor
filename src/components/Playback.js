@@ -18,15 +18,6 @@ const styles = StyleSheet.create({
 });
 
 class Playback extends Component {
-  constructor(props) {
-    super(props);
-
-    this.schedule = this.schedule.bind(this);
-    this.advanceNote = this.advanceNote.bind(this);
-    this.startPlayback = this.startPlayback.bind(this);
-    this.startCountdown = this.startCountdown.bind(this);
-  }
-
   shouldComponentUpdate() {
     return false;
   }

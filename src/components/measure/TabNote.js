@@ -13,13 +13,7 @@ const styles = StyleSheet.create({
 });
 
 export default class TabNote extends PureComponent {
-  constructor() {
-    super();
-
-    this.onClick = this.onClick.bind(this);
-  }
-
-  onClick() {
+  onClick = () => {
     this.props.onClick(this.props.noteIndex, this.props.stringIndex);
   }
 
