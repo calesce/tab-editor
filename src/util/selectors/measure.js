@@ -1,9 +1,9 @@
 import { createSelector } from 'reselect';
-import { trackWithLayoutSelector } from './layoutSelectors';
+import { trackWithLayoutSelector } from './layout';
 import { cursorSelector, playingIndexSelector, selectRangeSelector,
-  tuningSelector, measureLengthSelector } from './selectors';
-import { memoizedValidity } from './audioMath';
-import { getAccidentals } from './accidentals';
+  tuningSelector, measureLengthSelector } from './index';
+import { memoizedValidity } from '../audioMath';
+import { getAccidentals } from '../accidentals';
 
 const measureIndexSelector = (_, props) => props.measureIndex;
 const otherMeasureIndexSelector = (_, props) => props.measure.measureIndex;

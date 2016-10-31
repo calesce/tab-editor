@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { StyleSheet, css } from 'aphrodite';
 
 import { replaceSong } from '../../actions/tracks';
-import { getTracksSelector } from '../../util/trackSelectors';
+import { getTracksSelector } from '../../util/selectors/track';
 import { importMusicXml } from '../../util/musicXml';
 
 const styles = StyleSheet.create({

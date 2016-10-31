@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { trackWithLayoutSelector } from './layoutSelectors';
+import { trackWithLayoutSelector } from './layout';
 
 const instrumentListSelector = createSelector(
   state => state.tracks.present,

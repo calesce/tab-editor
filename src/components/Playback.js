@@ -8,7 +8,7 @@ import { setCursor } from '../actions/cursor';
 import { playCurrentNoteAtTime } from '../util/audio';
 import { createScheduleForSong, getReplaySpeed,
   getRealPlayingIndex, createCountdownSchedule } from '../util/playbackSchedule';
-import { expandedTracksSelector } from '../util/trackSelectors';
+import { expandedTracksSelector } from '../util/selectors/track';
 import audioContext from '../util/audioContext';
 
 const styles = StyleSheet.create({

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { StyleSheet, css } from 'aphrodite';
 
 import { makeMapStateToProps } from '../util/selectors';
-import { makeScoreSelector } from '../util/layoutSelectors';
+import { makeScoreSelector } from '../util/selectors/layout';
 import { setSelectRange } from '../actions/cursor';
 
 import Measure from './measure/Measure';

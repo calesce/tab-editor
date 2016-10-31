@@ -15,7 +15,7 @@ import { cursorAfterCutting, cursorAfterPasting, getNotesFromSelection } from '.
 import { updateScrollPosition } from '../util/updateScroll';
 import { loadSoundfonts } from '../util/soundfonts';
 import { makeMapStateToProps } from '../util/selectors';
-import { makeAppSelector } from '../util/appSelector';
+import { makeAppSelector } from '../util/selectors/app';
 import shallowEqual from '../util/shallowEqual';
 
 import Score from '../components/Score';

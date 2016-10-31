@@ -4,7 +4,7 @@ import { findIndex } from 'lodash';
 import { StyleSheet, css } from 'aphrodite';
 
 import { makeMapStateToProps } from '../../util/selectors';
-import { makeTabMeasureSelector } from '../../util/measureSelectors';
+import { makeTabMeasureSelector } from '../../util/selectors/measure';
 
 import TabNote from './TabNote';
 import Staff from './Staff';

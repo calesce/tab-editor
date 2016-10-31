@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
-import { prepareRowLayout } from './scoreLayout';
-import { scoreBoxSelector, layoutSelector, tuningSelector, trackMeasuresSelector } from './selectors';
+import { prepareRowLayout } from '../scoreLayout';
+import { scoreBoxSelector, layoutSelector, tuningSelector, trackMeasuresSelector } from './index';
 
 const calcHeight = (measures, tuning) => {
   const rows = measures.reduce((rows, measure) => {

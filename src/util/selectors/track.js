@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import { findIndex, findLastIndex, omit } from 'lodash';
-import { playingIndexSelector } from './selectors';
+import { playingIndexSelector } from './index';
 
 export const getTracksSelector = state => ({ tracks: state.tracks.present });
 const tracksSelector = state => state.tracks.present;

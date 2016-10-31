@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 
 import { makeMapStateToProps } from '../../util/selectors';
-import { makeMeasureSelector } from '../../util/measureSelectors';
+import { makeMeasureSelector } from '../../util/selectors/measure';
 
 import MusicMeasure from './MusicMeasure';
 import TabMeasure from './TabMeasure';
