@@ -54,6 +54,7 @@
   "dependencies": {
     "aphrodite": "^1.1.0",
     "lodash": "^4.17.2",
+    "lodash-webpack-plugin": "^0.10.6",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
     "react-popover-fork": "^0.6.4",

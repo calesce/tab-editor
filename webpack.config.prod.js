@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 
 module.exports = {
   devtool: 'source-map',
@@ -12,6 +13,7 @@ module.exports = {
     filename: 'bundle.js'
   },
   plugins: [
+    new LodashModuleReplacementPlugin(),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.DefinePlugin({
       'process.env': {

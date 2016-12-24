@@ -2573,6 +2573,12 @@ lodash-es@^4.2.0, lodash-es@^4.2.1:
   version "4.16.4"
   resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.16.4.tgz#4dc3e2cf33a8c343028aa7f7e06d1c9697042599"
 
+lodash-webpack-plugin@^0.10.6:
+  version "0.10.6"
+  resolved "https://registry.yarnpkg.com/lodash-webpack-plugin/-/lodash-webpack-plugin-0.10.6.tgz#a7f044881c57a1f33a67cf9fd0d7842099be3c30"
+  dependencies:
+    lodash "^4.17.2"
+
 lodash._getnative@^3.0.0:
   version "3.9.1"
   resolved "https://registry.yarnpkg.com/lodash._getnative/-/lodash._getnative-3.9.1.tgz#570bc7dede46d61cdcde687d65d3eecbaa3aaff5"
