@@ -14,7 +14,8 @@ module.exports = {
   },
   plugins: [
     new LodashModuleReplacementPlugin({
-      caching: true
+      'collections': true,
+      'shorthands': true
     }),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.DefinePlugin({
