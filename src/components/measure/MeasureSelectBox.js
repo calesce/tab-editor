@@ -5,23 +5,23 @@ export default class SelectBox extends PureComponent {
     const { height, selectRange, measure } = this.props;
     const { notes, width, measureIndex } = measure;
 
-    if(!selectRange || !selectRange[measureIndex]) {
+    if (!selectRange || !selectRange[measureIndex]) {
       return null;
     }
     const selected = selectRange[measureIndex];
 
     let x, boxWidth;
-    if(selected === 'all') {
+    if (selected === 'all') {
       x = 0;
       boxWidth = width;
     } else {
-      if(selected.length > 0) {
-        if(selected[0] === 0) {
+      if (selected.length > 0) {
+        if (selected[0] === 0) {
           x = 0;
         } else {
           x = notes[selected[0]].x - 15;
         }
-        if(selected[selected.length - 1] === notes.length - 1) {
+        if (selected[selected.length - 1] === notes.length - 1) {
           boxWidth = width;
         } else {
           boxWidth = notes[selected[selected.length - 1] + 1].x - x - 15;
@@ -29,6 +29,6 @@ export default class SelectBox extends PureComponent {
       }
     }
 
-    return <rect fill='blue' fillOpacity={0.2} x={x} y={0} width={boxWidth} height={height}/>;
+    return <rect fill="blue" fillOpacity={0.2} x={x} y={0} width={boxWidth} height={height} />;
   }
 }

@@ -15,26 +15,15 @@ import 'react-select/dist/react-select.css';
 import 'babel-polyfill';
 
 const initialState = {
-  tracks: [{
-    ...track,
-    measures: replaceTempo(track.measures)
-  }],
+  tracks: [ { ...track, measures: replaceTempo(track.measures) } ],
   layout: 'page',
   currentTrackIndex: 0,
   clipboard: null,
   playingIndex: null,
-  cursor: {
-    measureIndex: 0,
-    noteIndex: 0,
-    stringIndex: 0
-  },
+  cursor: { measureIndex: 0, noteIndex: 0, stringIndex: 0 },
   metronome: false,
   countdown: false,
-  scoreBox: {
-    x: 270,
-    y: 5,
-    width: window.innerWidth - 270
-  }
+  scoreBox: { x: 270, y: 5, width: window.innerWidth - 270 }
 };
 
 const store = configureStore(initialState);
@@ -52,6 +41,6 @@ const renderApp = () => {
 };
 renderApp();
 
-if(module.hot) {
+if (module.hot) {
   module.hot.accept('./containers/App', () => renderApp());
 }

@@ -28,7 +28,8 @@ const styles = StyleSheet.create({
     zIndex: 3,
     width: 255,
     overflow: 'hidden',
-    background: 'wheat', // try sandybrown, peachpuff, moccasin, navajowhite, linen, cornsilk, wheat
+    background: 'wheat',
+    // try sandybrown, peachpuff, moccasin, navajowhite, linen, cornsilk, wheat
     boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.1)'
   }
 });
@@ -36,32 +37,32 @@ const styles = StyleSheet.create({
 export default class Sidebar extends PureComponent {
   openTempoPopover = () => {
     this.props.togglePopover('tempo');
-  }
+  };
 
   openTuningPopover = () => {
     this.props.togglePopover('tuning');
-  }
+  };
 
   openInstrumentSelect = () => {
     this.props.togglePopover('instrumentSelect');
-  }
+  };
 
   openTrackSelect = () => {
     this.props.togglePopover('trackSelect');
-  }
+  };
 
   render() {
     const { popoverOpen, togglePopover, canPlay } = this.props;
 
     return (
       <div className={css(styles.sidebar)}>
-        <SidebarGroup title='Notes'>
-          <SidebarButton duration='w'/>
-          <SidebarButton duration='h'/>
-          <SidebarButton duration='q'/>
-          <SidebarButton duration='e'/>
-          <SidebarButton duration='s'/>
-          <SidebarButton duration='t'/>
+        <SidebarGroup title="Notes">
+          <SidebarButton duration="w" />
+          <SidebarButton duration="h" />
+          <SidebarButton duration="q" />
+          <SidebarButton duration="e" />
+          <SidebarButton duration="s" />
+          <SidebarButton duration="t" />
           <SidebarButton rest />
           <SidebarButton dot />
           <SidebarButton tuplet />
@@ -69,30 +70,46 @@ export default class Sidebar extends PureComponent {
           <SidebarButton trill />
           <SidebarButton vibrato />
         </SidebarGroup>
-        <SidebarGroup title='Measure'>
+        <SidebarGroup title="Measure">
           <TimeSignature />
-          <TempoButton onClick={this.openTempoPopover} onClose={togglePopover} popoverOpen={popoverOpen} />
+          <TempoButton
+            onClick={this.openTempoPopover}
+            onClose={togglePopover}
+            popoverOpen={popoverOpen}
+          />
           <RepeatBegin />
           <RepeatEnd />
         </SidebarGroup>
-        <SidebarGroup title='Track'>
-          <TuningButton onClick={this.openTuningPopover} onClose={togglePopover} popoverOpen={popoverOpen} />
-          <InstrumentSelect onOpen={this.openInstrumentSelect} onClose={togglePopover} popoverOpen={popoverOpen} />
+        <SidebarGroup title="Track">
+          <TuningButton
+            onClick={this.openTuningPopover}
+            onClose={togglePopover}
+            popoverOpen={popoverOpen}
+          />
+          <InstrumentSelect
+            onOpen={this.openInstrumentSelect}
+            onClose={togglePopover}
+            popoverOpen={popoverOpen}
+          />
           <InsertTrackButton />
           <DeleteTrackButton />
-          <TrackSelect onOpen={this.openTrackSelect} onClose={togglePopover} popoverOpen={popoverOpen} />
+          <TrackSelect
+            onOpen={this.openTrackSelect}
+            onClose={togglePopover}
+            popoverOpen={popoverOpen}
+          />
         </SidebarGroup>
-        <SidebarGroup title='Song'>
+        <SidebarGroup title="Song">
           <ExportButton />
           <ImportButton />
           <LayoutButton />
         </SidebarGroup>
-        <SidebarGroup title='Play'>
+        <SidebarGroup title="Play">
           <PlayPauseButton canPlay={canPlay} />
           <MetronomeButton />
           <CountdownButton />
         </SidebarGroup>
-        <SidebarGroup title='Oops'>
+        <SidebarGroup title="Oops">
           <UndoButton />
           <RedoButton />
         </SidebarGroup>

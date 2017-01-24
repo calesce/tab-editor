@@ -3,7 +3,7 @@
 let audioContext;
 try {
   audioContext = new AudioContext();
-} catch(e) {
+} catch (e) {
   audioContext = new webkitAudioContext();
 }
 

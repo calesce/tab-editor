@@ -11,25 +11,18 @@ import SelectBox from './SelectBox';
 
 const SVG_LEFT = 270;
 const SVG_TOP = 5;
-const SELECT_ERROR = 6; // Give some room for user error when selecting a range of notes
+const SELECT_ERROR = 6;
 
+// Give some room for user error when selecting a range of notes
 const styles = StyleSheet.create({
-  score: {
-    position: 'absolute',
-    display: 'flex',
-    flexWrap: 'wrap',
-    flex: 1
-  }
+  score: { position: 'absolute', display: 'flex', flexWrap: 'wrap', flex: 1 }
 });
 
 class Score extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.state = {
-      dragStart: undefined,
-      dragEnd: undefined
-    };
+    this.state = { dragStart: undefined, dragEnd: undefined };
   }
 
   getNoteRangeForMeasure(measure, xStart, xEnd) {
@@ -42,14 +35,15 @@ class Score extends PureComponent {
   }
 
   getSelectedRangeForSingleRow(measure, xStart, xEnd) {
-    if(xStart > measure.xOfMeasure && xEnd < measure.xOfMeasure + measure.width) {
+    if (xStart > measure.xOfMeasure && xEnd < measure.xOfMeasure + measure.width) {
       return this.getNoteRangeForMeasure(measure, xStart, xEnd);
-    } else if((xStart < measure.xOfMeasure && xEnd > measure.xOfMeasure) ||
-       (xStart > measure.xOfMeasure && xStart < measure.xOfMeasure + measure.width)) {
-
-      if(measure.xOfMeasure < xStart) {
+    } else if (
+      xStart < measure.xOfMeasure && xEnd > measure.xOfMeasure ||
+        xStart > measure.xOfMeasure && xStart < measure.xOfMeasure + measure.width
+    ) {
+      if (measure.xOfMeasure < xStart) {
         return this.getNoteRangeForMeasure(measure, xStart, measure.xOfMeasure + measure.width);
-      } else if(xEnd < measure.xOfMeasure + measure.width) {
+      } else if (xEnd < measure.xOfMeasure + measure.width) {
         return this.getNoteRangeForMeasure(measure, measure.xOfMeasure, xEnd);
       } else {
         return 'all';
@@ -60,27 +54,29 @@ class Score extends PureComponent {
   }
 
   getSelectedRange(measure, xStart, xEnd, selectedRows) {
-    if(!selectedRows) {
+    if (!selectedRows) {
       return undefined;
     }
     const selectedRowIndex = selectedRows.indexOf(measure.rowIndex);
-    if(selectedRowIndex === -1) {
+    if (selectedRowIndex === -1) {
       return undefined;
     }
 
-    if(selectedRows.length === 1) {
+    if (selectedRows.length === 1) {
       return this.getSelectedRangeForSingleRow(measure, xStart, xEnd);
-    } else if(selectedRowIndex === 0) {
-      if(measure.xOfMeasure + measure.width > xStart) {
-        if(measure.xOfMeasure < xStart) { // starting measure, need note index
+    } else if (selectedRowIndex === 0) {
+      if (measure.xOfMeasure + measure.width > xStart) {
+        if (measure.xOfMeasure < xStart) {
+          // starting measure, need note index
           return this.getNoteRangeForMeasure(measure, xStart, measure.xOfMeasure + measure.width);
         } else {
           return 'all';
         }
       }
-    } else if(selectedRowIndex === selectedRows.length - 1) {
-      if(xEnd > measure.xOfMeasure) {
-        if(xEnd < measure.xOfMeasure + measure.width) { // last measure
+    } else if (selectedRowIndex === selectedRows.length - 1) {
+      if (xEnd > measure.xOfMeasure) {
+        if (xEnd < measure.xOfMeasure + measure.width) {
+          // last measure
           return this.getNoteRangeForMeasure(measure, measure.xOfMeasure, xEnd);
         } else {
           return 'all';
@@ -92,58 +88,63 @@ class Score extends PureComponent {
   }
 
   rowFromY(dragY, measures, tuning) {
-    const rowHeights = measures.reduce((accum, measure) => {
-      if(!accum[measure.rowIndex]) {
-        return accum.concat(
-          (accum.length > 0 ? accum[accum.length - 1] : 0) +
-          measure.yTop + measure.yBottom + 75 + tuning.length * 20
-        );
-      }
-      return accum;
-    }, []);
+    const rowHeights = measures.reduce(
+      (accum, measure) => {
+        if (!accum[measure.rowIndex]) {
+          return accum.concat(
+            (accum.length > 0 ? accum[accum.length - 1] : 0) +
+              measure.yTop +
+              measure.yBottom +
+              75 +
+              tuning.length * 20
+          );
+        }
+        return accum;
+      },
+      []
+    );
 
-    return rowHeights ?
-      rowHeights.reduce((accum, row, i) => accum === -1 && dragY < row ? i : accum, -1):
-      0;
+    return rowHeights
+      ? rowHeights.reduce((accum, row, i) => accum === -1 && dragY < row ? i : accum, -1)
+      : 0;
   }
 
-  onMouseDown = (e) => {
+  onMouseDown = e => {
     e.preventDefault();
 
     const dragX = e.pageX - SVG_LEFT;
     const dragY = e.pageY - SVG_TOP;
 
-    this.setState({
-      dragStart: { dragX, dragY },
-      dragX,
-      dragY
-    });
-  }
+    this.setState({ dragStart: { dragX, dragY }, dragX, dragY });
+  };
 
   onMouseUp = () => {
     const { dragX, dragY, dragHeight, dragWidth } = this.state;
 
     let selectedRows;
-    if(dragWidth > 5 && dragHeight > 5) {
+    if (dragWidth > 5 && dragHeight > 5) {
       const startRow = this.rowFromY(dragY, this.props.measures, this.props.tuning);
       const endRow = this.rowFromY(dragY + dragHeight, this.props.measures, this.props.tuning);
       selectedRows = Array.from({ length: endRow - startRow + 1 }, (_, k) => k + startRow);
     }
 
-    const selectRange = this.props.measures.reduce((accum, measure, i) => {
-      const measureRange = this.getSelectedRange(measure, dragX, dragX + dragWidth, selectedRows);
-      if(Array.isArray(measureRange)) {
-        if(measureRange.length === 0) {
-          return accum;
+    const selectRange = this.props.measures.reduce(
+      (accum, measure, i) => {
+        const measureRange = this.getSelectedRange(measure, dragX, dragX + dragWidth, selectedRows);
+        if (Array.isArray(measureRange)) {
+          if (measureRange.length === 0) {
+            return accum;
+          }
         }
-      }
 
-      const obj = {};
-      obj[i] = measureRange;
-      return measureRange ? Object.assign({}, accum, obj) : accum;
-    }, {});
+        const obj = {};
+        obj[i] = measureRange;
+        return measureRange ? Object.assign({}, accum, obj) : accum;
+      },
+      {}
+    );
 
-    if(Object.keys(selectRange).length > 0) {
+    if (Object.keys(selectRange).length > 0) {
       this.props.setSelectRange(selectRange);
     } else {
       this.props.setSelectRange(undefined);
@@ -156,10 +157,10 @@ class Score extends PureComponent {
       dragWidth: undefined,
       dragHeight: undefined
     });
-  }
+  };
 
-  onMouseMove = (e) => {
-    if(this.state.dragStart) {
+  onMouseMove = e => {
+    if (this.state.dragStart) {
       e.preventDefault();
 
       const x = e.pageX - SVG_LEFT;
@@ -172,17 +173,29 @@ class Score extends PureComponent {
         dragHeight: Math.abs(this.state.dragStart.dragY - y)
       });
     }
-  }
+  };
 
   render() {
     const { height, width, measures, x, y } = this.props;
     const { dragX, dragY, dragWidth, dragHeight } = this.state;
 
     return (
-      <div className={css(styles.score)} style={{ height, width, left: x, top: y }}
-        onMouseDown={this.onMouseDown} onMouseUp={this.onMouseUp} onMouseMove={this.onMouseMove}>
-        { measures.map((_, i) => <Measure key={i} measureIndex={i} />) }
-        <SelectBox height={height} width={width} x={dragX} y={dragY} dragWidth={dragWidth} dragHeight={dragHeight} />
+      <div
+        className={css(styles.score)}
+        style={{ height, width, left: x, top: y }}
+        onMouseDown={this.onMouseDown}
+        onMouseUp={this.onMouseUp}
+        onMouseMove={this.onMouseMove}
+      >
+        {measures.map((_, i) => <Measure key={i} measureIndex={i} />)}
+        <SelectBox
+          height={height}
+          width={width}
+          x={dragX}
+          y={dragY}
+          dragWidth={dragWidth}
+          dragHeight={dragHeight}
+        />
       </div>
     );
   }

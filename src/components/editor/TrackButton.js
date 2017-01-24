@@ -5,7 +5,7 @@ import { StyleSheet, css } from 'aphrodite';
 
 const styles = StyleSheet.create({
   button: {
-    ':hover' : {
+    ':hover': {
       MozUserSelect: 'none',
       WebkitUserSelect: 'none',
       msUserSelect: 'none',
@@ -19,26 +19,18 @@ const styles = StyleSheet.create({
   }
 });
 
-export const InsertTrackButton =
-  connect(null, { insertTrack })(
-    (({ insertTrack }) => (
-      <svg onClick={insertTrack} width='40' height='50' className={css(styles.button)}>
-        <g transform='translate(8, 37)'>
-          <text>+</text>
-        </g>
-      </svg>
-    )
-  )
-);
+export const InsertTrackButton = connect(null, { insertTrack })(({ insertTrack }) => (
+  <svg onClick={insertTrack} width="40" height="50" className={css(styles.button)}>
+    <g transform="translate(8, 37)">
+      <text>+</text>
+    </g>
+  </svg>
+));
 
-export const DeleteTrackButton =
-  connect(null, { deleteTrack })(
-    (({ deleteTrack }) => (
-      <svg onClick={deleteTrack} width='40' height='50' className={css(styles.button)}>
-        <g transform='translate(12, 35.5)'>
-          <text>-</text>
-        </g>
-      </svg>
-    )
-  )
-);
+export const DeleteTrackButton = connect(null, { deleteTrack })(({ deleteTrack }) => (
+  <svg onClick={deleteTrack} width="40" height="50" className={css(styles.button)}>
+    <g transform="translate(12, 35.5)">
+      <text>-</text>
+    </g>
+  </svg>
+));

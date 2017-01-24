@@ -22,13 +22,16 @@ import Score from '../components/Score';
 import Sidebar from '../components/editor/Sidebar';
 import Playback from '../components/Playback';
 
-const Actions = Object.assign(TracksActions, TrackActions, MeasureActions, PlayingIndexActions, CursorActions, CopyPasteActions);
+const Actions = Object.assign(
+  TracksActions,
+  TrackActions,
+  MeasureActions,
+  PlayingIndexActions,
+  CursorActions,
+  CopyPasteActions
+);
 
-const styles = StyleSheet.create({
-  container: {
-    width: '100%', height: '100%'
-  }
-});
+const styles = StyleSheet.create({ container: { width: '100%', height: '100%' } });
 
 class App extends Component {
   constructor(props) {
@@ -39,13 +42,11 @@ class App extends Component {
       window.addEventListener('resize', this.handleResize);
     }
 
-    this.state = {
-      openModal: null
-    };
+    this.state = { openModal: null };
   }
 
   componentWillMount() {
-    loadSoundfonts([...this.props.instruments, 'woodblock'])
+    loadSoundfonts([ ...this.props.instruments, 'woodblock' ])
       .then(buffers => this.setState({ buffers }))
       .catch(err => err);
   }
@@ -53,15 +54,15 @@ class App extends Component {
   componentWillReceiveProps(nextProps) {
     const { playingIndex, measures, layout, tuning, scoreBox, instruments } = nextProps;
 
-    if(this.props.playingIndex && playingIndex) {
-      if(playingIndex.noteIndex !== this.props.playingIndex.noteIndex
-          || playingIndex.measureIndex !== this.props.playingIndex.measureIndex) {
+    if (this.props.playingIndex && playingIndex) {
+      if (
+        playingIndex.noteIndex !== this.props.playingIndex.noteIndex ||
+          playingIndex.measureIndex !== this.props.playingIndex.measureIndex
+      ) {
         updateScrollPosition(playingIndex, measures, layout, tuning.length, scoreBox);
       }
-    } else if(!shallowEqual(this.props.instruments, instruments)) {
-      this.setState({
-        buffers: undefined
-      }, () => {
+    } else if (!shallowEqual(this.props.instruments, instruments)) {
+      this.setState({ buffers: undefined }, () => {
         loadSoundfonts(this.props.instruments)
           .then(buffers => this.setState({ buffers }))
           .catch(err => err);
@@ -71,7 +72,7 @@ class App extends Component {
 
   handleResize = () => {
     this.props.actions.resize();
-  }
+  };
 
   handleStop() {
     this.props.actions.setCursor({
@@ -83,8 +84,8 @@ class App extends Component {
   }
 
   handlePlay() {
-    if(!this.props.playingIndex && this.state.buffers) {
-      if(!(this.props.metronome || this.props.countdown) || this.state.buffers.woodblock) {
+    if (!this.props.playingIndex && this.state.buffers) {
+      if (!(this.props.metronome || this.props.countdown) || this.state.buffers.woodblock) {
         this.props.actions.setPlayingIndex(this.props.cursor);
       }
     }
@@ -92,20 +93,26 @@ class App extends Component {
 
   navigateCursor(event) {
     event.preventDefault();
-    if(event.keyCode === 39) { // right arrow
+    if (event.keyCode === 39) {
+      // right arrow
       const { measures } = this.props;
       const { measureIndex, noteIndex } = this.props.cursor;
-      if(measureIndex === measures.length - 1 &&
-        (noteIndex === measures[measureIndex].notes.length - 1 || measures[measureIndex].notes.length === 0)
+      if (
+        measureIndex === measures.length - 1 &&
+          (noteIndex === measures[measureIndex].notes.length - 1 ||
+            measures[measureIndex].notes.length === 0)
       ) {
         this.props.actions.insertMeasure();
       }
       this.props.actions.moveCursorRight();
-    } else if(event.keyCode === 37) { // left arrow
+    } else if (event.keyCode === 37) {
+      // left arrow
       this.props.actions.moveCursorLeft();
-    } else if(event.keyCode === 38) { // up arrow
+    } else if (event.keyCode === 38) {
+      // up arrow
       this.props.actions.moveCursorUp();
-    } else if(event.keyCode === 40) { // down arrow
+    } else if (event.keyCode === 40) {
+      // down arrow
       this.props.actions.moveCursorDown();
     }
   }
@@ -114,9 +121,9 @@ class App extends Component {
     const { measureIndex } = this.props.cursor;
     const notes = this.props.measures[measureIndex].notes;
 
-    if(notes.length > 0) {
+    if (notes.length > 0) {
       this.props.actions.deleteNote(this.props.cursor);
-    } else if(notes.length === 0) {
+    } else if (notes.length === 0) {
       this.props.actions.deleteMeasure(measureIndex);
     }
   }
@@ -124,7 +131,7 @@ class App extends Component {
   pasteNote(event) {
     const { cursor, clipboard, actions, measures } = this.props;
 
-    if(!clipboard) {
+    if (!clipboard) {
       return;
     }
     event.preventDefault();
@@ -136,16 +143,13 @@ class App extends Component {
   cutNote() {
     const { selectRange, cursor, actions, measures } = this.props;
 
-    if(selectRange) {
+    if (selectRange) {
       const newCursor = cursorAfterCutting(measures, selectRange, cursor);
       actions.setCursor(newCursor);
       actions.setSelectRange(undefined);
       actions.cutNote(newCursor, getNotesFromSelection(measures, cursor, selectRange), selectRange);
     } else {
-      const newCursor = {
-        ...cursor,
-        noteIndex: cursor.noteIndex === 0 ? 0 : cursor.noteIndex - 1
-      };
+      const newCursor = { ...cursor, noteIndex: cursor.noteIndex === 0 ? 0 : cursor.noteIndex - 1 };
       actions.setCursor(newCursor);
       actions.cutNote(cursor, getNotesFromSelection(measures, cursor, selectRange), selectRange);
     }
@@ -157,69 +161,89 @@ class App extends Component {
   }
 
   handleKeyPress = event => {
-    if(this.state.popover || (this.props.playingIndex && event.keyCode !== 32)) {
+    if (this.state.popover || this.props.playingIndex && event.keyCode !== 32) {
       return;
     }
 
-    if((event.metaKey || event.ctrlKey) && event.keyCode === 67) { // cmd/ctrl+c
+    if ((event.metaKey || event.ctrlKey) && event.keyCode === 67) {
+      // cmd/ctrl+c
       event.preventDefault();
-      return this.props.actions.copyNote(getNotesFromSelection(this.props.measures, this.props.cursor, this.props.selectRange));
+      return this.props.actions.copyNote(
+        getNotesFromSelection(this.props.measures, this.props.cursor, this.props.selectRange)
+      );
     }
-    if((event.metaKey || event.ctrlKey) && event.keyCode === 86) { // cmd/ctrl+v
+    if ((event.metaKey || event.ctrlKey) && event.keyCode === 86) {
+      // cmd/ctrl+v
       return this.pasteNote(event);
     }
-    if((event.metaKey || event.ctrlKey) && event.keyCode === 88) { // cmd/ctrl+x
+    if ((event.metaKey || event.ctrlKey) && event.keyCode === 88) {
+      // cmd/ctrl+x
       event.preventDefault();
       return this.cutNote();
     }
-    if((event.metaKey || event.ctrlKey) && event.keyCode === 65) { // cmd/ctrl+a
+    if ((event.metaKey || event.ctrlKey) && event.keyCode === 65) {
+      // cmd/ctrl+a
       event.preventDefault();
       return this.selectAllNotes();
     }
 
-    if(event.keyCode <= 57 && event.keyCode >= 48 && !event.metaKey) {
+    if (event.keyCode <= 57 && event.keyCode >= 48 && !event.metaKey) {
       return this.props.actions.changeNote(this.props.cursor, event.keyCode - 48);
-    } else if(event.keyCode === 82 && !event.metaKey && !event.ctrlKey) {
+    } else if (event.keyCode === 82 && !event.metaKey && !event.ctrlKey) {
       this.props.actions.makeNoteRest(this.props.cursor);
-    } else if(event.keyCode === 8) { // delete
+    } else if (event.keyCode === 8) {
+      // delete
       event.preventDefault();
       this.deleteNote();
-    } else if(event.keyCode === 73 && !event.metaKey) { // i
+    } else if (event.keyCode === 73 && !event.metaKey) {
+      // i
       return this.props.actions.insertNote(this.props.cursor);
-    } else if(event.keyCode === 32) { // spacebar
+    } else if (event.keyCode === 32) {
+      // spacebar
       event.preventDefault();
       return this.props.playingIndex ? this.handleStop() : this.handlePlay();
-    } else if(event.keyCode === 190) { // period
+    } else if (event.keyCode === 190) {
+      // period
       this.props.actions.toggleNoteDotted(this.props.cursor);
-    } else if(event.shiftKey && event.keyCode === 187) { // plus
+    } else if (event.shiftKey && event.keyCode === 187) {
+      // plus
       return this.props.actions.increaseNoteLength(this.props.cursor);
-    } else if(event.keyCode === 189) { // minus
+    } else if (event.keyCode === 189) {
+      // minus
       return this.props.actions.decreaseNoteLength(this.props.cursor);
-    } else if(event.shiftKey && event.keyCode === 222) { // "
+    } else if (event.shiftKey && event.keyCode === 222) {
+      // "
       this.props.actions.toggleNoteTremolo(this.props.cursor);
-    } else if(event.keyCode === 86) { // v
+    } else if (event.keyCode === 86) {
+      // v
       this.props.actions.toggleNoteVibrato(this.props.cursor);
-    } else if(event.shiftKey && event.keyCode === 78) { // N
+    } else if (event.shiftKey && event.keyCode === 78) {
+      // N
       this.props.actions.toggleNoteTrill(this.props.cursor);
-    } else if(event.keyCode === 220) { // \
+    } else if (event.keyCode === 220) {
+      // \
       const { measureIndex, noteIndex } = this.props.cursor;
       const note = this.props.measures[measureIndex].notes[noteIndex];
-      if(note.tuplet) {
+      if (note.tuplet) {
         this.props.actions.setNoteTuplet(this.props.cursor, undefined);
       } else {
-        this.props.actions.setNoteTuplet(this.props.cursor, '2/3'); // store string representation of multiplier for now
+        this.props.actions.setNoteTuplet(
+          this.props.cursor,
+          '2/3'
+        ); // store string representation of multiplier for now
       }
-    } else if(event.keyCode >= 37 && event.keyCode <= 40) {
+    } else if (event.keyCode >= 37 && event.keyCode <= 40) {
       return this.navigateCursor(event);
-    } else if((event.metaKey || event.ctrlKey) && event.keyCode === 90) { // Z
+    } else if ((event.metaKey || event.ctrlKey) && event.keyCode === 90) {
+      // Z
       event.preventDefault();
       return event.shiftKey ? this.props.redo() : this.props.undo();
     }
-  }
+  };
 
   togglePopover = popover => {
     this.setState({ popover: this.state.popover ? null : popover });
-  }
+  };
 
   render() {
     const { playingIndex, metronome, countdown } = this.props;
@@ -228,7 +252,7 @@ class App extends Component {
 
     return (
       <div className={css(styles.container)}>
-        { playingIndex && <Playback buffers={buffers} metronome={metronome} countdown={countdown} /> }
+        {playingIndex && <Playback buffers={buffers} metronome={metronome} countdown={countdown} />}
         <Sidebar canPlay={canPlay} popoverOpen={popover} togglePopover={this.togglePopover} />
         <Score />
       </div>
@@ -236,11 +260,8 @@ class App extends Component {
   }
 }
 
-export default connect(
-  makeMapStateToProps(makeAppSelector),
-  dispatch => ({
-    actions: bindActionCreators(Actions, dispatch),
-    undo: bindActionCreators(ActionCreators.undo, dispatch),
-    redo: bindActionCreators(ActionCreators.redo, dispatch)
-  })
-)(App);
+export default connect(makeMapStateToProps(makeAppSelector), dispatch => ({
+  actions: bindActionCreators(Actions, dispatch),
+  undo: bindActionCreators(ActionCreators.undo, dispatch),
+  redo: bindActionCreators(ActionCreators.redo, dispatch)
+}))(App);

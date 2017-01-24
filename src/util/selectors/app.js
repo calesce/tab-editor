@@ -25,11 +25,7 @@ export const makeAppSelector = () => {
     instrumentListSelector,
     trackWithLayoutSelector,
     (appState, instruments, measures) => {
-      return {
-        ...appState,
-        instruments,
-        measures
-      };
+      return { ...appState, instruments, measures };
     }
   );
 };

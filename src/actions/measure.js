@@ -19,102 +19,57 @@ import type { PlayingIndex, Duration } from '../util/stateTypes';
 import type { Action } from './types';
 
 export function changeNote(index: PlayingIndex, fret: number): Action {
-  return {
-    type: CHANGE_NOTE,
-    index,
-    fret
-  };
+  return { type: CHANGE_NOTE, index, fret };
 }
 
 export function deleteNote(index: PlayingIndex): Action {
-  return {
-    type: DELETE_NOTE,
-    index
-  };
+  return { type: DELETE_NOTE, index };
 }
 
 export function changeNoteLength(index: PlayingIndex, duration: Duration): Action {
-  return {
-    type: CHANGE_NOTE_LENGTH,
-    index,
-    duration
-  };
+  return { type: CHANGE_NOTE_LENGTH, index, duration };
 }
 
 export function insertNote(index: PlayingIndex): Action {
-  return {
-    type: INSERT_NOTE,
-    index
-  };
+  return { type: INSERT_NOTE, index };
 }
 
 export function makeNoteRest(index: PlayingIndex): Action {
-  return {
-    type: MAKE_NOTE_REST,
-    index
-  };
+  return { type: MAKE_NOTE_REST, index };
 }
 
 export function toggleNoteDotted(index: PlayingIndex): Action {
-  return {
-    type: TOGGLE_NOTE_DOTTED,
-    index
-  };
+  return { type: TOGGLE_NOTE_DOTTED, index };
 }
 
 export function toggleNoteTremolo(index: PlayingIndex): Action {
-  return {
-    type: TOGGLE_NOTE_TREMOLO,
-    index
-  };
+  return { type: TOGGLE_NOTE_TREMOLO, index };
 }
 
 export function toggleNoteTrill(index: PlayingIndex): Action {
-  return {
-    type: TOGGLE_NOTE_TRILL,
-    index
-  };
+  return { type: TOGGLE_NOTE_TRILL, index };
 }
 
 export function toggleNoteVibrato(index: PlayingIndex): Action {
-  return {
-    type: TOGGLE_NOTE_VIBRATO,
-    index
-  };
+  return { type: TOGGLE_NOTE_VIBRATO, index };
 }
 
 export function setNoteTuplet(index: PlayingIndex, tuplet: ?string): Action {
-  return {
-    type: SET_NOTE_TUPLET,
-    index,
-    tuplet
-  };
+  return { type: SET_NOTE_TUPLET, index, tuplet };
 }
 
 export function increaseNoteLength(index: PlayingIndex): Action {
-  return {
-    type: INCREASE_NOTE_LENGTH,
-    index
-  };
+  return { type: INCREASE_NOTE_LENGTH, index };
 }
 
 export function decreaseNoteLength(index: PlayingIndex): Action {
-  return {
-    type: DECREASE_NOTE_LENGTH,
-    index
-  };
+  return { type: DECREASE_NOTE_LENGTH, index };
 }
 
 export function toggleRepeatBegin(index: PlayingIndex): Action {
-  return {
-    type: TOGGLE_REPEAT_BEGIN,
-    index
-  };
+  return { type: TOGGLE_REPEAT_BEGIN, index };
 }
 
 export function toggleRepeatEnd(index: PlayingIndex): Action {
-  return {
-    type: TOGGLE_REPEAT_END,
-    index
-  };
+  return { type: TOGGLE_REPEAT_END, index };
 }

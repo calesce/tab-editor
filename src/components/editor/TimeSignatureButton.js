@@ -8,7 +8,7 @@ import TimeSignaturePopover from './TimeSignaturePopover';
 
 const styles = StyleSheet.create({
   hover: {
-    ':hover' : {
+    ':hover': {
       MozUserSelect: 'none',
       WebkitUserSelect: 'none',
       msUserSelect: 'none',
@@ -24,43 +24,37 @@ const styles = StyleSheet.create({
     fontWeight: 600,
     fontFamily: 'Optima, Segoe, Segoe UI, Candara, Calibri, Arial, sans-serif'
   },
-  popover: {
-    zIndex: 5,
-    fill: '#FEFBF7',
-    marginLeft: -10
-  }
+  popover: { zIndex: 5, fill: '#FEFBF7', marginLeft: -10 }
 });
 
-const TimeSignatureButton = (({ timeSignature, onClick}) => (
-  <svg onClick={onClick} width='40' height='50' className={css(styles.hover)}>
-    <g transform='translate(6, 30)'>
+const TimeSignatureButton = ({ timeSignature, onClick }) => (
+  <svg onClick={onClick} width="40" height="50" className={css(styles.hover)}>
+    <g transform="translate(6, 30)">
       <text strokeWidth={0} className={css(styles.text)}>
         {`${timeSignature.beats}/${timeSignature.beatType}`}
       </text>
     </g>
   </svg>
-));
+);
 
 class TimeSignature extends Component {
   constructor() {
     super();
 
-    this.state = {
-      popoverOpen: false
-    };
+    this.state = { popoverOpen: false };
   }
 
   onClick = () => {
-    if(this.state.popoverOpen) {
+    if (this.state.popoverOpen) {
       this.onPopoverClose();
     } else {
       this.setState({ popoverOpen: true });
     }
-  }
+  };
 
   onPopoverClose = () => {
     this.setState({ popoverOpen: false });
-  }
+  };
 
   render() {
     const { timeSignature, measureIndex } = this.props;
@@ -68,7 +62,12 @@ class TimeSignature extends Component {
 
     return (
       <div>
-        <Popover className={css(styles.popover)} isOpen={this.state.popoverOpen} onOuterAction={this.onPopoverClose} body={body}>
+        <Popover
+          className={css(styles.popover)}
+          isOpen={this.state.popoverOpen}
+          onOuterAction={this.onPopoverClose}
+          body={body}
+        >
           <TimeSignatureButton onClick={this.onClick} timeSignature={timeSignature} />
         </Popover>
       </div>
@@ -76,9 +75,7 @@ class TimeSignature extends Component {
   }
 }
 
-export default connect(
-  state => ({
-    timeSignature: timeSignatureSelector(state),
-    measureIndex: state.cursor.measureIndex
-  })
-)(TimeSignature);
+export default connect(state => ({
+  timeSignature: timeSignatureSelector(state),
+  measureIndex: state.cursor.measureIndex
+}))(TimeSignature);

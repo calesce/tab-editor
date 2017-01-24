@@ -1,7 +1,12 @@
 import { createSelector } from 'reselect';
 import { trackWithLayoutSelector } from './layout';
-import { cursorSelector, playingIndexSelector, selectRangeSelector,
-  tuningSelector, measureLengthSelector } from './index';
+import {
+  cursorSelector,
+  playingIndexSelector,
+  selectRangeSelector,
+  tuningSelector,
+  measureLengthSelector
+} from './index';
 import { memoizedValidity } from '../audioMath';
 import { getAccidentals } from '../accidentals';
 
@@ -9,24 +14,31 @@ const measureIndexSelector = (_, props) => props.measureIndex;
 const otherMeasureIndexSelector = (_, props) => props.measure.measureIndex;
 
 const currentMeasureSelector = createSelector(
-  [measureIndexSelector, trackWithLayoutSelector],
-  (measureIndex, measures) => measures[measureIndex] || measures[measures.length - 1] // FIXME workaround to score selector not updating
+  [ measureIndexSelector, trackWithLayoutSelector ],
+  // FIXME workaround to score selector not updating
+  (measureIndex, measures) => measures[measureIndex] || measures[measures.length - 1]
 );
 
-const playingNoteIndexSelector = createSelector([playingIndexSelector, measureIndexSelector],
-  (playingIndex, measureIndex) => {
-    if(playingIndex) {
+const playingNoteIndexSelector = createSelector([ playingIndexSelector, measureIndexSelector ], (
+  playingIndex,
+  measureIndex
+) =>
+  {
+    if (playingIndex) {
       return playingIndex.measureIndex === measureIndex ? playingIndex.noteIndex : undefined;
     }
     return undefined;
-  }
-);
+  });
 
 export const makeMeasureSelector = () => {
   return createSelector(
     [
-      currentMeasureSelector, measureIndexSelector, playingNoteIndexSelector, tuningSelector,
-      measureLengthSelector, selectRangeSelector
+      currentMeasureSelector,
+      measureIndexSelector,
+      playingNoteIndexSelector,
+      tuningSelector,
+      measureLengthSelector,
+      selectRangeSelector
     ],
     (measure, measureIndex, playingNoteIndex, tuning, measureLength, selectRange) => {
       return {
@@ -51,6 +63,9 @@ export const makeTabMeasureSelector = () => {
   return createSelector(
     [ otherMeasureIndexSelector, cursorSelector, playingIndexSelector, selectRangeSelector ],
     (measureIndex, cursor, playingIndex, selectRange) => {
-      return (!playingIndex && cursor.measureIndex === measureIndex && !selectRange) ? { cursor }: { cursor: undefined };
-  });
+      return !playingIndex && cursor.measureIndex === measureIndex && !selectRange
+        ? { cursor }
+        : { cursor: undefined };
+    }
+  );
 };

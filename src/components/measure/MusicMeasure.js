@@ -10,9 +10,7 @@ import TempoMarker from './TempoMarker';
 import RepeatSign from './RepeatSign';
 
 const styles = StyleSheet.create({
-  svg: {
-    overflow: 'visible'
-  },
+  svg: { overflow: 'visible' },
   measureNumber: {
     MozUserSelect: 'none',
     WebkitUserSelect: 'none',
@@ -26,13 +24,13 @@ const styles = StyleSheet.create({
 class MusicMeasure extends PureComponent {
   renderMusicNote(note, noteIndex, yTop, playingNoteIndex) {
     const color = playingNoteIndex === noteIndex ? '#f9423a' : 'black';
-    if(note.string[0] === 'rest') {
+    if (note.string[0] === 'rest') {
       return <Rest key={noteIndex} x={note.x} y={note.y} note={note} color={color} />;
     }
 
-    return note.fret.map((fret, i) =>
+    return note.fret.map((fret, i) => (
       <MusicNote key={i} note={note} chordIndex={i} yTop={yTop} color={color} />
-    );
+    ));
   }
 
   render() {
@@ -47,14 +45,38 @@ class MusicMeasure extends PureComponent {
           isValid={isValid}
           lastMeasure={isLastMeasure}
         />
-        { measure.notes.map((note, noteIndex) => this.renderMusicNote(note, noteIndex, yTop, playingNoteIndex)) }
-        { measure.indexOfRow === 0 && <Clef y={yTop} strings={5} treble repeatBegin={measure.repeatBegin} /> }
-        <TimeSignature yOffset={yTop} strings={5} measure={measure} repeatBegin={measure.repeatBegin} />
-        { measure.renderTempo && <TempoMarker y={yTop} tempo={measure.tempo} /> }
-        <text x={0} y={23 + yTop} className={css(styles.measureNumber)}>{measure.measureIndex + 1}</text>
-        { measure.repeatEnd &&
-          <RepeatSign measureWidth={measure.width} strings={5} y={yTop + 25} repeatEnd={measure.repeatEnd} /> }
-        { measure.repeatBegin && <RepeatSign measureWidth={measure.width} strings={5} y={yTop + 25} repeatEnd={false} /> }
+        {measure.notes.map(
+          (note, noteIndex) => this.renderMusicNote(note, noteIndex, yTop, playingNoteIndex)
+        )}
+        {
+          measure.indexOfRow === 0 &&
+            <Clef y={yTop} strings={5} treble repeatBegin={measure.repeatBegin} />
+        }
+        <TimeSignature
+          yOffset={yTop}
+          strings={5}
+          measure={measure}
+          repeatBegin={measure.repeatBegin}
+        />
+        {measure.renderTempo && <TempoMarker y={yTop} tempo={measure.tempo} />}
+        <text x={0} y={23 + yTop} className={css(styles.measureNumber)}>
+          {measure.measureIndex + 1}
+        </text>
+        {
+          measure.repeatEnd &&
+            (
+              <RepeatSign
+                measureWidth={measure.width}
+                strings={5}
+                y={yTop + 25}
+                repeatEnd={measure.repeatEnd}
+              />
+            )
+        }
+        {
+          measure.repeatBegin &&
+            <RepeatSign measureWidth={measure.width} strings={5} y={yTop + 25} repeatEnd={false} />
+        }
       </svg>
     );
   }

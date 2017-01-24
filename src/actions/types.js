@@ -1,11 +1,20 @@
 /* @flow */
 
 import type {
-  PlayingIndex, Clipboard, Cursor, Range, SelectRange, Duration, Tuning, TimeSignature, Layout, Track
+  PlayingIndex,
+  Clipboard,
+  Cursor,
+  Range,
+  SelectRange,
+  Duration,
+  Tuning,
+  TimeSignature,
+  Layout,
+  Track
 } from '../util/stateTypes';
 
 export type Action =
-    { type: 'SET_CURSOR', index: Cursor }
+  | { type: 'SET_CURSOR', index: Cursor }
   | { type: 'MOVE_CURSOR_LEFT' }
   | { type: 'MOVE_CURSOR_RIGHT' }
   | { type: 'MOVE_CURSOR_UP' }
@@ -35,7 +44,13 @@ export type Action =
   | { type: 'DELETE_MEASURE', measureIndex: number }
   | { type: 'CHANGE_TUNING', tuning: Tuning }
   | { type: 'CHANGE_TEMPO', index: PlayingIndex, tempo: number, toEnd: boolean, all: boolean }
-  | { type: 'CHANGE_TIME_SIGNATURE', index: PlayingIndex, timeSignature: TimeSignature, toEnd: boolean, all: boolean }
+  | {
+    type: 'CHANGE_TIME_SIGNATURE',
+    index: PlayingIndex,
+    timeSignature: TimeSignature,
+    toEnd: boolean,
+    all: boolean
+  }
   | { type: 'SET_INSTRUMENT', instrument: string }
   | { type: 'INSERT_TRACK' }
   | { type: 'DELETE_TRACK', index: PlayingIndex }

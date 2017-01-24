@@ -11,41 +11,25 @@ import type { PlayingIndex, Layout, Track } from '../util/stateTypes';
 import type { Action } from './types';
 
 export function insertTrack(): Action {
-  return {
-    type: INSERT_TRACK
-  };
+  return { type: INSERT_TRACK };
 }
 
 export function deleteTrack(index: PlayingIndex): Action {
-  return {
-    type: DELETE_TRACK,
-    index
-  };
+  return { type: DELETE_TRACK, index };
 }
 
 export function selectTrack(index: PlayingIndex): Action {
-  return {
-    type: SELECT_TRACK,
-    index
-  };
+  return { type: SELECT_TRACK, index };
 }
 
 export function resize(): Action {
-  return {
-    type: RESIZE
-  };
+  return { type: RESIZE };
 }
 
 export function changeLayout(layout: Layout): Action {
-  return {
-    type: CHANGE_LAYOUT,
-    layout
-  };
+  return { type: CHANGE_LAYOUT, layout };
 }
 
 export function replaceSong(tracks: Array<Track>): Action {
-  return {
-    type: REPLACE_SONG,
-    tracks
-  };
+  return { type: REPLACE_SONG, tracks };
 }

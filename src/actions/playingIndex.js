@@ -8,20 +8,13 @@ import type { PlayingIndex } from '../util/stateTypes';
 import type { Action } from './types';
 
 export function setPlayingIndex(index: PlayingIndex): Action {
-  return {
-    type: SET_PLAYING_INDEX,
-    index
-  };
+  return { type: SET_PLAYING_INDEX, index };
 }
 
 export function toggleMetronome(): Action {
-  return {
-    type: TOGGLE_METRONOME
-  };
+  return { type: TOGGLE_METRONOME };
 }
 
 export function toggleCountdown(): Action {
-  return {
-    type: TOGGLE_COUNTDOWN
-  };
+  return { type: TOGGLE_COUNTDOWN };
 }

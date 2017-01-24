@@ -1,7 +1,13 @@
 /* @flow */
 
-import { SET_CURSOR, MOVE_CURSOR_LEFT, MOVE_CURSOR_RIGHT, MOVE_CURSOR_UP,
-  MOVE_CURSOR_DOWN, SET_SELECT_RANGE } from '../actions/cursor';
+import {
+  SET_CURSOR,
+  MOVE_CURSOR_LEFT,
+  MOVE_CURSOR_RIGHT,
+  MOVE_CURSOR_UP,
+  MOVE_CURSOR_DOWN,
+  SET_SELECT_RANGE
+} from '../actions/cursor';
 import { DELETE_MEASURE } from '../actions/track';
 import { DELETE_NOTE, INSERT_NOTE } from '../actions/measure';
 
@@ -9,16 +15,17 @@ import { getNextNote, getPrevNote, getUpperString, getLowerString } from '../uti
 import type { Cursor, Measure, Tuning } from '../util/stateTypes';
 import type { Action } from '../actions/types';
 
-const initialState = {
-  measureIndex: 0,
-  noteIndex: 0,
-  stringIndex: 0
-};
+const initialState = { measureIndex: 0, noteIndex: 0, stringIndex: 0 };
 
-export default function cursor(state: Cursor = initialState, action: Action, measures: Array<Measure>, tuning: Tuning): Cursor {
+export default function cursor(
+  state: Cursor = initialState,
+  action: Action,
+  measures: Array<Measure>,
+  tuning: Tuning
+): Cursor {
   const { noteIndex, measureIndex } = state;
 
-  switch(action.type) {
+  switch (action.type) {
     case SET_CURSOR: {
       return action.index;
     }
@@ -27,31 +34,17 @@ export default function cursor(state: Cursor = initialState, action: Action, mea
     case MOVE_CURSOR_RIGHT:
       return getNextNote(measures, state);
     case MOVE_CURSOR_UP:
-      return {
-        ...state,
-        stringIndex: getUpperString(state.stringIndex, tuning.length)
-      };
+      return { ...state, stringIndex: getUpperString(state.stringIndex, tuning.length) };
     case MOVE_CURSOR_DOWN:
-      return {
-        ...state,
-        stringIndex: getLowerString(state.stringIndex, tuning.length)
-      };
+      return { ...state, stringIndex: getLowerString(state.stringIndex, tuning.length) };
 
     case SET_SELECT_RANGE: {
-      if(action.range) {
+      if (action.range) {
         const measureIndex = parseInt(Object.keys(action.range)[0]);
-        if(action.range[measureIndex] === 'all') {
-          return {
-            ...state,
-            measureIndex,
-            noteIndex: 0
-          };
+        if (action.range[measureIndex] === 'all') {
+          return { ...state, measureIndex, noteIndex: 0 };
         } else {
-          return {
-            ...state,
-            measureIndex,
-            noteIndex: action.range[measureIndex][0]
-          };
+          return { ...state, measureIndex, noteIndex: action.range[measureIndex][0] };
         }
       }
 
@@ -59,19 +52,16 @@ export default function cursor(state: Cursor = initialState, action: Action, mea
     }
 
     case INSERT_NOTE: {
-      if(measures[measureIndex].notes.length === 0) {
+      if (measures[measureIndex].notes.length === 0) {
         return state;
       }
-      return {
-        ...state,
-        noteIndex: state.noteIndex + 1
-      };
+      return { ...state, noteIndex: state.noteIndex + 1 };
     }
 
     case DELETE_NOTE: {
       const measure = measures[measureIndex];
       const note = measure.notes[noteIndex];
-      if(note.fret[0] === 'rest' && noteIndex !== 0) {
+      if (note.fret[0] === 'rest' && noteIndex !== 0) {
         return getPrevNote(measures, state);
       }
       return state;
