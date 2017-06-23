@@ -4,12 +4,12 @@ import { bindActionCreators } from 'redux';
 import { ActionCreators } from 'redux-undo';
 import { StyleSheet, css } from 'aphrodite';
 
-import * as TracksActions from '../actions/tracks';
-import * as TrackActions from '../actions/track';
-import * as MeasureActions from '../actions/measure';
-import * as PlayingIndexActions from '../actions/playingIndex';
-import * as CursorActions from '../actions/cursor';
-import * as CopyPasteActions from '../actions/cutCopyPaste';
+import { insertTrack, deleteTrack, selectTrack, resize, changeLayout, replaceSong } from '../actions/tracks';
+import { insertMeasure, deleteMeasure, changeTuning, changeTempo, changeTimeSignature, setInstrument } from '../actions/track';
+import { changeNote, deleteNote, changeNoteLength, insertNote, makeNoteRest, toggleNoteDotted, toggleNoteTremolo, toggleNoteTrill, toggleNoteVibrato, setNoteTuplet, increaseNoteLength, decreaseNoteLength, toggleRepeatBegin, toggleRepeatEnd } from '../actions/measure';
+import { setPlayingIndex, toggleMetronome, toggleCountdown }  from '../actions/playingIndex';
+import { setCursor, moveCursorLeft, moveCursorRight, moveCursorUp, moveCursorDown, setSelectRange } from '../actions/cursor';
+import { copyNote, cutNote, pasteNote } from '../actions/cutCopyPaste';
 
 import { cursorAfterCutting, cursorAfterPasting, getNotesFromSelection } from '../util/cursor';
 import { updateScrollPosition } from '../util/updateScroll';
@@ -23,12 +23,18 @@ import Sidebar from '../components/editor/Sidebar';
 import Playback from '../components/Playback';
 
 const Actions = Object.assign(
-  TracksActions,
-  TrackActions,
-  MeasureActions,
-  PlayingIndexActions,
-  CursorActions,
-  CopyPasteActions
+  // TracksActions
+  insertTrack, deleteTrack, selectTrack, resize, changeLayout, replaceSong,
+  // TrackActions
+  insertMeasure, deleteMeasure, changeTuning, changeTempo, changeTimeSignature, setInstrument,
+  // MeasureActions
+  changeNote, deleteNote, changeNoteLength, insertNote, makeNoteRest, toggleNoteDotted, toggleNoteTremolo, toggleNoteTrill, toggleNoteVibrato, setNoteTuplet, increaseNoteLength, decreaseNoteLength, toggleRepeatBegin, toggleRepeatEnd,
+  // PlayingIndexActions
+  setPlayingIndex, toggleMetronome, toggleCountdown,
+  // CursorActions
+  setCursor, moveCursorLeft, moveCursorRight, moveCursorUp, moveCursorDown, setSelectRange,
+  // CopyPasteActions
+  copyNote, cutNote, pasteNote
 );
 
 const styles = StyleSheet.create({ container: { width: '100%', height: '100%' } });
