@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, css } from 'aphrodite';
+import { flatten } from 'lodash';
 
 import { setPlayingIndex } from '../actions/playingIndex';
 import { setCursor } from '../actions/cursor';
@@ -18,12 +19,14 @@ import audioContext from '../util/audioContext';
 const styles = StyleSheet.create({ none: { display: 'none' } });
 
 class Playback extends Component {
+  lastBuffers = [];
+
   shouldComponentUpdate() {
     return false;
   }
 
   componentWillMount() {
-    this.startTime = audioContext.currentTime + .005;
+    this.startTime = audioContext.currentTime + 0.005;
     this.noteTime = 0.0;
     if (this.props.countdown) {
       this.startCountdown();
@@ -43,7 +46,7 @@ class Playback extends Component {
   }
 
   schedule(measures, playingIndex, visibleTrackIndex, countdown) {
-    while (this.noteTime < audioContext.currentTime - this.startTime + 0.200) {
+    while (this.noteTime < audioContext.currentTime - this.startTime + 0.2) {
       if (playingIndex === false) {
         if (countdown) {
           return this.startPlayback();
@@ -56,13 +59,21 @@ class Playback extends Component {
       const { measureIndex, noteIndex } = playingIndex;
 
       measures[measureIndex][noteIndex].forEach(note => {
-        this.lastBuffers = playCurrentNoteAtTime(
-          note,
-          contextPlayTime,
-          this.props.buffers[note.instrument]
+        this.lastBuffers = flatten(
+          this.lastBuffers.concat(
+            playCurrentNoteAtTime(
+              note,
+              contextPlayTime,
+              this.props.buffers[note.instrument]
+            )
+          )
         );
       });
-      playingIndex = this.advanceNote(playingIndex, measures, visibleTrackIndex);
+      playingIndex = this.advanceNote(
+        playingIndex,
+        measures,
+        visibleTrackIndex
+      );
     }
     this.requestId = requestAnimationFrame(() => {
       this.schedule(measures, playingIndex, visibleTrackIndex, countdown);
@@ -82,11 +93,15 @@ class Playback extends Component {
       }
     });
 
-    this.noteTime = this.noteTime + 60.0 / getReplaySpeed(measure, noteIndex, lastNoteIndex);
+    this.noteTime =
+      this.noteTime + 60.0 / getReplaySpeed(measure, noteIndex, lastNoteIndex);
 
     if (measureIndex === measures.length - 1 && noteIndex === lastNoteIndex) {
       return false;
-    } else if (measureIndex !== measures.length - 1 && noteIndex === lastNoteIndex) {
+    } else if (
+      measureIndex !== measures.length - 1 &&
+      noteIndex === lastNoteIndex
+    ) {
       return { measureIndex: measureIndex + 1, noteIndex: 0 };
     } else {
       return { measureIndex, noteIndex: noteIndex + 1 };
@@ -94,8 +109,18 @@ class Playback extends Component {
   }
 
   startPlayback() {
-    const { currentTrackIndex, playingIndex, expandedTracks, metronome, countdown } = this.props;
-    const scheduledSong = createScheduleForSong(expandedTracks, metronome, countdown);
+    const {
+      currentTrackIndex,
+      playingIndex,
+      expandedTracks,
+      metronome,
+      countdown
+    } = this.props;
+    const scheduledSong = createScheduleForSong(
+      expandedTracks,
+      metronome,
+      countdown
+    );
     const realPlayingIndex = getRealPlayingIndex(
       this.playingIndexCopy || playingIndex,
       scheduledSong,
@@ -114,12 +139,23 @@ class Playback extends Component {
       measureIndex: playingIndex.measureIndex,
       noteIndex: playingIndex.noteIndex
     };
-    this.props.setPlayingIndex({ measureIndex: playingIndex.measureIndex, noteIndex: -1 });
+    this.props.setPlayingIndex({
+      measureIndex: playingIndex.measureIndex,
+      noteIndex: -1
+    });
 
-    const countdownTrack = createCountdownSchedule(expandedTracks, playingIndex.measureIndex);
+    const countdownTrack = createCountdownSchedule(
+      expandedTracks,
+      playingIndex.measureIndex
+    );
 
     this.requestId = requestAnimationFrame(() => {
-      this.schedule(countdownTrack, { noteIndex: 0, measureIndex: 0 }, -1, true);
+      this.schedule(
+        countdownTrack,
+        { noteIndex: 0, measureIndex: 0 },
+        -1,
+        true
+      );
     });
   }
 
@@ -128,4 +164,6 @@ class Playback extends Component {
   }
 }
 
-export default connect(expandedTracksSelector, { setPlayingIndex, setCursor })(Playback);
+export default connect(expandedTracksSelector, { setPlayingIndex, setCursor })(
+  Playback
+);

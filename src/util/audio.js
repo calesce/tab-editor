@@ -1,7 +1,10 @@
 import { getIndexOfNote } from './midiNotes';
 import audioContext from './audioContext';
 import { times } from 'lodash';
-import { numberOfTremoloNotesForDuration, getReplaySpeedFromPercentage } from './audioMath';
+import {
+  numberOfTremoloNotesForDuration,
+  getReplaySpeedFromPercentage
+} from './audioMath';
 
 const playVibrato = (source, startTime, endTime) => {
   let freqGain = audioContext.createGain();
@@ -34,7 +37,10 @@ const extendBuffer = buffer => {
     const chunkLength = Math.round(buffer.length / 4);
     const startIndex = Math.round(buffer.length / 2) + chunkLength;
 
-    const copiedChunk = bufferChannel.slice(startIndex, startIndex + chunkLength);
+    const copiedChunk = bufferChannel.slice(
+      startIndex,
+      startIndex + chunkLength
+    );
 
     newChannel.set(bufferChannel, 0);
     newChannel.set(copiedChunk, startIndex + chunkLength);
@@ -44,7 +50,12 @@ const extendBuffer = buffer => {
   return newBuffer;
 };
 
-export function playWithBuffer(buffer, duration, startTime = audioContext.currentTime, vibrato) {
+export function playWithBuffer(
+  buffer,
+  duration,
+  startTime = audioContext.currentTime,
+  vibrato
+) {
   let endTime = startTime + duration;
 
   let source = audioContext.createBufferSource();
@@ -80,7 +91,12 @@ const playNoteAtTime = (note, playTime, duration, buffers, tuning) => {
     const openString = tuning[note.string[i]];
     const noteToPlay = getIndexOfNote(openString) + note.fret[i];
 
-    const buffer = playWithBuffer(buffers[noteToPlay], duration / 1000, playTime, note.vibrato);
+    const buffer = playWithBuffer(
+      buffers[noteToPlay],
+      duration / 1000,
+      playTime,
+      note.vibrato
+    );
     lastBuffers.push(buffer);
   }
   return lastBuffers;
@@ -127,21 +143,39 @@ const playTrill = (note, currentTime, replaySpeed, buffers, tuning) => {
 };
 
 export function playCurrentNoteAtTime(note, time, buffers) {
-  const replaySpeed = getReplaySpeedFromPercentage(note.percentage, note.timeSignature, note.tempo);
+  const replaySpeed = getReplaySpeedFromPercentage(
+    note.percentage,
+    note.timeSignature,
+    note.tempo
+  );
 
   if (note.metronome) {
-    return playWithBuffer(buffers[60], replaySpeed / 1000, time);
+    return [playWithBuffer(buffers[60], replaySpeed / 1000, time)];
   } else if (note.tremolo) {
-    return playTremolo(note, time || audioContext.currentTime, replaySpeed, buffers, note.tuning);
-  } else if (note.trill) {
-    return playTrill(note, time || audioContext.currentTime, replaySpeed, buffers, note.tuning);
-  } else if (note.fret[0] !== 'rest') {
-    return playNoteAtTime(
+    return playTremolo(
       note,
       time || audioContext.currentTime,
       replaySpeed,
       buffers,
       note.tuning
     );
+  } else if (note.trill) {
+    return playTrill(
+      note,
+      time || audioContext.currentTime,
+      replaySpeed,
+      buffers,
+      note.tuning
+    );
+  } else if (note.fret[0] !== 'rest') {
+    return [
+      playNoteAtTime(
+        note,
+        time || audioContext.currentTime,
+        replaySpeed,
+        buffers,
+        note.tuning
+      )
+    ];
   }
 }
