@@ -11,7 +11,12 @@ import {
 import { DELETE_MEASURE } from '../actions/track';
 import { DELETE_NOTE, INSERT_NOTE } from '../actions/measure';
 
-import { getNextNote, getPrevNote, getUpperString, getLowerString } from '../util/cursor';
+import {
+  getNextNote,
+  getPrevNote,
+  getUpperString,
+  getLowerString
+} from '../util/cursor';
 import type { Cursor, Measure, Tuning } from '../util/stateTypes';
 import type { Action } from '../actions/types';
 
@@ -34,9 +39,15 @@ export default function cursor(
     case MOVE_CURSOR_RIGHT:
       return getNextNote(measures, state);
     case MOVE_CURSOR_UP:
-      return { ...state, stringIndex: getUpperString(state.stringIndex, tuning.length) };
+      return {
+        ...state,
+        stringIndex: getUpperString(state.stringIndex, tuning.length)
+      };
     case MOVE_CURSOR_DOWN:
-      return { ...state, stringIndex: getLowerString(state.stringIndex, tuning.length) };
+      return {
+        ...state,
+        stringIndex: getLowerString(state.stringIndex, tuning.length)
+      };
 
     case SET_SELECT_RANGE: {
       if (action.range) {
@@ -44,7 +55,11 @@ export default function cursor(
         if (action.range[measureIndex] === 'all') {
           return { ...state, measureIndex, noteIndex: 0 };
         } else {
-          return { ...state, measureIndex, noteIndex: action.range[measureIndex][0] };
+          return {
+            ...state,
+            measureIndex,
+            noteIndex: action.range[measureIndex][0]
+          };
         }
       }
 

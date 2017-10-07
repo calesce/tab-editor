@@ -20,7 +20,12 @@ export type Action =
   | { type: 'MOVE_CURSOR_UP' }
   | { type: 'MOVE_CURSOR_DOWN' }
   | { type: 'SET_SELECT_RANGE', range: SelectRange }
-  | { type: 'CUT_NOTE', index: PlayingIndex, selection: Clipboard, range: ?Range }
+  | {
+      type: 'CUT_NOTE',
+      index: PlayingIndex,
+      selection: Clipboard,
+      range: ?Range
+    }
   | { type: 'COPY_NOTE', selection: Clipboard }
   | { type: 'PASTE_NOTE', index: PlayingIndex, clipboard: Clipboard }
   | { type: 'CHANGE_NOTE', index: PlayingIndex, fret: number }
@@ -43,14 +48,20 @@ export type Action =
   | { type: 'INSERT_MEASURE', index: PlayingIndex }
   | { type: 'DELETE_MEASURE', measureIndex: number }
   | { type: 'CHANGE_TUNING', tuning: Tuning }
-  | { type: 'CHANGE_TEMPO', index: PlayingIndex, tempo: number, toEnd: boolean, all: boolean }
   | {
-    type: 'CHANGE_TIME_SIGNATURE',
-    index: PlayingIndex,
-    timeSignature: TimeSignature,
-    toEnd: boolean,
-    all: boolean
-  }
+      type: 'CHANGE_TEMPO',
+      index: PlayingIndex,
+      tempo: number,
+      toEnd: boolean,
+      all: boolean
+    }
+  | {
+      type: 'CHANGE_TIME_SIGNATURE',
+      index: PlayingIndex,
+      timeSignature: TimeSignature,
+      toEnd: boolean,
+      all: boolean
+    }
   | { type: 'SET_INSTRUMENT', instrument: string }
   | { type: 'INSERT_TRACK' }
   | { type: 'DELETE_TRACK', index: PlayingIndex }

@@ -40,10 +40,13 @@ class Measure extends PureComponent {
           rowHeight={rowHeight}
           stringCount={tuning.length}
         />
-        {
-          selectRange &&
-            <MeasureSelectBox measure={measure} selectRange={selectRange} height={measureHeight} />
-        }
+        {selectRange && (
+          <MeasureSelectBox
+            measure={measure}
+            selectRange={selectRange}
+            height={measureHeight}
+          />
+        )}
       </svg>
     );
   }

@@ -26,7 +26,10 @@ export function deleteNote(index: PlayingIndex): Action {
   return { type: DELETE_NOTE, index };
 }
 
-export function changeNoteLength(index: PlayingIndex, duration: Duration): Action {
+export function changeNoteLength(
+  index: PlayingIndex,
+  duration: Duration
+): Action {
   return { type: CHANGE_NOTE_LENGTH, index, duration };
 }
 

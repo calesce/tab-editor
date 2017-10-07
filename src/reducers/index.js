@@ -1,7 +1,11 @@
 /* @flow */
 
 import { ActionTypes } from 'redux-undo';
-import { SET_PLAYING_INDEX, TOGGLE_METRONOME, TOGGLE_COUNTDOWN } from '../actions/playingIndex';
+import {
+  SET_PLAYING_INDEX,
+  TOGGLE_METRONOME,
+  TOGGLE_COUNTDOWN
+} from '../actions/playingIndex';
 import { COPY_NOTE, CUT_NOTE } from '../actions/cutCopyPaste';
 import {
   INSERT_TRACK,
@@ -52,7 +56,10 @@ const getValidCursor = (cursor: Cursor, track: Track): Cursor => {
   return { ...cursor, measureIndex, noteIndex };
 };
 
-const getValidTrackIndex = (prevTrackIndex: number, tracks: Array<Track>): number => {
+const getValidTrackIndex = (
+  prevTrackIndex: number,
+  tracks: Array<Track>
+): number => {
   return tracks[prevTrackIndex] ? prevTrackIndex : tracks.length - 1;
 };
 
@@ -102,7 +109,10 @@ export default function rootReducer(state: State, action: Object): State {
     }
 
     case INSERT_TRACK: {
-      const newTrack = emptyTrack(state.tracks.present, state.currentTrackIndex);
+      const newTrack = emptyTrack(
+        state.tracks.present,
+        state.currentTrackIndex
+      );
       return {
         ...state,
         tracks: tracksReducer(
@@ -117,9 +127,12 @@ export default function rootReducer(state: State, action: Object): State {
     }
 
     case DELETE_TRACK: {
-      const newTracks = state.tracks.present.length === 1
-        ? [ emptyTrack(state.tracks.present, state.currentTrackIndex) ]
-        : state.tracks.present.filter((_, i) => state.currentTrackIndex !== i);
+      const newTracks =
+        state.tracks.present.length === 1
+          ? [emptyTrack(state.tracks.present, state.currentTrackIndex)]
+          : state.tracks.present.filter(
+              (_, i) => state.currentTrackIndex !== i
+            );
 
       return {
         ...state,
@@ -143,7 +156,12 @@ export default function rootReducer(state: State, action: Object): State {
       return {
         ...state,
         selectRange: action.range,
-        cursor: cursorReducer(state.cursor, action, currentTrack.measures, currentTrack.tuning)
+        cursor: cursorReducer(
+          state.cursor,
+          action,
+          currentTrack.measures,
+          currentTrack.tuning
+        )
       };
     }
 
@@ -155,7 +173,12 @@ export default function rootReducer(state: State, action: Object): State {
       const currentTrack = state.tracks.present[state.currentTrackIndex];
       return {
         ...state,
-        cursor: cursorReducer(state.cursor, action, currentTrack.measures, currentTrack.tuning)
+        cursor: cursorReducer(
+          state.cursor,
+          action,
+          currentTrack.measures,
+          currentTrack.tuning
+        )
       };
     }
 
@@ -179,8 +202,15 @@ export default function rootReducer(state: State, action: Object): State {
 
     case ActionTypes.UNDO:
     case ActionTypes.REDO: {
-      const tracks = tracksReducer(state.tracks, action, state.currentTrackIndex);
-      const trackIndex = getValidTrackIndex(state.currentTrackIndex, tracks.present);
+      const tracks = tracksReducer(
+        state.tracks,
+        action,
+        state.currentTrackIndex
+      );
+      const trackIndex = getValidTrackIndex(
+        state.currentTrackIndex,
+        tracks.present
+      );
 
       return {
         ...state,
@@ -192,7 +222,10 @@ export default function rootReducer(state: State, action: Object): State {
     }
 
     default: {
-      return { ...state, tracks: tracksReducer(state.tracks, action, state.currentTrackIndex) };
+      return {
+        ...state,
+        tracks: tracksReducer(state.tracks, action, state.currentTrackIndex)
+      };
     }
   }
 }

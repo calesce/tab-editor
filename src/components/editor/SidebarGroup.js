@@ -12,7 +12,12 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     textShadow: '0.5px 0 0 rgba(0, 0, 0, 0.4)'
   },
-  flex: { marginLeft: 5, display: 'flex', justifyContent: 'flex-start', flexWrap: 'wrap' }
+  flex: {
+    marginLeft: 5,
+    display: 'flex',
+    justifyContent: 'flex-start',
+    flexWrap: 'wrap'
+  }
 });
 
 class SidebarGroup extends PureComponent {
@@ -20,9 +25,7 @@ class SidebarGroup extends PureComponent {
     return (
       <div className={css(styles.group)}>
         <h3 className={css(styles.header)}>{this.props.title}</h3>
-        <div className={css(styles.flex)}>
-          {this.props.children}
-        </div>
+        <div className={css(styles.flex)}>{this.props.children}</div>
       </div>
     );
   }

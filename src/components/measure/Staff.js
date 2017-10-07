@@ -37,8 +37,8 @@ export default class Staff extends PureComponent {
 
     return (
       <g>
-        {range(strings).map(
-          (_, i) => this.renderBar(i, startY, color, strings, strokeWidth, measureWidth)
+        {range(strings).map((_, i) =>
+          this.renderBar(i, startY, color, strings, strokeWidth, measureWidth)
         )}
         <rect
           y={startY}
@@ -57,19 +57,17 @@ export default class Staff extends PureComponent {
           stroke={color}
           strokeWidth={strokeWidth}
         />
-        {
-          lastMeasure
-            ? <rect
-              x={measureWidth - 3.5}
-              y={startY}
-              width={.75}
-              height={height}
-              fill={'#999999'}
-              stroke={color}
-              strokeWidth={0.1}
-            />
-            : null
-        }
+        {lastMeasure ? (
+          <rect
+            x={measureWidth - 3.5}
+            y={startY}
+            width={0.75}
+            height={height}
+            fill={'#999999'}
+            stroke={color}
+            strokeWidth={0.1}
+          />
+        ) : null}
       </g>
     );
   }

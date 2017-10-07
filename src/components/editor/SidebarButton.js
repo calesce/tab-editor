@@ -94,14 +94,16 @@ const SixteenthNote = () => {
   return (
     <g transform="scale(0.8), translate(15, 10)">
       <g transform="matrix(.125 0 0 .125 -4 -12.5)">
-        <ellipse transform="rotate(-23 83.5 335.5)" cx="83.5" cy="340.5" rx="72.5" ry="46.5" />
+        <ellipse
+          transform="rotate(-23 83.5 335.5)"
+          cx="83.5"
+          cy="340.5"
+          rx="72.5"
+          ry="46.5"
+        />
         <path d="M149.5 6v323.05V6z" strokeWidth={10} />
-        <path
-          d="M149.5 6v323.05V6zM213.92406 101.04561c-28.59228-38.14294-59.86623-45.92692-59.86623-45.92692V7.6224c0 .91303-4.33153 7.27183 12.56624 26.3776 2.52347 2.8532 10.00702 9.9108 51.7437 45.57988 6.67432 5.70403 51.64764 73.4412 27.23124 114.88894l-6.03174-8.987c5.255-10.278 2.94907-46.29325-25.6432-84.4362z"
-        />
-        <path
-          d="M221.992 194.508c-23.1-27.952-68.09-39.207-68.09-39.207V77.51c0-5.047-.226 25.933 9.935 34.676 29.577 25.452 38.977 36.87 58.155 52.676 53.52 44.11 20.69 123.34 17.62 146.345H228.1c2.64-8.537 22.23-82.41-6.106-116.7z"
-        />
+        <path d="M149.5 6v323.05V6zM213.92406 101.04561c-28.59228-38.14294-59.86623-45.92692-59.86623-45.92692V7.6224c0 .91303-4.33153 7.27183 12.56624 26.3776 2.52347 2.8532 10.00702 9.9108 51.7437 45.57988 6.67432 5.70403 51.64764 73.4412 27.23124 114.88894l-6.03174-8.987c5.255-10.278 2.94907-46.29325-25.6432-84.4362z" />
+        <path d="M221.992 194.508c-23.1-27.952-68.09-39.207-68.09-39.207V77.51c0-5.047-.226 25.933 9.935 34.676 29.577 25.452 38.977 36.87 58.155 52.676 53.52 44.11 20.69 123.34 17.62 146.345H228.1c2.64-8.537 22.23-82.41-6.106-116.7z" />
       </g>
     </g>
   );
@@ -120,7 +122,9 @@ const DottedButton = () => <circle cx={19} cy={30} r={3} />;
 
 const TupletButton = () => (
   <g transform="scale(1.2), translate(11, 23)">
-    <text strokeWidth={0} y={0} className={css(styles.tuplet)}>3</text>
+    <text strokeWidth={0} y={0} className={css(styles.tuplet)}>
+      3
+    </text>
   </g>
 );
 
@@ -135,7 +139,9 @@ const TremoloButton = () => (
 
 const TrillButton = () => (
   <g transform="scale(0.9), translate(8, 20)">
-    <text strokeWidth={0} y={7} className={css(styles.trill)}>tr</text>
+    <text strokeWidth={0} y={7} className={css(styles.trill)}>
+      tr
+    </text>
     <path
       strokeWidth={0}
       d="M25.912 1.896c.128-.144.288-.216.512-.216.352 0 .64.216.64.48 0 .096-.032.192-.096.264-.992 1.128-1.984 2.232-2.976 3.36-.128.144-.32.216-.544.216-.192 0-.352-.048-.48-.168l-3.136-2.856-2.496 2.808c-.128.144-.32.216-.544.216-.192 0-.352-.048-.48-.168l-3.168-2.856c-.32.384-.672.744-.992 1.128-.128.144-.288.216-.512.216-.352 0-.64-.216-.64-.48 0-.096.032-.192.096-.264.992-1.128 1.984-2.232 2.976-3.36.128-.144.32-.216.544-.216.192 0 .352.048.48.168l3.136 2.856L20.728.216c.128-.144.32-.216.544-.216.192 0 .352.048.48.168l3.168 2.856c.32-.384.672-.744.992-1.128z"
@@ -252,8 +258,15 @@ const isButtonSelected = (state, props, currentNote) => {
 
 const currentNoteSelector = (state, ownProps) => {
   const { cursor, currentTrackIndex, tracks } = state;
-  const currentNote = tracks.present[currentTrackIndex].measures[cursor.measureIndex].notes[cursor.noteIndex];
-  return { cursor, selected: isButtonSelected(state, ownProps, currentNote), currentNote };
+  const currentNote =
+    tracks.present[currentTrackIndex].measures[cursor.measureIndex].notes[
+      cursor.noteIndex
+    ];
+  return {
+    cursor,
+    selected: isButtonSelected(state, ownProps, currentNote),
+    currentNote
+  };
 };
 
 export default connect(currentNoteSelector, {

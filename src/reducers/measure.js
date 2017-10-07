@@ -19,7 +19,11 @@ import {
 
 import type { Measure, Note } from '../util/stateTypes';
 
-const replaceNote = (state: Measure, note: Note, noteIndex: number): Measure => {
+const replaceNote = (
+  state: Measure,
+  note: Note,
+  noteIndex: number
+): Measure => {
   const notes = state.notes
     .slice(0, noteIndex)
     .concat(note)
@@ -29,12 +33,16 @@ const replaceNote = (state: Measure, note: Note, noteIndex: number): Measure => 
 
 const insertNote = (state: Measure, action: Object): Measure => {
   if (state.notes.length === 0) {
-    const notes = [ { duration: 'q', fret: [ 'rest' ], string: [ 'rest' ] } ];
+    const notes = [{ duration: 'q', fret: ['rest'], string: ['rest'] }];
     return { ...state, notes };
   }
 
   const { noteIndex } = action.index;
-  const note = { duration: state.notes[noteIndex].duration, fret: [ 'rest' ], string: [ 'rest' ] };
+  const note = {
+    duration: state.notes[noteIndex].duration,
+    fret: ['rest'],
+    string: ['rest']
+  };
   const notes = state.notes
     .slice(0, noteIndex + 1)
     .concat(note)
@@ -45,7 +53,10 @@ const insertNote = (state: Measure, action: Object): Measure => {
 const deleteNote = (state: Measure, action: Object): Measure => {
   const { noteIndex, stringIndex } = action.index;
   const note = state.notes[noteIndex];
-  const currentStringIndex = findIndex(note.string, note => note === stringIndex);
+  const currentStringIndex = findIndex(
+    note.string,
+    note => note === stringIndex
+  );
 
   if (note.fret[0] === 'rest') {
     const notes = state.notes
@@ -57,7 +68,7 @@ const deleteNote = (state: Measure, action: Object): Measure => {
   } else {
     let newNote;
     if (note.fret.length === 1) {
-      newNote = { ...note, fret: [ 'rest' ], string: [ 'rest' ] };
+      newNote = { ...note, fret: ['rest'], string: ['rest'] };
     } else {
       newNote = {
         ...note,
@@ -117,16 +128,23 @@ const decreaseNoteLength = (note: Note): string => {
   return newDuration;
 };
 
-const getChangedNote = (oldNote: Note, fret: number, stringIndex: number): Note => {
+const getChangedNote = (
+  oldNote: Note,
+  fret: number,
+  stringIndex: number
+): Note => {
   if (fret === 'rest') {
-    return { ...oldNote, fret: [ 'rest' ], string: [ 'rest' ] };
+    return { ...oldNote, fret: ['rest'], string: ['rest'] };
   } else if (!oldNote) {
-    return { fret: [ fret ], string: [ stringIndex ], duration: 'q' };
+    return { fret: [fret], string: [stringIndex], duration: 'q' };
   }
 
-  const currentStringIndex = findIndex(oldNote.string, note => note === stringIndex);
+  const currentStringIndex = findIndex(
+    oldNote.string,
+    note => note === stringIndex
+  );
   if (oldNote.fret[0] === 'rest') {
-    return { ...oldNote, fret: [ fret ], string: [ stringIndex ] };
+    return { ...oldNote, fret: [fret], string: [stringIndex] };
   } else if (currentStringIndex === -1) {
     return {
       ...oldNote,
@@ -135,7 +153,8 @@ const getChangedNote = (oldNote: Note, fret: number, stringIndex: number): Note 
     };
   } else {
     const oldFret = oldNote.fret[currentStringIndex];
-    const newFret = oldFret === 1 ? fret + 10 : oldFret === 2 && fret <= 5 ? fret + 20 : fret;
+    const newFret =
+      oldFret === 1 ? fret + 10 : oldFret === 2 && fret <= 5 ? fret + 20 : fret;
 
     const newFrets = oldNote.fret
       .slice(0, currentStringIndex)
@@ -220,7 +239,11 @@ export default function measure(state: Measure, action: Object): Measure {
 
     case CHANGE_NOTE: {
       const { noteIndex, stringIndex } = action.index;
-      const note = getChangedNote(state.notes[noteIndex], action.fret, stringIndex);
+      const note = getChangedNote(
+        state.notes[noteIndex],
+        action.fret,
+        stringIndex
+      );
       return replaceNote(state, note, noteIndex);
     }
 
@@ -228,8 +251,8 @@ export default function measure(state: Measure, action: Object): Measure {
       const { noteIndex } = action.index;
       const note = {
         ...state.notes[noteIndex],
-        fret: [ 'rest' ],
-        string: [ 'rest' ],
+        fret: ['rest'],
+        string: ['rest'],
         trill: false,
         tremolo: false,
         vibrato: false

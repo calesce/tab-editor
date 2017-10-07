@@ -17,11 +17,17 @@ import RepeatSign from './RepeatSign';
 
 import { setCursor } from '../../actions/cursor';
 
-const styles = StyleSheet.create({ measureNumber: { fontSize: 9, fill: 'tomato' } });
+const styles = StyleSheet.create({
+  measureNumber: { fontSize: 9, fill: 'tomato' }
+});
 
 class TabMeasure extends PureComponent {
   onClick = (noteIndex, stringIndex) => {
-    this.props.setCursor({ noteIndex, stringIndex, measureIndex: this.props.measure.measureIndex });
+    this.props.setCursor({
+      noteIndex,
+      stringIndex,
+      measureIndex: this.props.measure.measureIndex
+    });
   };
 
   onSvgClick = e => {
@@ -33,7 +39,11 @@ class TabMeasure extends PureComponent {
     const noteIndex = this.getNoteAtX(relativeX, measure.notes);
     const stringIndex = this.getStringAtY(relativeY, stringCount);
     if (stringIndex >= 0 && stringIndex < stringCount) {
-      this.props.setCursor({ noteIndex, stringIndex, measureIndex: measure.measureIndex });
+      this.props.setCursor({
+        noteIndex,
+        stringIndex,
+        measureIndex: measure.measureIndex
+      });
     }
   };
 
@@ -43,7 +53,7 @@ class TabMeasure extends PureComponent {
   }
 
   getStringAtY(y, stringCount) {
-    return Math.floor((-1) * ((y - 95 + 8.5) / 13) - 6 + stringCount) - 1;
+    return Math.floor(-1 * ((y - 95 + 8.5) / 13) - 6 + stringCount) - 1;
   }
 
   renderCursor(cursor, measure, stringCount) {
@@ -62,7 +72,10 @@ class TabMeasure extends PureComponent {
         x += 30;
       }
     } else if (measure.notes.length > 0) {
-      index = findIndex(measure.notes[noteIndex].string, s => s === stringIndex);
+      index = findIndex(
+        measure.notes[noteIndex].string,
+        s => s === stringIndex
+      );
       fret = measure.notes[noteIndex].fret[index];
       x = measure.notes[noteIndex] ? measure.notes[noteIndex].x : 10;
     }
@@ -91,7 +104,7 @@ class TabMeasure extends PureComponent {
       );
     }
 
-    return [ 0, 1, 2, 3, 4, 5 ].map((_, i) => {
+    return [0, 1, 2, 3, 4, 5].map((_, i) => {
       const stringIndex = findIndex(note.string, index => index === i);
       const fret = stringIndex === -1 ? undefined : note.fret[stringIndex];
       if (fret === undefined) {
@@ -115,7 +128,7 @@ class TabMeasure extends PureComponent {
     });
   }
 
-  setRef = e => this._element = e;
+  setRef = e => (this._element = e);
 
   render() {
     const {
@@ -129,7 +142,12 @@ class TabMeasure extends PureComponent {
     } = this.props;
 
     return (
-      <svg y={rowHeight} ref={this.setRef} height={stringCount * 25} width={measure.width}>
+      <svg
+        y={rowHeight}
+        ref={this.setRef}
+        height={stringCount * 25}
+        width={measure.width}
+      >
         <Staff
           measureWidth={measure.width}
           y={0}
@@ -143,70 +161,63 @@ class TabMeasure extends PureComponent {
           width={measure.width}
           opacity={0}
         />
-        {measure.notes.map((note, noteIndex) => this.renderTabNote(note, noteIndex))}
-        {
-          displayOption === 'tab' &&
-            (
-              <TempoMarker
-                tab
-                y={0}
-                tempo={measure.tempo}
-                renderTempo={measure.renderTempo}
-                displayOption={displayOption}
-              />
-            )
-        }
-        {
-          displayOption === 'tab' &&
-            (
-              <text x={0} y={23} className={css(styles.measureNumber)}>
-                {measure.measureIndex + 1}
-              </text>
-            )
-        }
-        {
-          measure.indexOfRow === 0 &&
-            <Clef y={25} strings={stringCount} repeatBegin={measure.repeatBegin} tab />
-        }
-        {
-          displayOption === 'tab' &&
-            (
-              <TimeSignature
-                yOffset={0}
-                strings={stringCount}
-                measure={measure}
-                displayOption={displayOption}
-                repeatBegin={measure.repeatBegin}
-              />
-            )
-        }
+        {measure.notes.map((note, noteIndex) =>
+          this.renderTabNote(note, noteIndex)
+        )}
+        {displayOption === 'tab' && (
+          <TempoMarker
+            tab
+            y={0}
+            tempo={measure.tempo}
+            renderTempo={measure.renderTempo}
+            displayOption={displayOption}
+          />
+        )}
+        {displayOption === 'tab' && (
+          <text x={0} y={23} className={css(styles.measureNumber)}>
+            {measure.measureIndex + 1}
+          </text>
+        )}
+        {measure.indexOfRow === 0 && (
+          <Clef
+            y={25}
+            strings={stringCount}
+            repeatBegin={measure.repeatBegin}
+            tab
+          />
+        )}
+        {displayOption === 'tab' && (
+          <TimeSignature
+            yOffset={0}
+            strings={stringCount}
+            measure={measure}
+            displayOption={displayOption}
+            repeatBegin={measure.repeatBegin}
+          />
+        )}
         {cursor && this.renderCursor(cursor, measure, stringCount)}
-        {
-          measure.repeatEnd &&
-            (
-              <RepeatSign
-                measureWidth={measure.width}
-                strings={stringCount}
-                y={25}
-                repeatEnd={true}
-              />
-            )
-        }
-        {
-          measure.repeatBegin &&
-            (
-              <RepeatSign
-                measureWidth={measure.width}
-                strings={stringCount}
-                y={25}
-                repeatEnd={false}
-              />
-            )
-        }
+        {measure.repeatEnd && (
+          <RepeatSign
+            measureWidth={measure.width}
+            strings={stringCount}
+            y={25}
+            repeatEnd={true}
+          />
+        )}
+        {measure.repeatBegin && (
+          <RepeatSign
+            measureWidth={measure.width}
+            strings={stringCount}
+            y={25}
+            repeatEnd={false}
+          />
+        )}
       </svg>
     );
   }
 }
 TabMeasure.defaultProps = { displayOption: 'both' };
 
-export default connect(makeMapStateToProps(makeTabMeasureSelector), { setCursor })(TabMeasure);
+export default connect(makeMapStateToProps(makeTabMeasureSelector), {
+  setCursor
+})(TabMeasure);

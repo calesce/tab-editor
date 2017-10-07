@@ -5,7 +5,12 @@ export default function shallowEqual(objA: Object, objB: Object): boolean {
     return true;
   }
 
-  if (typeof objA !== 'object' || objA === null || typeof objB !== 'object' || objB === null) {
+  if (
+    typeof objA !== 'object' ||
+    objA === null ||
+    typeof objB !== 'object' ||
+    objB === null
+  ) {
     return false;
   }
 

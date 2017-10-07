@@ -20,7 +20,10 @@ const styles = StyleSheet.create({
 });
 
 const HoverableText = ({ text, weight, onClick }) => (
-  <span onClick={onClick} className={css(styles.hover, styles[weight] || styles.light)}>
+  <span
+    onClick={onClick}
+    className={css(styles.hover, styles[weight] || styles.light)}
+  >
     {text}
   </span>
 );

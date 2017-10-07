@@ -167,11 +167,13 @@ export const getHighestNote = (midiNotes: Array<string>): string =>
 export const getLowestNote = (midiNotes: Array<string>): string =>
   midis[Math.min(...midiNotes.map(midi => getIndexOfNote(midi)))];
 
-export const getMidiFromNote = (fret: number, string: number, tuning: Tuning) => {
+export const getMidiFromNote = (
+  fret: number,
+  string: number,
+  tuning: Tuning
+) => {
   const midi = midis[getIndexOfNote(tuning[string]) + fret];
-  return midi
-    ? midi.replace('#', '')
-    : 'c4'; // default to a middle-ish note if it's a rest, this won't work with non-treble clefs
+  return midi ? midi.replace('#', '') : 'c4'; // default to a middle-ish note if it's a rest, this won't work with non-treble clefs
 };
 
 export const midiDiff = (midi1: string, midi2: string): number => {

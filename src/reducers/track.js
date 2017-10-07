@@ -13,7 +13,10 @@ import measure from './measure';
 
 import type { Track, Measure, TimeSignature } from '../util/stateTypes';
 
-const replaceMeasure = (state: Array<Measure>, action: Object): Array<Measure> => {
+const replaceMeasure = (
+  state: Array<Measure>,
+  action: Object
+): Array<Measure> => {
   if (!action.index) {
     return state;
   }
@@ -26,7 +29,10 @@ const replaceMeasure = (state: Array<Measure>, action: Object): Array<Measure> =
   });
 };
 
-const changeTempoAllMeasures = (measures: Array<Measure>, tempo: number): Array<Measure> => {
+const changeTempoAllMeasures = (
+  measures: Array<Measure>,
+  tempo: number
+): Array<Measure> => {
   return measures.map(measure => ({ ...measure, tempo }));
 };
 
@@ -34,72 +40,69 @@ const changeTempoMeasuresAfterCurrent = (
   measures: Array<Measure>,
   tempo: number,
   measureIndex: number
-): Array<Measure> =>
-  {
-    return measures.map((measure, i) => {
-      if (measureIndex > i) {
-        return measure;
-      }
-      return { ...measure, tempo };
-    });
-  };
+): Array<Measure> => {
+  return measures.map((measure, i) => {
+    if (measureIndex > i) {
+      return measure;
+    }
+    return { ...measure, tempo };
+  });
+};
 
 const changeSingleTempoMeasure = (
   measures: Array<Measure>,
   tempo: number,
   measureIndex: number
-): Array<Measure> =>
-  {
-    return measures.map((measure, i) => {
-      if (measureIndex === i) {
-        return { ...measure, tempo };
-      }
-      return measure;
-    });
-  };
+): Array<Measure> => {
+  return measures.map((measure, i) => {
+    if (measureIndex === i) {
+      return { ...measure, tempo };
+    }
+    return measure;
+  });
+};
 
 const changeTimeSigAllMeasures = (
   measures: Array<Measure>,
   timeSignature: TimeSignature
-): Array<Measure> =>
-  {
-    return measures.map(measure => ({ ...measure, timeSignature }));
-  };
+): Array<Measure> => {
+  return measures.map(measure => ({ ...measure, timeSignature }));
+};
 
 const changeTimeSigMeasuresAfterCurrent = (
   measures: Array<Measure>,
   timeSignature: TimeSignature,
   measureIndex: number
-): Array<Measure> =>
-  {
-    return measures.map((measure, i) => {
-      if (measureIndex > i) {
-        return measure;
-      }
-      return { ...measure, timeSignature };
-    });
-  };
+): Array<Measure> => {
+  return measures.map((measure, i) => {
+    if (measureIndex > i) {
+      return measure;
+    }
+    return { ...measure, timeSignature };
+  });
+};
 
 const changeSingleTimeSigMeasure = (
   measures: Array<Measure>,
   timeSignature: TimeSignature,
   measureIndex: number
-): Array<Measure> =>
-  {
-    return measures.map((measure, i) => {
-      if (measureIndex === i) {
-        return { ...measure, timeSignature };
-      }
-      return measure;
-    });
-  };
+): Array<Measure> => {
+  return measures.map((measure, i) => {
+    if (measureIndex === i) {
+      return { ...measure, timeSignature };
+    }
+    return measure;
+  });
+};
 
 export default function track(state: Track, action: Object): Track {
   switch (action.type) {
     case DELETE_MEASURE: {
       return {
         ...state,
-        measures: state.measures.filter((_, index) => index !== action.measureIndex)
+        measures: state.measures.filter(
+          (_, index) => index !== action.measureIndex
+        )
       };
     }
 
@@ -157,7 +160,11 @@ export default function track(state: Track, action: Object): Track {
           index.measureIndex
         );
       } else {
-        newMeasures = changeSingleTimeSigMeasure(state.measures, timeSignature, index.measureIndex);
+        newMeasures = changeSingleTimeSigMeasure(
+          state.measures,
+          timeSignature,
+          index.measureIndex
+        );
       }
 
       return { ...state, measures: newMeasures };
@@ -170,7 +177,9 @@ export default function track(state: Track, action: Object): Track {
         const measures = state.measures
           .slice(0, index.measureIndex + 1)
           .concat(clipboard)
-          .concat(state.measures.slice(index.measureIndex + 1, state.measures.length));
+          .concat(
+            state.measures.slice(index.measureIndex + 1, state.measures.length)
+          );
         return { ...state, measures };
       } else {
         return { ...state, measures: replaceMeasure(state.measures, action) };
@@ -183,7 +192,9 @@ export default function track(state: Track, action: Object): Track {
       if (!selection) {
         return {
           ...state,
-          measures: state.measures.filter((_, index) => index !== action.index.measureIndex)
+          measures: state.measures.filter(
+            (_, index) => index !== action.index.measureIndex
+          )
         };
       } else if (Array.isArray(selection)) {
         const mappedMeasures = state.measures.map((measure, i) => {
@@ -208,7 +219,7 @@ export default function track(state: Track, action: Object): Track {
         });
 
         if (filteredMeasures.length === 0) {
-          return { ...state, measures: [ { ...mappedMeasures[0], notes: [] } ] };
+          return { ...state, measures: [{ ...mappedMeasures[0], notes: [] }] };
         }
         return { ...state, measures: filteredMeasures };
       } else {

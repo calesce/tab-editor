@@ -29,6 +29,15 @@ export default class SelectBox extends PureComponent {
       }
     }
 
-    return <rect fill="blue" fillOpacity={0.2} x={x} y={0} width={boxWidth} height={height} />;
+    return (
+      <rect
+        fill="blue"
+        fillOpacity={0.2}
+        x={x}
+        y={0}
+        width={boxWidth}
+        height={height}
+      />
+    );
   }
 }

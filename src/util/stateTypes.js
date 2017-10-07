@@ -1,6 +1,10 @@
 /* @flow */
 
-export type Cursor = { measureIndex: number, noteIndex: number, stringIndex: number };
+export type Cursor = {
+  measureIndex: number,
+  noteIndex: number,
+  stringIndex: number
+};
 export type PlayingIndex = { measureIndex: number, noteIndex: number };
 export type ScoreBox = { x: number, y: number, width: number };
 export type Tuning = Array<string>;
@@ -19,9 +23,17 @@ export type Note = {
   tuplet?: string
 };
 
-export type Measure = { tempo: number, timeSignature: TimeSignature, notes: Array<Note> };
+export type Measure = {
+  tempo: number,
+  timeSignature: TimeSignature,
+  notes: Array<Note>
+};
 
-export type Track = { instrument: string, tuning: Tuning, measures: Array<Measure> };
+export type Track = {
+  instrument: string,
+  tuning: Tuning,
+  measures: Array<Measure>
+};
 
 export type UndoableTracks = {
   past: Array<Array<Track>>,

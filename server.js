@@ -7,10 +7,12 @@ const config = require('./webpack.config.dev');
 const app = express();
 const compiler = webpack(config);
 
-app.use(require('webpack-dev-middleware')(compiler, {
-  noInfo: true,
-  publicPath: config.output.publicPath
-}));
+app.use(
+  require('webpack-dev-middleware')(compiler, {
+    noInfo: true,
+    publicPath: config.output.publicPath
+  })
+);
 
 app.use(require('webpack-hot-middleware')(compiler));
 
@@ -20,13 +22,13 @@ app.get('*', function(req, res, next) {
     if (err) {
       return next(err);
     }
-    res.set('content-type','text/html');
+    res.set('content-type', 'text/html');
     res.send(result);
   });
 });
 
 app.listen(3000, 'localhost', function(err) {
-  if(err) {
+  if (err) {
     return console.log(err);
   }
 

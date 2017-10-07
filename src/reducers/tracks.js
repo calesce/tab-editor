@@ -13,7 +13,10 @@ import { TOGGLE_REPEAT_BEGIN, TOGGLE_REPEAT_END } from '../actions/measure';
 import trackReducer from './track';
 
 const replaceTrack = (tracks, currentTrackIndex, action) =>
-  tracks.map((track, index) => index === currentTrackIndex ? trackReducer(track, action) : track);
+  tracks.map(
+    (track, index) =>
+      index === currentTrackIndex ? trackReducer(track, action) : track
+  );
 
 const undoableTracks = undoable((state, action) => {
   return action.newTracks;
@@ -30,7 +33,10 @@ const tracks = (tracks, action, currentTrackIndex, newTracks) => {
     }
 
     case REPLACE_SONG: {
-      return undoableTracks(tracks, { type: 'tracks', newTracks: action.tracks });
+      return undoableTracks(tracks, {
+        type: 'tracks',
+        newTracks: action.tracks
+      });
     }
 
     case INSERT_TRACK:
@@ -57,7 +63,11 @@ const tracks = (tracks, action, currentTrackIndex, newTracks) => {
     default: {
       return undoableTracks(tracks, {
         type: 'tracks',
-        newTracks: replaceTrack(tracks.present || tracks, currentTrackIndex, action)
+        newTracks: replaceTrack(
+          tracks.present || tracks,
+          currentTrackIndex,
+          action
+        )
       });
     }
   }

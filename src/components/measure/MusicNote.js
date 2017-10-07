@@ -17,7 +17,11 @@ export default class MusicNote extends PureComponent {
             fill={color}
             d="M7.33992 24.843956c-3.728633 1.998327-5.715398 5.615776-4.49326 8.33707 1.303612 2.902716 5.783177 3.721912 9.999024 1.828576 4.215838-1.893346 6.579393-5.7858 5.27578-8.688506-1.30362-2.902716-5.783176-3.721912-9.999022-1.828576-.26349.118333-.533937.218218-.782524 1.449438zM3.226327 29.96113v45.414904"
           />
-          <path strokeWidth="1.2" stroke={color} d="M3.2263266 29.961131v45.4149026" />
+          <path
+            strokeWidth="1.2"
+            stroke={color}
+            d="M3.2263266 29.961131v45.4149026"
+          />
         </svg>
       );
     }
@@ -28,7 +32,11 @@ export default class MusicNote extends PureComponent {
           fill={color}
           d="M11.980408 34.601027c3.667507-1.965567 5.621702-5.523714 4.419597-8.200397-1.28224-2.85513-5.68837-3.660897-9.835104-1.7986-4.146725 1.862308-6.471533 5.690953-5.18929 8.546072 1.28225 2.85513 5.68837 3.660898 9.835103 1.7986.25917-.116393.525184-.21464.769696-1.425677z"
         />
-        <path strokeWidth="1.2" stroke={color} d="M16.026564 29.56774v-44.670396" />
+        <path
+          strokeWidth="1.2"
+          stroke={color}
+          d="M16.026564 29.56774v-44.670396"
+        />
       </svg>
     );
   }
@@ -52,7 +60,11 @@ export default class MusicNote extends PureComponent {
           fill={color}
           d="M12.22 34.28c3.668-1.964 5.622-5.522 4.42-8.198-1.282-2.856-5.69-3.66-9.835-1.8-4.147 1.863-6.47 5.692-5.188 8.547 1.282 2.855 5.688 3.66 9.834 1.8.26-.118.527-.217.77-.347zm-1.2-2.42c-.258.135-.522.235-.798.36-3.536 1.587-6.95 1.663-7.62.166-.673-1.494 1.65-3.996 5.186-5.584 3.536-1.587 6.95-1.663 7.62-.166.62 1.378-1.31 3.64-4.386 5.225z"
         />
-        <path strokeWidth="1.2" stroke={color} d="M16.110564 29.86774v-44.670396" />
+        <path
+          strokeWidth="1.2"
+          stroke={color}
+          d="M16.110564 29.86774v-44.670396"
+        />
       </svg>
     );
   }
@@ -104,7 +116,12 @@ export default class MusicNote extends PureComponent {
               rx="72.5"
               ry="46.5"
             />
-            <path d="M149.5 6v323.05V6z" stroke={color} fill={color} strokeWidth="10" />
+            <path
+              d="M149.5 6v323.05V6z"
+              stroke={color}
+              fill={color}
+              strokeWidth="10"
+            />
             <path
               d="M149.5 6v323.05V6zM213.92406 101.04561c-28.59228-38.14294-59.86623-45.92692-59.86623-45.92692V7.6224c0 .91303-4.33153 7.27183 12.56624 26.3776 2.52347 2.8532 10.00702 9.9108 51.7437 45.57988 6.67432 5.70403 51.64764 73.4412 27.23124 114.88894l-6.03174-8.987c5.255-10.278 2.94907-46.29325-25.6432-84.4362z"
               stroke={color}
@@ -217,7 +234,9 @@ export default class MusicNote extends PureComponent {
   renderTrill(x, color) {
     return (
       <svg x={x + 1.5} y={10}>
-        <text y={7} className={css(styles.trill)}>tr</text>
+        <text y={7} className={css(styles.trill)}>
+          tr
+        </text>
         <path
           fill={color}
           d="M25.912 1.896c.128-.144.288-.216.512-.216.352 0 .64.216.64.48 0 .096-.032.192-.096.264-.992 1.128-1.984 2.232-2.976 3.36-.128.144-.32.216-.544.216-.192 0-.352-.048-.48-.168l-3.136-2.856-2.496 2.808c-.128.144-.32.216-.544.216-.192 0-.352-.048-.48-.168l-3.168-2.856c-.32.384-.672.744-.992 1.128-.128.144-.288.216-.512.216-.352 0-.64-.216-.64-.48 0-.096.032-.192.096-.264.992-1.128 1.984-2.232 2.976-3.36.128-.144.32-.216.544-.216.192 0 .352.048.48.168l3.136 2.856L20.728.216c.128-.144.32-.216.544-.216.192 0 .352.048.48.168l3.168 2.856c.32-.384.672-.744.992-1.128z"
@@ -231,7 +250,9 @@ export default class MusicNote extends PureComponent {
     const xToUse = flip ? x + 9 : x + 5;
     return (
       <svg x={xToUse} y={yToUse} className={css(styles.overflow)}>
-        <text color={color} y={0} className={css(styles.tuplet)}>3</text>
+        <text color={color} y={0} className={css(styles.tuplet)}>
+          3
+        </text>
       </svg>
     );
   }
@@ -273,33 +294,29 @@ export default class MusicNote extends PureComponent {
 
   renderLedgerLines(x, direction, numLines, y) {
     if (direction === 'above') {
-      return Array
-        .from({ length: numLines })
-        .map((_, i) => (
-          <rect
-            key={i}
-            x={x - 2}
-            y={y - 13 * (i + 2)}
-            width={20}
-            height={0.5}
-            fill="#999999"
-            strokeWidth={0.1}
-          />
-        ));
+      return Array.from({ length: numLines }).map((_, i) => (
+        <rect
+          key={i}
+          x={x - 2}
+          y={y - 13 * (i + 2)}
+          width={20}
+          height={0.5}
+          fill="#999999"
+          strokeWidth={0.1}
+        />
+      ));
     } else {
-      return Array
-        .from({ length: numLines })
-        .map((_, i) => (
-          <rect
-            key={i}
-            x={x - 2}
-            y={y + 13 * i}
-            width={20}
-            height={0.5}
-            fill="#999999"
-            strokeWidth={0.1}
-          />
-        ));
+      return Array.from({ length: numLines }).map((_, i) => (
+        <rect
+          key={i}
+          x={x - 2}
+          y={y + 13 * i}
+          width={20}
+          height={0.5}
+          fill="#999999"
+          strokeWidth={0.1}
+        />
+      ));
     }
   }
 
@@ -324,11 +341,14 @@ export default class MusicNote extends PureComponent {
 
     return (
       <g>
-        {ledgerLinesBelow && this.renderLedgerLines(x, 'below', ledgerLinesBelow, bottomStaffY)}
-        {ledgerLinesAbove && this.renderLedgerLines(x, 'above', ledgerLinesAbove, topStaffY)}
+        {ledgerLinesBelow &&
+          this.renderLedgerLines(x, 'below', ledgerLinesBelow, bottomStaffY)}
+        {ledgerLinesAbove &&
+          this.renderLedgerLines(x, 'above', ledgerLinesAbove, topStaffY)}
         {this.renderNote(x, y, color, flip)}
         {note.notes[chordIndex].renderSharp && this.renderSharp(x, y, color)}
-        {note.notes[chordIndex].renderNatural && this.renderNatural(x, y, color)}
+        {note.notes[chordIndex].renderNatural &&
+          this.renderNatural(x, y, color)}
         {dotted && this.renderDot(x, y, color)}
         {tremolo && this.renderTremolo(x, y, color)}
         {vibrato && this.renderVibrato(x, y, color)}

@@ -57,6 +57,9 @@ class TrackSelect extends Component {
 }
 
 export default connect(
-  (state: State) => ({ tracks: state.tracks.present, currentTrackIndex: state.currentTrackIndex }),
+  (state: State) => ({
+    tracks: state.tracks.present,
+    currentTrackIndex: state.currentTrackIndex
+  }),
   { selectTrack }
 )(TrackSelect);

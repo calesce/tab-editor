@@ -4,7 +4,9 @@ import { instrumentNames } from '../instrumentNames';
 const instrumentsFromMusicXml = partList => {
   return partList.children.map(part => {
     if (part.childNamed('midi-instrument')) {
-      const midiProgram = part.childNamed('midi-instrument').childNamed('midi-program');
+      const midiProgram = part
+        .childNamed('midi-instrument')
+        .childNamed('midi-program');
       return instrumentNames[parseInt(midiProgram.val) - 1];
     }
     return 'acoustic_guitar_steel';
@@ -12,12 +14,17 @@ const instrumentsFromMusicXml = partList => {
 };
 
 const getTuning = (part, maker) => {
-  const staff = part.childNamed('measure').childNamed('attributes').childNamed('staff-details');
+  const staff = part
+    .childNamed('measure')
+    .childNamed('attributes')
+    .childNamed('staff-details');
 
   return staff.children.slice(1).map(string => {
     const note = string.children[0].val;
     const octave = parseInt(string.children[1].val);
-    return `${note}${maker === 'TuxGuitar' ? octave - 1 : octave}`.toLowerCase();
+    return `${note}${maker === 'TuxGuitar'
+      ? octave - 1
+      : octave}`.toLowerCase();
   });
 };
 
@@ -38,7 +45,10 @@ const getTimeSignatureForMeasure = (measures, measure, index) => {
   if (attributes) {
     const time = attributes.childNamed('time');
     if (time) {
-      return { beats: time.childNamed('beats').val, beatType: time.childNamed('beat-type').val };
+      return {
+        beats: time.childNamed('beats').val,
+        beatType: time.childNamed('beat-type').val
+      };
     }
   }
 
@@ -64,55 +74,82 @@ const tupletFromXml = xml => {
 };
 
 const getNotesForMeasure = (notes, stringCount) => {
-  return notes.reduce(
-    (finalNotes, note) => {
-      const duration = durationFromType(note.childNamed('type').val);
-      const dotted = note.childNamed('dot') ? true : false;
-      const tuplet = note.childNamed('time-modification')
-        ? tupletFromXml(note.childNamed('time-modification'))
-        : undefined;
-      const isChord = note.childNamed('chord') ? true : false;
+  return notes.reduce((finalNotes, note) => {
+    const duration = durationFromType(note.childNamed('type').val);
+    const dotted = note.childNamed('dot') ? true : false;
+    const tuplet = note.childNamed('time-modification')
+      ? tupletFromXml(note.childNamed('time-modification'))
+      : undefined;
+    const isChord = note.childNamed('chord') ? true : false;
 
-      if (note.childNamed('rest')) {
-        return finalNotes.concat({ duration, dotted, string: [ 'rest' ], fret: [ 'rest' ] });
-      }
-      const fret = parseInt(
-        note.childNamed('notations').childNamed('technical').childNamed('fret').val
+    if (note.childNamed('rest')) {
+      return finalNotes.concat({
+        duration,
+        dotted,
+        string: ['rest'],
+        fret: ['rest']
+      });
+    }
+    const fret = parseInt(
+      note
+        .childNamed('notations')
+        .childNamed('technical')
+        .childNamed('fret').val
+    );
+    const string =
+      stringCount -
+      parseInt(
+        note
+          .childNamed('notations')
+          .childNamed('technical')
+          .childNamed('string').val
       );
-      const string = stringCount -
-        parseInt(note.childNamed('notations').childNamed('technical').childNamed('string').val);
-      const tremolo = note.childNamed('notations').childNamed('ornaments') ? true : false;
+    const tremolo = note.childNamed('notations').childNamed('ornaments')
+      ? true
+      : false;
 
-      let frets, strings;
-      if (isChord) {
-        frets = finalNotes[finalNotes.length - 1].fret.concat(fret);
-        strings = finalNotes[finalNotes.length - 1].string.concat(string);
+    let frets, strings;
+    if (isChord) {
+      frets = finalNotes[finalNotes.length - 1].fret.concat(fret);
+      strings = finalNotes[finalNotes.length - 1].string.concat(string);
 
-        return finalNotes
-          .slice(0, finalNotes.length - 1)
-          .concat({ duration, fret: frets, string: strings, dotted, tremolo, tuplet });
-      }
+      return finalNotes
+        .slice(0, finalNotes.length - 1)
+        .concat({
+          duration,
+          fret: frets,
+          string: strings,
+          dotted,
+          tremolo,
+          tuplet
+        });
+    }
 
-      frets = [ fret ];
-      strings = [ string ];
+    frets = [fret];
+    strings = [string];
 
-      return finalNotes.concat({ duration, fret: frets, string: strings, dotted, tremolo, tuplet });
-    },
-    []
-  );
+    return finalNotes.concat({
+      duration,
+      fret: frets,
+      string: strings,
+      dotted,
+      tremolo,
+      tuplet
+    });
+  }, []);
 };
 
 const measuresFromMusicXml = (measures, stringCount, parts) => {
-  return measures.reduce(
-    (finalMeasures, measure, i) => {
-      const tempo = getTempoForMeasure(finalMeasures, measure, i, parts);
-      const timeSignature = getTimeSignatureForMeasure(finalMeasures, measure, i);
-      const notes = getNotesForMeasure(measure.childrenNamed('note'), stringCount);
+  return measures.reduce((finalMeasures, measure, i) => {
+    const tempo = getTempoForMeasure(finalMeasures, measure, i, parts);
+    const timeSignature = getTimeSignatureForMeasure(finalMeasures, measure, i);
+    const notes = getNotesForMeasure(
+      measure.childrenNamed('note'),
+      stringCount
+    );
 
-      return finalMeasures.concat({ tempo, timeSignature, notes });
-    },
-    []
-  );
+    return finalMeasures.concat({ tempo, timeSignature, notes });
+  }, []);
 };
 
 export function importMusicXml(xmlString) {
@@ -120,20 +157,20 @@ export function importMusicXml(xmlString) {
   const parts = xml.childrenNamed('part');
 
   const instruments = instrumentsFromMusicXml(xml.childNamed('part-list'));
-  const maker = xml.childNamed('identification').childNamed('encoding').childNamed('software').val;
+  const maker = xml
+    .childNamed('identification')
+    .childNamed('encoding')
+    .childNamed('software').val;
 
-  return parts.reduce(
-    (finalParts, part, i) => {
-      const instrument = instruments[i];
-      const tuning = getTuning(part, maker);
-      const measures = measuresFromMusicXml(
-        part.childrenNamed('measure'),
-        tuning.length,
-        finalParts
-      );
+  return parts.reduce((finalParts, part, i) => {
+    const instrument = instruments[i];
+    const tuning = getTuning(part, maker);
+    const measures = measuresFromMusicXml(
+      part.childrenNamed('measure'),
+      tuning.length,
+      finalParts
+    );
 
-      return finalParts.concat({ instrument, tuning, measures });
-    },
-    []
-  );
+    return finalParts.concat({ instrument, tuning, measures });
+  }, []);
 }

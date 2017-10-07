@@ -33,8 +33,22 @@ export default class RepeatSign extends Component {
     }
     return (
       <g>
-        <rect x={5.5} y={y} height={height} width={0.8} strokeWidth={0.1} fill="#2d2d2d" />
-        <rect x={0} y={y} height={height} width={3} strokeWidth={0.1} fill="#2d2d2d" />
+        <rect
+          x={5.5}
+          y={y}
+          height={height}
+          width={0.8}
+          strokeWidth={0.1}
+          fill="#2d2d2d"
+        />
+        <rect
+          x={0}
+          y={y}
+          height={height}
+          width={3}
+          strokeWidth={0.1}
+          fill="#2d2d2d"
+        />
         <circle cx={11.5} cy={topDotY} r={2.5} />
         <circle cx={11.5} cy={bottomDotY} r={2.5} />
       </g>

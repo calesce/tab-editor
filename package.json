@@ -4,12 +4,15 @@
   "description": "Cool tab editor",
   "scripts": {
     "clean": "rimraf dist",
-    "build:webpack": "NODE_ENV=production webpack --config webpack.config.prod.js",
+    "build:webpack":
+      "NODE_ENV=production webpack --config webpack.config.prod.js",
     "build": "npm run clean && npm run build:webpack",
     "start": "node server.js",
-    "demo": "npm run build && git checkout gh-pages && rm -f index.html bundle.js bundle.js.map && mv dist/* . && git add --all && git commit -m 'updated demo' && git push origin gh-pages && git checkout master",
+    "demo":
+      "npm run build && git checkout gh-pages && rm -f index.html bundle.js bundle.js.map && mv dist/* . && git add --all && git commit -m 'updated demo' && git push origin gh-pages && git checkout master",
     "lint": "eslint src",
     "fix": "eslint src --fix",
+    "format": "prettier --write \"**/**.js\"",
     "flow": "flow"
   },
   "repository": {
@@ -44,6 +47,7 @@
     "flow-bin": "0.56.0",
     "html-webpack-plugin": "^2.24.1",
     "lodash-webpack-plugin": "^0.11.0",
+    "prettier": "1.7.4",
     "react-hot-loader": "^3.0.0-beta.6",
     "rimraf": "^2.5.2",
     "style-loader": "0.18.2",

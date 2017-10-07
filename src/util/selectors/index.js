@@ -6,14 +6,17 @@ export const makeMapStateToProps = selectorFactory => () => {
 export const timeSignatureSelector = state => {
   const measures = state.tracks.present[state.currentTrackIndex].measures;
   const measureIndex = state.cursor.measureIndex;
-  return measures.length > 0 ? measures[measureIndex].timeSignature : { beats: 4, beatType: 4 };
+  return measures.length > 0
+    ? measures[measureIndex].timeSignature
+    : { beats: 4, beatType: 4 };
 };
 
 export const measureIndexSelector = (_, props) => props.measureIndex;
 export const scoreBoxSelector = state => state.scoreBox;
 export const playingIndexSelector = state => state.playingIndex;
 export const cursorSelector = state => state.cursor;
-export const tuningSelector = state => state.tracks.present[state.currentTrackIndex].tuning;
+export const tuningSelector = state =>
+  state.tracks.present[state.currentTrackIndex].tuning;
 export const measureLengthSelector = state =>
   state.tracks.present[state.currentTrackIndex].measures.length;
 export const trackMeasuresSelector = state =>

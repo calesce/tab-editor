@@ -28,21 +28,31 @@ class Score extends PureComponent {
   getNoteRangeForMeasure(measure, xStart, xEnd) {
     const notes = measure.notes.map((note, i) => {
       const noteX = note.x + measure.xOfMeasure;
-      return noteX + SELECT_ERROR > xStart && noteX + SELECT_ERROR < xEnd ? i : null;
+      return noteX + SELECT_ERROR > xStart && noteX + SELECT_ERROR < xEnd
+        ? i
+        : null;
     });
     const filteredNotes = notes.filter(note => note !== null);
     return filteredNotes.length === notes.length ? 'all' : filteredNotes;
   }
 
   getSelectedRangeForSingleRow(measure, xStart, xEnd) {
-    if (xStart > measure.xOfMeasure && xEnd < measure.xOfMeasure + measure.width) {
+    if (
+      xStart > measure.xOfMeasure &&
+      xEnd < measure.xOfMeasure + measure.width
+    ) {
       return this.getNoteRangeForMeasure(measure, xStart, xEnd);
     } else if (
-      xStart < measure.xOfMeasure && xEnd > measure.xOfMeasure ||
-        xStart > measure.xOfMeasure && xStart < measure.xOfMeasure + measure.width
+      (xStart < measure.xOfMeasure && xEnd > measure.xOfMeasure) ||
+      (xStart > measure.xOfMeasure &&
+        xStart < measure.xOfMeasure + measure.width)
     ) {
       if (measure.xOfMeasure < xStart) {
-        return this.getNoteRangeForMeasure(measure, xStart, measure.xOfMeasure + measure.width);
+        return this.getNoteRangeForMeasure(
+          measure,
+          xStart,
+          measure.xOfMeasure + measure.width
+        );
       } else if (xEnd < measure.xOfMeasure + measure.width) {
         return this.getNoteRangeForMeasure(measure, measure.xOfMeasure, xEnd);
       } else {
@@ -68,7 +78,11 @@ class Score extends PureComponent {
       if (measure.xOfMeasure + measure.width > xStart) {
         if (measure.xOfMeasure < xStart) {
           // starting measure, need note index
-          return this.getNoteRangeForMeasure(measure, xStart, measure.xOfMeasure + measure.width);
+          return this.getNoteRangeForMeasure(
+            measure,
+            xStart,
+            measure.xOfMeasure + measure.width
+          );
         } else {
           return 'all';
         }
@@ -88,24 +102,24 @@ class Score extends PureComponent {
   }
 
   rowFromY(dragY, measures, tuning) {
-    const rowHeights = measures.reduce(
-      (accum, measure) => {
-        if (!accum[measure.rowIndex]) {
-          return accum.concat(
-            (accum.length > 0 ? accum[accum.length - 1] : 0) +
-              measure.yTop +
-              measure.yBottom +
-              75 +
-              tuning.length * 20
-          );
-        }
-        return accum;
-      },
-      []
-    );
+    const rowHeights = measures.reduce((accum, measure) => {
+      if (!accum[measure.rowIndex]) {
+        return accum.concat(
+          (accum.length > 0 ? accum[accum.length - 1] : 0) +
+            measure.yTop +
+            measure.yBottom +
+            75 +
+            tuning.length * 20
+        );
+      }
+      return accum;
+    }, []);
 
     return rowHeights
-      ? rowHeights.reduce((accum, row, i) => accum === -1 && dragY < row ? i : accum, -1)
+      ? rowHeights.reduce(
+          (accum, row, i) => (accum === -1 && dragY < row ? i : accum),
+          -1
+        )
       : 0;
   }
 
@@ -123,26 +137,39 @@ class Score extends PureComponent {
 
     let selectedRows;
     if (dragWidth > 5 && dragHeight > 5) {
-      const startRow = this.rowFromY(dragY, this.props.measures, this.props.tuning);
-      const endRow = this.rowFromY(dragY + dragHeight, this.props.measures, this.props.tuning);
-      selectedRows = Array.from({ length: endRow - startRow + 1 }, (_, k) => k + startRow);
+      const startRow = this.rowFromY(
+        dragY,
+        this.props.measures,
+        this.props.tuning
+      );
+      const endRow = this.rowFromY(
+        dragY + dragHeight,
+        this.props.measures,
+        this.props.tuning
+      );
+      selectedRows = Array.from(
+        { length: endRow - startRow + 1 },
+        (_, k) => k + startRow
+      );
     }
 
-    const selectRange = this.props.measures.reduce(
-      (accum, measure, i) => {
-        const measureRange = this.getSelectedRange(measure, dragX, dragX + dragWidth, selectedRows);
-        if (Array.isArray(measureRange)) {
-          if (measureRange.length === 0) {
-            return accum;
-          }
+    const selectRange = this.props.measures.reduce((accum, measure, i) => {
+      const measureRange = this.getSelectedRange(
+        measure,
+        dragX,
+        dragX + dragWidth,
+        selectedRows
+      );
+      if (Array.isArray(measureRange)) {
+        if (measureRange.length === 0) {
+          return accum;
         }
+      }
 
-        const obj = {};
-        obj[i] = measureRange;
-        return measureRange ? Object.assign({}, accum, obj) : accum;
-      },
-      {}
-    );
+      const obj = {};
+      obj[i] = measureRange;
+      return measureRange ? Object.assign({}, accum, obj) : accum;
+    }, {});
 
     if (Object.keys(selectRange).length > 0) {
       this.props.setSelectRange(selectRange);
@@ -201,4 +228,6 @@ class Score extends PureComponent {
   }
 }
 
-export default connect(makeMapStateToProps(makeScoreSelector), { setSelectRange })(Score);
+export default connect(makeMapStateToProps(makeScoreSelector), {
+  setSelectRange
+})(Score);

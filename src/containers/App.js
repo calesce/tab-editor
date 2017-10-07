@@ -11,7 +11,11 @@ import * as PlayingIndexActions from '../actions/playingIndex';
 import * as CursorActions from '../actions/cursor';
 import * as CopyPasteActions from '../actions/cutCopyPaste';
 
-import { cursorAfterCutting, cursorAfterPasting, getNotesFromSelection } from '../util/cursor';
+import {
+  cursorAfterCutting,
+  cursorAfterPasting,
+  getNotesFromSelection
+} from '../util/cursor';
 import { updateScrollPosition } from '../util/updateScroll';
 import { loadSoundfonts } from '../util/soundfonts';
 import { makeMapStateToProps } from '../util/selectors';
@@ -31,7 +35,9 @@ const Actions = Object.assign(
   CopyPasteActions
 );
 
-const styles = StyleSheet.create({ container: { width: '100%', height: '100%' } });
+const styles = StyleSheet.create({
+  container: { width: '100%', height: '100%' }
+});
 
 class App extends Component {
   constructor(props) {
@@ -46,20 +52,33 @@ class App extends Component {
   }
 
   componentWillMount() {
-    loadSoundfonts([ ...this.props.instruments, 'woodblock' ])
+    loadSoundfonts([...this.props.instruments, 'woodblock'])
       .then(buffers => this.setState({ buffers }))
       .catch(err => err);
   }
 
   componentWillReceiveProps(nextProps) {
-    const { playingIndex, measures, layout, tuning, scoreBox, instruments } = nextProps;
+    const {
+      playingIndex,
+      measures,
+      layout,
+      tuning,
+      scoreBox,
+      instruments
+    } = nextProps;
 
     if (this.props.playingIndex && playingIndex) {
       if (
         playingIndex.noteIndex !== this.props.playingIndex.noteIndex ||
-          playingIndex.measureIndex !== this.props.playingIndex.measureIndex
+        playingIndex.measureIndex !== this.props.playingIndex.measureIndex
       ) {
-        updateScrollPosition(playingIndex, measures, layout, tuning.length, scoreBox);
+        updateScrollPosition(
+          playingIndex,
+          measures,
+          layout,
+          tuning.length,
+          scoreBox
+        );
       }
     } else if (!shallowEqual(this.props.instruments, instruments)) {
       this.setState({ buffers: undefined }, () => {
@@ -85,7 +104,10 @@ class App extends Component {
 
   handlePlay() {
     if (!this.props.playingIndex && this.state.buffers) {
-      if (!(this.props.metronome || this.props.countdown) || this.state.buffers.woodblock) {
+      if (
+        !(this.props.metronome || this.props.countdown) ||
+        this.state.buffers.woodblock
+      ) {
         this.props.actions.setPlayingIndex(this.props.cursor);
       }
     }
@@ -99,8 +121,8 @@ class App extends Component {
       const { measureIndex, noteIndex } = this.props.cursor;
       if (
         measureIndex === measures.length - 1 &&
-          (noteIndex === measures[measureIndex].notes.length - 1 ||
-            measures[measureIndex].notes.length === 0)
+        (noteIndex === measures[measureIndex].notes.length - 1 ||
+          measures[measureIndex].notes.length === 0)
       ) {
         this.props.actions.insertMeasure();
       }
@@ -147,11 +169,22 @@ class App extends Component {
       const newCursor = cursorAfterCutting(measures, selectRange, cursor);
       actions.setCursor(newCursor);
       actions.setSelectRange(undefined);
-      actions.cutNote(newCursor, getNotesFromSelection(measures, cursor, selectRange), selectRange);
+      actions.cutNote(
+        newCursor,
+        getNotesFromSelection(measures, cursor, selectRange),
+        selectRange
+      );
     } else {
-      const newCursor = { ...cursor, noteIndex: cursor.noteIndex === 0 ? 0 : cursor.noteIndex - 1 };
+      const newCursor = {
+        ...cursor,
+        noteIndex: cursor.noteIndex === 0 ? 0 : cursor.noteIndex - 1
+      };
       actions.setCursor(newCursor);
-      actions.cutNote(cursor, getNotesFromSelection(measures, cursor, selectRange), selectRange);
+      actions.cutNote(
+        cursor,
+        getNotesFromSelection(measures, cursor, selectRange),
+        selectRange
+      );
     }
   }
 
@@ -161,7 +194,10 @@ class App extends Component {
   }
 
   handleKeyPress = event => {
-    if (this.state.popover || this.props.playingIndex && event.keyCode !== 32) {
+    if (
+      this.state.popover ||
+      (this.props.playingIndex && event.keyCode !== 32)
+    ) {
       return;
     }
 
@@ -169,7 +205,11 @@ class App extends Component {
       // cmd/ctrl+c
       event.preventDefault();
       return this.props.actions.copyNote(
-        getNotesFromSelection(this.props.measures, this.props.cursor, this.props.selectRange)
+        getNotesFromSelection(
+          this.props.measures,
+          this.props.cursor,
+          this.props.selectRange
+        )
       );
     }
     if ((event.metaKey || event.ctrlKey) && event.keyCode === 86) {
@@ -188,7 +228,10 @@ class App extends Component {
     }
 
     if (event.keyCode <= 57 && event.keyCode >= 48 && !event.metaKey) {
-      return this.props.actions.changeNote(this.props.cursor, event.keyCode - 48);
+      return this.props.actions.changeNote(
+        this.props.cursor,
+        event.keyCode - 48
+      );
     } else if (event.keyCode === 82 && !event.metaKey && !event.ctrlKey) {
       this.props.actions.makeNoteRest(this.props.cursor);
     } else if (event.keyCode === 8) {
@@ -227,10 +270,7 @@ class App extends Component {
       if (note.tuplet) {
         this.props.actions.setNoteTuplet(this.props.cursor, undefined);
       } else {
-        this.props.actions.setNoteTuplet(
-          this.props.cursor,
-          '2/3'
-        ); // store string representation of multiplier for now
+        this.props.actions.setNoteTuplet(this.props.cursor, '2/3'); // store string representation of multiplier for now
       }
     } else if (event.keyCode >= 37 && event.keyCode <= 40) {
       return this.navigateCursor(event);
@@ -252,8 +292,18 @@ class App extends Component {
 
     return (
       <div className={css(styles.container)}>
-        {playingIndex && <Playback buffers={buffers} metronome={metronome} countdown={countdown} />}
-        <Sidebar canPlay={canPlay} popoverOpen={popover} togglePopover={this.togglePopover} />
+        {playingIndex && (
+          <Playback
+            buffers={buffers}
+            metronome={metronome}
+            countdown={countdown}
+          />
+        )}
+        <Sidebar
+          canPlay={canPlay}
+          popoverOpen={popover}
+          togglePopover={this.togglePopover}
+        />
         <Score />
       </div>
     );

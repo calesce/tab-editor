@@ -13,37 +13,37 @@ export const getPercentageOfNote = (
   timeSignature: TimeSignature,
   dotted: boolean,
   tuplet: ?string
-): number =>
-  {
-    const numBeats = timeSignature.beatType / durations[duration];
-    let percentage = numBeats / timeSignature.beats;
+): number => {
+  const numBeats = timeSignature.beatType / durations[duration];
+  let percentage = numBeats / timeSignature.beats;
 
-    percentage = dotted ? percentage * 1.5 : percentage;
-    if (tuplet) {
-      percentage = percentage * (parseInt(tuplet[0]) / parseInt(tuplet[2]));
-    }
-    return percentage;
-  };
+  percentage = dotted ? percentage * 1.5 : percentage;
+  if (tuplet) {
+    percentage = percentage * (parseInt(tuplet[0]) / parseInt(tuplet[2]));
+  }
+  return percentage;
+};
 
 export const getDurationFromPercentage = (
   percentage: number,
   timeSignature: TimeSignature
-): number =>
-  {
-    const numBeats = timeSignature.beats * percentage;
-    return timeSignature.beatType / numBeats;
-  };
+): number => {
+  const numBeats = timeSignature.beats * percentage;
+  return timeSignature.beatType / numBeats;
+};
 
 export const getReplaySpeedFromPercentage = (
   percentage: number,
   timeSignature: TimeSignature,
   tempo: number
-): number =>
-  {
-    return 240000 / (tempo * getDurationFromPercentage(percentage, timeSignature));
-  };
+): number => {
+  return (
+    240000 / (tempo * getDurationFromPercentage(percentage, timeSignature))
+  );
+};
 
-export const getTempoForNote = (note: number, tempo: number): number => tempo * (note / 4);
+export const getTempoForNote = (note: number, tempo: number): number =>
+  tempo * (note / 4);
 
 export const numberOfTremoloNotesForDuration = (duration: Duration): number => {
   const sortedDurations = orderBy(Object.keys(durations), d => durations[d]);
@@ -70,21 +70,18 @@ const getDurationValue = (duration: Duration): number => {
 
 const calcMeasureValidity = (measure: Measure): boolean => {
   const timeSig = measure.timeSignature.beats / measure.timeSignature.beatType;
-  const totalDuration = measure.notes.reduce(
-    (total, note) => {
-      let duration = getDurationValue(note.duration);
-      if (note.dotted) {
-        duration *= 1.5;
-      }
-      if (note.tuplet) {
-        const { tuplet } = note;
-        duration = duration * (parseInt(tuplet[0]) / parseInt(tuplet[2]));
-      }
+  const totalDuration = measure.notes.reduce((total, note) => {
+    let duration = getDurationValue(note.duration);
+    if (note.dotted) {
+      duration *= 1.5;
+    }
+    if (note.tuplet) {
+      const { tuplet } = note;
+      duration = duration * (parseInt(tuplet[0]) / parseInt(tuplet[2]));
+    }
 
-      return total + duration;
-    },
-    0
-  );
+    return total + duration;
+  }, 0);
 
   return roundToFour(timeSig) === roundToFour(totalDuration);
 };

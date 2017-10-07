@@ -25,7 +25,9 @@ class MusicMeasure extends PureComponent {
   renderMusicNote(note, noteIndex, yTop, playingNoteIndex) {
     const color = playingNoteIndex === noteIndex ? '#f9423a' : 'black';
     if (note.string[0] === 'rest') {
-      return <Rest key={noteIndex} x={note.x} y={note.y} note={note} color={color} />;
+      return (
+        <Rest key={noteIndex} x={note.x} y={note.y} note={note} color={color} />
+      );
     }
 
     return note.fret.map((fret, i) => (
@@ -34,7 +36,14 @@ class MusicMeasure extends PureComponent {
   }
 
   render() {
-    const { measure, rowHeight, yTop, playingNoteIndex, isLastMeasure, isValid } = this.props;
+    const {
+      measure,
+      rowHeight,
+      yTop,
+      playingNoteIndex,
+      isLastMeasure,
+      isValid
+    } = this.props;
 
     return (
       <svg height={rowHeight} width={measure.width} className={css(styles.svg)}>
@@ -45,13 +54,12 @@ class MusicMeasure extends PureComponent {
           isValid={isValid}
           lastMeasure={isLastMeasure}
         />
-        {measure.notes.map(
-          (note, noteIndex) => this.renderMusicNote(note, noteIndex, yTop, playingNoteIndex)
+        {measure.notes.map((note, noteIndex) =>
+          this.renderMusicNote(note, noteIndex, yTop, playingNoteIndex)
         )}
-        {
-          measure.indexOfRow === 0 &&
-            <Clef y={yTop} strings={5} treble repeatBegin={measure.repeatBegin} />
-        }
+        {measure.indexOfRow === 0 && (
+          <Clef y={yTop} strings={5} treble repeatBegin={measure.repeatBegin} />
+        )}
         <TimeSignature
           yOffset={yTop}
           strings={5}
@@ -62,21 +70,22 @@ class MusicMeasure extends PureComponent {
         <text x={0} y={23 + yTop} className={css(styles.measureNumber)}>
           {measure.measureIndex + 1}
         </text>
-        {
-          measure.repeatEnd &&
-            (
-              <RepeatSign
-                measureWidth={measure.width}
-                strings={5}
-                y={yTop + 25}
-                repeatEnd={measure.repeatEnd}
-              />
-            )
-        }
-        {
-          measure.repeatBegin &&
-            <RepeatSign measureWidth={measure.width} strings={5} y={yTop + 25} repeatEnd={false} />
-        }
+        {measure.repeatEnd && (
+          <RepeatSign
+            measureWidth={measure.width}
+            strings={5}
+            y={yTop + 25}
+            repeatEnd={measure.repeatEnd}
+          />
+        )}
+        {measure.repeatBegin && (
+          <RepeatSign
+            measureWidth={measure.width}
+            strings={5}
+            y={yTop + 25}
+            repeatEnd={false}
+          />
+        )}
       </svg>
     );
   }

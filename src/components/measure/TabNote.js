@@ -74,9 +74,18 @@ export default class TabNote extends PureComponent {
     return (
       <svg x={x + 1.5} y={y}>
         <g transform="scale(0.30)">
-          <polygon fill={color} points="31.5,7 3.75,21.25 3.75,14.5 31.5,0.25" />
-          <polygon fill={color} points="31.5,19.25 3.75,33.5 3.75,26.75 31.5,12.5" />
-          <polygon fill={color} points="31.5,31.5 3.75,45.75 3.75,39 31.5,24.75" />
+          <polygon
+            fill={color}
+            points="31.5,7 3.75,21.25 3.75,14.5 31.5,0.25"
+          />
+          <polygon
+            fill={color}
+            points="31.5,19.25 3.75,33.5 3.75,26.75 31.5,12.5"
+          />
+          <polygon
+            fill={color}
+            points="31.5,31.5 3.75,45.75 3.75,39 31.5,24.75"
+          />
         </g>
       </svg>
     );
@@ -106,7 +115,9 @@ export default class TabNote extends PureComponent {
   renderTrill(x, color) {
     return (
       <svg x={x + 1.5} y={10}>
-        <text y={7} className={css(styles.trill)}>tr</text>
+        <text y={7} className={css(styles.trill)}>
+          tr
+        </text>
         <g transform="translate(11.0, 0.0)">
           <g transform="scale(8.00, 6.00)">
             <path
@@ -125,14 +136,26 @@ export default class TabNote extends PureComponent {
 
     if (displayOption !== 'tab') {
       return (
-        <text onClick={this.onClick} x={x + 2} y={y} fill={color} className={css(styles.cursor)}>
+        <text
+          onClick={this.onClick}
+          x={x + 2}
+          y={y}
+          fill={color}
+          className={css(styles.cursor)}
+        >
           {fret}
         </text>
       );
     }
     return (
       <g>
-        <text onClick={this.onClick} x={x + 2} y={y} fill={color} className={css(styles.cursor)}>
+        <text
+          onClick={this.onClick}
+          x={x + 2}
+          y={y}
+          fill={color}
+          className={css(styles.cursor)}
+        >
           {fret}
         </text>
         {displayOption === 'tab' && this.renderStem()}

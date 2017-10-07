@@ -6,7 +6,9 @@ import { changeTimeSignature } from '../../actions/track';
 import HoverableText from './HoverableText';
 
 const styles = StyleSheet.create({
-  text: { fontFamily: 'Optima, Segoe, Segoe UI, Candara, Calibri, Arial, sans-serif' },
+  text: {
+    fontFamily: 'Optima, Segoe, Segoe UI, Candara, Calibri, Arial, sans-serif'
+  },
   popoverContainer: {
     background: '#FEFBF7',
     height: 200,
@@ -14,7 +16,11 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-between'
   },
-  templateRow: { display: 'flex', justifyContent: 'space-around', paddingTop: 10 },
+  templateRow: {
+    display: 'flex',
+    justifyContent: 'space-around',
+    paddingTop: 10
+  },
   timeSigRow: { display: 'flex', justifyContent: 'center', flexShrink: 10 },
   checkboxRow: {
     display: 'flex',
@@ -174,10 +180,22 @@ class TimeSignaturePopover extends Component {
           </span>
         </div>
         <span className={css(styles.checkboxRow)}>
-          <small className={css(styles.text, styles.checkboxText)}>To End</small>
-          <input type="checkbox" value={this.state.toEndChecked} onChange={this.toEndChanged} />
-          <small className={css(styles.text, styles.checkboxText)}>All Measures</small>
-          <input type="checkbox" value={this.state.allChecked} onChange={this.allChanged} />
+          <small className={css(styles.text, styles.checkboxText)}>
+            To End
+          </small>
+          <input
+            type="checkbox"
+            value={this.state.toEndChecked}
+            onChange={this.toEndChanged}
+          />
+          <small className={css(styles.text, styles.checkboxText)}>
+            All Measures
+          </small>
+          <input
+            type="checkbox"
+            value={this.state.allChecked}
+            onChange={this.allChanged}
+          />
         </span>
       </div>
     );

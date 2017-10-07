@@ -9,9 +9,14 @@ import { instrumentNames } from '../../util/instrumentNames';
 const toTitleSpaceCase = str =>
   str
     .replace(/_/g, ' ')
-    .replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+    .replace(
+      /\w\S*/g,
+      txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+    );
 
-const styles = StyleSheet.create({ wrapper: { marginTop: 5, width: 180, height: 36 } });
+const styles = StyleSheet.create({
+  wrapper: { marginTop: 5, width: 180, height: 36 }
+});
 
 const selectStyle = {
   fontFamily: 'Optima, Segoe, Segoe UI, Candara, Calibri, Arial, sans-serif',
@@ -51,6 +56,8 @@ class InstrumentSelect extends PureComponent {
 }
 
 export default connect(
-  state => ({ instrument: state.tracks.present[state.currentTrackIndex].instrument }),
+  state => ({
+    instrument: state.tracks.present[state.currentTrackIndex].instrument
+  }),
   { setInstrument }
 )(InstrumentSelect);

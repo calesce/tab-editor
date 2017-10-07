@@ -11,7 +11,11 @@ export function copyNote(selection: Clipboard): Action {
   return { type: COPY_NOTE, selection };
 }
 
-export function cutNote(index: PlayingIndex, selection: Clipboard, range: ?Range): Action {
+export function cutNote(
+  index: PlayingIndex,
+  selection: Clipboard,
+  range: ?Range
+): Action {
   return { type: CUT_NOTE, index, selection, range };
 }
 
