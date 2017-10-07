@@ -1,6 +1,7 @@
 /* @flow */
 import Soundfont from 'soundfont-player';
 import audioContext from '../util/audioContext';
+import { uniq } from 'lodash';
 
 // Fix for Safari/Edge, which can't play .ogg files
 let options = {};
@@ -16,13 +17,13 @@ if (
 let bufferCache = {};
 
 export function loadSoundfonts(instruments: Array<string>): Promise<Object> {
-  const promises = instruments.map(instrument => {
+  const promises = uniq(instruments).map(instrument => {
     return loadSoundfont(instrument, bufferCache);
   });
 
   return Promise.all(promises).then(instrumentObjects => {
-    instrumentObjects.forEach((instrument, i) => {
-      bufferCache[instruments[i]] = instrument.buffers;
+    instrumentObjects.forEach(instrumentObj => {
+      bufferCache[instrumentObj.instrument] = instrumentObj.buffers;
     });
     return bufferCache;
   });
@@ -30,7 +31,13 @@ export function loadSoundfonts(instruments: Array<string>): Promise<Object> {
 
 const loadSoundfont = (instrument: string, cache: Object): Promise<Object> => {
   if (cache[instrument]) {
-    return new Promise(resolve => resolve(cache[instrument]));
+    return new Promise(resolve =>
+      resolve({ instrument, buffers: cache[instrument] })
+    );
   }
-  return Soundfont.instrument(audioContext, instrument, options);
+  return Soundfont.instrument(audioContext, instrument, options)
+    .then(soundfont => ({ instrument, buffers: soundfont.buffers }))
+    .catch(err => {
+      throw err;
+    });
 };

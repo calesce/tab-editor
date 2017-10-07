@@ -82,8 +82,10 @@ class App extends Component {
       }
     } else if (!shallowEqual(this.props.instruments, instruments)) {
       this.setState({ buffers: undefined }, () => {
-        loadSoundfonts(this.props.instruments)
-          .then(buffers => this.setState({ buffers }))
+        loadSoundfonts(instruments)
+          .then(buffers => {
+            this.setState({ buffers });
+          })
           .catch(err => err);
       });
     }
