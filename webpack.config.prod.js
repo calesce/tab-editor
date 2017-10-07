@@ -5,9 +5,7 @@ const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 
 module.exports = {
   devtool: 'source-map',
-  entry: [
-    './src/index'
-  ],
+  entry: ['./src/index'],
   output: {
     path: path.join(__dirname, 'dist'),
     filename: 'bundle.js'
@@ -19,13 +17,14 @@ module.exports = {
     }),
     new webpack.DefinePlugin({
       'process.env': {
-        'NODE_ENV': JSON.stringify('production')
+        NODE_ENV: JSON.stringify('production')
       }
     }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       title: 'Tab Editor'
-    })
+    }),
+    new webpack.optimize.ModuleConcatenationPlugin()
   ],
   module: {
     rules: [

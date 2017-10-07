@@ -5,8 +5,8 @@ import audioContext from '../util/audioContext';
 // Fix for Safari/Edge, which can't play .ogg files
 let options = {};
 if (
-  !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/) ||
-    !!navigator.userAgent.match(/Edge\/\d+/)
+  !!navigator.userAgent.match(/Version\/[\d.]+.*Safari/) ||
+  !!navigator.userAgent.match(/Edge\/\d+/)
 ) {
   options.nameToUrl = function(name: string): string {
     return `https://raw.githubusercontent.com/gleitz/midi-js-soundfonts/gh-pages/FluidR3_GM/${name}-mp3.js`;

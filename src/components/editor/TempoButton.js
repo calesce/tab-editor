@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Popover from 'react-popover-fork';
+import Popover from 'react-popover';
 import { StyleSheet, css } from 'aphrodite';
 
 import { changeTempo } from '../../actions/track';
@@ -24,7 +24,11 @@ const styles = StyleSheet.create({
     fontFamily: 'Optima, Segoe, Segoe UI, Candara, Calibri, Arial, sans-serif'
   },
   light: { fontWeight: 300, fontSize: 12, paddingTop: 3 },
-  textInput: { width: 70, margin: '5px 15px 0px 15px', ':focus': { outline: 'none' } },
+  textInput: {
+    width: 70,
+    margin: '5px 15px 0px 15px',
+    ':focus': { outline: 'none' }
+  },
   popover: { zIndex: 5, fill: '#FEFBF7', marginLeft: -10 },
   popoverContainer: {
     background: '#FEFBF7',
@@ -34,7 +38,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around'
   },
   flexToEnd: { display: 'flex', justifyContent: 'flex-end', paddingRight: 12 },
-  flexAllMeasures: { display: 'flex', justifyContent: 'flex-end', paddingRight: 12 }
+  flexAllMeasures: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    paddingRight: 12
+  }
 });
 
 const TempoButton = ({ tempo, onClick }) => (
@@ -104,11 +112,19 @@ class TempoPopover extends Component {
         />
         <span className={css(styles.flexToEnd)}>
           <small className={css(styles.text, styles.light)}>To End</small>
-          <input type="checkbox" value={this.state.toEndChecked} onChange={this.toEndChanged} />
+          <input
+            type="checkbox"
+            value={this.state.toEndChecked}
+            onChange={this.toEndChanged}
+          />
         </span>
         <span className={css(styles.flexAllMeasures)}>
           <small className={css(styles.text, styles.light)}>All Measures</small>
-          <input type="checkbox" value={this.state.allChecked} onChange={this.allChanged} />
+          <input
+            type="checkbox"
+            value={this.state.allChecked}
+            onChange={this.allChanged}
+          />
         </span>
       </div>
     );
@@ -159,6 +175,9 @@ class Tempo extends Component {
 }
 
 export default connect(state => ({
-  tempo: state.tracks.present[state.currentTrackIndex].measures[state.cursor.measureIndex].tempo,
+  tempo:
+    state.tracks.present[state.currentTrackIndex].measures[
+      state.cursor.measureIndex
+    ].tempo,
   cursor: state.cursor
 }))(Tempo);

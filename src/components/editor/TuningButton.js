@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { head, last } from 'lodash';
-import Popover from 'react-popover-fork';
+import Popover from 'react-popover';
 import { StyleSheet, css } from 'aphrodite';
 
 import { tuningSelector } from '../../util/selectors';
 import HoverableText from './HoverableText';
 import { changeTuning } from '../../actions/track';
-import { nextNote, previousNote, previousOctave, nextOctave } from '../../util/midiNotes';
+import {
+  nextNote,
+  previousNote,
+  previousOctave,
+  nextOctave
+} from '../../util/midiNotes';
 
 const styles = StyleSheet.create({
   hover: {
@@ -21,7 +26,11 @@ const styles = StyleSheet.create({
     fill: 'black'
   },
   popover: { zIndex: 5, fill: '#FEFBF7', marginLeft: -20 },
-  popoverContainer: { display: 'flex', flexDirection: 'row', background: '#FEFBF7' },
+  popoverContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    background: '#FEFBF7'
+  },
   arrowButtons: {
     display: 'flex',
     flexDirection: 'column',
@@ -35,7 +44,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 5
   },
-  stringRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
+  stringRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
   textInput: {
     fontFamily: 'Optima, Segoe, Segoe UI, Candara, Calibri, Arial, sans-serif',
     margin: 5,
@@ -46,9 +59,7 @@ const styles = StyleSheet.create({
 
 const TuningIcon = ({ onClick }) => (
   <svg onClick={onClick} width={60} height={50} className={css(styles.hover)}>
-    <path
-      d="M4.416 21.77c-1.058 0-1.916.858-1.916 1.916v3.704c0 1.058.858 1.917 1.916 1.917 1.058 0 1.916-.858 1.916-1.917v-.468h2.652v1.906c0 .575.367 1.328.82 1.683l5.355 4.185v7.07h9.42v-7.16l5.347-4.102c.457-.35.827-1.1.827-1.675v-1.906h2.65v.468c0 1.058.86 1.917 1.918 1.917 1.058 0 1.916-.858 1.916-1.917v-3.704c0-1.058-.858-1.916-1.916-1.916-1.058 0-1.917.858-1.917 1.916v.57h-2.65v-8.52h2.65v.568c0 1.058.86 1.917 1.917 1.917 1.058 0 1.916-.857 1.916-1.916V12.6c0-1.058-.858-1.916-1.916-1.916-1.058 0-1.917.858-1.917 1.916v.47h-2.65V8.678c0-.575-.43-.855-.955-.624l-9.01 3.945c-.528.23-1.383.23-1.91-.002l-8.943-3.94c-.527-.233-.953.046-.953.62v4.395H6.332v-.47c0-1.058-.858-1.916-1.916-1.916-1.058 0-1.916.858-1.916 1.916v3.705c0 1.058.858 1.916 1.916 1.916 1.058 0 1.916-.857 1.916-1.915v-.57h2.652v8.523H6.332v-.572c0-1.058-.858-1.916-1.916-1.916z"
-    />
+    <path d="M4.416 21.77c-1.058 0-1.916.858-1.916 1.916v3.704c0 1.058.858 1.917 1.916 1.917 1.058 0 1.916-.858 1.916-1.917v-.468h2.652v1.906c0 .575.367 1.328.82 1.683l5.355 4.185v7.07h9.42v-7.16l5.347-4.102c.457-.35.827-1.1.827-1.675v-1.906h2.65v.468c0 1.058.86 1.917 1.918 1.917 1.058 0 1.916-.858 1.916-1.917v-3.704c0-1.058-.858-1.916-1.916-1.916-1.058 0-1.917.858-1.917 1.916v.57h-2.65v-8.52h2.65v.568c0 1.058.86 1.917 1.917 1.917 1.058 0 1.916-.857 1.916-1.916V12.6c0-1.058-.858-1.916-1.916-1.916-1.058 0-1.917.858-1.917 1.916v.47h-2.65V8.678c0-.575-.43-.855-.955-.624l-9.01 3.945c-.528.23-1.383.23-1.91-.002l-8.943-3.94c-.527-.233-.953.046-.953.62v4.395H6.332v-.47c0-1.058-.858-1.916-1.916-1.916-1.058 0-1.916.858-1.916 1.916v3.705c0 1.058.858 1.916 1.916 1.916 1.058 0 1.916-.857 1.916-1.915v-.57h2.652v8.523H6.332v-.572c0-1.058-.858-1.916-1.916-1.916z" />
   </svg>
 );
 
@@ -81,7 +92,9 @@ class TuningStringInput extends Component {
         } else if (keyCode >= 48 && keyCode <= 57) {
           return string[0] + (keyCode - 48);
         } else if (keyCode >= 65 && keyCode <= 71) {
-          return String.fromCharCode(keyCode).toLowerCase() + last(string.split(''));
+          return (
+            String.fromCharCode(keyCode).toLowerCase() + last(string.split(''))
+          );
         }
         return string;
       }
@@ -89,13 +102,18 @@ class TuningStringInput extends Component {
   }
 
   onTextChanged = e => {
-    const newString = this.midiStringFromKeyCode(this.props.string, e.keyCode, e.shiftKey);
+    const newString = this.midiStringFromKeyCode(
+      this.props.string,
+      e.keyCode,
+      e.shiftKey
+    );
     if (newString !== this.props.string) {
       this.props.onChange(newString, this.props.index);
     }
   };
 
-  noop() { /* this exists to make React happy */
+  noop() {
+    /* this exists to make React happy */
   }
 
   setRef = el => {
@@ -133,7 +151,9 @@ class TuningPopover extends Component {
 
   removeString = index => {
     this.setState({
-      tuning: this.state.tuning.filter((_, i) => i !== this.state.tuning.length - 1 - index)
+      tuning: this.state.tuning.filter(
+        (_, i) => i !== this.state.tuning.length - 1 - index
+      )
     });
   };
 
@@ -146,11 +166,15 @@ class TuningPopover extends Component {
   };
 
   addTopString = () => {
-    this.setState({ tuning: this.state.tuning.concat(last(this.state.tuning)) });
+    this.setState({
+      tuning: this.state.tuning.concat(last(this.state.tuning))
+    });
   };
 
   addBottomString = () => {
-    this.setState({ tuning: [ head(this.state.tuning) ].concat(this.state.tuning) });
+    this.setState({
+      tuning: [head(this.state.tuning)].concat(this.state.tuning)
+    });
   };
 
   onChange = (newString, i) => {
@@ -188,7 +212,11 @@ class TuningPopover extends Component {
         <div className={css(styles.stringsColumn)}>
           <HoverableText onClick={this.addTopString} text="+" weight="heavy" />
           {tuningInputs}
-          <HoverableText onClick={this.addBottomString} text="+" weight="heavy" />
+          <HoverableText
+            onClick={this.addBottomString}
+            text="+"
+            weight="heavy"
+          />
         </div>
       </div>
     );
@@ -261,4 +289,6 @@ class TuningButton extends Component {
   }
 }
 
-export default connect(state => ({ tuning: tuningSelector(state) }))(TuningButton);
+export default connect(state => ({ tuning: tuningSelector(state) }))(
+  TuningButton
+);

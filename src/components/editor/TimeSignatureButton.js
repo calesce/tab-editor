@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Popover from 'react-popover-fork';
+import Popover from 'react-popover';
+
 import { StyleSheet, css } from 'aphrodite';
 
 import { timeSignatureSelector } from '../../util/selectors';
@@ -58,7 +59,12 @@ class TimeSignature extends Component {
 
   render() {
     const { timeSignature, measureIndex } = this.props;
-    const body = <TimeSignaturePopover timeSignature={timeSignature} measureIndex={measureIndex} />;
+    const body = (
+      <TimeSignaturePopover
+        timeSignature={timeSignature}
+        measureIndex={measureIndex}
+      />
+    );
 
     return (
       <div>
@@ -68,7 +74,10 @@ class TimeSignature extends Component {
           onOuterAction={this.onPopoverClose}
           body={body}
         >
-          <TimeSignatureButton onClick={this.onClick} timeSignature={timeSignature} />
+          <TimeSignatureButton
+            onClick={this.onClick}
+            timeSignature={timeSignature}
+          />
         </Popover>
       </div>
     );
