@@ -67,7 +67,7 @@ class Playback extends Component {
               this.props.buffers[note.instrument]
             )
           )
-        );
+        ).filter(buffer => buffer);
       });
       playingIndex = this.advanceNote(
         playingIndex,
