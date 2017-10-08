@@ -87,7 +87,7 @@ export const cursorAfterPasting = (
   clipboard: Clipboard,
   oldCursor: Cursor
 ): Cursor => {
-  if (clipboard.notes) {
+  if (Array.isArray(clipboard.notes)) {
     return {
       ...oldCursor,
       noteIndex: oldCursor.noteIndex + clipboard.notes.length

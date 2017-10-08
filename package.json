@@ -13,7 +13,7 @@
     "lint": "eslint src",
     "fix": "eslint src --fix",
     "format": "prettier --write \"**/**.js\"",
-    "flow": "flow"
+    "flow": "flow check"
   },
   "repository": {
     "type": "git",
