@@ -12,7 +12,6 @@ export const timeSignatureSelector = state => {
 };
 
 export const measureIndexSelector = (_, props) => props.measureIndex;
-export const scoreBoxSelector = state => state.scoreBox;
 export const playingIndexSelector = state => state.playingIndex;
 export const cursorSelector = state => state.cursor;
 export const tuningSelector = state =>

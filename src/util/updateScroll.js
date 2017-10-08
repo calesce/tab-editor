@@ -1,7 +1,7 @@
 /* @flow */
 
 import { uniqBy } from 'lodash';
-import type { PlayingIndex, Layout, ScoreBox } from './stateTypes';
+import type { PlayingIndex, Layout } from './stateTypes';
 
 export function getXOfCurrentNote(
   playingIndex: PlayingIndex,
@@ -39,13 +39,12 @@ export function updateScrollPosition(
   playingIndex: PlayingIndex,
   measures: Array<Object>,
   layout: Layout,
-  stringCount: number,
-  scoreBox: ScoreBox
+  stringCount: number
 ): void {
   if (layout === 'linear') {
     const x = getXOfCurrentNote(playingIndex, measures);
 
-    if (x > window.innerWidth - scoreBox.x + window.scrollX - 100) {
+    if (x > window.innerWidth - 270 + window.scrollX - 100) {
       window.scroll(x - 100, 0);
     }
   } else {

@@ -93,12 +93,6 @@ export default function rootReducer(state: State, action: Object): State {
       return { ...state, layout: action.layout };
     }
 
-    case RESIZE: {
-      const scoreBox = { ...state.scoreBox, width: window.innerWidth - 270 };
-
-      return { ...state, scoreBox };
-    }
-
     case REPLACE_SONG: {
       return {
         ...state,

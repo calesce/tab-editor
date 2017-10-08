@@ -45,7 +45,6 @@ class App extends Component {
 
     if (typeof window !== 'undefined') {
       window.addEventListener('keydown', this.handleKeyPress);
-      window.addEventListener('resize', this.handleResize);
     }
 
     this.state = { openModal: null };
@@ -58,27 +57,14 @@ class App extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const {
-      playingIndex,
-      measures,
-      layout,
-      tuning,
-      scoreBox,
-      instruments
-    } = nextProps;
+    const { playingIndex, measures, layout, tuning, instruments } = nextProps;
 
     if (this.props.playingIndex && playingIndex) {
       if (
         playingIndex.noteIndex !== this.props.playingIndex.noteIndex ||
         playingIndex.measureIndex !== this.props.playingIndex.measureIndex
       ) {
-        updateScrollPosition(
-          playingIndex,
-          measures,
-          layout,
-          tuning.length,
-          scoreBox
-        );
+        updateScrollPosition(playingIndex, measures, layout, tuning.length);
       }
     } else if (!shallowEqual(this.props.instruments, instruments)) {
       this.setState({ buffers: undefined }, () => {
@@ -90,10 +76,6 @@ class App extends Component {
       });
     }
   }
-
-  handleResize = () => {
-    this.props.actions.resize();
-  };
 
   handleStop() {
     this.props.actions.setCursor({

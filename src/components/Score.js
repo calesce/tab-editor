@@ -4,6 +4,7 @@ import { StyleSheet, css } from 'aphrodite';
 
 import { makeMapStateToProps } from '../util/selectors';
 import { makeScoreSelector } from '../util/selectors/layout';
+import { getScoreSectionWidth, calcScoreHeight } from '../util/scoreLayout';
 import { setSelectRange } from '../actions/cursor';
 
 import Measure from './measure/Measure';
@@ -22,8 +23,26 @@ class Score extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.state = { dragStart: undefined, dragEnd: undefined };
+    this.state = {
+      dragStart: undefined,
+      dragEnd: undefined,
+      sectionWidth: getScoreSectionWidth()
+    };
   }
+
+  componentWillMount() {
+    window.addEventListener('resize', this.handleResize);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleResize);
+  }
+
+  handleResize = () => {
+    this.setState({
+      sectionWidth: getScoreSectionWidth()
+    });
+  };
 
   getNoteRangeForMeasure(measure, xStart, xEnd) {
     const notes = measure.notes.map((note, i) => {
@@ -202,14 +221,24 @@ class Score extends PureComponent {
     }
   };
 
+  calcLinearWidth(measures) {
+    return measures.reduce((width, measure) => {
+      return measure.width + width;
+    }, 20);
+  }
+
   render() {
-    const { height, width, measures, x, y } = this.props;
-    const { dragX, dragY, dragWidth, dragHeight } = this.state;
+    const { measures, layout, tuning } = this.props;
+    const { dragX, dragY, dragWidth, dragHeight, sectionWidth } = this.state;
+    const width =
+      layout === 'linear' ? this.calcLinearWidth(measures) : sectionWidth;
+    const height =
+      layout === 'linear' ? '99%' : calcScoreHeight(measures, tuning);
 
     return (
       <div
         className={css(styles.score)}
-        style={{ height, width, left: x, top: y }}
+        style={{ height, width, left: 270, top: 5 }}
         onMouseDown={this.onMouseDown}
         onMouseUp={this.onMouseUp}
         onMouseMove={this.onMouseMove}

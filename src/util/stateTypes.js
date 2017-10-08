@@ -6,7 +6,6 @@ export type Cursor = {
   stringIndex: number
 };
 export type PlayingIndex = { measureIndex: number, noteIndex: number };
-export type ScoreBox = { x: number, y: number, width: number };
 export type Tuning = Array<string>;
 export type TimeSignature = { beats: number, beatType: number };
 export type Layout = 'page' | 'linear';
@@ -53,6 +52,5 @@ export type State = {
   layout: Layout,
   metronome: boolean,
   playingIndex: PlayingIndex,
-  scoreBox: ScoreBox,
   tracks: UndoableTracks
 };

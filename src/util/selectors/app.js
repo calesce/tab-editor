@@ -9,7 +9,6 @@ const instrumentListSelector = createSelector(
 export const makeAppSelector = () => {
   return createSelector(
     state => ({
-      scoreBox: state.scoreBox,
       clipboard: state.clipboard,
       layout: state.layout,
       playingIndex: state.playingIndex,

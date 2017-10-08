@@ -22,8 +22,7 @@ const initialState = {
   playingIndex: null,
   cursor: { measureIndex: 0, noteIndex: 0, stringIndex: 0 },
   metronome: false,
-  countdown: false,
-  scoreBox: { x: 270, y: 5, width: window.innerWidth - 270 }
+  countdown: false
 };
 
 const store = configureStore(initialState);

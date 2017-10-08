@@ -8,7 +8,21 @@ import {
   midiDiff
 } from './midiNotes';
 
-import type { ScoreBox, Tuning } from './stateTypes';
+import type { Tuning } from './stateTypes';
+
+export function getScoreSectionWidth() {
+  return window.innerWidth - 270;
+}
+
+export const calcScoreHeight = (measures: [Object], tuning: Tuning) => {
+  const rows = measures.reduce((rows, measure) => {
+    return measure.indexOfRow === 0 ? rows.concat(measure) : rows;
+  }, []);
+
+  return rows.reduce((sum, measure) => {
+    return sum + 20 * tuning.length + (measure.yTop + measure.yBottom + 75);
+  }, 0);
+};
 
 const calcXForNote = (
   measure: Object,
@@ -83,10 +97,7 @@ const computeTrackLayout = (measures: Array<Object>): Array<Object> => {
   });
 };
 
-const trackWithRows = (
-  measures: Array<Object>,
-  scoreBox: ScoreBox
-): Array<Object> => {
+const trackWithRows = (measures: Array<Object>): Array<Object> => {
   return measures.reduce((newMeasures, measure, measureIndex) => {
     if (measureIndex === 0) {
       const notes = measure.notes.map((note, noteIndex) => ({
@@ -116,7 +127,7 @@ const trackWithRows = (
 
     let newRowIndex = currentRow;
     let indexOfRow;
-    if (currentRowWidth + measure.width >= scoreBox.width) {
+    if (currentRowWidth + measure.width >= getScoreSectionWidth()) {
       newRowIndex = currentRow + 1;
       indexOfRow = 0;
     }
@@ -214,12 +225,11 @@ const getRowHeights = (
 export const prepareRowLayout = (
   measures: Array<Object>,
   layout: string,
-  scoreBox: ScoreBox,
   tuning: Tuning
 ): Array<Object> => {
   const newMeasures =
     layout === 'page'
-      ? trackWithRows(computeTrackLayout(measures), scoreBox)
+      ? trackWithRows(computeTrackLayout(measures))
       : linearTrack(computeTrackLayout(measures));
 
   return getRowHeights(newMeasures, tuning);
