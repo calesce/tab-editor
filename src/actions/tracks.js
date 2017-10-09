@@ -3,7 +3,6 @@
 export const INSERT_TRACK = 'INSERT_TRACK';
 export const DELETE_TRACK = 'DELETE_TRACK';
 export const SELECT_TRACK = 'SELECT_TRACK';
-export const RESIZE = 'RESIZE';
 export const CHANGE_LAYOUT = 'CHANGE_LAYOUT';
 export const REPLACE_SONG = 'REPLACE_SONG';
 
@@ -20,10 +19,6 @@ export function deleteTrack(index: PlayingIndex): Action {
 
 export function selectTrack(index: PlayingIndex): Action {
   return { type: SELECT_TRACK, index };
-}
-
-export function resize(): Action {
-  return { type: RESIZE };
 }
 
 export function changeLayout(layout: Layout): Action {

@@ -1,25 +1,24 @@
+/* @flow */
 import { createSelector } from 'reselect';
 import { trackWithLayoutSelector } from './layout';
+import type { State, Track } from '../stateTypes';
 
 const instrumentListSelector = createSelector(
-  state => state.tracks.present,
-  tracks => tracks.map(track => track.instrument)
+  (state: State): Array<Track> => state.tracks.present,
+  (tracks: Array<Track>): Array<string> => tracks.map(track => track.instrument)
 );
 
 export const makeAppSelector = () => {
   return createSelector(
-    state => ({
+    (state: State): Object => ({
       clipboard: state.clipboard,
-      layout: state.layout,
-      playingIndex: state.playingIndex,
-      cursor: state.cursor,
-      selectRange: state.selectRange,
-      tuning: state.tracks.present[state.currentTrackIndex].tuning,
-      currentTrackIndex: state.currentTrackIndex,
-      metronome: state.metronome,
       countdown: state.countdown,
-      future: state.future,
-      past: state.past
+      cursor: state.cursor,
+      layout: state.layout,
+      metronome: state.metronome,
+      playingIndex: state.playingIndex,
+      selectRange: state.selectRange,
+      tuning: state.tracks.present[state.currentTrackIndex].tuning
     }),
     instrumentListSelector,
     trackWithLayoutSelector,

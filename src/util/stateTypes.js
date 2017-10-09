@@ -52,5 +52,6 @@ export type State = {
   layout: Layout,
   metronome: boolean,
   playingIndex: PlayingIndex,
+  selectRange: SelectRange,
   tracks: UndoableTracks
 };

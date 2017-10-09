@@ -66,6 +66,5 @@ export type Action =
   | { type: 'INSERT_TRACK' }
   | { type: 'DELETE_TRACK', index: PlayingIndex }
   | { type: 'SELECT_TRACK', index: PlayingIndex }
-  | { type: 'RESIZE' }
   | { type: 'CHANGE_LAYOUT', layout: Layout }
   | { type: 'REPLACE_SONG', tracks: Array<Track> };

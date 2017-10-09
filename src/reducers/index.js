@@ -12,8 +12,7 @@ import {
   DELETE_TRACK,
   SELECT_TRACK,
   CHANGE_LAYOUT,
-  REPLACE_SONG,
-  RESIZE
+  REPLACE_SONG
 } from '../actions/tracks';
 import {
   SET_CURSOR,
