@@ -39,19 +39,20 @@ export function updateScrollPosition(
   playingIndex: PlayingIndex,
   measures: Array<Object>,
   layout: Layout,
-  stringCount: number
+  stringCount: number,
+  domElement: Element
 ): void {
   if (layout === 'linear') {
     const x = getXOfCurrentNote(playingIndex, measures);
 
-    if (x > window.innerWidth - 270 + window.scrollX - 100) {
-      window.scroll(x - 100, 0);
+    if (x > domElement.clientWidth - 270 + domElement.scrollLeft - 100) {
+      domElement.scrollLeft = x - 100;
     }
   } else {
     const y = getYOfCurrentNote(playingIndex, measures, stringCount);
 
-    if (y > window.innerHeight + window.scrollY - 270) {
-      window.scroll(0, y - 250);
+    if (y > domElement.clientHeight + domElement.scrollTop - 270) {
+      domElement.scrollTop = y - 250;
     }
   }
 }

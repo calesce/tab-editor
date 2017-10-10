@@ -36,7 +36,7 @@ const Actions = Object.assign(
 );
 
 const styles = StyleSheet.create({
-  container: { width: '100%', height: '100%' }
+  container: { display: 'flex' }
 });
 
 class App extends Component {
@@ -64,7 +64,13 @@ class App extends Component {
         playingIndex.noteIndex !== this.props.playingIndex.noteIndex ||
         playingIndex.measureIndex !== this.props.playingIndex.measureIndex
       ) {
-        updateScrollPosition(playingIndex, measures, layout, tuning.length);
+        updateScrollPosition(
+          playingIndex,
+          measures,
+          layout,
+          tuning.length,
+          this.scoreScrollEl
+        );
       }
     } else if (!shallowEqual(this.props.instruments, instruments)) {
       this.setState({ buffers: undefined }, () => {
@@ -288,7 +294,11 @@ class App extends Component {
           popoverOpen={popover}
           togglePopover={this.togglePopover}
         />
-        <Score />
+        <Score
+          scrollRef={el => {
+            this.scoreScrollEl = el;
+          }}
+        />
       </div>
     );
   }

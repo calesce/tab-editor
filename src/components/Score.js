@@ -16,7 +16,18 @@ const SELECT_ERROR = 6;
 
 // Give some room for user error when selecting a range of notes
 const styles = StyleSheet.create({
-  score: { position: 'absolute', display: 'flex', flexWrap: 'wrap', flex: 1 }
+  scoreContainer: {
+    overflow: 'scroll',
+    height: '100vh',
+    'margin-left': 15
+  },
+  score: {
+    position: 'relative',
+    display: 'flex',
+    flexWrap: 'wrap',
+    flex: 1,
+    'margin-top': 5
+  }
 });
 
 class Score extends PureComponent {
@@ -233,25 +244,30 @@ class Score extends PureComponent {
     const width =
       layout === 'linear' ? this.calcLinearWidth(measures) : sectionWidth;
     const height =
-      layout === 'linear' ? '99%' : calcScoreHeight(measures, tuning);
+      layout === 'linear' ? 'auto' : calcScoreHeight(measures, tuning);
 
     return (
-      <div
-        className={css(styles.score)}
-        style={{ height, width, left: 270, top: 5 }}
-        onMouseDown={this.onMouseDown}
-        onMouseUp={this.onMouseUp}
-        onMouseMove={this.onMouseMove}
-      >
-        {measures.map((_, i) => <Measure key={i} measureIndex={i} />)}
-        <SelectBox
-          height={height}
-          width={width}
-          x={dragX}
-          y={dragY}
-          dragWidth={dragWidth}
-          dragHeight={dragHeight}
-        />
+      <div className={css(styles.scoreContainer)} ref={this.props.scrollRef}>
+        <div
+          className={css(styles.score)}
+          style={{ height, width }}
+          onMouseDown={this.onMouseDown}
+          onMouseUp={this.onMouseUp}
+          onMouseMove={this.onMouseMove}
+          ref={el => {
+            this.scoreRef = el;
+          }}
+        >
+          {measures.map((_, i) => <Measure key={i} measureIndex={i} />)}
+          <SelectBox
+            height={height}
+            width={width}
+            x={dragX}
+            y={dragY}
+            dragWidth={dragWidth}
+            dragHeight={dragHeight}
+          />
+        </div>
       </div>
     );
   }

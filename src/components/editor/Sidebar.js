@@ -18,15 +18,12 @@ import LayoutButton from './LayoutButton';
 
 const styles = StyleSheet.create({
   sidebar: {
-    position: 'fixed',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    top: 0,
-    left: 0,
-    height: '100%',
-    zIndex: 3,
+    height: '100vh',
     width: 255,
+    'flex-shrink': '0',
     overflow: 'hidden',
     background: 'wheat',
     // try sandybrown, peachpuff, moccasin, navajowhite, linen, cornsilk, wheat
