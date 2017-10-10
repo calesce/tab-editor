@@ -43,17 +43,23 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    if (typeof window !== 'undefined') {
-      window.addEventListener('keydown', this.handleKeyPress);
-    }
-
     this.state = { openModal: null };
   }
 
   componentWillMount() {
+    if (typeof window !== 'undefined') {
+      window.addEventListener('keydown', this.handleKeyPress);
+    }
+
     loadSoundfonts([...this.props.instruments, 'woodblock'])
       .then(buffers => this.setState({ buffers }))
       .catch(err => err);
+  }
+
+  componentWillUnmount() {
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('keydown', this.handleKeyPress);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
