@@ -1,11 +1,13 @@
 import React from 'react';
 import { render } from 'react-dom';
-// import { AppContainer } from 'react-hot-loader';
+import { AppContainer } from 'react-hot-loader';
 import { Provider } from 'react-redux';
+import App from './containers/App';
 
 import configureStore from './util/configureStore';
 import { replaceTempo } from './util';
 import track from '../data/song';
+import Redbox from 'redbox-react';
 
 const rootElement = document.createElement('div');
 document.body.appendChild(rootElement);
@@ -27,14 +29,15 @@ const initialState = {
 
 const store = configureStore(initialState);
 
+const CustomErrorReporter = ({ error }) => <Redbox error={error} />;
+
 const renderApp = () => {
-  const App = require('./containers/App').default;
   render(
-    // <AppContainer>
-    <Provider store={store}>
-      <App />
-    </Provider>,
-    // </AppContainer>,
+    <AppContainer errorReporter={CustomErrorReporter}>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </AppContainer>,
     rootElement
   );
 };

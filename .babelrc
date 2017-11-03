@@ -1,6 +1,6 @@
 {
   "presets": [["es2015", { "modules": false }], "stage-0", "react"],
-  "plugins": ["lodash"],
+  "plugins": ["react-hot-loader/babel", "lodash"],
   "env": {
     "production": {
       "plugins": [

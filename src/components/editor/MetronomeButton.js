@@ -32,9 +32,7 @@ const styles = StyleSheet.create({
 const isMetronomeSelected = state => ({ selected: state.metronome === true });
 const isCountdownSelected = state => ({ selected: state.countdown === true });
 
-export const MetronomeButton = connect(isMetronomeSelected, {
-  toggleMetronome
-})(({ selected, cursor, toggleMetronome }) => {
+const UnconnectedMetronomeButton = ({ selected, cursor, toggleMetronome }) => {
   const onClick = () => {
     toggleMetronome(cursor);
   };
@@ -61,11 +59,9 @@ export const MetronomeButton = connect(isMetronomeSelected, {
       </g>
     </svg>
   );
-});
+};
 
-export const CountdownButton = connect(isCountdownSelected, {
-  toggleCountdown
-})(({ selected, cursor, toggleCountdown }) => {
+const UnconnectedCountdown = ({ selected, cursor, toggleCountdown }) => {
   const onClick = () => {
     toggleCountdown(cursor);
   };
@@ -85,4 +81,12 @@ export const CountdownButton = connect(isCountdownSelected, {
       </g>
     </svg>
   );
-});
+};
+
+export const MetronomeButton = connect(isMetronomeSelected, {
+  toggleMetronome
+})(UnconnectedMetronomeButton);
+
+export const CountdownButton = connect(isCountdownSelected, {
+  toggleCountdown
+})(UnconnectedCountdown);
