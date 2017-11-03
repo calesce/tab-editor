@@ -23,6 +23,8 @@ export type Note = {
 };
 
 export type Measure = {
+  repeatBegin?: boolean,
+  repeatEnd?: boolean,
   tempo: number,
   timeSignature: TimeSignature,
   notes: Array<Note>

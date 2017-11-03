@@ -37,6 +37,8 @@ const emptyTrack = (tracks: Array<Track>, currentTrackIndex: number): Track => {
     instrument: tracks[currentTrackIndex].instrument,
     tuning: tracks[currentTrackIndex].tuning,
     measures: tracks[currentTrackIndex].measures.map(measure => ({
+      repeatBegin: measure.repeatBegin,
+      repeatEnd: measure.repeatEnd,
       tempo: measure.tempo,
       timeSignature: measure.timeSignature,
       notes: []
